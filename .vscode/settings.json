@@ -1,0 +1,13 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/._nuxt": true,
+    "**/.nuxt": true,
+    "**/._output": true,
+  },
+  "editor.formatOnSave": true,
+  "vetur.validation.template": false
+}

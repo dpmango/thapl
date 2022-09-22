@@ -1,0 +1,49 @@
+@function HexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
+:root {
+  // fonts
+  --font-base: 'Inter', sans-serif;
+  --font-system: -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Ubuntu',
+    'Cantarell', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  // scheme
+  --color-background: #fff;
+  --color-font: #000;
+  --color-font-rgb: #{HexToRGB(#000000)};
+  --color-font-invert: #fff;
+  --color-gray: #909090;
+  --color-disabled: #8996a4;
+  --color-border: #dddddd;
+
+  // brand colors
+  --color-primary: #ec5c2a;
+  --color-primary-rgb: #{HexToRGB(#ec5c2a)};
+  --color-bg: #f5f5f5;
+  --color-green: #19cb75;
+  --color-red: #ee5743;
+  --color-yellow: #f2c94c;
+
+  // components
+  --header-background: #fff;
+  --product-card-ar: 100%;
+
+  // ui
+  --button-border-radius: 24px;
+  --swiper-bullet-color: #f0f0f0;
+}
+
+.dark-mode {
+  --color-background: #000;
+  --color-font: #fff;
+
+  // brand colors
+  --color-bg: #151515;
+
+  // components
+  --header-background: #000;
+
+  // ui
+  --swiper-bullet-color: #151515;
+}
