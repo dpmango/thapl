@@ -7,6 +7,7 @@ export const useSessionStore = defineStore('session', {
       user_token: null,
       user: {},
       app_settings: {},
+      phone: '',
     }
   },
   actions: {
@@ -17,6 +18,9 @@ export const useSessionStore = defineStore('session', {
       this.user_token = user_token
       this.user = user
       this.app_settings = app_settings
+    },
+    setPhone(phone) {
+      this.phone = phone
     },
   },
 })

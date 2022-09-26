@@ -30,8 +30,6 @@
   </section>
 </template>
 
-<script setup></script>
-
 <style lang="scss" scoped>
 .last {
   margin: 60px 0 80px;

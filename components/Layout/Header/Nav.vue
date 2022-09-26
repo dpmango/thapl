@@ -35,7 +35,7 @@ const api = useApi
 const session = useSessionStore()
 const productStore = useProductStore()
 
-const headers = useHeaders({ api_token: session.api_token, user_token: session.user_token })
+const headers = useHeaders()
 
 const { data, error } = await useAsyncData('categories', () =>
   api('catalog/get-categories', {

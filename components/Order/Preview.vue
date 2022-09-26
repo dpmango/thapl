@@ -54,6 +54,9 @@
         margin-left: 16px;
         margin-right: 16px;
       }
+      &:last-child::after {
+        display: none;
+      }
     }
   }
   &__table {

@@ -3,6 +3,7 @@
     <LayoutHeader />
     <slot></slot>
     <LayoutFooter />
+    <LayoutModals />
     <DevGrid />
   </div>
 </template>

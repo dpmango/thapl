@@ -51,7 +51,7 @@
             </NuxtLink>
           </div>
           <div class="col">
-            <div class="action">
+            <div class="action" @click="() => ui.setModal({ name: 'auth' })">
               <div class="action__icon">
                 <nuxt-icon name="login" />
               </div>
@@ -82,6 +82,9 @@
 
 <script setup>
 import _ from 'lodash'
+import { useUiStore } from '~/store'
+
+const ui = useUiStore()
 
 defineProps({
   variant: {

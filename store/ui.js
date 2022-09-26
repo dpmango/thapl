@@ -4,7 +4,7 @@ export const useUiStore = defineStore('ui', {
   state: () => {
     return {
       mobileMenuActive: false,
-      modal: null,
+      modal: '1',
       modalParams: null,
     }
   },

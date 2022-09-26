@@ -1,15 +1,27 @@
 export default defineNuxtConfig({
   ssr: true,
-  theme: 'orange',
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@pinia/nuxt',
+    'nuxt-proxy',
     '@nuxtjs/robots',
     '@nuxtjs/google-fonts',
     'nuxt-icons',
     'floating-vue/nuxt',
   ],
+
+  // 445, 172, 439, 419
+  proxy: {
+    options: {
+      target: 'https://project445.apiv2.thapl.com',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api': '',
+      },
+      pathFilter: ['/api'],
+    },
+  },
 
   runtimeConfig: {
     public: {
@@ -19,7 +31,7 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['swiper'],
+    transpile: ['swiper', 'vee-validate', 'maska'],
   },
 
   css: ['~/assets/css/app.scss'],

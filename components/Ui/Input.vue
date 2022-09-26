@@ -11,6 +11,7 @@
         :name="name"
         :value="value"
         :type="currentInputType"
+        :placeholder="placeholder"
         :disabled="disabled"
         :style="textareaStyle"
         v-bind="$attrs"
@@ -19,7 +20,6 @@
         @blur="handleBlur"
       />
 
-      <label v-if="placeholder" class="input__placeholder" :for="id">{{ placeholder }}</label>
       <span v-if="showLivePlaceholder" class="input__live-placeholder">
         <span v-for="word in livePlaceholderWords" :class="[!word.visible && '_hidden']">
           {{ word.content }}&nbsp;
@@ -227,6 +227,7 @@ const handleAutocompleate = (e) => {
 
 // error
 const showErrorText = computed(() => {
+  if (isFocused.value) return false
   return typeof props.error === 'string'
 })
 
@@ -390,17 +391,6 @@ onBeforeUnmount(() => {
     font-weight: 600;
     margin-bottom: 16px;
   }
-  &__placeholder {
-    position: absolute;
-    z-index: 3;
-    font-weight: 400;
-    color: var(--color-disabled);
-    pointer-events: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: all 0.25s $ease;
-  }
 
   &__input {
     position: relative;
@@ -410,7 +400,7 @@ onBeforeUnmount(() => {
     width: 100%;
     border: 1px solid var(--color-border);
     background: white;
-    border-radius: 8px;
+    border-radius: var(--input-border-radius);
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;
@@ -444,10 +434,6 @@ onBeforeUnmount(() => {
         background-color: var(--color-bg);
         border-color: #e3e9ef;
         outline: none;
-      }
-      + .input__placeholder {
-        color: #c0cdda;
-        // opacity: 0;
       }
     }
   }
@@ -521,7 +507,7 @@ onBeforeUnmount(() => {
     // position: absolute;
     // top: 100%;
     margin-top: 4px;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.5;
     color: var(--color-red);
   }
@@ -540,78 +526,53 @@ onBeforeUnmount(() => {
   // SIZE modifiers
   &._normal {
     .input {
-      &__placeholder {
-        top: 23px;
-        left: 20px;
-        right: 20px;
-        font-size: 18px;
-        line-height: 1.5;
-      }
       &__input {
-        font-size: 18px;
-        padding: 32px 20px 11px;
-        &[readonly],
-        &[disabled] {
-          // padding-top: 22px;
-          // padding-bottom: 21px;
-        }
+        font-size: 16px;
+        padding: 11px 15px;
       }
       &__icons {
-        right: 20px;
+        right: 16px;
       }
       &__icon,
       &__eye {
-        font-size: 24px;
+        font-size: 16px;
       }
 
       &__live-placeholder {
-        font-size: 18px;
-        left: 21px;
-        top: 33px;
+        font-size: 15px;
+        left: 15px;
+        top: 11px;
       }
     }
     &._focused {
-      .input {
-        &__placeholder {
-          top: 12px;
-          font-size: 12px;
-        }
-      }
+      // .input {
+      // }
     }
     &._ipos-left {
       .input {
         &__icons {
-          left: 20px;
+          left: 16px;
         }
         &__input {
-          padding-left: 56px;
-        }
-        &__placeholder {
-          left: 56px;
+          padding-left: 50px;
         }
       }
     }
     &._ipos-right {
       .input {
         &__icons {
-          right: 20px;
+          right: 16px;
         }
         &__input {
-          padding-right: 56px;
-        }
-        &__placeholder {
-          right: 56px;
+          padding-right: 50px;
         }
       }
     }
     &._error {
       .input {
-        &__input {
-          padding-right: 84px;
-        }
-        &__placeholder {
-          right: 84px;
-        }
+        // &__input {
+        //   padding-right: 84px;
+        // }
       }
     }
     .suggestions {
@@ -634,8 +595,6 @@ onBeforeUnmount(() => {
     .input {
       &__input {
         border-color: var(--color-red);
-      }
-      &__placeholder {
         color: var(--color-red);
       }
     }
@@ -648,88 +607,6 @@ onBeforeUnmount(() => {
     }
   }
   &._focused {
-  }
-
-  @include r($md) {
-    &__label {
-      margin-bottom: 12px;
-    }
-    &._normal {
-      .input {
-        &__placeholder {
-          top: 17px;
-          left: 16px;
-          right: 16px;
-          font-size: 16px;
-        }
-        &__input {
-          font-size: 16px;
-          padding: 26px 16px 8px;
-        }
-        &__icons {
-          right: 16px;
-        }
-        // &__icon,
-        // &__eye {
-        //   font-size: 24px;
-        // }
-
-        &__live-placeholder {
-          font-size: 16px;
-          left: 17px;
-          top: 27px;
-        }
-      }
-      &._focused {
-        .input {
-          &__placeholder {
-            top: 7px;
-            font-size: 12px;
-          }
-        }
-      }
-      &._ipos-left {
-        .input {
-          &__icons {
-            left: 16px;
-          }
-          &__input {
-            padding-left: 60px;
-          }
-          &__placeholder {
-            left: 60px;
-          }
-        }
-      }
-      &._ipos-right {
-        .input {
-          &__icons {
-            right: 16px;
-          }
-          &__input {
-            padding-right: 60px;
-          }
-          &__placeholder {
-            right: 60px;
-          }
-        }
-      }
-      &._error {
-        .input {
-          &__input {
-            padding-right: 72px;
-          }
-          &__placeholder {
-            right: 72px;
-          }
-        }
-      }
-      .suggestions {
-        &__link {
-          padding: 10px 16px;
-        }
-      }
-    }
   }
 }
 

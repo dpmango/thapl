@@ -26,7 +26,7 @@ useHead({
   title: 'Главная',
 })
 
-const headers = useHeaders({ api_token: session.api_token, user_token: session.user_token })
+const headers = useHeaders()
 
 const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
   api('promo/get-for-main-page', {
