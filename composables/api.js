@@ -1,6 +1,8 @@
 export const useApi = (url, options = {}) => {
-  const config = useRuntimeConfig()
-  return $fetch(`${config.public.apiBase}${url}`, options)
+  const nuxtApp = useNuxtApp()
+  const env = nuxtApp.$env
+
+  return $fetch(`${env.apiBase}${url}`, options)
     .then((res) => {
       console.log(`${url}`, res)
       return res

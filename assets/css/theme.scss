@@ -7,7 +7,9 @@
   --font-base: 'Inter', sans-serif;
   --font-system: -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Ubuntu',
     'Cantarell', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
 
+.theme-orange {
   // scheme
   --color-background: #fff;
   --color-font: #000;
@@ -27,11 +29,21 @@
 
   // components
   --header-background: #fff;
+  --product-background: #fff;
+  --component-background: #fff;
   --product-card-ar: 100%;
+  --product-card-mini-ar: 100%;
 
   // ui
   --button-border-radius: 24px;
   --swiper-bullet-color: #f0f0f0;
+  --breadcrumbs-separator-color: #dddddd;
+
+  // badges
+  --badge-green-color: #439530;
+  --badge-green-background: #cffec4;
+  --badge-blue-color: #1888ac;
+  --badge-blue-background: #c9f0fc;
 }
 
 .dark-mode {
@@ -43,7 +55,8 @@
 
   // components
   --header-background: #000;
-
+  --product-background: #151515;
+  --component-background: #151515;
   // ui
   --swiper-bullet-color: #151515;
 }

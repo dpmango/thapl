@@ -35,18 +35,22 @@ h6 {
   line-height: calc(30 / 20);
 }
 
-.h4-title,
-.subtitle-1 {
+.h4-title {
   font-weight: 500;
   font-size: 20px;
   line-height: calc(30 / 20);
 }
 
-.h5-title,
-.subtitle-2 {
+.h5-title {
   font-weight: 500;
   font-size: 20px;
   line-height: calc(30 / 20);
+}
+
+.h6-title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: calc(24 / 16);
 }
 
 // paragraphs

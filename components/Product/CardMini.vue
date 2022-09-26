@@ -1,0 +1,82 @@
+<template>
+  <div class="card">
+    <div class="card__media">
+      <div class="card__image"></div>
+    </div>
+    <div class="card__body">
+      <div class="card__title h6-title">{{ name }}</div>
+      <div class="card__description text-s c-gray">
+        {{ description }}
+      </div>
+      <div class="card__actions">
+        <div class="card__price text-l">{{ price }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const props = defineProps({
+  name: String,
+  description: String,
+  price: String,
+})
+</script>
+
+<style lang="scss" scoped>
+.card {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
+  background: var(--product-background);
+  box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  &__media {
+    flex: 0 0 120px;
+  }
+  &__image {
+    border-radius: 8px;
+    font-size: 0;
+    padding-bottom: var(--product-card-mini-ar);
+    background: var(--color-bg);
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      max-width: auto;
+      object-fit: cover;
+    }
+  }
+  &__body {
+    margin-left: 24px;
+    display: flex;
+    flex-direction: column;
+    min-width: 1px;
+  }
+  &__title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  &__description {
+    margin-top: 8px;
+    display: inline;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+  }
+  &__actions {
+    padding-top: 16px;
+    margin-top: auto;
+  }
+  &__price {
+    color: var(--color-primary);
+  }
+}
+</style>

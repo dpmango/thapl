@@ -1,6 +1,11 @@
 <template>
   <div class="card">
-    <div class="card__image"></div>
+    <div class="card__image">
+      <div class="card__badges">
+        <UiBadge theme="green" size="small">Хит продаж</UiBadge>
+        <UiBadge theme="blue" size="small">-20%</UiBadge>
+      </div>
+    </div>
     <div class="card__body">
       <div class="card__title h4-title">Том-Ям с креветками</div>
       <div class="card__description text-s c-gray">
@@ -27,6 +32,7 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   &__image {
+    position: relative;
     border-radius: 16px;
     font-size: 0;
     padding-bottom: var(--product-card-ar);
@@ -39,6 +45,17 @@ const props = defineProps({
       height: 100%;
       max-width: auto;
       object-fit: cover;
+    }
+  }
+  &__badges {
+    position: absolute;
+    z-index: 2;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    .badge {
+      margin-right: 4px;
     }
   }
   &__body {

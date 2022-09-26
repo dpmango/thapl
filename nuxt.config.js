@@ -1,4 +1,7 @@
 export default defineNuxtConfig({
+  ssr: true,
+  theme: 'orange',
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@pinia/nuxt',
@@ -11,6 +14,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: '',
+      theme: '',
     },
   },
 

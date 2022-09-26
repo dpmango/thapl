@@ -1,4 +1,18 @@
-# Nuxt 3 Minimal Starter
+# Thapl
+
+### Режим работы
+В файле `nuxt.config.js`
+
+`ssr: Boolean` - Включить/отключить рендеринг страниц на сервере
+
+В файле `/plugins/env.js`
+`const useRuntime = Boolean` - использовать .env (true) файл чтобы брать переменные из runtime, либо использовать обьект `window.config` (false) (только с `ssr: false`)
+
+### Темы
+В файле `nuxt.config.js`
+
+`theme: orange` - Основная тема страниц
+
 
 Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
 

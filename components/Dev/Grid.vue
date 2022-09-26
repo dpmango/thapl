@@ -21,9 +21,10 @@ const toggleGrid = () => {
 }
 
 const toggleTheme = () => {
-  const action = document.documentElement.classList.contains('dark-mode') ? 'remove' : 'add'
+  const html = document.body
+  const action = html.classList.contains('dark-mode') ? 'remove' : 'add'
 
-  document.documentElement.classList[action]('dark-mode')
+  html.classList[action]('dark-mode')
 }
 </script>
 
