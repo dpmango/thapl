@@ -6,7 +6,7 @@
           <div class="footer__section-title">Меню</div>
           <ul class="footer__section-list">
             <li v-for="link in menuLinks">
-              <NuxtLink :to="link.href">{{ link.label }}</NuxtLink>
+              <NuxtLink :to="link.slug">{{ link.title }}</NuxtLink>
             </li>
           </ul>
         </div>
@@ -34,17 +34,11 @@
 </template>
 
 <script setup>
-const menuLinks = ref([
-  { href: '#', label: 'Бургеры и сендвичи' },
-  { href: '#', label: 'Большие поке' },
-  { href: '#', label: 'Новогоднее меню' },
-  { href: '#', label: 'Бургеры и сендвичи' },
-  { href: '#', label: 'Бургеры и сендвичи' },
-  { href: '#', label: 'Бургеры и сендвичи' },
-  { href: '#', label: 'Супы' },
-  { href: '#', label: 'Напитки' },
-  { href: '#', label: 'Бургеры и сендвичи' },
-])
+import { useProductStore } from '~~/store'
+
+const productStore = useProductStore()
+
+const menuLinks = productStore.categories
 
 const companyLinks = ref([
   { href: '#', label: 'О нас' },

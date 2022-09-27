@@ -98,7 +98,18 @@
 
 const checkbox = ref(false)
 const radio = ref(false)
-const icons = ['heart', 'login', 'dialog', 'search', 'caret', 'clock', 'like', 'dislike', 'close']
+const icons = [
+  'heart',
+  'login',
+  'dialog',
+  'search',
+  'caret',
+  'clock',
+  'like',
+  'dislike',
+  'close',
+  'cart',
+]
 </script>
 
 <style lang="scss" scoped>

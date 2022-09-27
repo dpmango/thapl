@@ -9,7 +9,7 @@
       :name="category.name"
       :list="category.dump"
     />
-    <DevInfo />
+    <!-- <DevInfo /> -->
     <InfoAbout />
   </main>
 </template>

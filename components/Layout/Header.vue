@@ -5,40 +5,57 @@
     :style="{ transform: `translate(0, -${topHeight}px)` }"
   >
     <div class="container">
+      <!-- topbar -->
       <div ref="topRef" class="header__top row">
+        <div class="header__hamburger" @click="toggleMobile">
+          <div class="hamburger" :class="[ui.mobileMenuActive && '_active']">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
         <div class="col header__logo">
           <NuxtLink to="/">
             <img src="/img/logo.svg" alt="logo" />
           </NuxtLink>
         </div>
 
-        <div class="col header__tile">
+        <div class="col header__tile hidden-lg">
           <div class="tile _action">
-            <span class="tile__label">Город</span>
+            <span class="tile__label tile__overflow">Город</span>
             <div class="tile__value">
-              <span>Санкт-Петербург</span>
+              <span class="tile__overflow">Санкт-Петербург</span>
               <nuxt-icon name="caret" />
             </div>
           </div>
         </div>
 
-        <div class="col header__tile">
+        <div class="col header__tile hidden-md">
           <div class="tile _action">
-            <span class="tile__label">Адрес доставки</span>
+            <span class="tile__label tile__overflow">Адрес доставки</span>
             <div class="tile__value">
-              <span>Укажите адрес</span>
+              <span class="tile__overflow">Укажите адрес</span>
               <nuxt-icon name="caret" />
             </div>
           </div>
         </div>
 
-        <div class="col header__tile">
+        <div class="col header__tile hidden-lg">
           <div class="tile">
-            <span class="tile__label">Время работы</span>
+            <span class="tile__label tile__overflow">Время работы</span>
             <div class="tile__value">
               <span>10:00 – 22:00</span>
             </div>
           </div>
+        </div>
+
+        <div class="header__actions-mobile visible-md">
+          <NuxtLink to="/cart" class="action">
+            <div class="action__icon">
+              <nuxt-icon name="cart" />
+            </div>
+          </NuxtLink>
         </div>
 
         <div class="col header__actions row">
@@ -67,6 +84,7 @@
         </div>
       </div>
 
+      <!-- bottom -->
       <div class="header__bottom">
         <div class="header__search">
           <NuxtIcon name="search" />
@@ -98,12 +116,16 @@ const scrolled = ref(false)
 const topHeight = ref(0)
 const topRef = ref(null)
 
+const toggleMobile = () => {
+  ui.setMobileMenu(!ui.mobileMenuActive)
+}
+
 // this.scrollSticky = _.throttle(this.handleSticky, 50)
 const scrollSticky = () => {
   if (!topRef.value) return
 
   const scrollTop = window.scrollY
-  const triggerHeight = topRef.value.offsetHeight
+  const triggerHeight = window.innerWidth <= 767 ? 0 : topRef.value.offsetHeight
 
   scrolled.value = scrollTop > triggerHeight
   topHeight.value = scrollTop > triggerHeight ? triggerHeight : 0
@@ -126,11 +148,15 @@ onBeforeUnmount(() => {
   will-change: transform;
   &__top {
     align-items: center;
+    flex-wrap: nowrap;
     padding: 40px 0 12px;
   }
   &__logo {
-    flex: 0 1 $col2;
+    flex: 0 0 auto;
     font-size: 0;
+    a {
+      width: var(--logo-space);
+    }
   }
   &__tile {
     flex: 0 1 $col2;
@@ -162,9 +188,77 @@ onBeforeUnmount(() => {
   &__cta {
     flex: 0 0 auto;
   }
+  &__hamburger {
+    display: none;
+  }
   &._scroll {
     position: sticky;
-    box-shadow: 0px 4px 12px rgba(var(--color-font-rgb), 0.1);
+    box-shadow: var(--box-shadow-large);
+  }
+}
+
+@include r($xl) {
+  .header {
+    &__logo {
+    }
+  }
+}
+
+@include r($lg) {
+  .header {
+    &__top {
+      padding: 24px 0 12px;
+    }
+    &__tile {
+      flex: 0 0 auto;
+    }
+    &__nav {
+      padding-right: 20px;
+    }
+  }
+}
+
+@include r($md) {
+  .header {
+    transform: none !important;
+    transition: transform 0.25s $ease, box-shadow 0.25s $ease;
+    &._scroll {
+      transform: translateY(-12px) !important;
+    }
+    &__top {
+      margin-left: 0;
+      margin-right: 0;
+      padding: 24px 0 12px;
+    }
+    &__logo {
+      margin-left: auto;
+      margin-right: auto;
+      a {
+        width: var(--logo-space-md);
+      }
+    }
+    &__hamburger {
+      display: block;
+      padding: 10px;
+      margin-left: -10px;
+      &:hover {
+        .hamburger span {
+          color: var(--color-primary);
+        }
+      }
+    }
+    &__actions-mobile {
+      margin-right: -10px;
+      .action {
+        padding: 10px;
+      }
+    }
+    &__actions {
+      display: none;
+    }
+    &__bottom {
+      display: none;
+    }
   }
 }
 
@@ -179,10 +273,14 @@ onBeforeUnmount(() => {
     display: inline-flex;
     align-items: center;
     font-weight: 500;
+    min-width: 1px;
     .nuxt-icon {
       font-size: 10px;
       margin-left: 8px;
     }
+  }
+  &__overflow {
+    @include text-overflow();
   }
   &._action {
     cursor: pointer;

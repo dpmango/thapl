@@ -53,6 +53,12 @@ h6 {
   line-height: calc(24 / 16);
 }
 
+@include r($md) {
+  .h2-title {
+    font-size: 20px;
+  }
+}
+
 // paragraphs
 p {
   margin: 0;

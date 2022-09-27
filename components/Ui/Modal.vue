@@ -77,8 +77,8 @@ const closeModal = () => {
   &__content {
     width: 100%;
     background: var(--modal-body-background);
-    box-shadow: 0px 16px 64px rgba(0, 0, 0, 0.12);
-    border-radius: 16px;
+    box-shadow: var(--box-shadow--extra-large);
+    border-radius: var(--card-border-radius);
     overflow-y: auto;
     min-height: 1px;
     height: 100%;

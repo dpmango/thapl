@@ -30,8 +30,8 @@ const props = defineProps({
   align-items: flex-start;
   padding: 20px;
   background: var(--product-background);
-  box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
+  box-shadow: var(--box-shadow-large);
+  border-radius: var(--card-border-radius);
   &__media {
     flex: 0 0 120px;
   }

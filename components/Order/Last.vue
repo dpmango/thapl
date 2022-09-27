@@ -3,12 +3,12 @@
     <div class="container">
       <h2 class="last__title h2-title">Ваш последний заказ</h2>
       <div class="row">
-        <div class="col col-8">
+        <div class="col col-8 col-lg-12">
           <OrderPreview class="last__order" />
         </div>
-        <div class="col col-2">
+        <div class="col col-2 col-lg-6 col-sm-12">
           <div class="last__action action _time">
-            <div class="action__icon">
+            <div class="action__icon hidden-sm">
               <nuxt-icon name="clock" />
             </div>
             <div class="action__title h6-title">
@@ -17,9 +17,9 @@
             </div>
           </div>
         </div>
-        <div class="col col-2">
+        <div class="col col-2 col-lg-6 col-sm-12">
           <div class="last__action action _review">
-            <div class="action__icon">
+            <div class="action__icon hidden-sm">
               <nuxt-icon name="like" />
             </div>
             <div class="action__title h6-title">Оценить <br />заказ</div>
@@ -39,10 +39,27 @@
   &__action {
     flex: 1 0 auto;
   }
+  // &__order{}
+}
+
+@include r($lg) {
+  .last {
+    &__order {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@include r($sm) {
+  .last {
+    &__action {
+      margin-top: 8px;
+    }
+  }
 }
 
 .action {
-  border-radius: 16px;
+  border-radius: var(--card-border-radius);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,9 +69,10 @@
   background: var(--color-bg);
   &__icon {
     font-size: 24px;
+    margin-bottom: 12px;
   }
   &__title {
-    margin-top: 12px;
+    // margin-top: 12px;
   }
   &._time {
     background: rgba(var(--color-primary-rgb), 0.12);
@@ -62,6 +80,17 @@
   }
   &._review {
     cursor: pointer;
+  }
+}
+
+@include r($sm) {
+  .action {
+    padding: 10px 20px;
+    &__title {
+      br {
+        display: none;
+      }
+    }
   }
 }
 </style>

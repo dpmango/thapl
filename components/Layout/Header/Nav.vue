@@ -149,4 +149,10 @@ onBeforeUnmount(() => {
     }
   }
 }
+
+@include r($xl){
+  .nav{
+    
+  }
+}
 </style>

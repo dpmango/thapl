@@ -5,7 +5,7 @@
 
       <div class="category__list">
         <div class="row">
-          <div v-for="(card, idx) in list" :key="idx" class="col col-3">
+          <div v-for="(card, idx) in list" :key="idx" class="col col-3 col-lg-4 col-md-6 col-sm-12">
             <ProductCard />
           </div>
         </div>

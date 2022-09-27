@@ -97,5 +97,11 @@ const params = ref({
   :deep(.swiper-pagination-bullet-active) {
     background: var(--color-primary);
   }
+
+  @include r($md) {
+    :deep(.swiper-pagination) {
+      margin-top: 12px;
+    }
+  }
 }
 </style>

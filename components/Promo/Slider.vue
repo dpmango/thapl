@@ -39,8 +39,8 @@ const swiperParams = {
     }
   }
   &__slide {
-    height: 353px;
-    border-radius: 16px;
+    height: var(--promo-height);
+    border-radius: var(--card-border-radius);
     background: var(--color-bg);
   }
   &__slide-bg {
@@ -50,6 +50,23 @@ const swiperParams = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+}
+
+@include r($md) {
+  .promo {
+    margin: 16px 0px 36px;
+    &__slide {
+      height: var(--promo-height-md);
+    }
+  }
+}
+
+@include r($sm) {
+  .promo {
+    &__slide {
+      height: var(--promo-height-sm);
+    }
   }
 }
 </style>

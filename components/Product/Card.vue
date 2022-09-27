@@ -33,7 +33,7 @@ const props = defineProps({
   flex-direction: column;
   &__image {
     position: relative;
-    border-radius: 16px;
+    border-radius: var(--card-border-radius);
     font-size: 0;
     padding-bottom: var(--product-card-ar);
     background: var(--color-bg);

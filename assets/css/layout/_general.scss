@@ -22,6 +22,12 @@ body {
   -webkit-text-size-adjust: none;
 }
 
+@include r($md) {
+  body {
+    font-size: 14px;
+  }
+}
+
 a {
   color: inherit;
   text-decoration-skip-ink: none;

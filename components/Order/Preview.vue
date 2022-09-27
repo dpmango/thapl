@@ -34,8 +34,8 @@
 <stlye lang="scss" scoped>
 .order {
   background: var(--component-background);
-  box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
+  box-shadow: var(--box-shadow-large);
+  border-radius: var(--card-border-radius);
   padding: 36px 32px 32px 36px;
   &__head {
     display: flex;
@@ -70,16 +70,26 @@
       margin-bottom: 0;
     }
   }
-  // &__label{}
-  // &__value {
-  // }
+  &__label {
+    @include text-overflow();
+  }
+  &__value {
+    flex: 0 0 auto;
+  }
   &__sep {
     display: inline-block;
     flex: 1 1 auto;
-    min-width: 1px;
+    min-width: 40px;
     margin-left: 12px;
     margin-right: 12px;
     border-bottom: 1px dashed var(--breadcrumbs-separator-color);
+  }
+}
+
+@include r($sm) {
+  .order {
+    padding: 0;
+    box-shadow: none;
   }
 }
 </stlye>

@@ -166,30 +166,3 @@ $bez: cubic-bezier(0.8, 0.5, 0.2, 1.4);
     transform: rotate(0deg) translate(0, 0);
   }
 }
-
-// @keyframes span1_close {
-//   0%{
-//       transform: rotate(-45deg) translate(-20px, 20px);
-//   }
-//   100%{
-//       transform: rotate(0deg) translate(0, 0);
-//   }
-// }
-
-// @keyframes span2_close{
-//   0%{
-//       transform: translate(0, 40px) scale(0);
-//   }
-//   100%{
-//       transform: translate(0, 0) scale(1);
-//   }
-// }
-
-// @keyframes span3_close{
-//   0%{
-//       transform: rotate(45deg) translate(-7px, -7px);
-//   }
-//   100%{
-//       transform: rotate(0deg) translate(0, 0);
-//   }
-// }
