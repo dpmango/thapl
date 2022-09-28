@@ -54,3 +54,11 @@ npm run preview
 ```
 
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
+
+
+#### заметки
+- [ ] open_item_page_to_add - индикатор открывать окно товара или сразу добавлять в корзину
+- [ ] формировать вид меню по NUXT_PUBLIC_CATALOG_TYPE /catalog/get-main-page-categories, /catalog/get-conceptions , /catalog/get-categories ,
+- [ ] фильтры товаров vegan и т.д. не показывать если таких товаров нет в списках
+- [ ] по настройке спрашивать выбор города - отдельные поддомены, запомнить город
+- [ ] сохранение адресов доставки

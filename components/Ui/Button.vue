@@ -54,6 +54,7 @@ const getElement = computed(() => {
   -webkit-appearance: none;
   position: relative;
   padding: 0;
+  display: inline-block;
   border: 1px solid transparent;
   box-sizing: border-box;
   border-radius: var(--button-border-radius);

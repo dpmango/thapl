@@ -1,37 +1,32 @@
 <template>
-  <section class="category">
+  <section :id="category.slug" class="category" :data-id="category.id">
     <div class="container">
-      <h2 class="category__title h2-title">{{ name }}</h2>
+      <h2 class="category__title h2-title">{{ category.title }}</h2>
 
-      <div class="category__list">
-        <div class="row">
-          <div v-for="(card, idx) in list" :key="idx" class="col col-3 col-lg-4 col-md-6 col-sm-12">
-            <ProductCard />
-          </div>
+      <ProductCategoryList v-if="category.catalog_items" :list="category.catalog_items" />
+
+      <div v-if="category.sub_categories">
+        <div v-for="subcategory in category.sub_categories" class="category__sub">
+          <h2 class="category__title h3-title">{{ subcategory.title }}</h2>
+
+          <ProductCategoryList v-if="category.catalog_items" :list="category.catalog_items" />
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
+import { ICategory } from '~/interface/Product'
+
 const props = defineProps({
-  name: String,
-  list: {
-    type: Array,
-    // default: () => [],
-  },
+  category: Object as PropType<ICategory>,
 })
 </script>
 
 <style lang="scss" scoped>
 .category {
   margin: 40px 0;
-  &__list {
-    margin-top: 36px;
-    .card {
-      margin-bottom: 48px;
-    }
-  }
 }
 </style>

@@ -5,7 +5,7 @@
         <div class="footer__section">
           <div class="footer__section-title">Меню</div>
           <ul class="footer__section-list">
-            <li v-for="link in menuLinks">
+            <li v-for="link in productStore.navCategories">
               <NuxtLink :to="link.slug">{{ link.title }}</NuxtLink>
             </li>
           </ul>
@@ -37,8 +37,6 @@
 import { useProductStore } from '~~/store'
 
 const productStore = useProductStore()
-
-const menuLinks = productStore.categories
 
 const companyLinks = ref([
   { href: '#', label: 'О нас' },

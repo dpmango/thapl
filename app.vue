@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { useSessionStore } from '~/store'
+import { useSessionStore, useProductStore } from '~/store'
 
 const nuxtApp = useNuxtApp()
 
@@ -17,7 +17,12 @@ useHead({
   },
 })
 
-const api = useApi
-const session = useSessionStore()
+const productStore = useProductStore()
 const init = await useInit()
+
+const { data: catalog, error: categoriesError } = await useAsyncData('catalog', () =>
+  productStore.getCatalog()
+)
+
+console.log('catalog', { catalog })
 </script>

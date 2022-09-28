@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   // 445, 172, 439, 419
   proxy: {
     options: {
-      target: 'https://project445.apiv2.thapl.com',
+      target: 'https://project474.apiv2.thapl.com',
       changeOrigin: true,
       pathRewrite: {
         '^/api': '',
@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: '',
       theme: '',
+      catalogType: '',
     },
   },
 

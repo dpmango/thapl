@@ -32,7 +32,6 @@ import { useField, useForm } from 'vee-validate'
 import { useSessionStore, useUiStore } from '~/store'
 import { clearPhone } from '~/utils'
 
-const api = useApi
 const session = useSessionStore()
 const ui = useUiStore()
 const { phone } = storeToRefs(session)
@@ -70,12 +69,12 @@ const next = async () => {
   // error.value = null
   loading.value = true
 
-  const res = await api('user/check-code', {
+  const res = await useApi('user/check-code', {
     method: 'POST',
     headers: useHeaders(),
     body: {
       code: code.value,
-      phone: clearPhone(phone.value),
+      phone: '+7' + clearPhone(phone.value),
     },
   }).catch((err) => {
     error.value = err.data.message
@@ -84,6 +83,7 @@ const next = async () => {
   loading.value = false
 
   if (res) {
+    session.setSession(res)
     ui.closeModal()
   }
 }

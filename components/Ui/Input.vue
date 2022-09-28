@@ -62,7 +62,6 @@ import _ from 'lodash'
 import { nanoid } from 'nanoid'
 
 const id = nanoid()
-const api = useApi
 const inputRef = ref(null)
 
 const emit = defineEmits(['onChange'])
@@ -275,7 +274,7 @@ const showSuggestions = computed(() => {
 const handleSuggestion = async (text) => {
   loading.value = true
 
-  const suggestions = await api(props.suggestions, {
+  const suggestions = await useApi(props.suggestions, {
     params: {
       text,
     },
@@ -530,9 +529,6 @@ onBeforeUnmount(() => {
         font-size: 16px;
         padding: 11px 15px;
       }
-      &__icons {
-        right: 16px;
-      }
       &__icon,
       &__eye {
         font-size: 16px;
@@ -554,7 +550,7 @@ onBeforeUnmount(() => {
           left: 16px;
         }
         &__input {
-          padding-left: 50px;
+          padding-left: 46px;
         }
       }
     }
@@ -564,7 +560,7 @@ onBeforeUnmount(() => {
           right: 16px;
         }
         &__input {
-          padding-right: 50px;
+          padding-right: 46px;
         }
       }
     }

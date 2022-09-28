@@ -109,6 +109,7 @@ const icons = [
   'dislike',
   'close',
   'cart',
+  'location',
 ]
 </script>
 

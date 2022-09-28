@@ -22,7 +22,7 @@
         </div>
 
         <div class="col header__tile hidden-lg">
-          <div class="tile _action">
+          <div class="tile _action" @click="() => ui.setModal({ name: 'city' })">
             <span class="tile__label tile__overflow">Город</span>
             <div class="tile__value">
               <span class="tile__overflow">Санкт-Петербург</span>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="col header__tile hidden-md">
-          <div class="tile _action">
+          <div class="tile _action" @click="() => ui.setModal({ name: 'address' })">
             <span class="tile__label tile__overflow">Адрес доставки</span>
             <div class="tile__value">
               <span class="tile__overflow">Укажите адрес</span>
@@ -51,11 +51,11 @@
         </div>
 
         <div class="header__actions-mobile visible-md">
-          <NuxtLink to="/cart" class="action">
+          <div class="action" @click="() => ui.setModal({ name: 'cart' })">
             <div class="action__icon">
               <nuxt-icon name="cart" />
             </div>
-          </NuxtLink>
+          </div>
         </div>
 
         <div class="col header__actions row">
@@ -67,13 +67,21 @@
               <div class="action__text">Бонусы</div>
             </NuxtLink>
           </div>
-          <div class="col">
+          <div v-if="!session.user" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'auth' })">
               <div class="action__icon">
                 <nuxt-icon name="login" />
               </div>
               <div class="action__text">Войти</div>
             </div>
+          </div>
+          <div v-else class="col">
+            <NuxtLink to="/profile" class="action">
+              <div class="action__icon">
+                <nuxt-icon name="login" />
+              </div>
+              <div class="action__text">{{ session.userNameVerbose }}</div>
+            </NuxtLink>
           </div>
           <div class="col">
             <div class="action">
@@ -90,7 +98,7 @@
           <NuxtIcon name="search" />
         </div>
         <LayoutHeaderNav class="header__nav" />
-        <div class="header__cta">
+        <div class="header__cta" @click="() => ui.setModal({ name: 'cart' })">
           <UiButton>Корзина</UiButton>
         </div>
       </div>
@@ -100,9 +108,10 @@
 
 <script setup>
 import _ from 'lodash'
-import { useUiStore } from '~/store'
+import { useSessionStore, useUiStore } from '~/store'
 
 const ui = useUiStore()
+const session = useSessionStore()
 
 defineProps({
   variant: {

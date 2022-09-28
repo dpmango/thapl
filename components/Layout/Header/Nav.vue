@@ -1,13 +1,20 @@
 <template>
-  <nav class="nav">
+  <nav class="nav" :class="[`nav-${$env.catalogType}`]">
     <div class="nav__wrapper">
       <ul ref="navlist" class="nav__list">
-        <li v-for="link in menuVisible" :key="link.id">
-          <NuxtLink class="nav__link" :to="link.slug">{{ link.title }}</NuxtLink>
+        <li v-for="(link, idx) in menuVisible" :key="link.id">
+          <NuxtLink
+            class="nav__link"
+            :class="[activeAnchor === idx && '_active']"
+            :to="navLinkProps(link.slug)"
+            @click="handleNavClick(link.slug)"
+          >
+            {{ link.title }}
+          </NuxtLink>
         </li>
       </ul>
       <VDropdown :distance="2">
-        <div class="nav__more">
+        <div class="nav__more" :class="[menuHidden.length === 0 && '_empty']">
           <span>Еще</span>
           <nuxt-icon name="caret" />
         </div>
@@ -15,7 +22,13 @@
         <template #popper>
           <ul class="nav__dropdown">
             <li v-for="link in menuHidden" :key="link.id">
-              <NuxtLink class="nav__link" :to="link.slug">{{ link.title }}</NuxtLink>
+              <NuxtLink
+                class="nav__link"
+                :to="navLinkProps(link.slug)"
+                @click="handleNavClick(link.slug)"
+              >
+                {{ link.title }}
+              </NuxtLink>
             </li>
           </ul>
         </template>
@@ -27,32 +40,29 @@
 <script setup>
 import _ from 'lodash'
 import { useSessionStore, useProductStore } from '~/store'
+import { scrollToElement } from '~/utils'
 
 const navlist = ref(null)
 const hideFromIdx = ref(99)
 
-const api = useApi
-const session = useSessionStore()
+const { $env } = useNuxtApp()
+
 const productStore = useProductStore()
 
-const headers = useHeaders()
-
-const { data, error } = await useAsyncData('categories', () =>
-  api('catalog/get-categories', {
-    method: 'GET',
-    headers,
-  })
-)
-
-if (data) productStore.setCategories(data.value)
-// console.log('productStore.categories', productStore.categories.length)
+const navLinkProps = (slug) => {
+  if ($env.catalogType === 'singlepage') {
+    return `#${slug}`
+  } else {
+    return `/category/${slug}`
+  }
+}
 
 const menuVisible = computed(() => {
-  return productStore.categories.filter((x, idx) => idx < hideFromIdx.value)
+  return productStore.navCategories.filter((x, idx) => idx < hideFromIdx.value)
 })
 
 const menuHidden = computed(() => {
-  return productStore.categories.filter((x, idx) => idx >= hideFromIdx.value)
+  return productStore.navCategories.filter((x, idx) => idx >= hideFromIdx.value)
 })
 
 const hiddenStartsFromIdx = () => {
@@ -76,15 +86,64 @@ const hiddenStartsFromIdx = () => {
   })
 }
 
+const handleNavClick = (slug) => {
+  if ($env.catalogType === 'singlepage') {
+    // e.preventDefault()
+    scrollToElement(slug)
+  }
+}
+
+// aniamate anchors on scroll
+const activeAnchor = ref(null)
+
+const handleLinksScroll = () => {
+  // TODO - refactor to refs
+  const scrollTop = window.scrollY
+  const smoothLinks = document.querySelectorAll('.nav__link')
+  const sections = []
+  const links = []
+
+  for (let i = 0; i < smoothLinks.length; i++) {
+    const link = smoothLinks[i]
+    const href = link.getAttribute('href')
+    const name = href.substring(2, href.length)
+    const section = document.getElementById(name)
+
+    if (section) {
+      sections.unshift(section)
+      links.push({
+        name,
+        dom: link,
+      })
+    }
+  }
+
+  const headerOffset = document.querySelector('.header__bottom').offsetHeight + 24
+
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i]
+
+    if (scrollTop >= section.offsetTop - headerOffset) {
+      activeAnchor.value = links.findIndex((x) => x.name === section.id)
+      return
+    } else {
+      activeAnchor.value = null
+    }
+  }
+}
+
 const debouncedResize = _.debounce(hiddenStartsFromIdx, 100)
+const throttledScroll = _.throttle(handleLinksScroll, 100)
 
 onMounted(() => {
   hiddenStartsFromIdx()
   window.addEventListener('resize', debouncedResize, false)
+  window.addEventListener('scroll', throttledScroll, false)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', debouncedResize, false)
+  window.removeEventListener('scroll', throttledScroll, false)
 })
 </script>
 
@@ -140,6 +199,9 @@ onBeforeUnmount(() => {
     padding: 5px 10px;
     cursor: pointer;
     transition: color 0.25s $ease;
+    &._empty {
+      opacity: 0;
+    }
     .nuxt-icon {
       font-size: 10px;
       margin-left: 8px;
@@ -150,9 +212,20 @@ onBeforeUnmount(() => {
   }
 }
 
-@include r($xl){
-  .nav{
-    
+.nav-singlepage {
+  .nav__link {
+    &._active {
+      color: var(--color-primary);
+    }
+  }
+}
+.nav-catalog {
+  .nav {
+    &__link {
+      &.router-link-active {
+        color: var(--color-primary);
+      }
+    }
   }
 }
 </style>

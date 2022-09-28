@@ -1,15 +1,17 @@
 <template>
-  <div class="card">
+  <div class="card" :data-id="product.id">
     <div class="card__image">
+      <img :src="product.image" :alt="product.title" />
       <div class="card__badges">
-        <UiBadge theme="green" size="small">Хит продаж</UiBadge>
-        <UiBadge theme="blue" size="small">-20%</UiBadge>
+        <UiBadge v-for="tag in product.tags" :key="tag" theme="green" size="small">
+          {{ tag }}
+        </UiBadge>
       </div>
     </div>
     <div class="card__body">
-      <div class="card__title h4-title">Том-Ям с креветками</div>
+      <div class="card__title h4-title">{{ product.title }}</div>
       <div class="card__description text-s c-gray">
-        Ветчина, картошечка, моцарелла, соус альфредо
+        {{ product.description }}
       </div>
       <div class="card__actions">
         <div class="card__price text-l">220 ₽</div>
@@ -21,14 +23,20 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
+import { IProduct } from '~/interface/Product'
+
 const props = defineProps({
-  name: String,
+  product: {
+    type: Object as PropType<IProduct>,
+  },
 })
 </script>
 
 <style lang="scss" scoped>
 .card {
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   &__image {
@@ -43,7 +51,7 @@ const props = defineProps({
       left: 0;
       width: 100%;
       height: 100%;
-      max-width: auto;
+      // max-width: auto;
       object-fit: cover;
     }
   }
@@ -60,6 +68,7 @@ const props = defineProps({
   }
   &__body {
     margin-top: 16px;
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
   }

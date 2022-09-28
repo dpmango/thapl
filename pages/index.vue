@@ -1,15 +1,14 @@
 <template>
   <main class="page__content">
-    <PromoSlider />
+    <PromoSlider :slides="promoData" />
     <OrderLast />
     <ProductPopular />
     <ProductCategory
-      v-for="category in categories"
+      v-for="category in productStore.catalog"
       :key="category.id"
-      :name="category.name"
-      :list="category.dump"
+      :category="category"
     />
-    <!-- <DevInfo /> -->
+    <DevInfo />
     <InfoAbout />
   </main>
 </template>
@@ -18,7 +17,6 @@
 import { useSessionStore, useProductStore } from '~/store'
 
 // definePageMeta({ layout: 'default' })
-const api = useApi
 const session = useSessionStore()
 const productStore = useProductStore()
 
@@ -29,7 +27,7 @@ useHead({
 const headers = useHeaders()
 
 const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
-  api('promo/get-for-main-page', {
+  useApi('promo/get-for-main-page', {
     method: 'GET',
     headers,
     params: {
@@ -38,25 +36,9 @@ const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
   })
 )
 
-const { data: catagoriesData, error: categoriesError } = await useAsyncData('promo', () =>
-  api('catalog/get-main-page-categories', {
-    method: 'GET',
-    headers,
-  })
-)
+// const { data: categories2, error } = await useAsyncData('categories2', () =>
+//   productStore.getCategories()
+// )
 
-console.log(catagoriesData.value)
-
-const categories = ref([
-  {
-    id: 1,
-    name: 'Бургеры и сендвичи',
-    dump: [...Array(3)],
-  },
-  {
-    id: 2,
-    name: 'Супы',
-    dump: [...Array(5)],
-  },
-])
+// console.log({ promoData })
 </script>

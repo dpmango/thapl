@@ -1,10 +1,10 @@
 <template>
-  <div class="promo">
+  <div v-if="slides && slides.length" class="promo">
     <div class="container">
       <LibSwiper class="promo__slider" :params="swiperParams">
         <SwiperSlide v-for="(slide, idx) in slides" :key="idx">
           <div class="promo__slide">
-            <div class="promo__slide-bg"></div>
+            <img class="promo__slide-bg" :src="slide.image" :alt="slide.title" />
           </div>
         </SwiperSlide>
       </LibSwiper>
@@ -15,7 +15,12 @@
 <script setup>
 import { SwiperSlide } from 'swiper/vue'
 
-const slides = [1, 2, 3, 4, 5]
+const props = defineProps({
+  slides: {
+    type: Array,
+    default: () => [],
+  },
+})
 
 const swiperParams = {
   slidesPerView: 1,
@@ -39,9 +44,11 @@ const swiperParams = {
     }
   }
   &__slide {
+    position: relative;
     height: var(--promo-height);
     border-radius: var(--card-border-radius);
     background: var(--color-bg);
+    overflow: hidden;
   }
   &__slide-bg {
     position: absolute;
@@ -50,6 +57,7 @@ const swiperParams = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: left center;
   }
 }
 

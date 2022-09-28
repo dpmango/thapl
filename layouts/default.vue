@@ -3,13 +3,13 @@
     <LayoutHeader />
     <slot></slot>
     <LayoutFooter />
-    <LayoutModals />
+    <LayoutSharedModals />
     <DevGrid />
   </div>
 </template>
 
 <script setup>
-const api = useApi
+// const api = useApi
 </script>
 
 <style lang="scss" scoped>

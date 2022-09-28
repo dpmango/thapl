@@ -28,10 +28,15 @@ const props = defineProps({
     default: 'center',
     validator: (v) => ['center', 'aside'].includes(v),
   },
+  height: {
+    type: String,
+    default: '',
+    validator: (v) => ['', 'fill'].includes(v),
+  },
   size: {
     type: String,
     default: 'normal',
-    validator: (v) => ['normal', 'wide'].includes(v),
+    validator: (v) => ['normal', 'large'].includes(v),
   },
 })
 
@@ -40,6 +45,7 @@ const modifiers = computed(() => [
   isModalActive.value && '_active',
   `_${props.position}`,
   `_${props.size}`,
+  `_${props.height}`,
 ])
 
 const isModalActive = computed(() => {
@@ -72,13 +78,14 @@ const closeModal = () => {
     width: 100%;
     max-height: 100%;
     position: relative;
+    transition: transform 0.25s $ease;
+    will-change: transform;
   }
 
   &__content {
     width: 100%;
     background: var(--modal-body-background);
     box-shadow: var(--box-shadow--extra-large);
-    border-radius: var(--card-border-radius);
     overflow-y: auto;
     min-height: 1px;
     height: 100%;
@@ -86,7 +93,6 @@ const closeModal = () => {
 
   &__close {
     position: absolute;
-    right: -68px;
     top: 50%;
     width: 48px;
     height: 48px;
@@ -108,6 +114,17 @@ const closeModal = () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    .modal {
+      &__close {
+        right: -68px;
+      }
+      &__wrapper {
+        transform: translate(0, 24px);
+      }
+      &__content {
+        border-radius: var(--card-border-radius);
+      }
+    }
   }
 
   &._normal {
@@ -120,10 +137,50 @@ const closeModal = () => {
       }
     }
   }
+  &._large {
+    .modal {
+      &__wrapper {
+        max-width: 832px;
+      }
+      &__content {
+        padding: 48px 64px;
+      }
+    }
+  }
 
+  &._aside {
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    .modal {
+      &__wrapper {
+        max-width: 516px;
+        transform: translate(100%, 0);
+      }
+      &__close {
+        left: -68px;
+      }
+    }
+  }
+  &._fill {
+    .modal {
+      &__wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      &__content {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
   &._active {
     pointer-events: all;
     opacity: 1;
+    .modal__wrapper {
+      transform: none;
+    }
   }
 }
 </style>

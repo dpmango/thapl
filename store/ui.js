@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 
 export const useUiStore = defineStore('ui', {
   state: () => {
@@ -25,3 +25,7 @@ export const useUiStore = defineStore('ui', {
     },
   },
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useUiStore, import.meta.hot))
+}
