@@ -1,10 +1,10 @@
 <template>
-  <UiModal name="city" size="large">
-    <div class="city">
+  <UiModal name="region" size="large">
+    <div class="region">
       <div class="h2-title">Выберите город</div>
-      <div class="city__form">
+      <div class="region__form">
         <UiInput
-          name="city"
+          name="region"
           type="text"
           placeholder="Поиск"
           icon="search"
@@ -15,9 +15,11 @@
         />
       </div>
 
-      <div class="city__list">
-        <li v-for="link in filteredList">
-          <a :href="`https://${link.domain}`">{{ link.title }}</a>
+      <div class="region__list">
+        <li v-for="region in filteredList">
+          <a :href="`https://${region.domain}`" @click="(e) => handleRegionSelect(region, e)">
+            {{ region.title }}
+          </a>
         </li>
       </div>
     </div>
@@ -26,7 +28,11 @@
 
 <script setup>
 import { useField, useForm } from 'vee-validate'
-import { useCartStore } from '~/store'
+import { useSessionStore } from '~/store'
+
+const { $env } = useNuxtApp()
+const regionCookie = useCookie('x-thapl-region-id')
+const session = useSessionStore()
 
 const loading = ref(false)
 
@@ -36,21 +42,30 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
 
 const { value: search } = useField('search')
 
-const { data: regionsData, error: regionsError } = await useAsyncData('regions', () =>
-  useApi('organization/get-regions', {
-    method: 'GET',
-    headers: useHeaders(),
-  })
-)
+// const { data: regionsData, error: regionsError } = await useAsyncData('regions', () =>
+//   session.getRegions()
+// )
+
+const handleRegionSelect = (region, e) => {
+  e.preventDefault()
+
+  regionCookie.value = region.id
+
+  if (region.domain) {
+    window.location.href = region.domain
+  } else {
+    window.location.reload()
+  }
+}
 
 const filteredList = computed(() => {
   const searchStr = search.value.trim().toLowerCase()
-  return regionsData.value.filter((x) => x.title.toLowerCase().includes(searchStr))
+  return session.regions.filter((x) => x.title.toLowerCase().includes(searchStr))
 })
 </script>
 
 <style lang="scss" scoped>
-.city {
+.region {
   &__title {
   }
   &__form {

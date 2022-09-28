@@ -7,6 +7,8 @@ export const useSessionStore = defineStore('session', {
       user_token: null,
       user: {},
       app_settings: {},
+      region: null,
+      regions: [],
       phone: '',
     }
   },
@@ -23,6 +25,13 @@ export const useSessionStore = defineStore('session', {
         if (user_code) return user_code
       }
       return null
+    },
+    currentRegionName(state) {
+      try {
+        return state.regions.find((x) => x.id === state.region).title
+      } catch {
+        return null
+      }
     },
   },
   actions: {
@@ -46,6 +55,21 @@ export const useSessionStore = defineStore('session', {
 
       const userToken = useCookie('x-thapl-authorization')
       userToken.value = user_token
+    },
+    setCurrentRegion(region) {
+      this.region = region
+    },
+    async getRegions(region) {
+      const headers = useHeaders()
+
+      const data = await useApi('organization/get-regions', {
+        method: 'GET',
+        headers,
+      })
+
+      this.regions = [...data]
+
+      return []
     },
   },
 })

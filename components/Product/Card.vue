@@ -45,6 +45,7 @@ const props = defineProps({
     font-size: 0;
     padding-bottom: var(--product-card-ar);
     background: var(--color-bg);
+    overflow: hidden;
     img {
       position: absolute;
       top: 0;

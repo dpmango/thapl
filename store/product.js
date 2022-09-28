@@ -51,6 +51,8 @@ export const useProductStore = defineStore('product', {
       return data
     },
     async getCategories() {
+      const headers = useHeaders()
+
       console.log('TODO - getCategories triggered')
       const data = await useApi('catalog/get-categories', {
         method: 'GET',

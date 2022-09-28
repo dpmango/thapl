@@ -10,7 +10,7 @@
           name="address"
           type="text"
           placeholder="Укажите новый адрес"
-          icon="search"
+          icon="location"
           icon-position="left"
           :value="search"
           :error="errors.search"

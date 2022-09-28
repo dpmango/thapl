@@ -11,10 +11,10 @@ export default defineNuxtConfig({
     'floating-vue/nuxt',
   ],
 
-  // 445, 172, 439, 419
+  // 445, 474, 172, 439, 419, 296
   proxy: {
     options: {
-      target: 'https://project474.apiv2.thapl.com',
+      target: 'https://project296.apiv2.thapl.com',
       changeOrigin: true,
       pathRewrite: {
         '^/api': '',
@@ -28,6 +28,7 @@ export default defineNuxtConfig({
       apiBase: '',
       theme: '',
       catalogType: '',
+      useRegions: '',
     },
   },
 

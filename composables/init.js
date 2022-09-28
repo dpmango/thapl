@@ -1,22 +1,28 @@
-import { useSessionStore } from '~/store'
+import { useSessionStore, useUiStore } from '~/store'
 
 export const useInit = async () => {
-  const api = useApi
+  const { $env } = useNuxtApp()
 
   const session = useSessionStore()
-  const apiToken = useCookie('x-thapl-apitoken')
-  const userToken = useCookie('x-thapl-authorization')
+  const ui = useUiStore()
+
+  const apiCookie = useCookie('x-thapl-apitoken')
+  const userCookie = useCookie('x-thapl-authorization')
+  const regionCookie = useCookie('x-thapl-region-id')
 
   const headers = {}
-  if (apiToken.value) {
-    headers['x-thapl-apitoken'] = apiToken.value
+  if (apiCookie.value) {
+    headers['x-thapl-apitoken'] = apiCookie.value
   }
-  if (userToken.value) {
-    headers['x-thapl-authorization'] = userToken.value
+  if (userCookie.value) {
+    headers['x-thapl-authorization'] = userCookie.value
+  }
+  if (regionCookie.value) {
+    headers['x-thapl-region-id'] = regionCookie.value
   }
 
   const { data, error } = await useAsyncData('init', () =>
-    api('api-client/init/', {
+    useApi('api-client/init/', {
       method: 'POST',
       headers,
       body: {
@@ -30,8 +36,13 @@ export const useInit = async () => {
     const { api_token, user_token } = data.value
 
     session.setInit(data.value)
-    apiToken.value = api_token
-    userToken.value = user_token
+    apiCookie.value = api_token
+    userCookie.value = user_token
+
+    // ask for region first
+    if ($env.useRegions && !regionCookie.value) {
+      ui.setModal({ name: 'region', params: { closable: false } })
+    }
 
     return { api_token, user_token }
   }

@@ -1,6 +1,10 @@
 <template>
   <AuthModal />
   <CartModal />
-  <LocationCityModal />
+  <LocationRegionModal v-if="$env.useRegions" />
   <LocationAddressModal />
 </template>
+
+<script setup>
+const { $env } = useNuxtApp()
+</script>

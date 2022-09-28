@@ -16,7 +16,7 @@ import { storeToRefs } from 'pinia'
 import { useUiStore } from '~/store'
 
 const ui = useUiStore()
-const { modal: activeModal } = storeToRefs(ui)
+const { modal: activeModal, modalParams } = storeToRefs(ui)
 
 const props = defineProps({
   name: {
@@ -53,6 +53,10 @@ const isModalActive = computed(() => {
 })
 
 const closeModal = () => {
+  if (modalParams.value && modalParams.value.closable === false) {
+    return false
+  }
+
   if (isModalActive.value) {
     ui.closeModal()
   }

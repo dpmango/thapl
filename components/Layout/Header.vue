@@ -17,15 +17,15 @@
 
         <div class="col header__logo">
           <NuxtLink to="/">
-            <img src="/img/logo.svg" alt="logo" />
+            <img :src="site_settings.main_logo" alt="logo" />
           </NuxtLink>
         </div>
 
-        <div class="col header__tile hidden-lg">
-          <div class="tile _action" @click="() => ui.setModal({ name: 'city' })">
+        <div v-if="$env.useRegions" class="col header__tile hidden-lg">
+          <div class="tile _action" @click="() => ui.setModal({ name: 'region' })">
             <span class="tile__label tile__overflow">Город</span>
             <div class="tile__value">
-              <span class="tile__overflow">Санкт-Петербург</span>
+              <span class="tile__overflow">{{ session.currentRegionName }}</span>
               <nuxt-icon name="caret" />
             </div>
           </div>
@@ -112,6 +112,10 @@ import { useSessionStore, useUiStore } from '~/store'
 
 const ui = useUiStore()
 const session = useSessionStore()
+const { $env } = useNuxtApp()
+const {
+  app_settings: { site_settings },
+} = session
 
 defineProps({
   variant: {
@@ -204,6 +208,10 @@ onBeforeUnmount(() => {
     position: sticky;
     box-shadow: var(--box-shadow-large);
   }
+  // &:hover {
+  //   transform: none !important;
+  //   transition: transform 0.25s $ease;
+  // }
 }
 
 @include r($xl) {
