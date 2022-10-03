@@ -11,9 +11,12 @@
 
   <div class="dev-toggle" :class="[show && '_active']" @click="toggleGrid">Grid</div>
   <div class="theme-toggle" @click="toggleTheme">Dark</div>
+  <div class="to-top" @click="scrollToElement('promo')">🔝</div>
 </template>
 
 <script setup>
+import { scrollToElement } from '~/utils'
+
 const show = ref(false)
 
 const toggleGrid = () => {
@@ -48,7 +51,8 @@ const toggleTheme = () => {
 }
 
 .dev-toggle,
-.theme-toggle {
+.theme-toggle,
+.to-top {
   position: fixed;
   z-index: 9;
   bottom: 20px;
@@ -71,5 +75,9 @@ const toggleTheme = () => {
 
 .theme-toggle {
   bottom: 66px;
+}
+
+.to-top {
+  bottom: 112px;
 }
 </style>

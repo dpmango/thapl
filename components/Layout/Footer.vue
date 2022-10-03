@@ -11,11 +11,27 @@
           </ul>
         </div>
 
-        <div class="footer__section">
+        <div v-if="app_settings.site_footer_menu" class="footer__section">
           <div class="footer__section-title">Компания</div>
           <ul class="footer__section-list">
-            <li v-for="link in companyLinks">
-              <NuxtLink :to="link.href">{{ link.label }}</NuxtLink>
+            <li v-for="link in app_settings.site_footer_menu">
+              <NuxtLink
+                :to="link.target_url || link.target_id.slug"
+                :target="link.target_url ? '_blank' : ''"
+              >
+                {{ link.title }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <div v-if="app_settings.app_store_id" class="footer__section">
+          <div class="footer__section-title">Мобильные приложения</div>
+          <ul class="footer__social-list">
+            <li v-if="app_settings.app_store_id">
+              <a :href="app_settings.app_store_id">
+                <img src="~/assets/img/app-store.svg" alt="app store" />
+              </a>
             </li>
           </ul>
         </div>
@@ -34,20 +50,12 @@
 </template>
 
 <script setup>
-import { useProductStore } from '~~/store'
+import { storeToRefs } from 'pinia'
+import { useProductStore, useSessionStore } from '~~/store'
 
 const productStore = useProductStore()
-
-const companyLinks = ref([
-  { href: '#', label: 'О нас' },
-  { href: '#', label: 'Доставка' },
-  { href: '#', label: 'Офферта' },
-  { href: '#', label: 'Пользовательское соглашение' },
-  { href: '#', label: 'Политика обработки персональных данных' },
-  { href: '#', label: 'Согласие на обработку персональных данных' },
-  { href: '#', label: 'О нас' },
-  { href: '#', label: 'О нас' },
-])
+const sessionStore = useSessionStore()
+const { app_settings } = storeToRefs(sessionStore)
 </script>
 
 <style lang="scss" scoped>
@@ -94,6 +102,15 @@ const companyLinks = ref([
       &:hover {
         color: var(--color-primary);
       }
+    }
+  }
+  &__social-list {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    li {
+      flex: 0 0 auto;
+      margin-right: 20px;
     }
   }
   &__bottom {

@@ -4,7 +4,9 @@
       <div class="card__image"></div>
     </div>
     <div class="card__body">
-      <div class="card__title h6-title">{{ name }}</div>
+      <div class="card__title h6-title">
+        <UiLongWords :text="name" />
+      </div>
       <div class="card__description text-s c-gray">
         {{ description }}
       </div>
@@ -36,6 +38,7 @@ const props = defineProps({
     flex: 0 0 120px;
   }
   &__image {
+    position: relative;
     border-radius: 8px;
     font-size: 0;
     padding-bottom: var(--product-card-mini-ar);

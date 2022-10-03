@@ -4,13 +4,20 @@ export const useUiStore = defineStore('ui', {
   state: () => {
     return {
       mobileMenuActive: false,
-      modal: '1',
+      mobileMenuOffest: 0,
+      modal: null,
       modalParams: null,
     }
   },
   actions: {
-    setMobileMenu(v) {
-      this.mobileMenuActive = v
+    setMobileMenu(payload) {
+      if (typeof payload === 'object') {
+        const { active, offset } = payload
+        this.mobileMenuActive = active
+        this.mobileMenuOffest = offset
+      } else {
+        this.mobileMenuActive = payload
+      }
     },
     setModal({ name, params }) {
       this.modal = name

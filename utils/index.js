@@ -1,3 +1,5 @@
 // export { getEnv } from './Env'
+export { PerformanceLog } from './Dev'
 export { clearPhone, validPhone, validEmail } from './Validation'
-export { scrollToElement } from './Scroll'
+export { scrollToElement, scrollPageToTop, scrollWithSpeed } from './Scroll'
+export { clearSocialLink, removeUrlParameter } from './Url'

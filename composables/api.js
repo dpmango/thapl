@@ -1,26 +1,24 @@
 export const useApi = (url, options = {}) => {
-  const nuxtApp = useNuxtApp()
-  const env = nuxtApp.$env
+  const { $env, $log, ssrContext } = useNuxtApp()
 
   const logResponce = (res) => {
-    if (nuxtApp.ssrContext) {
+    if (ssrContext) {
       if (Array.isArray(res)) {
-        console.log('=== shriked array log for SSR ===')
+        $log.log('=== shriked array log for SSR ===')
         return res[0]
       }
     }
     return res
   }
 
-  console.log(`FETCH ${url}`)
   return $fetch(`http://localhost:3000/api/${url}`, options)
     .then((res) => {
-      // console.log(`${url}`, logResponce(res))
-      console.log(`FETCH done ${url}`)
+      // $log.log(`${url}`, logResponce(res))
+      $log.logServer(`+FETCH ${url}`)
       return res
     })
     .catch((err) => {
-      console.log(url, err)
+      $log.error(`❌ (err) FETCH ${url}`, err)
       throw err
     })
 }

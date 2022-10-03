@@ -1,7 +1,13 @@
 <template>
   <header
+    id="header"
+    ref="headerRef"
     class="header"
-    :class="[variant && `header-${variant}`, scrolled && '_scroll']"
+    :class="[
+      variant && `header-${variant}`,
+      scrolled && '_scroll',
+      ui.mobileMenuActive && '_menuActive',
+    ]"
     :style="{ transform: `translate(0, -${topHeight}px)` }"
   >
     <div class="container">
@@ -54,6 +60,9 @@
           <div class="action" @click="() => ui.setModal({ name: 'cart' })">
             <div class="action__icon">
               <nuxt-icon name="cart" />
+              <div v-if="cartStore.cart.length" class="action__counter">
+                {{ cartStore.cart.length }}
+              </div>
             </div>
           </div>
         </div>
@@ -84,7 +93,7 @@
             </NuxtLink>
           </div>
           <div class="col">
-            <div class="action">
+            <div class="action" @click="() => ui.setModal({ name: 'contacts' })">
               <div class="action__icon"><nuxt-icon name="dialog" /></div>
               <div class="action__text">Контакты</div>
             </div>
@@ -97,7 +106,7 @@
         <div class="header__search">
           <NuxtIcon name="search" />
         </div>
-        <LayoutHeaderNav class="header__nav" />
+        <LayoutNavScroller class="header__nav" />
         <div class="header__cta" @click="() => ui.setModal({ name: 'cart' })">
           <UiButton>Корзина</UiButton>
         </div>
@@ -108,10 +117,12 @@
 
 <script setup>
 import _ from 'lodash'
-import { useSessionStore, useUiStore } from '~/store'
+import { useSessionStore, useUiStore, useCartStore } from '~/store'
 
 const ui = useUiStore()
 const session = useSessionStore()
+const cartStore = useCartStore()
+
 const { $env } = useNuxtApp()
 const {
   app_settings: { site_settings },
@@ -127,10 +138,12 @@ defineProps({
 
 const scrolled = ref(false)
 const topHeight = ref(0)
+const headerRef = ref(null)
 const topRef = ref(null)
 
 const toggleMobile = () => {
-  ui.setMobileMenu(!ui.mobileMenuActive)
+  const headerHeight = headerRef.value.offsetHeight
+  ui.setMobileMenu({ active: !ui.mobileMenuActive, offset: headerHeight })
 }
 
 // this.scrollSticky = _.throttle(this.handleSticky, 50)
@@ -242,6 +255,9 @@ onBeforeUnmount(() => {
     &._scroll {
       transform: translateY(-12px) !important;
     }
+    &._menuActive {
+      transform: none !important;
+    }
     &__top {
       margin-left: 0;
       margin-right: 0;
@@ -323,7 +339,23 @@ onBeforeUnmount(() => {
   cursor: pointer;
 
   &__icon {
+    position: relative;
     font-size: 18px;
+  }
+  &__counter {
+    position: absolute;
+    z-index: 2;
+    bottom: -10px;
+    right: -10px;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-font-invert);
   }
   &__text {
     margin-top: 4px;

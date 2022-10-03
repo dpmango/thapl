@@ -19,6 +19,7 @@ export interface IProduct {
   max_weight: null
   weight_step: null
   old_price: null | string
+  price: number
   description: string
   can_be_payed_by_bonus_fully: boolean
   packing_weights: string

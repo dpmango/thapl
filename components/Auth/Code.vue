@@ -8,16 +8,16 @@
       Код отправлен смс-сообщением на номер телефона {{ phone }}<br />
       <a class="c-primary" href="#" @click.prevent="emit('change-view', 'phone')">Изменить номер</a>
     </div>
-    <UiInput
-      name="code"
-      type="text"
-      placeholder="0000"
-      :value="code"
-      mask="####"
-      :error="!!error || errors.code"
-      @on-change="(v) => setFieldValue('code', v)"
-      @keyup="key_event"
-    />
+    <div class="auth__code">
+      <UiCodeInput
+        name="code"
+        type="text"
+        :value="code"
+        :error="!!error || errors.code"
+        @on-change="(v) => setFieldValue('code', v)"
+        @keyup="key_event"
+      />
+    </div>
     <div class="auth__cta">
       <UiButton :block="true" :loading="loading" :disabled="nextDisabled" @click="next">
         Выслать код
@@ -45,12 +45,12 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { code: '' },
 })
 
-const { value: code } = useField('code', (v) => {
+const { value: code, meta } = useField('code', (v) => {
   return v.length === 4
 })
 
 const nextDisabled = computed(() => {
-  return Object.keys(errors.value).length !== 0
+  return !meta.dirty || Object.keys(errors.value).length !== 0
 })
 
 const key_event = (e) => {
@@ -97,11 +97,8 @@ const next = async () => {
   &__form {
     margin-top: 20px;
   }
-  &__cta {
-    margin-top: 28px;
-  }
+
   &__note {
-    margin-bottom: 24px;
     font-size: 14px;
     line-height: 22px;
     color: var(--color-gray);
@@ -113,6 +110,12 @@ const next = async () => {
         color: var(--color-font);
       }
     }
+  }
+  &__code {
+    margin-top: 24px;
+  }
+  &__cta {
+    margin-top: 28px;
   }
 }
 </style>

@@ -60,6 +60,7 @@
 <script setup>
 import _ from 'lodash'
 import { nanoid } from 'nanoid'
+// const { $sanitize } = useNuxtApp()
 
 const id = nanoid()
 const inputRef = ref(null)
@@ -154,7 +155,7 @@ const modifiers = computed(() => [
   isFocusedOrNotBlank.value && '_focused',
   showError.value && '_error',
   props.disabled && '_disabled',
-  props.icon && `_ipos-${props.iconPosition}`,
+  (props.icon || props.error) && `_ipos-${props.iconPosition}`,
   `_${props.theme}`,
   `_${props.size}`,
 ])

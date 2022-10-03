@@ -1,6 +1,7 @@
 <template>
   <div>
     <NuxtLayout>
+      <NuxtLoadingIndicator :throttle="300" />
       <NuxtPage />
     </NuxtLayout>
   </div>
@@ -8,8 +9,14 @@
 
 <script setup>
 import { useSessionStore, useProductStore } from '~/store'
+import { scrollPageToTop } from '~/utils'
 
-const { $env } = useNuxtApp()
+const nuxtApp = useNuxtApp()
+const { $env, $log } = nuxtApp
+
+nuxtApp.hook('page:finish', () => {
+  scrollPageToTop()
+})
 
 useHead({
   bodyAttrs: {
@@ -34,8 +41,8 @@ if ($env.useRegions) {
   const regionCookie = useCookie('x-thapl-region-id')
   session.setCurrentRegion(regionCookie.value)
 
-  console.log('regions', { regions })
+  $log.log('regions', { regions })
 }
 
-console.log('catalog', { catalog })
+$log.log('catalog', { catalog })
 </script>

@@ -41,8 +41,9 @@
             v-for="(icon, idx) in icons"
             :key="idx"
             v-tooltip="icon"
-            :name="icon"
-          ></nuxt-icon>
+            :fill="typeof icon === 'object'"
+            :name="typeof icon === 'object' ? icon.name : icon"
+          />
         </div>
         <div class="ui__icons"></div>
       </div>
@@ -110,6 +111,8 @@ const icons = [
   'close',
   'cart',
   'location',
+  'SocialApple',
+  { name: 'SocialGoogleplay' },
 ]
 </script>
 

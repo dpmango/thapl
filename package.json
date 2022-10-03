@@ -12,12 +12,18 @@
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare",
     "lint:nuxt": "nuxt typecheck",
-    "lint:js": "eslint -c .eslintrc.js --ext \".js,.ts,.vue\"",
+    "lint:js": "eslint . -c .eslintrc.js --ext \".js,.ts,.vue\"",
     "lint:style": "stylelint \"**/*.{css,scss,sass,html,vue}\" --ignore-path .gitignore",
     "lint:prettier": "prettier --check .",
     "lint": "yarn lint:js && yarn lint:style && yarn lint:prettier",
     "lintfix": "prettier --write --list-different . && yarn lint:js --fix && yarn lint:style --fix",
-    "deploy": "nuxt generate && surge -d thapl.surge.sh .output/public"
+    "deploy": "nuxt generate && surge -d thapl.surge.sh .output/public",
+    "heroku-postbuild": "npm run build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --cache",
@@ -38,8 +44,10 @@
     "nuxt-icons": "^2.0.2",
     "nuxt-proxy": "^0.2.4",
     "pinia-plugin-persistedstate": "^2.2.0",
+    "sanitize-html": "^2.7.2",
     "swiper": "^8.4.2",
-    "vee-validate": "^4.6.9"
+    "vee-validate": "^4.6.9",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^11.0.0",

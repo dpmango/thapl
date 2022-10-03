@@ -22,6 +22,5 @@ const userCookie = useCookie('x-thapl-authorization')
 const regionCookie = useCookie('x-thapl-region-id')
 
 const { $env } = useNuxtApp()
-
 const session = useSessionStore()
 </script>

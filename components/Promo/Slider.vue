@@ -1,5 +1,5 @@
 <template>
-  <div v-if="slides && slides.length" class="promo">
+  <div v-if="slides && slides.length" id="promo" class="promo">
     <div class="container">
       <LibSwiper class="promo__slider" :params="swiperParams">
         <SwiperSlide v-for="(slide, idx) in slides" :key="idx">

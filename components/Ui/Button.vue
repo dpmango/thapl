@@ -1,7 +1,7 @@
 <template>
   <component
     :is="getElement"
-    :class="['button', theme, size]"
+    :class="['button', theme, size, isEmpty && '_iconOnly']"
     :href="href"
     :to="to"
     v-bind="$attrs"
@@ -25,12 +25,12 @@ const props = defineProps({
   theme: {
     type: String,
     default: 'primary',
-    validator: (theme) => ['primary', 'secondary', 'accent', 'link'].includes(theme),
+    validator: (v) => ['primary', 'secondary', 'accent', 'link'].includes(v),
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (theme) => ['large', 'medium', 'small'].includes(theme),
+    validator: (v) => ['large', 'medium', 'small'].includes(v),
   },
   href: String,
   iconRight: String,
@@ -46,6 +46,11 @@ const getElement = computed(() => {
   }
 
   return 'button'
+})
+
+const slots = useSlots()
+const isEmpty = computed(() => {
+  return !slots.default
 })
 </script>
 
@@ -82,6 +87,13 @@ const getElement = computed(() => {
     }
     &._right {
       margin-left: 0.45em;
+    }
+  }
+
+  &._iconOnly {
+    .button__icon {
+      margin-left: 0;
+      margin-right: 0;
     }
   }
 

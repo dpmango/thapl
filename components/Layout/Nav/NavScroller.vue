@@ -3,14 +3,7 @@
     <div class="nav__wrapper">
       <ul ref="navlist" class="nav__list">
         <li v-for="(link, idx) in menuVisible" :key="link.id">
-          <NuxtLink
-            class="nav__link"
-            :class="[activeAnchor === idx && '_active']"
-            :to="navLinkProps(link.slug)"
-            @click="handleNavClick(link.slug)"
-          >
-            {{ link.title }}
-          </NuxtLink>
+          <LayoutNavLink :link="link" :active="activeAnchor === idx" />
         </li>
       </ul>
       <VDropdown :distance="2">
@@ -22,13 +15,7 @@
         <template #popper>
           <ul class="nav__dropdown">
             <li v-for="link in menuHidden" :key="link.id">
-              <NuxtLink
-                class="nav__link"
-                :to="navLinkProps(link.slug)"
-                @click="handleNavClick(link.slug)"
-              >
-                {{ link.title }}
-              </NuxtLink>
+              <LayoutNavLink :link="link" :active="activeAnchor === idx" />
             </li>
           </ul>
         </template>
@@ -39,8 +26,7 @@
 
 <script setup>
 import _ from 'lodash'
-import { useSessionStore, useProductStore } from '~/store'
-import { scrollToElement } from '~/utils'
+import { useProductStore } from '~/store'
 
 const navlist = ref(null)
 const hideFromIdx = ref(99)
@@ -48,14 +34,6 @@ const hideFromIdx = ref(99)
 const { $env } = useNuxtApp()
 
 const productStore = useProductStore()
-
-const navLinkProps = (slug) => {
-  if ($env.catalogType === 'singlepage') {
-    return `#${slug}`
-  } else {
-    return `/category/${slug}`
-  }
-}
 
 const menuVisible = computed(() => {
   return productStore.navCategories.filter((x, idx) => idx < hideFromIdx.value)
@@ -84,13 +62,6 @@ const hiddenStartsFromIdx = () => {
       }
     }
   })
-}
-
-const handleNavClick = (slug) => {
-  if ($env.catalogType === 'singlepage') {
-    // e.preventDefault()
-    scrollToElement(slug)
-  }
 }
 
 // aniamate anchors on scroll

@@ -15,6 +15,8 @@
 <script setup>
 import { SwiperSlide } from 'swiper/vue'
 
+const { $env, $log } = useNuxtApp()
+
 const swiperParams = {
   slidesPerView: 'auto',
   spaceBetween: 32,
@@ -36,7 +38,7 @@ const { data: popularList, error: categoriesError } = await useAsyncData('popula
   })
 )
 
-console.log({ popularList })
+$log.log({ popularList })
 </script>
 
 <style lang="scss" scoped>

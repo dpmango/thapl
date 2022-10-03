@@ -187,4 +187,53 @@ const closeModal = () => {
     }
   }
 }
+
+@include r($lg) {
+  .modal {
+    &._large {
+      .modal {
+        &__close {
+          top: 16px;
+          left: auto;
+          right: 6px;
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+@include r($md) {
+  .modal {
+    &._normal {
+      .modal {
+        &__wrapper {
+          // max-width: 432px;
+        }
+        &__content {
+          padding: 24px;
+        }
+      }
+    }
+
+    // &._large {
+    //   .modal {
+    //   }
+    // }
+
+    &._aside {
+      .modal {
+        &__wrapper {
+          // max-width: 516px;
+        }
+        &__close {
+          top: 16px;
+          left: auto;
+          right: 6px;
+          transform: none;
+        }
+      }
+    }
+  }
+}
 </style>

@@ -32,7 +32,7 @@ export function validPhone(value) {
 export function validEmail(value) {
   value = value || ''
   let valid = true
-  const reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/
+  const reg = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,8})$/
 
   if (!value || value.length < 1 || reg.test(value) === false) {
     valid = false

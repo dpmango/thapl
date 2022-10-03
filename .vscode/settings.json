@@ -4,9 +4,10 @@
   },
   "search.exclude": {
     "**/node_modules": true,
-    "**/._nuxt": true,
     "**/.nuxt": true,
-    "**/._output": true,
+    "**/.output": true,
+    "yarn.lock": true,
+    "package-lock.json": true
   },
   "editor.formatOnSave": true,
   "vetur.validation.template": false

@@ -1,3 +1,5 @@
+import eslintPlugin from 'vite-plugin-eslint'
+
 export default defineNuxtConfig({
   ssr: true,
 
@@ -60,6 +62,12 @@ export default defineNuxtConfig({
         },
       },
     },
+    plugins: [
+      eslintPlugin({
+        failOnError: false,
+        cache: false,
+      }),
+    ],
   },
 
   app: {

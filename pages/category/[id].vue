@@ -6,6 +6,7 @@
 
 <script setup>
 import { useProductStore } from '~/store'
+const { $env, $log } = useNuxtApp()
 
 // НЕ ДЛЯ single page представления
 const { data: category, error: categoriesError } = await useAsyncData('catalog-id', () =>
@@ -18,5 +19,5 @@ const { data: category, error: categoriesError } = await useAsyncData('catalog-i
   })
 )
 
-console.log('catalog-id', { category })
+$log.log('catalog-id', { category })
 </script>

@@ -74,6 +74,7 @@ p {
   p,
   ul,
   ol,
+  img,
   button,
   blockquote,
   h1,
@@ -86,12 +87,13 @@ p {
     & + p,
     & + blockquote,
     & + table {
-      margin-top: 1.42em;
+      margin-top: 1em;
     }
 
     & + ul,
     & + ol,
     & + button,
+    & + img,
     & + h1,
     & + h2,
     & + h3,

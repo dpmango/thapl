@@ -3,20 +3,35 @@
     <div class="card__image">
       <img :src="product.image" :alt="product.title" />
       <div class="card__badges">
+        <UiBadge theme="green">{{ product.id }}</UiBadge>
         <UiBadge v-for="tag in product.tags" :key="tag" theme="green" size="small">
           {{ tag }}
         </UiBadge>
       </div>
     </div>
     <div class="card__body">
-      <div class="card__title h4-title">{{ product.title }}</div>
+      <div class="card__title h4-title">
+        <UiLongWords :text="product.title" />
+      </div>
       <div class="card__description text-s c-gray">
         {{ product.description }}
       </div>
       <div class="card__actions">
-        <div class="card__price text-l">220 ₽</div>
+        <div class="card__price text-l">{{ product.price }} ₽</div>
         <div class="card__add">
-          <UiButton theme="secondary">Выбрать</UiButton>
+          <UiButton
+            v-if="!productQuantityInCart(product.id)"
+            theme="secondary"
+            @click="handleSelect"
+          >
+            Выбрать
+          </UiButton>
+          <UiPlusMinus
+            v-else
+            size="medium"
+            :value="productQuantityInCart(product.id)"
+            @on-change="handleQuantityChange"
+          />
         </div>
       </div>
     </div>
@@ -24,14 +39,31 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
+import { useCartStore } from '~/store'
+
+const cartStore = useCartStore()
+const { productQuantityInCart } = storeToRefs(cartStore)
 
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
   },
 })
+
+const handleSelect = () => {
+  cartStore.addToCart(props.product)
+}
+
+const handleQuantityChange = (n: number) => {
+  if (n === 0) {
+    cartStore.removeFromCart(props.product.id)
+  } else {
+    cartStore.changeQuantity({ id: props.product.id, quantity: n })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -73,7 +105,9 @@ const props = defineProps({
     display: flex;
     flex-direction: column;
   }
-  // &__title{}
+  // &__title {
+  //   word-break: break-all;
+  // }
   &__description {
     margin-top: 12px;
   }
@@ -83,6 +117,9 @@ const props = defineProps({
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+  &__add {
+    font-size: 0;
   }
 }
 </style>
