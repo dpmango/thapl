@@ -17,8 +17,7 @@
     "lint:prettier": "prettier --check .",
     "lint": "yarn lint:js && yarn lint:style && yarn lint:prettier",
     "lintfix": "prettier --write --list-different . && yarn lint:js --fix && yarn lint:style --fix",
-    "deploy": "nuxt generate && surge -d thapl.surge.sh .output/public",
-    "heroku-postbuild": "npm run build"
+    "deploy": "nuxt generate && surge -d thapl.surge.sh .output/public"
   },
   "husky": {
     "hooks": {
