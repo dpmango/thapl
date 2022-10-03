@@ -48,7 +48,7 @@
         </ul>
       </nav>
 
-      <nav class="mobile-menu__nav">
+      <nav v-if="app_settings.site_mobile_menu" class="mobile-menu__nav">
         <ul class="nav _secondary">
           <li v-for="link in app_settings.site_mobile_menu">
             <NuxtLink

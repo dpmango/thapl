@@ -1,5 +1,5 @@
 <template>
-  <span>{{ processedText }}</span>
+  {{ processedText }}
 </template>
 
 <script setup>
@@ -8,6 +8,7 @@ const props = defineProps({
 })
 
 const processedText = computed(() => {
+  if (!props.text) return ''
   return props.text.split(/[,]+/).join(', ')
 })
 </script>

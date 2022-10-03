@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   // 445, 474, 172, 439, 419, 296
   proxy: {
     options: {
-      target: 'https://project296.apiv2.thapl.com',
+      target: process.env.NUXT_PUBLIC_API_BASE,
       changeOrigin: true,
       pathRewrite: {
         '^/api': '',
