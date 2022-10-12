@@ -54,7 +54,7 @@ export const useSessionStore = defineStore('session', {
       }
       this.user_token = user_token
 
-      const userToken = useCookie('x-thapl-authorization')
+      const userToken = useCookieState('x-thapl-authorization')
       userToken.value = user_token
     },
     setCurrentRegion(region) {

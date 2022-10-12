@@ -31,7 +31,7 @@ import { useField, useForm } from 'vee-validate'
 import { useSessionStore } from '~/store'
 
 const { $env } = useNuxtApp()
-const regionCookie = useCookie('x-thapl-region-id')
+const regionCookie = useCookieState('x-thapl-region-id')
 const session = useSessionStore()
 
 const loading = ref(false)

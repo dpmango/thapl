@@ -1,5 +1,5 @@
 <template>
-  <nav class="nav" :class="[`nav-${$env.catalogType}`]">
+  <nav class="nav js-nav" :class="[`nav-${$env.catalogType}`]">
     <div class="nav__wrapper">
       <ul ref="navlist" class="nav__list">
         <li v-for="(link, idx) in menuVisible" :key="link.id">
@@ -70,7 +70,7 @@ const activeAnchor = ref(null)
 const handleLinksScroll = () => {
   // TODO - refactor to refs
   const scrollTop = window.scrollY
-  const smoothLinks = document.querySelectorAll('.nav__link')
+  const smoothLinks = document.querySelectorAll('.js-nav .nav__link')
   const sections = []
   const links = []
 

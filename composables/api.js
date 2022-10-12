@@ -1,5 +1,6 @@
 export const useApi = (url, options = {}) => {
   const { $env, $log, ssrContext } = useNuxtApp()
+  const reqEvent = useRequestEvent()
 
   const logResponce = (res) => {
     if (ssrContext) {
@@ -11,7 +12,12 @@ export const useApi = (url, options = {}) => {
     return res
   }
 
-  return $fetch(`http://localhost:3000/api/${url}`, options)
+  let fetchUrl = `/api/${url}`
+  if (reqEvent) {
+    fetchUrl = `http://${reqEvent.req.headers.host}${fetchUrl}`
+  }
+
+  return $fetch(fetchUrl, options)
     .then((res) => {
       // $log.log(`${url}`, logResponce(res))
       $log.logServer(`+FETCH ${url}`)

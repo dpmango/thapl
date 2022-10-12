@@ -16,7 +16,7 @@
           <ul class="footer__section-list">
             <li v-for="link in app_settings.site_footer_menu">
               <NuxtLink
-                :to="link.target_url || link.target_id.slug"
+                :to="link.target_url || (link.target_id && link.target_id.slug)"
                 :target="link.target_url ? '_blank' : ''"
               >
                 {{ link.title }}
