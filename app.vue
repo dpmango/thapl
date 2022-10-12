@@ -38,7 +38,7 @@ if ($env.useRegions) {
     session.getRegions()
   )
 
-  const regionCookie = useCookie('x-thapl-region-id')
+  const regionCookie = useCookieState('x-thapl-region-id')
   session.setCurrentRegion(regionCookie.value)
 
   $log.log('regions', { regions })

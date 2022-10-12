@@ -6,9 +6,9 @@ export const useInit = async () => {
   const session = useSessionStore()
   const ui = useUiStore()
 
-  const apiCookie = useCookie('x-thapl-apitoken')
-  const userCookie = useCookie('x-thapl-authorization')
-  const regionCookie = useCookie('x-thapl-region-id')
+  const apiCookie = useCookieState('x-thapl-apitoken')
+  const userCookie = useCookieState('x-thapl-authorization')
+  const regionCookie = useCookieState('x-thapl-region-id')
 
   const headers = {}
   if (apiCookie.value) {
@@ -31,6 +31,8 @@ export const useInit = async () => {
       },
     })
   )
+
+  console.log(data.value)
 
   if (data) {
     const { api_token, user_token } = data.value

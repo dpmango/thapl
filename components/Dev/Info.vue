@@ -17,9 +17,9 @@
 
 <script setup>
 import { useSessionStore } from '~/store'
-const apiCookie = useCookie('x-thapl-apitoken')
-const userCookie = useCookie('x-thapl-authorization')
-const regionCookie = useCookie('x-thapl-region-id')
+const apiCookie = useCookieState('x-thapl-apitoken')
+const userCookie = useCookieState('x-thapl-authorization')
+const regionCookie = useCookieState('x-thapl-region-id')
 
 const { $env } = useNuxtApp()
 const session = useSessionStore()

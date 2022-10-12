@@ -53,7 +53,7 @@
           <li v-for="link in app_settings.site_mobile_menu">
             <NuxtLink
               class="nav__link"
-              :to="link.target_url || link.target_id.slug"
+              :to="link.target_url || (link.target_id && link.target_id.slug)"
               :target="link.target_url ? '_blank' : ''"
             >
               {{ link.title }}

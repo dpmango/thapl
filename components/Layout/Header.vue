@@ -22,7 +22,7 @@
         </div>
 
         <div class="col header__logo">
-          <NuxtLink to="/">
+          <NuxtLink v-if="site_settings && site_settings.main_logo" to="/">
             <img :src="site_settings.main_logo" alt="logo" />
           </NuxtLink>
         </div>
