@@ -8,17 +8,17 @@
       :key="category.id"
       :category="category"
     />
-    <DevInfo />
+    <UiDevInfo />
     <InfoAbout />
   </main>
 </template>
 
 <script setup>
-import { useSessionStore, useProductStore } from '~/store'
+import { useProductStore } from '~/store'
 
 // definePageMeta({ layout: 'default' })
-const session = useSessionStore()
 const productStore = useProductStore()
+const config = useRuntimeConfig()
 
 useHead({
   title: 'Главная',
@@ -31,7 +31,7 @@ const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
     method: 'GET',
     headers,
     params: {
-      list_type: 1,
+      list_type: config.public.promoListType,
     },
   })
 )
@@ -40,5 +40,5 @@ const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
 //   productStore.getCategories()
 // )
 
-// console.log({ promoData })
+console.log({ promoData })
 </script>

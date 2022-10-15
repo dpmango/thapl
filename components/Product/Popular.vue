@@ -3,11 +3,11 @@
     <div class="container">
       <h2 class="popular__title h2-title">Часто заказывают</h2>
 
-      <LibSwiper class="popular__slider" :params="swiperParams">
+      <UiLibSwiper class="popular__slider" :params="swiperParams">
         <SwiperSlide v-for="(card, idx) in popularList" :key="idx">
           <ProductCardMini :name="card.title" :description="card.description" :price="card.price" />
         </SwiperSlide>
-      </LibSwiper>
+      </UiLibSwiper>
     </div>
   </section>
 </template>

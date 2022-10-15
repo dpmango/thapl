@@ -12,43 +12,36 @@ h6 {
 .h3-title,
 .h4-title,
 .h5-title,
-.subtitle-1,
-.subtitle-2 {
-  font-weight: 600;
+.h6-title {
+  font-weight: 500;
 }
 
 .h1-title {
-  font-size: 56px;
-  line-height: calc(62 / 56);
-  letter-spacing: -0.01em;
+  font-size: 48px;
+  line-height: calc(38 / 28);
 }
 
 .h2-title {
-  font-weight: 500;
   font-size: 28px;
   line-height: calc(38 / 28);
 }
 
 .h3-title {
-  font-weight: 500;
   font-size: 24px;
   line-height: calc(30 / 20);
 }
 
 .h4-title {
-  font-weight: 500;
   font-size: 20px;
   line-height: calc(30 / 20);
 }
 
 .h5-title {
-  font-weight: 500;
   font-size: 20px;
   line-height: calc(30 / 20);
 }
 
 .h6-title {
-  font-weight: 500;
   font-size: 16px;
   line-height: calc(24 / 16);
 }
@@ -67,41 +60,6 @@ p {
   }
   a {
     color: var(--color-primary);
-  }
-}
-
-.wysiwyg {
-  p,
-  ul,
-  ol,
-  img,
-  button,
-  blockquote,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  table {
-    & + p,
-    & + blockquote,
-    & + table {
-      margin-top: 1em;
-    }
-
-    & + ul,
-    & + ol,
-    & + button,
-    & + img,
-    & + h1,
-    & + h2,
-    & + h3,
-    & + h4,
-    & + h5,
-    & + h6 {
-      margin-top: 1em;
-    }
   }
 }
 
@@ -126,7 +84,6 @@ p {
 .text-xs {
   font-weight: 400;
   font-size: 12px;
-  line-height: calc(16 / 12);
 }
 
 $sizes: (
@@ -212,6 +169,48 @@ li {
       height: 6px;
       border-radius: 50%;
       background: var(--color-primary);
+    }
+  }
+}
+
+// wysiwyg
+.wysiwyg {
+  p:not([class]) {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: calc(26 / 16);
+  }
+
+  p,
+  ul,
+  ol,
+  img,
+  button,
+  blockquote,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  table {
+    & + p,
+    & + blockquote,
+    & + table {
+      margin-top: 1em;
+    }
+
+    & + ul,
+    & + ol,
+    & + button,
+    & + img,
+    & + h1,
+    & + h2,
+    & + h3,
+    & + h4,
+    & + h5,
+    & + h6 {
+      margin-top: 1em;
     }
   }
 }

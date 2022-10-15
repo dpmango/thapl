@@ -2,38 +2,67 @@
   <main class="page__content ui">
     <div class="container">
       <div class="ui__section">
-        <div class="ui__section-title h2-title">Заголовки</div>
-        <div class="wysiwyg">
-          <h1 class="h1-title">H1 title</h1>
-          <h2 class="h2-title">H2 title</h2>
-          <h3 class="h3-title">H3 title</h3>
-          <h4 class="h4-title">H4 title (subtitle-1)</h4>
-          <h5 class="h5-title">H5 title (subtitle-2)</h5>
-        </div>
-        <div class="ui__section-title h2-title">Параграфы</div>
-        <div class="wysiwyg">
-          <p class="text-l">
-            Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
-            традиционное производство, нанотехнологии, которые представляют собой яркий пример
-            континентально-европейского типа
-          </p>
-          <p class="text-m">
-            Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
-            традиционное производство, нанотехнологии, которые представляют собой яркий пример
-            континентально-европейского типа
-          </p>
-          <p class="text-s">
-            Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
-            традиционное производство, нанотехнологии, которые представляют собой яркий пример
-            континентально-европейского типа
-          </p>
-          <p class="text-xs">
-            Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
-            традиционное производство, нанотехнологии, которые представляют собой яркий пример
-            континентально-европейского типа
-          </p>
+        <div class="row">
+          <div class="col col-6 col-md-12">
+            <div class="ui__section-title h2-title">Заголовки</div>
+
+            <div class="wysiwyg">
+              <h1 class="h1-title">H1 title</h1>
+              <h2 class="h2-title">H2 title</h2>
+              <h3 class="h3-title">H3 title</h3>
+              <h4 class="h4-title">H4 title</h4>
+              <h5 class="h5-title">H5 title</h5>
+              <h6 class="h6-title">H6 title</h6>
+            </div>
+          </div>
+
+          <div class="col col-6 col-md-12">
+            <div class="ui__section-title h2-title">Параграфы</div>
+            <div class="wysiwyg">
+              <p class="text-l">
+                Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
+                традиционное производство, нанотехнологии, которые представляют собой яркий пример
+                континентально-европейского типа
+              </p>
+              <p class="text-m">
+                Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
+                традиционное производство, нанотехнологии, которые представляют собой яркий пример
+                континентально-европейского типа
+              </p>
+              <p class="text-s">
+                Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
+                традиционное производство, нанотехнологии, которые представляют собой яркий пример
+                континентально-европейского типа
+              </p>
+              <p class="text-xs">
+                Имеется спорная точка зрения, гласящая примерно следующее: стремящиеся вытеснить
+                традиционное производство, нанотехнологии, которые представляют собой яркий пример
+                континентально-европейского типа
+              </p>
+            </div>
+          </div>
+          <div class="col col-6 col-md-12">
+            <div class="ui__section-title h2-title">Цвета</div>
+
+            <p class="text-m c-font">цвет c-font</p>
+            <p class="text-m c-gray">цвет c-gray</p>
+            <p class="text-m c-primary">цвет c-primary</p>
+            <p class="text-m c-green">цвет c-green</p>
+            <p class="text-m c-red">цвет c-red</p>
+          </div>
+
+          <div class="col col-6 col-md-12">
+            <div class="ui__section-title h2-title">Списки</div>
+
+            <ul class="ul-primary">
+              <li>.ul-primary</li>
+              <li>.ul-primary</li>
+              <li>.ul-primary</li>
+            </ul>
+          </div>
         </div>
       </div>
+
       <div class="ui__section">
         <div class="ui__section-title h2-title">Иконки</div>
         <div class="ui__icons">
@@ -47,6 +76,7 @@
         </div>
         <div class="ui__icons"></div>
       </div>
+
       <div class="ui__section">
         <div class="ui__section-title h2-title">Кнопки</div>
         <p class="text-s c-gray">iconLeft / iconRight принимает любые иконки</p>
@@ -72,6 +102,7 @@
           <UiButton theme="accent" size="small">Текст</UiButton>
         </div>
       </div>
+
       <div class="ui__section">
         <div class="ui__section-title h2-title">Инпуты</div>
         <div class="text-s c-gray">
@@ -90,6 +121,25 @@
           <UiCheckbox type="radio" :error="true">Текст</UiCheckbox>
         </div>
       </div>
+
+      <div class="ui__section">
+        <div class="ui__section-title h2-title">Компоненты</div>
+
+        <div class="ui__component">
+          <UiCrumbs class="instruction__crumbs" :list="crumbs" />
+        </div>
+        <div class="ui__component">
+          <UiCopy
+            class="ui__copy"
+            text="Текст для копирования в буфер браузера. Копирается при клике в любую область этого бокса"
+          >
+            <p class="text-l">Тыкните для копирования</p>
+          </UiCopy>
+        </div>
+        <div class="ui__component">
+          <UiPagination :meta="paginationMeta" @on-сhange="handlePagination" />
+        </div>
+      </div>
     </div>
   </main>
 </template>
@@ -99,6 +149,28 @@
 
 const checkbox = ref(false)
 const radio = ref(false)
+
+const crumbs = [
+  {
+    href: '/page',
+    label: 'Хлебная',
+  },
+  {
+    href: '/page/1',
+    label: 'Крошка',
+  },
+]
+
+const paginationMeta = ref({
+  page: 1,
+  count: 100,
+  limit: 5,
+})
+
+const handlePagination = (v) => {
+  paginationMeta.value.page = v
+}
+
 const icons = [
   'heart',
   'login',
@@ -148,6 +220,14 @@ const icons = [
       margin-right: 8px;
       margin-bottom: 8px;
     }
+  }
+
+  &__copy {
+    margin: 20px 0;
+    max-width: 500px;
+  }
+  &__component {
+    margin-top: 16px;
   }
 }
 </style>

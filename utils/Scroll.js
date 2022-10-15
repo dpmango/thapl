@@ -41,3 +41,24 @@ export const scrollWithSpeed = (to, duration = 500, el) => {
   }
   animateScroll()
 }
+
+export const lockBody = () => {
+  document.querySelector('body').classList.add('js-locked')
+
+  const div = document.createElement('div')
+  div.style.overflowY = 'scroll'
+  div.style.width = '50px'
+  div.style.height = '50px'
+  document.body.append(div)
+
+  const scrollWidth = div.offsetWidth - div.clientWidth
+
+  div.remove()
+
+  document.querySelector('body').style.marginRight = scrollWidth + 'px'
+}
+
+export const unlockBody = () => {
+  document.querySelector('body').classList.remove('js-locked')
+  document.querySelector('body').removeAttribute('style')
+}

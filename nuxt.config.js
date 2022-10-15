@@ -4,14 +4,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    '@pinia/nuxt',
-    'nuxt-proxy',
-    '@nuxtjs/robots',
-    '@nuxtjs/google-fonts',
-    'nuxt-icons',
-    'floating-vue/nuxt',
-  ],
+  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],
 
   // 445, 474, 172, 439, 419, 296
   proxy: {
@@ -31,6 +24,10 @@ export default defineNuxtConfig({
       theme: '',
       catalogType: '',
       useRegions: '',
+      promoListType: '',
+      yandexMetrikaID: '',
+      yandexMapsKey: '',
+      googleID: '',
     },
   },
 
@@ -68,6 +65,10 @@ export default defineNuxtConfig({
         cache: false,
       }),
     ],
+  },
+
+  nitro: {
+    compressPublicAssets: true,
   },
 
   app: {
@@ -110,11 +111,5 @@ export default defineNuxtConfig({
         },
       ],
     },
-  },
-
-  // https://github.com/nuxt-community/robots-module
-  robots: {
-    UserAgent: '*',
-    Disallow: ['/example/'],
   },
 })

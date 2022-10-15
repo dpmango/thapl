@@ -1,4 +1,24 @@
-export function clearPhone(str) {
+/* eslint-disable no-useless-escape */
+export const clearString = (v, removeSpaces) => {
+  let value = ''
+  if (typeof v === 'string') {
+    value = v.trim()
+  } else if (typeof v === 'number') {
+    value = `${v}`
+  }
+
+  if (removeSpaces) {
+    value = value.replaceAll(' ', '').replaceAll('-', '')
+  }
+
+  return value
+}
+
+const isValidNumber = (v) => {
+  return Number.isFinite(+v)
+}
+
+export const clearPhone = (str) => {
   let num = str.replace(/\+7 \(/, '')
   num = num.replace(/\) /, '')
   num = num.replace(/-/, '')
@@ -7,7 +27,7 @@ export function clearPhone(str) {
   return num
 }
 
-export function validPhone(value) {
+export const validPhone = (value) => {
   value = value || ''
   let valid = true
   const arr = []
@@ -29,14 +49,11 @@ export function validPhone(value) {
   }
 }
 
-export function validEmail(value) {
-  value = value || ''
-  let valid = true
-  const reg = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,8})$/
+export const validEmail = (v) => {
+  const value = clearString(v)
 
-  if (!value || value.length < 1 || reg.test(value) === false) {
-    valid = false
-  }
+  const reg =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-  return valid
+  return reg.test(value)
 }

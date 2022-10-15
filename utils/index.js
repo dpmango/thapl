@@ -1,5 +1,7 @@
 // export { getEnv } from './Env'
 export { PerformanceLog } from './Dev'
 export { clearPhone, validPhone, validEmail } from './Validation'
-export { scrollToElement, scrollPageToTop, scrollWithSpeed } from './Scroll'
+export { scrollToElement, scrollPageToTop, scrollWithSpeed, lockBody, unlockBody } from './Scroll'
 export { clearSocialLink, removeUrlParameter } from './Url'
+export { copyToClipboard } from './Clipboard'
+export { localStorageKeepArray, localStorageGet } from './LocalStorage'

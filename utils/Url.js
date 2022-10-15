@@ -17,7 +17,7 @@ export const clearSocialLink = (v) => {
     .replace('t.me/', '@')
     .replace('instagram.com/', '@')
     .replace('whatsapp://send?phone=', '')
-    .replace('/', '')
+    .replaceAll('/', '')
 
   result = removeUrlParameter(result, 'text')
 

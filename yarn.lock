@@ -618,11 +618,6 @@
     google-fonts-helper "^3.1.0"
     pathe "^0.3.2"
 
-"@nuxtjs/robots@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.npmjs.org/@nuxtjs/robots/-/robots-2.5.0.tgz"
-  integrity sha512-z1F3HXb05NiZga8Cuq6k5bbowfJOScPtbSOakip0nege+1aI9pGoajzap8eR5s1qwLXAk9Ts+NcgetoUn5lwrQ==
-
 "@pinia/nuxt@^0.4.2":
   version "0.4.2"
   resolved "https://registry.npmjs.org/@pinia/nuxt/-/nuxt-0.4.2.tgz"
@@ -6405,6 +6400,11 @@ vue-eslint-parser@^9.0.1, vue-eslint-parser@^9.0.3:
     lodash "^4.17.21"
     semver "^7.3.6"
 
+vue-gtag-next@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/vue-gtag-next/-/vue-gtag-next-1.14.0.tgz#793aef0b90dff4213b9f3a79827cd99b06e678dd"
+  integrity sha512-iJl+cOG2GU5NuxqzSSIpt03WVOvZqyKB9TOy7d55KiuvRklcnb2nlqxW5B/a3/sbIt7fla+XEkRyMCcoz0zAHw==
+
 vue-resize@^2.0.0-alpha.1:
   version "2.0.0-alpha.1"
   resolved "https://registry.npmjs.org/vue-resize/-/vue-resize-2.0.0-alpha.1.tgz"
@@ -6421,6 +6421,11 @@ vue-toastification@^2.0.0-rc.5:
   version "2.0.0-rc.5"
   resolved "https://registry.npmjs.org/vue-toastification/-/vue-toastification-2.0.0-rc.5.tgz"
   integrity sha512-q73e5jy6gucEO/U+P48hqX+/qyXDozAGmaGgLFm5tXX4wJBcVsnGp4e/iJqlm9xzHETYOilUuwOUje2Qg1JdwA==
+
+vue-yandex-maps@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/vue-yandex-maps/-/vue-yandex-maps-1.0.4.tgz#6f2b22d85b2d8402f28e508290a8f18f6f377efc"
+  integrity sha512-yK/6BPFNvKOlHclFHVvu3F/BRQKoTqF9y812me2pjIW/ZnjTQz8UJwJ1ORqonkElZWn1X4JR1XXPmCQIV2v+ag==
 
 vue@^3.2.39:
   version "3.2.39"

@@ -1,5 +1,5 @@
-export const useCookieState = (name) => {
-  const cookie = useCookie(name, { maxAge: 60 * 60 * 24 * 30 * 6 })
+export const useCookieState = (name, maxAge) => {
+  const cookie = useCookie(name, { maxAge: maxAge || 60 * 60 * 24 * 30 * 6 })
   const state = useState(name, () => cookie.value)
 
   watch(
