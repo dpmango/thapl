@@ -1,7 +1,7 @@
 import { useSessionStore, useUiStore } from '~/store'
 
 export const useInit = async () => {
-  const { $env } = useNuxtApp()
+  const { $env, $log } = useNuxtApp()
 
   const session = useSessionStore()
   const ui = useUiStore()
@@ -32,7 +32,7 @@ export const useInit = async () => {
     })
   )
 
-  console.log(data.value)
+  $log.log('🧙‍♂️ ASYNC INIT', data.value)
 
   if (data) {
     const { api_token, user_token } = data.value

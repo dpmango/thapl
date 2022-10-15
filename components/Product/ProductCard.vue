@@ -3,7 +3,6 @@
     <div class="card__image">
       <img :src="product.image" :alt="product.title" />
       <div class="card__badges">
-        <UiBadge theme="green">{{ product.id }}</UiBadge>
         <UiBadge v-for="tag in product.tags" :key="tag" theme="green" size="small">
           {{ tag }}
         </UiBadge>

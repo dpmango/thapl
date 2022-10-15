@@ -4,10 +4,11 @@
     <OrderLast />
     <ProductPopular />
     <ProductCategory
-      v-for="category in productStore.catalog"
+      v-for="category in productStore.catalogWithFilter"
       :key="category.id"
       :category="category"
     />
+    <ProductQuickFilter />
     <UiDevInfo />
     <InfoAbout />
   </main>

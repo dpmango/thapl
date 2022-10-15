@@ -20,7 +20,7 @@ export const useApi = (url, options = {}) => {
   return $fetch(fetchUrl, options)
     .then((res) => {
       // $log.log(`${url}`, logResponce(res))
-      $log.logServer(`+FETCH ${url}`)
+      $log.logServer(`👌 +FETCH ${url}`)
       return res
     })
     .catch((err) => {

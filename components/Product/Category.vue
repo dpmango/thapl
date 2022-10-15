@@ -1,16 +1,18 @@
 <template>
   <section :id="category.slug" class="category" :data-id="category.id">
     <div class="container">
-      <h2 class="category__title h2-title">{{ category.title }}</h2>
+      <template v-if="category.catalog_items.length">
+        <h2 class="category__title h2-title">{{ category.title }}</h2>
 
-      <ProductCategoryList v-if="category.catalog_items" :list="category.catalog_items" />
+        <ProductCategoryList :list="category.catalog_items" />
+      </template>
 
-      <div v-if="category.sub_categories">
-        <div v-for="subcategory in category.sub_categories" class="category__sub">
+      <div v-for="subcategory in category.sub_categories" class="category__sub">
+        <template v-if="subcategory.catalog_items.length">
           <h2 class="category__title h3-title">{{ subcategory.title }}</h2>
 
-          <ProductCategoryList v-if="category.catalog_items" :list="category.catalog_items" />
-        </div>
+          <ProductCategoryList :list="subcategory.catalog_items" />
+        </template>
       </div>
     </div>
   </section>

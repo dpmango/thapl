@@ -14,8 +14,10 @@ import { scrollPageToTop } from '~/utils'
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
 
+const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
-  scrollPageToTop()
+  if (loaded.value) scrollPageToTop() // no scroll on initial load
+  loaded.value = true
 })
 
 useHead({
@@ -23,6 +25,15 @@ useHead({
     class: `theme-${$env.theme}`,
   },
 })
+
+// onMounted(() => {
+//   setAppVH()
+//   window.addEventListener('resize', setAppVH)
+// })
+
+// const setAppVH = () => {
+//   document.documentElement.style.setProperty('--app-vh', window.innerHeight * 0.01 + 'px')
+// }
 
 const productStore = useProductStore()
 const session = useSessionStore()
@@ -33,6 +44,8 @@ const { data: catalog, error: categoriesError } = await useAsyncData('catalog', 
   productStore.getCatalog()
 )
 
+$log.log('🧙‍♂️ ASYNC CATALOG', { catalog })
+
 if ($env.useRegions) {
   const { data: regions, error: regionsError } = await useAsyncData('regions', () =>
     session.getRegions()
@@ -41,10 +54,8 @@ if ($env.useRegions) {
   const regionCookie = useCookieState('x-thapl-region-id')
   session.setCurrentRegion(regionCookie.value)
 
-  $log.log('regions', { regions })
+  $log.log('🧙‍♂️ ASYNC REGIONS', { regions })
 }
-
-$log.log('catalog', { catalog })
 </script>
 
 <style lang="scss">

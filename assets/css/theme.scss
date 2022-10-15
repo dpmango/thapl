@@ -11,13 +11,20 @@
   --container-main: 1248px;
   --container-narrow: 848px;
 
+  // header
   --logo-space: 168px;
   --logo-space-md: 132px;
+
+  // promo
   --promo-height: 353px;
   --promo-height-md: 260px;
   --promo-height-sm: 144px;
 
-  //ui
+  // products
+  --product-card-ar: 100%;
+  --product-card-mini-ar: 100%;
+
+  // ui
   --card-border-radius: 16px;
   --button-border-radius: 24px;
   --input-border-radius: 12px;
@@ -32,6 +39,7 @@
   --color-gray: #909090;
   --color-disabled: #8996a4;
   --color-border: #dddddd;
+  --color-separator: #e5e5e5;
 
   // brand colors
   --color-primary: #ec5c2a;
@@ -45,8 +53,6 @@
   --header-background: #fff;
   --product-background: #fff;
   --component-background: #fff;
-  --product-card-ar: 100%;
-  --product-card-mini-ar: 100%;
   --modal-background: rgba(0, 0, 0, 0.55);
   --modal-body-background: #fff;
 
