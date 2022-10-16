@@ -9,7 +9,7 @@
       000 ₽.
     </div>
     <div class="empty__cta">
-      <UiButton to="/catalog">Перейти в меню</UiButton>
+      <UiButton to="/">Перейти в меню</UiButton>
     </div>
   </div>
 </template>

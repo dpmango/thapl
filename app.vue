@@ -44,7 +44,7 @@ const { data: catalog, error: categoriesError } = await useAsyncData('catalog', 
   productStore.getCatalog()
 )
 
-$log.log('🧙‍♂️ ASYNC CATALOG', { catalog })
+$log.log('🧙‍♂️ ASYNC CATALOG', { catalog: catalog.value })
 
 if ($env.useRegions) {
   const { data: regions, error: regionsError } = await useAsyncData('regions', () =>
@@ -54,7 +54,7 @@ if ($env.useRegions) {
   const regionCookie = useCookieState('x-thapl-region-id')
   session.setCurrentRegion(regionCookie.value)
 
-  $log.log('🧙‍♂️ ASYNC REGIONS', { regions })
+  $log.log('🧙‍♂️ ASYNC REGIONS', { regions: regions.value })
 }
 </script>
 

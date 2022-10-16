@@ -37,7 +37,10 @@ export interface ICategory {
   title: string
   image: null
   slug: string
+}
+
+export interface ICategoryFull extends ICategory {
   catalog_items: IProduct[]
   seo_data: null
-  sub_categories: ICategory[]
+  sub_categories: ICategoryFull[]
 }

@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-const crumbs = [{ link: '/', label: 'Заголовок' }]
+const crumbs = [{ href: '/', label: 'Заголовок' }]
 
 const route = useRoute()
 </script>

@@ -1,7 +1,10 @@
 <template>
   <div class="page">
     <LayoutHeader />
-    <LayoutError500 />
+    <main class="page__content">
+      <LayoutError404 v-if="error.statusCode === '404'" />
+      <LayoutError500 v-else />
+    </main>
     <LayoutFooter />
   </div>
 </template>

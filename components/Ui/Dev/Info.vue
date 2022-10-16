@@ -8,7 +8,7 @@
       <p>api_token: {{ session.api_token }}</p>
       <p>user_token: {{ session.user_token }}</p>
       <p>user: {{ session.user }}</p>
-      <p>app_settings: {{ session.app_settings }}</p>
+      <!-- <p>app_settings: {{ session.app_settings }}</p> -->
 
       <p>$env: {{ $env }}</p>
     </div>

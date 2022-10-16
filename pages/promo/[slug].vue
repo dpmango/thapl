@@ -18,7 +18,7 @@
 
 <script setup>
 import { localStorageKeepArray } from '~/utils'
-const crumbs = [{ link: '/', label: 'Заголовок' }]
+const crumbs = [{ href: '/', label: 'Заголовок' }]
 
 const route = useRoute()
 

@@ -2,7 +2,7 @@
   <section :id="category.slug" class="category" :data-id="category.id">
     <div class="container">
       <template v-if="category.catalog_items.length">
-        <h2 class="category__title h2-title">{{ category.title }}</h2>
+        <h2 v-if="showTitle" class="category__title h2-title">{{ category.title }}</h2>
 
         <ProductCategoryList :list="category.catalog_items" />
       </template>
@@ -20,10 +20,14 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
-import { ICategory } from '~/interface/Product'
+import { ICategoryFull } from '~/interface/Product'
 
 const props = defineProps({
-  category: Object as PropType<ICategory>,
+  category: Object as PropType<ICategoryFull>,
+  showTitle: {
+    type: Boolean,
+    default: true,
+  },
 })
 </script>
 

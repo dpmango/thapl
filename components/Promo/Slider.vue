@@ -1,12 +1,12 @@
 <template>
-  <div v-if="slides && slides.length > 0" id="promo" class="promo" :class="modifiers">
+  <div v-if="slides?.length > 0" id="promo" class="promo" :class="modifiers">
     <div class="container">
       <UiLibSwiper class="promo__slider" :params="swiperParams">
         <SwiperSlide v-for="(slide, idx) in slides" :key="idx">
           <NuxtLink
             :to="`/promo/${slide.slug}`"
             class="promo__slide"
-            :class="[viewedItems.includes(slide.slug) && '_viewed']"
+            :class="[viewedPromos.includes(slide.slug) && '_viewed']"
           >
             <img class="promo__slide-bg" :src="slide.image" :alt="slide.title" />
           </NuxtLink>
@@ -41,11 +41,11 @@ const swiperParams = {
   },
 }
 
-const viewedItems = ref([])
+const viewedPromos = ref([])
 
 onMounted(() => {
   const stored = localStorageGet('viewedPromo') || []
-  viewedItems.value = [...stored]
+  viewedPromos.value = [...stored]
 })
 </script>
 
@@ -115,16 +115,20 @@ onMounted(() => {
 @include r($md) {
   .promo {
     margin: 16px 0px 36px;
-    &__slide {
-      height: var(--promo-height-md);
+    &._wide {
+      .promo__slide {
+        height: var(--promo-height-md);
+      }
     }
   }
 }
 
 @include r($sm) {
   .promo {
-    &__slide {
-      height: var(--promo-height-sm);
+    &._wide {
+      .promo__slide {
+        height: var(--promo-height-sm);
+      }
     }
   }
 }

@@ -11,8 +11,22 @@ export const useProductStore = defineStore('product', {
     }
   },
   getters: {
+    categoryBySlug: (state) => (slug) => {
+      try {
+        return state.catalog.find((x) => x.slug === slug)
+      } catch {
+        return null
+      }
+    },
+
     // находит категории первого уровня для использования в навигации
     navCategories(state) {
+      const { $env } = useNuxtApp()
+
+      if ($env.catalogType !== 'singlepage') {
+        return state.catalog
+      }
+
       const categoryProps = (x) => ({
         id: x.id,
         title: x.title,
@@ -61,6 +75,12 @@ export const useProductStore = defineStore('product', {
     // поиском по всем категориям и вложенным категориям
     flatCatalog(state) {
       const DEV_perf = performance.now()
+
+      const { $env } = useNuxtApp()
+      // TODO - tmp
+      if ($env.catalogType !== 'singlepage') {
+        return []
+      }
 
       const flatCatalog = state.catalog.reduce((acc, x) => {
         acc = [...acc, ...x.catalog_items]
@@ -111,12 +131,22 @@ export const useProductStore = defineStore('product', {
           method: 'GET',
           headers,
         })
+      } else if ($env.catalogType === 'categories') {
+        data = await useApi('catalog/get-categories', {
+          method: 'GET',
+          headers,
+        })
+      } else if ($env.catalogType === 'conceptions') {
+        data = await useApi('catalog/get-conceptions', {
+          method: 'GET',
+          headers,
+        })
       }
-      // else if ($env.catalogType === 'categories') {
-      // } else if ($env.catalogType === 'conceptions') {
-      // }
 
-      console.log(`++ Catalog set with ${data.length} categories ++`)
+      console.log(
+        `🧙‍♂️ ++ Catalog (type ${$env.catalogType}) set with ${data.length} categories ++ 🧙‍♂️`
+      )
+
       this.catalog = [...data]
 
       return data

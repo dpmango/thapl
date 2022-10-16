@@ -19,16 +19,23 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  showHome: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const crumbs = computed(() => {
-  return [
-    {
-      href: '/',
-      label: 'Главная',
-    },
-    ...props.list,
-  ]
+  const defaultList = props.showHome
+    ? [
+        {
+          href: '/',
+          label: 'Главная',
+        },
+      ]
+    : []
+
+  return [...defaultList, ...props.list]
 })
 </script>
 
@@ -43,7 +50,6 @@ const crumbs = computed(() => {
     li {
       display: inline-flex;
       &:last-child a {
-        font-weight: 600;
         pointer-events: none;
         color: var(--color-font);
         i {

@@ -20,11 +20,14 @@ const { cart, products } = storeToRefs(cartStore)
 const { flatCatalog } = storeToRefs(productStore)
 
 onMounted(() => {
+  // TODO - tmp
   // populate cart products by ids (SSR + cookie)
-  cart.value.forEach((c) => {
-    const product = flatCatalog.value.find((x) => x.id === c.id)
-    cartStore.hydrateProducts(product)
-  })
+  if ($env.catalogType === 'singlepage') {
+    cart.value.forEach((c) => {
+      const product = flatCatalog.value.find((x) => x.id === c.id)
+      cartStore.hydrateProducts(product)
+    })
+  }
 })
 </script>
 

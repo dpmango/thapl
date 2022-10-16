@@ -3,12 +3,29 @@
     <PromoSlider :slides="promoData" />
     <OrderLast />
     <ProductPopular />
-    <ProductCategory
-      v-for="category in productStore.catalogWithFilter"
-      :key="category.id"
-      :category="category"
+
+    <template v-if="$env.catalogType === 'singlepage'">
+      <ProductCategory
+        v-for="category in productStore.catalogWithFilter"
+        :key="category.id"
+        :category="category"
+      />
+      <ProductQuickFilter />
+    </template>
+
+    <ProductCategories
+      v-else-if="$env.catalogType === 'categories'"
+      :categories="productStore.catalog"
     />
-    <ProductQuickFilter />
+
+    <!-- <ProductConceptions
+      v-else-if="$env.catalogType === 'conceptions'"
+      :categories="productStore.catalog"
+    /> -->
+    <template v-else-if="$env.catalogType === 'conceptions'">
+      <h2 class="h2-title">TODO {{ productStore.catalog }}</h2>
+    </template>
+
     <UiDevInfo />
     <InfoAbout />
   </main>
@@ -19,7 +36,7 @@ import { useProductStore } from '~/store'
 
 // definePageMeta({ layout: 'default' })
 const productStore = useProductStore()
-const { $env } = useNuxtApp()
+const { $env, $log } = useNuxtApp()
 
 useHead({
   title: 'Главная',
@@ -37,9 +54,5 @@ const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
   })
 )
 
-// const { data: categories2, error } = await useAsyncData('categories2', () =>
-//   productStore.getCategories()
-// )
-
-console.log({ promoData })
+$log.log({ promoData: promoData.value })
 </script>
