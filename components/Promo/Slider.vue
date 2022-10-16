@@ -27,8 +27,8 @@ const props = defineProps({
   },
 })
 
-const config = useRuntimeConfig()
-const listType = config.public.promoListType
+const { $env } = useNuxtApp()
+const listType = $env.promoListType
 const modifiers = computed(() => [listType === 1 && '_wide', listType === 2 && '_narrow'])
 
 const swiperParams = {

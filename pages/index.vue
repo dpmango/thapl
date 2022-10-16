@@ -19,7 +19,7 @@ import { useProductStore } from '~/store'
 
 // definePageMeta({ layout: 'default' })
 const productStore = useProductStore()
-const config = useRuntimeConfig()
+const { $env } = useNuxtApp()
 
 useHead({
   title: 'Главная',
@@ -32,7 +32,7 @@ const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
     method: 'GET',
     headers,
     params: {
-      list_type: config.public.promoListType,
+      list_type: $env.promoListType,
     },
   })
 )

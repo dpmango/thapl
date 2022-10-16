@@ -3,7 +3,7 @@
     <div class="mobile-menu__bg" @click="closeMobile"></div>
     <div class="mobile-menu__box">
       <div class="mobile-menu__actions">
-        <NuxtLink to="/ui" class="action">
+        <NuxtLink v-if="app_settings.loyalty?.enabled" to="/ui" class="action">
           <div class="action__icon">
             <nuxt-icon name="heart" />
           </div>
@@ -32,7 +32,7 @@
 
       <!-- nav -->
       <nav class="mobile-menu__nav">
-        <div class="mobile-menu__search">
+        <div v-if="$env.useSearch" class="mobile-menu__search">
           <UiInput
             icon="search"
             icon-position="left"
@@ -51,18 +51,14 @@
       <nav v-if="app_settings.site_mobile_menu" class="mobile-menu__nav">
         <ul class="nav _secondary">
           <li v-for="link in app_settings.site_mobile_menu">
-            <NuxtLink
-              class="nav__link"
-              :to="link.target_url || (link.target_id && link.target_id.slug)"
-              :target="link.target_url ? '_blank' : ''"
-            >
+            <UiAtomLinkType class="nav__link" :link="link">
               {{ link.title }}
-            </NuxtLink>
+            </UiAtomLinkType>
           </li>
         </ul>
       </nav>
 
-      <div class="mobile-menu__nav">
+      <div v-if="showMarketingSection" class="mobile-menu__nav">
         <ul class="socials">
           <li v-if="app_settings.app_store_id">
             <a :href="app_settings.app_store_id">
@@ -101,6 +97,11 @@ const style = computed(() => {
 
 // search
 const search = ref('')
+
+// display
+const showMarketingSection = computed(() => {
+  return app_settings.value.app_store_id
+})
 </script>
 
 <style lang="scss" scoped>

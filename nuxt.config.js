@@ -23,8 +23,11 @@ export default defineNuxtConfig({
       apiBase: '',
       theme: '',
       catalogType: '',
-      useRegions: '',
       promoListType: '',
+      useRegions: '',
+      useSearch: '',
+      footerNavTitle: '',
+
       yandexMetrikaID: '',
       yandexMapsKey: '',
       googleID: '',

@@ -10,7 +10,7 @@
     </div>
     <div class="card__body">
       <div class="card__title h4-title">
-        <UiLongWords :text="product.title" />
+        <UiAtomLongWords :text="product.title" />
       </div>
       <div class="card__description text-s c-gray">
         {{ product.description }}

@@ -12,9 +12,8 @@ export interface ISiteMenu {
   title: string
   type: number
   target_url?: string
-  target_id?: {
-    slug: string
-  }
+  target_id?: string
+  target_slug?: string
 }
 
 export interface ISiteSettings {

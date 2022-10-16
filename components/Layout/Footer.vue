@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__wrapper">
-        <div class="footer__section">
+        <div v-if="showMenuSection" class="footer__section">
           <div class="footer__section-title">Меню</div>
           <ul class="footer__section-list">
             <li v-for="link in productStore.navCategories">
@@ -12,20 +12,15 @@
         </div>
 
         <div v-if="app_settings.site_footer_menu" class="footer__section">
-          <div class="footer__section-title">Компания</div>
+          <div class="footer__section-title">{{ $env.footerNavTitle }}</div>
           <ul class="footer__section-list">
             <li v-for="link in app_settings.site_footer_menu">
-              <NuxtLink
-                :to="link.target_url || (link.target_id && link.target_id.slug)"
-                :target="link.target_url ? '_blank' : ''"
-              >
-                {{ link.title }}
-              </NuxtLink>
+              <UiAtomLinkType :link="link" />
             </li>
           </ul>
         </div>
 
-        <div v-if="app_settings.app_store_id" class="footer__section">
+        <div v-if="showMarketingSection" class="footer__section">
           <div class="footer__section-title">Мобильные приложения</div>
           <ul class="footer__social-list">
             <li v-if="app_settings.app_store_id">
@@ -56,6 +51,20 @@ import { useProductStore, useSessionStore } from '~~/store'
 const productStore = useProductStore()
 const sessionStore = useSessionStore()
 const { app_settings } = storeToRefs(sessionStore)
+
+const { $env } = useNuxtApp()
+
+const showMenuSection = computed(() => {
+  if ($env.catalogType === 'singlepage') {
+    return false
+  }
+
+  return true
+})
+
+const showMarketingSection = computed(() => {
+  return app_settings.value.app_store_id
+})
 </script>
 
 <style lang="scss" scoped>

@@ -69,7 +69,7 @@
 
         <div class="col header__actions row">
           <div class="col">
-            <NuxtLink to="/ui" class="action">
+            <NuxtLink v-if="session.app_settings.loyalty?.enabled" to="/ui" class="action">
               <div class="action__icon">
                 <nuxt-icon name="heart" />
               </div>
@@ -103,10 +103,12 @@
 
       <!-- bottom -->
       <div class="header__bottom">
-        <div class="header__search">
+        <div v-if="$env.useSearch" class="header__search">
           <NuxtIcon name="search" />
         </div>
+
         <LayoutNavScroller class="header__nav" />
+
         <div class="header__cta" @click="() => ui.setModal({ name: 'cart' })">
           <UiButton>Корзина</UiButton>
         </div>

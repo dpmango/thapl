@@ -5,7 +5,7 @@
     </div>
     <div class="card__body">
       <div class="card__title h6-title">
-        <UiLongWords :text="name" />
+        <UiAtomLongWords :text="name" />
       </div>
       <div class="card__description text-s c-gray">
         {{ description }}
