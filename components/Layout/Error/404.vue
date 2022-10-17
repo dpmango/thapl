@@ -1,16 +1,16 @@
 <template>
   <div class="error">
     <div class="container">
-      <div class="error__wrapper wysiwyg">
-        <img src="~/assets/img/error-not-found.svg" alt="404" />
-        <h1 class="h4-title">Ошибка 404</h1>
-        <p class="text-m">
-          Возможно, она когда-то была доступна по этой ссылке, но сейчас ее не существует.
-          Попробуйте найти то, что ищете, начав с главной страницы.
-        </p>
-        <div class="error__cta">
-          <UiButton type="button" to="/">Перейти на главную</UiButton>
-        </div>
+      <div class="error__wrapper">
+        <UiAtomErrorMessage title="Ошибка 404" image="error-not-found.svg">
+          <template #content>
+            Возможно, она когда-то была доступна по этой ссылке, но сейчас ее не существует.
+            Попробуйте найти то, что ищете, начав с главной страницы.
+          </template>
+          <template #action>
+            <UiButton type="button" to="/">Перейти на главную</UiButton>
+          </template>
+        </UiAtomErrorMessage>
       </div>
     </div>
   </div>
@@ -27,9 +27,9 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-  }
-  &__cta {
-    margin-top: 32px;
+    .error {
+      max-width: 100%;
+    }
   }
 }
 </styles>

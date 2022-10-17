@@ -5,3 +5,5 @@ export { scrollToElement, scrollPageToTop, scrollWithSpeed, lockBody, unlockBody
 export { clearSocialLink, removeUrlParameter } from './Url'
 export { copyToClipboard } from './Clipboard'
 export { localStorageKeepArray, localStorageGet } from './LocalStorage'
+export { formatMinutes } from './Date'
+export { formatPrice } from './Price'

@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { useSessionStore, useProductStore } from '~/store'
+import { useSessionStore, useProductStore, useDeliveryStore } from '~/store'
 import { scrollPageToTop } from '~/utils'
 
 const nuxtApp = useNuxtApp()
@@ -36,6 +36,7 @@ useHead({
 // }
 
 const productStore = useProductStore()
+const deliveryStore = useDeliveryStore()
 const session = useSessionStore()
 
 const init = await useInit()
@@ -56,6 +57,10 @@ if ($env.useRegions) {
 
   $log.log('🧙‍♂️ ASYNC REGIONS', { regions: regions.value })
 }
+
+onMounted(() => {
+  deliveryStore.clientInit()
+})
 </script>
 
 <style lang="scss">

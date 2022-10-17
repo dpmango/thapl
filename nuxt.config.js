@@ -26,6 +26,7 @@ export default defineNuxtConfig({
       promoListType: '',
       useRegions: '',
       useSearch: '',
+      takeawayOnly: '',
       footerNavTitle: '',
 
       yandexMetrikaID: '',
