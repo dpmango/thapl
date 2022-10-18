@@ -1,6 +1,6 @@
 <template>
   <div class="delivery">
-    <div v-if="!geoData.requested">
+    <template v-if="!geoData.requested">
       <UiButton
         icon-left="location"
         theme="primary"
@@ -11,20 +11,23 @@
         Найти меня
       </UiButton>
 
-      <div class="list">
-        <li v-for="address in userAddress" @click="setAddress(address)">
-          <p class="text-m">{{ address.name }}</p>
-          <p class="text-s c-gray">{{ address.description }}</p>
-        </li>
-      </div>
-    </div>
+      <ul class="delivery__list">
+        <LocationAddressList
+          v-for="(address, idx) in userAddress"
+          :key="idx"
+          :title="address.name"
+          :description="[address.description]"
+          @click="setAddress(address)"
+        />
+      </ul>
+    </template>
 
-    <div v-else-if="zone.found">
-      <LocationAddressFound
+    <template v-else-if="zone.found">
+      <LocationAddressDetails
         :coordinates="[geoData.latitude, geoData.longitude]"
         :marker="geoData.text"
       />
-    </div>
+    </template>
 
     <UiAtomErrorMessage v-else title="Плохие новости">
       <template #content>
@@ -116,6 +119,7 @@ const geolocationSuccess = async (position) => {
     })
   } catch {
     geolocationFailure({ code: 500 })
+    geolocationLoading.value = false
   }
 
   geolocationLoading.value = false
@@ -137,15 +141,9 @@ const geolocationFailure = (positionError) => {
 </script>
 
 <style lang="scss">
-.list {
-  margin-top: 12px;
-  li {
-    padding: 15px 0;
-    border-bottom: 1px solid var(--color-border);
-    cursor: pointer;
-    &:last-child {
-      border-bottom: 0;
-    }
+.delivery {
+  &__list {
+    margin-top: 12px;
   }
 }
 </style>

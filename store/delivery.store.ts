@@ -1,15 +1,28 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { IZone, IUserAddress } from 'interface/Delivery'
+import { IZone, IOrganization, IUserAddress, IOrganizationTakeaway } from 'interface/Delivery'
 import { localStorageKeepArray, localStorageGet } from '~/utils'
 
 export const useDeliveryStore = defineStore('delivery', {
   state: () => {
     return {
-      zone: {} as IZone,
+      region: null,
+      regions: [],
+
+      restaurants: [] as IOrganizationTakeaway[],
       userAddress: [] as IUserAddress[],
+
+      zone: {} as IZone,
+      takeawayOrganization: {} as IOrganization,
     }
   },
   getters: {
+    currentRegionName(state) {
+      try {
+        return state.regions.find((x) => x.id === state.region).title
+      } catch {
+        return null
+      }
+    },
     minOrderPrice(state) {
       try {
         return state.zone.min_order
@@ -36,11 +49,11 @@ export const useDeliveryStore = defineStore('delivery', {
   },
   actions: {
     clientInit() {
-      this.getAddresses()
+      this.getStoredAddresses()
     },
     serverInit() {},
     async checkZone({ latitude, longitude }) {
-      const data = await useApi('organization/check-zone', {
+      const data = (await useApi('organization/check-zone', {
         method: 'POST',
         headers: useHeaders(),
         body: {
@@ -49,14 +62,48 @@ export const useDeliveryStore = defineStore('delivery', {
           lng: 37.441142,
           // lng: longitude,
         },
-      })
+      })) as IZone
 
       this.zone = { ...data }
 
       return data
     },
-    getAddresses() {
-      const stored = localStorageGet('userAddress')
+    async getRegions(region) {
+      const data = await useApi('organization/get-regions', {
+        method: 'GET',
+        headers: useHeaders(),
+      }).catch(useCatchError)
+
+      this.regions = [...data]
+
+      return []
+    },
+    async getRestaurants() {
+      const data = (await useApi('organization/get-organizations-for-takeaway', {
+        method: 'POST',
+        headers: useHeaders(),
+      }).catch(useCatchError)) as IOrganizationTakeaway[]
+
+      this.restaurants = [...data]
+
+      return data
+    },
+    async setTakeawayOrganization({ id }) {
+      const data = (await useApi('organization/get-organization-data', {
+        method: 'GET',
+        headers: useHeaders(),
+        params: {
+          id,
+        },
+      }).catch(useCatchError)) as IOrganization[]
+
+      this.takeawayOrganization = { ...data }
+
+      return data
+    },
+
+    getStoredAddresses() {
+      const stored = localStorageGet('userAddress') || []
       this.userAddress = [...stored]
     },
     saveAddress(payload: IUserAddress) {

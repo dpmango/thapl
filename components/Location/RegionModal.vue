@@ -42,10 +42,6 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
 
 const { value: search } = useField('search')
 
-// const { data: regionsData, error: regionsError } = await useAsyncData('regions', () =>
-//   session.getRegions()
-// )
-
 const handleRegionSelect = (region, e) => {
   e.preventDefault()
 

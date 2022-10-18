@@ -3,7 +3,7 @@ export interface IZone {
   found: boolean
   is_open: boolean
   working_all_day: boolean
-  organization: Organization
+  organization: IOrganization
   disable_cash_payment: boolean
   disable_courier_card_payment: boolean
   disable_online_payment: boolean
@@ -17,7 +17,18 @@ export interface IZone {
   working_time_text: null
 }
 
-export interface Organization {
+// list of organizations (i.e. for takeaway list)
+export interface IOrganizationTakeaway {
+  id: number
+  title: string
+  lat: number
+  lng: number
+  phone: string
+  address: string
+  working_hours: string
+}
+
+export interface IOrganization {
   id: number
   is_high_load_state: boolean
   working_all_day: boolean
@@ -42,6 +53,7 @@ export interface PaymentData {
   ios_merchant_id: string
 }
 
+// localStorage stored data
 export interface IUserAddress {
   latitude: number
   longitude: number

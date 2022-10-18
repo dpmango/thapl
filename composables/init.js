@@ -35,7 +35,7 @@ export const useInit = async () => {
   $log.log('🧙‍♂️ ASYNC INIT', data.value)
 
   if (data) {
-    const { api_token, user_token } = data.value
+    const { api_token, user_token, app_settings } = data.value
 
     session.setInit(data.value)
     apiCookie.value = api_token
@@ -46,7 +46,7 @@ export const useInit = async () => {
       ui.setModal({ name: 'region', params: { closable: false } })
     }
 
-    return { api_token, user_token }
+    return { api_token, user_token, app_settings }
   }
 
   return null

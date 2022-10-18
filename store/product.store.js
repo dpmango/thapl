@@ -151,18 +151,6 @@ export const useProductStore = defineStore('product', {
 
       return data
     },
-    async getCategories() {
-      const headers = useHeaders()
-
-      const data = await useApi('catalog/get-categories', {
-        method: 'GET',
-        headers,
-      })
-
-      this.categories = [...data]
-
-      return data
-    },
   },
 })
 

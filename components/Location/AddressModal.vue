@@ -2,7 +2,10 @@
   <UiModal name="address" size="large">
     <div class="address">
       <div class="address__head">
-        <div class="h2-title">Куда доставить?</div>
+        <div class="h2-title">
+          <template v-if="deliveryType === 1">Куда доставить?</template>
+          <template v-else-if="deliveryType === 2">Откуда заберете?</template>
+        </div>
 
         <UiToggle
           v-if="showOptions"
@@ -14,11 +17,11 @@
         </UiToggle>
       </div>
 
-      <div class="address__form">
+      <div class="address__search">
         <UiInput
           name="address"
           type="text"
-          placeholder="Укажите новый адрес"
+          :placeholder="placeholderText"
           icon="location"
           icon-position="left"
           :value="search"
@@ -32,6 +35,8 @@
         class="address__delivery"
         @set-search="(v) => setFieldValue('search', v)"
       />
+
+      <LocationAddressTakeaway v-if="deliveryType === 2" class="address__delivery" />
     </div>
   </UiModal>
 </template>
@@ -63,6 +68,16 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
 })
 
 const { value: search } = useField('search')
+
+const placeholderText = computed(() => {
+  if (deliveryType.value === 1) {
+    return 'Укажите новый адрес'
+  } else if (deliveryType.value === 2) {
+    return 'Найти ресторан'
+  }
+
+  return ''
+})
 </script>
 
 <style lang="scss" scoped>
@@ -77,7 +92,7 @@ const { value: search } = useField('search')
     margin-left: auto;
     flex: 0 0 auto;
   }
-  &__form {
+  &__search {
     margin-top: 28px;
   }
   &__delivery {

@@ -8,6 +8,7 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import { useSessionStore, useProductStore, useDeliveryStore } from '~/store'
 import { scrollPageToTop } from '~/utils'
 
@@ -37,7 +38,8 @@ useHead({
 
 const productStore = useProductStore()
 const deliveryStore = useDeliveryStore()
-const session = useSessionStore()
+const sessionStore = useSessionStore()
+const { region } = storeToRefs(deliveryStore)
 
 const init = await useInit()
 
@@ -49,13 +51,22 @@ $log.log('🧙‍♂️ ASYNC CATALOG', { catalog: catalog.value })
 
 if ($env.useRegions) {
   const { data: regions, error: regionsError } = await useAsyncData('regions', () =>
-    session.getRegions()
+    deliveryStore.getRegions()
   )
 
   const regionCookie = useCookieState('x-thapl-region-id')
-  session.setCurrentRegion(regionCookie.value)
+  deliveryStore.region.value = regionCookie.value
 
   $log.log('🧙‍♂️ ASYNC REGIONS', { regions: regions.value })
+}
+
+if (init.app_settings.takeaway_enabled || !$env.takeawayOnly) {
+  const { data: restaurants, error: restaurantsError } = await useAsyncData(
+    'organizations-for-takeaway',
+    () => deliveryStore.getRestaurants()
+  )
+
+  $log.log('🧙‍♂️ ASYNC ORGANIZATIONS', { restaurants: restaurants.value })
 }
 
 onMounted(() => {

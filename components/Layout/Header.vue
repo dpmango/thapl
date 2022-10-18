@@ -31,7 +31,7 @@
           <div class="tile _action" @click="() => ui.setModal({ name: 'region' })">
             <span class="tile__label tile__overflow">Город</span>
             <div class="tile__value">
-              <span class="tile__overflow">{{ session.currentRegionName }}</span>
+              <span class="tile__overflow">{{ currentRegionName }}</span>
               <nuxt-icon name="caret" />
             </div>
           </div>
@@ -119,16 +119,18 @@
 
 <script setup>
 import _ from 'lodash'
-import { useSessionStore, useUiStore, useCartStore } from '~/store'
+import { useSessionStore, useUiStore, useCartStore, useDeliveryStore } from '~/store'
 
 const ui = useUiStore()
 const session = useSessionStore()
 const cartStore = useCartStore()
+const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
 const {
   app_settings: { site_settings },
 } = session
+const { currentRegionName } = deliveryStore
 
 defineProps({
   variant: {

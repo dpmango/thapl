@@ -183,6 +183,7 @@ const icons = [
   'close',
   'cart',
   'location',
+  'high-load',
   'SocialApple',
   { name: 'SocialGoogleplay' },
 ]

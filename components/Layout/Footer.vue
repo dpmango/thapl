@@ -46,7 +46,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useProductStore, useSessionStore } from '~~/store'
+import { useProductStore, useSessionStore } from '~/store'
 
 const productStore = useProductStore()
 const sessionStore = useSessionStore()

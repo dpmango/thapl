@@ -28,7 +28,7 @@ const props = defineProps({
 const imgSrc = ref(null)
 
 const getImage = async () => {
-  const module = await import(`/assets/img/${props.image}`)
+  const module = await import(/* @vite-ignore */ `/assets/img/${props.image}`)
   return module.default.replace('@fs/', '')
 }
 

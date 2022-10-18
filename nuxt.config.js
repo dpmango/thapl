@@ -96,24 +96,6 @@ export default defineNuxtConfig({
       //   { rel: 'manifest', href: '/site.webmanifest' },
       //   { rel: 'mask-icon', href: '/safari-pinned-tab.svg' },
       // ],
-      script: [
-        {
-          hid: 'gtm-script1',
-          src: 'https://www.googletagmanager.com/gtag/js?id=G-',
-          defer: true,
-          async: true,
-        },
-        {
-          hid: 'gtm-script2',
-          children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'G-');
-        `,
-        },
-      ],
     },
   },
 })
