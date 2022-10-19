@@ -38,8 +38,11 @@
               @on-change="(v) => (optionsMod = v)"
             />
           </div>
+
           <div class="product__cta">
-            <UiButton :block="true"> В корзину &bull; {{ product.price }} ₽ </UiButton>
+            <ProductCardAddToCart :product="product" btn-theme="primary" :should-emit="false">
+              В корзину &bull; {{ product.price }} ₽
+            </ProductCardAddToCart>
           </div>
         </div>
       </div>
@@ -48,8 +51,7 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
-import { useSessionStore, useUiStore } from '~/store'
+import { useUiStore } from '~/store'
 
 const { $env, $log } = useNuxtApp()
 
@@ -57,21 +59,6 @@ const ui = useUiStore()
 
 const product = ref(null)
 const loading = ref(false)
-
-const fetchProduct = async (id) => {
-  loading.value = true
-  const data = await useApi('catalog/get-item-data', {
-    method: 'GET',
-    headers: useHeaders(),
-    params: { id },
-  }).catch(useCatchError)
-
-  if (data) {
-    product.value = { ...data }
-  }
-
-  loading.value = false
-}
 
 const optionsSizeList = ref([
   { id: 1, label: 'Маленькая' },
@@ -87,6 +74,21 @@ const optionsModList = ref([
 ])
 
 const optionsMod = ref(null)
+
+const fetchProduct = async (id) => {
+  loading.value = true
+  const data = await useApi('catalog/get-item-data', {
+    method: 'GET',
+    headers: useHeaders(),
+    params: { id },
+  }).catch(useCatchError)
+
+  if (data) {
+    product.value = { ...data }
+  }
+
+  loading.value = false
+}
 
 watch(
   () => ui.modalParams,
@@ -169,6 +171,14 @@ watch(
     flex: 0 0 auto;
     padding: 24px 32px;
     background: var(--color-bg);
+    :deep(button) {
+      display: block;
+      width: 100%;
+    }
+    :deep(.plusminus) {
+      max-width: 100%;
+      background: var(--color-bg-darken);
+    }
   }
 }
 </style>

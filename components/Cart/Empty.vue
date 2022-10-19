@@ -1,39 +1,31 @@
 <template>
   <div class="empty">
-    <div class="empty__icon">
-      <nuxt-icon name="cart" />
-    </div>
-    <div class="empty__title h4-title">В корзине пусто</div>
-    <div class="empty__text text-m">
-      Зайдите в меню, выберите блюда, которые хотите съесть, а мы оперативно доставим ваш заказ от 1
-      000 ₽.
-    </div>
-    <div class="empty__cta">
-      <UiButton to="/">Перейти в меню</UiButton>
-    </div>
+    <UiAtomErrorMessage icon="cart-outline" title="В корзине пусто">
+      <template #content>
+        Зайдите в меню, выберите блюда, которые хотите съесть, а мы оперативно доставим ваш заказ от
+        {{ formatPrice(0) }} ₽.
+      </template>
+      <template #action>
+        <UiButton to="/" @click="ui.closeModal()">Перейти в меню</UiButton>
+      </template>
+    </UiAtomErrorMessage>
   </div>
 </template>
 
+<script setup>
+import { storeToRefs } from 'pinia'
+import { useSessionStore, useUiStore } from '~~/store'
+import { formatPrice } from '~/utils'
+
+const sessionStore = useSessionStore()
+const ui = useUiStore()
+
+const { app_settings } = storeToRefs(sessionStore)
+</script>
+
 <style lang="scss" scoped>
 .empty {
-  margin: auto 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  &__icon {
-    font-size: 60px;
-  }
-  &__title {
-    margin-top: 24px;
-  }
-  &__text {
-    margin-top: 16px;
-    text-align: center;
-    max-width: 330px;
-  }
-  &__cta {
-    margin-top: 28px;
-  }
+  margin: auto;
+  max-width: 330px;
 }
 </style>

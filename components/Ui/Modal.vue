@@ -42,6 +42,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  scrolling: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const modifiers = computed(() => [
@@ -51,10 +55,11 @@ const modifiers = computed(() => [
   `_${props.size}`,
   `_${props.height}`,
   !props.padding && '_no-padding',
+  !props.scrolling && '_no-scrolling',
 ])
 
 const isModalActive = computed(() => {
-  return activeModal.value === props.name
+  return activeModal.value.includes(props.name)
 })
 
 const closeModal = () => {
@@ -201,6 +206,11 @@ const closeModal = () => {
       padding: 0;
     }
   }
+  &._no-scrolling {
+    .modal__content {
+      overflow-y: hidden;
+    }
+  }
 
   &._active {
     pointer-events: all;
@@ -230,9 +240,9 @@ const closeModal = () => {
   .modal {
     &._normal {
       .modal {
-        &__wrapper {
-          // max-width: 432px;
-        }
+        // &__wrapper {
+        //   // max-width: 432px;
+        // }
         &__content {
           padding: 24px;
         }
@@ -246,9 +256,9 @@ const closeModal = () => {
 
     &._aside {
       .modal {
-        &__wrapper {
-          // max-width: 516px;
-        }
+        // &__wrapper {
+        //   // max-width: 516px;
+        // }
         &__close {
           top: 16px;
           left: auto;

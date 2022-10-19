@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <UiModal name="cart" position="aside" height="fill">
+    <UiModal name="cart" position="aside" height="fill" :padding="false" :scrolling="false">
       <CartEmpty v-if="products.length === 0" />
       <CartSummary v-else />
     </UiModal>
@@ -10,7 +10,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCartStore, useProductStore } from '~/store'
-import { PerformanceLog } from '~/utils'
 
 const { $env, $log } = useNuxtApp()
 
@@ -33,6 +32,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .cart {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

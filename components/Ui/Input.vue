@@ -1,6 +1,6 @@
 <template>
   <div v-click-outside="() => (suggestionsVisible = false)" class="input" :class="modifiers">
-    <label v-if="label" class="input__label text-m" :for="id">{{ label }}</label>
+    <label v-if="label" class="input__label text-s c-gray" :for="id">{{ label }}</label>
     <div class="input__wrapper">
       <component
         :is="getElement"
@@ -319,7 +319,15 @@ const height = ref('')
 const resizeTextarea = () => {
   height.value = 'auto !important'
   nextTick(() => {
-    height.value = `${inputRef.value.scrollHeight}px`
+    const style = window.getComputedStyle(inputRef.value)
+    const padding = parseInt(style.paddingTop) + parseInt(style.paddingBottom)
+    const lineHeight = parseInt(style.lineHeight)
+    const maxHeight = lineHeight * props.maxRows + padding + 2
+
+    let newHeight = inputRef.value.scrollHeight + 2
+    if (newHeight >= maxHeight) newHeight = maxHeight
+
+    height.value = `${newHeight}px`
   })
 }
 
@@ -388,8 +396,8 @@ onBeforeUnmount(() => {
   }
   &__label {
     display: block;
-    font-weight: 600;
-    margin-bottom: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
   }
 
   &__input {
@@ -399,7 +407,7 @@ onBeforeUnmount(() => {
     display: block;
     width: 100%;
     border: 1px solid var(--color-border);
-    background: white;
+    background: var(--input-background-color);
     border-radius: var(--input-border-radius);
     font-style: normal;
     font-weight: 400;
@@ -496,7 +504,7 @@ onBeforeUnmount(() => {
     left: 0;
     right: 0;
     padding-top: 8px;
-    background: white;
+    background: var(--input-background-color);
     box-shadow: 0px 13px 30px -10px #e6e6e6;
     border-radius: 8px;
     max-height: 208px;
@@ -651,5 +659,16 @@ input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-results-button,
 input[type='search']::-webkit-search-results-decoration {
   -webkit-appearance: none;
+}
+</style>
+
+<style lang="scss">
+.ui-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: calc(22 / 14);
+  color: var(--color-gray);
 }
 </style>

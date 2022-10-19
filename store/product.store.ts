@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { PerformanceLog } from '~/utils'
 import { quickFilterKeys } from '~/store/product/helpers'
+import { ICategory, ICategoryFull, IProduct } from '~/interface/Product'
 
 export const useProductStore = defineStore('product', {
   state: () => {
@@ -73,7 +74,7 @@ export const useProductStore = defineStore('product', {
     },
     // возвращает все товары одним массивом
     // поиском по всем категориям и вложенным категориям
-    flatCatalog(state) {
+    flatCatalog(state): IProduct[] {
       const DEV_perf = performance.now()
 
       const { $env } = useNuxtApp()
@@ -122,30 +123,28 @@ export const useProductStore = defineStore('product', {
   actions: {
     async getCatalog() {
       const headers = useHeaders()
-      const { $env } = useNuxtApp()
+      const { $log, $env } = useNuxtApp()
 
       let data = []
 
       if ($env.catalogType === 'singlepage') {
-        data = await useApi('catalog/get-main-page-categories', {
+        data = (await useApi('catalog/get-main-page-categories', {
           method: 'GET',
           headers,
-        })
+        })) as ICategoryFull[]
       } else if ($env.catalogType === 'categories') {
-        data = await useApi('catalog/get-categories', {
+        data = (await useApi('catalog/get-categories', {
           method: 'GET',
           headers,
-        })
+        })) as ICategory[]
       } else if ($env.catalogType === 'conceptions') {
-        data = await useApi('catalog/get-conceptions', {
+        data = (await useApi('catalog/get-conceptions', {
           method: 'GET',
           headers,
-        })
+        })) as ICategory[]
       }
 
-      console.log(
-        `🧙‍♂️ ++ Catalog (type ${$env.catalogType}) set with ${data.length} categories ++ 🧙‍♂️`
-      )
+      $log.log(`🧙‍♂️ ++ Catalog (type ${$env.catalogType}) set with ${data.length} categories ++ 🧙‍♂️`)
 
       this.catalog = [...data]
 

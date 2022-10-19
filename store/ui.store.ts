@@ -1,11 +1,14 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 
+// TODO
+// modalParams не работает в режиме наложения (несколько модальных)
+
 export const useUiStore = defineStore('ui', {
   state: () => {
     return {
       mobileMenuActive: false,
       mobileMenuOffest: 0,
-      modal: null,
+      modal: [] as string[],
       modalParams: null,
     }
   },
@@ -19,15 +22,31 @@ export const useUiStore = defineStore('ui', {
         this.mobileMenuActive = payload
       }
     },
-    setModal({ name, params }: { name: string; params?: any }) {
-      this.modal = name
+    setModal({
+      name,
+      params,
+      keepPrevious = false,
+    }: {
+      name: string
+      params?: any
+      keepPrevious?: boolean
+    }) {
+      if (keepPrevious) {
+        this.modal.push(name)
+      } else {
+        this.modal = [name]
+      }
 
       if (params) {
         this.modalParams = params
       }
     },
     closeModal() {
-      this.modal = null
+      this.modal = this.modal.slice(0, -1)
+      this.modalParams = null
+    },
+    closeAllModals() {
+      this.modal = []
       this.modalParams = null
     },
   },

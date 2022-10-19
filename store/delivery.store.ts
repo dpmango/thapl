@@ -21,6 +21,13 @@ export const useDeliveryStore = defineStore('delivery', {
     paths: ['currentAddress'],
   },
   getters: {
+    currentAddressType(state) {
+      try {
+        return state.currentAddress.type
+      } catch {
+        return null
+      }
+    },
     currentRegionName(state) {
       try {
         return state.regions.find((x) => x.id === state.region).title
@@ -32,7 +39,7 @@ export const useDeliveryStore = defineStore('delivery', {
       try {
         return state.zone.min_order
       } catch {
-        return 0
+        return null
       }
     },
     workingTime(state) {
@@ -55,6 +62,7 @@ export const useDeliveryStore = defineStore('delivery', {
   actions: {
     clientInit() {
       this.getStoredAddresses()
+      this.hydrateZone()
     },
     serverInit() {},
     setCurrentAddress(payload) {
@@ -121,6 +129,16 @@ export const useDeliveryStore = defineStore('delivery', {
     saveAddress(payload: IUserAddress) {
       const updated = localStorageKeepArray('userAddress', payload, 'name')
       this.userAddress = [...updated]
+    },
+
+    async hydrateZone() {
+      // TODO - refactor
+      if (this.currentAddress?.type === 'delivery') {
+        const { latitude, longitude } = this.currentAddress
+        await this.checkZone({ latitude, longitude })
+      } else if (this.currentAddress?.type === 'takeaway') {
+        // await this.getRestaurants()
+      }
     },
   },
 })

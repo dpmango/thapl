@@ -1,10 +1,16 @@
 // export { getEnv } from './Env'
 export { PerformanceLog } from './Dev'
-export { clearPhone, validPhone, validEmail } from './Validation'
 export { scrollToElement, scrollPageToTop, scrollWithSpeed, lockBody, unlockBody } from './Scroll'
 export { clearSocialLink, removeUrlParameter } from './Url'
 export { copyToClipboard } from './Clipboard'
 export { localStorageKeepArray, localStorageGet } from './LocalStorage'
 export { formatMinutes } from './Date'
-export { formatPrice } from './Price'
-export { Plurize } from './Plurize'
+export { formatPrice, Plurize } from './Numbers'
+export {
+  clearString,
+  isValidNumber,
+  clearPhone,
+  validPhone,
+  validEmail,
+  validAdress,
+} from './Validation'

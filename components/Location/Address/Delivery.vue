@@ -71,6 +71,8 @@ const setAddress = async ({ latitude, longitude, name, fullText }) => {
   deliveryStore.setCurrentAddress({
     type: 'delivery',
     name,
+    latitude,
+    longitude,
     org_id: zone.organization.id,
   })
 

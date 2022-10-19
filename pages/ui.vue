@@ -182,6 +182,7 @@ const icons = [
   'dislike',
   'close',
   'cart',
+  'cart-outline',
   'location',
   'high-load',
   'SocialApple',

@@ -5,7 +5,7 @@
     <ProductPopular />
 
     <template v-if="$env.catalogType === 'singlepage'">
-      <ProductCategory
+      <LazyProductCategory
         v-for="category in productStore.catalogWithFilter"
         :key="category.id"
         :category="category"

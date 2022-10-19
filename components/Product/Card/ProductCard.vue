@@ -29,63 +29,31 @@
         @mouseleave="setFocused(true)"
       >
         <div class="card__price text-l">{{ product.price }} ₽</div>
-        <div class="card__add">
-          <UiButton
-            v-if="!productQuantityInCart(product.id)"
-            theme="secondary"
-            @click="handleSelect"
-          >
-            Выбрать
-          </UiButton>
-          <UiPlusMinus
-            v-else
-            size="medium"
-            :value="productQuantityInCart(product.id)"
-            @on-change="handleQuantityChange"
-          />
-        </div>
+
+        <ProductCardAddToCart
+          :product="product"
+          btn-theme="secondary"
+          @on-before-add="handleProductClick"
+        >
+          Выбрать
+        </ProductCardAddToCart>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
-import { useCartStore, useDeliveryStore, useUiStore } from '~/store'
+import { useUiStore } from '~/store'
 
-const cartStore = useCartStore()
-const deliveryStore = useDeliveryStore()
 const ui = useUiStore()
-
-const { productQuantityInCart } = storeToRefs(cartStore)
-const { currentAddress } = storeToRefs(deliveryStore)
 
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
   },
 })
-
-const handleSelect = () => {
-  if (!currentAddress.value) {
-    ui.setModal({ name: 'address' })
-    return
-  } else if (props.product.open_item_page_to_add) {
-    handleProductClick()
-    return
-  }
-  cartStore.addToCart(props.product)
-}
-
-const handleQuantityChange = (n: number) => {
-  if (n === 0) {
-    cartStore.removeFromCart(props.product.id)
-  } else {
-    cartStore.changeQuantity({ id: props.product.id, quantity: n })
-  }
-}
 
 const handleProductClick = () => {
   ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
@@ -106,6 +74,7 @@ const setFocused = (v) => {
   cursor: pointer;
   &__image {
     position: relative;
+    z-index: 1;
     border-radius: var(--card-border-radius);
     font-size: 0;
     padding-bottom: var(--product-card-ar);
@@ -119,7 +88,7 @@ const setFocused = (v) => {
       height: 100%;
       // max-width: auto;
       object-fit: cover;
-      transition: transform 0.25s $ease;
+      transition: transform 0.35s ease-out;
     }
   }
   &__badges {

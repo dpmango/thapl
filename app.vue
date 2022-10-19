@@ -9,16 +9,18 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore, useProductStore, useDeliveryStore } from '~/store'
+import { useSessionStore, useProductStore, useDeliveryStore, useUiStore } from '~/store'
 import { scrollPageToTop } from '~/utils'
 
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
+const ui = useUiStore()
 
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
   if (loaded.value) scrollPageToTop() // no scroll on initial load
   loaded.value = true
+  ui.closeAllModals()
 })
 
 useHead({

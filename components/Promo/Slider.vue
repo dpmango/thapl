@@ -33,7 +33,7 @@ const modifiers = computed(() => [listType === 1 && '_wide', listType === 2 && '
 
 const swiperParams = {
   slidesPerView: 'auto',
-  spaceBetween: 32,
+  // spaceBetween: 32,
   centeredSlides: true,
   autoplay: { delay: 10000, pauseOnMouseEnter: true },
   pagination: {
@@ -81,6 +81,7 @@ onMounted(() => {
         :deep(.swiper-slide) {
           flex-basis: 100%;
           width: 100%;
+          margin-right: 32px;
         }
       }
     }
@@ -92,6 +93,7 @@ onMounted(() => {
         :deep(.swiper-slide) {
           flex-basis: 268px;
           width: 268px;
+          margin-right: 32px;
         }
       }
       &__slide {

@@ -47,7 +47,7 @@
   // brand colors
   --color-primary: #ec5c2a;
   --color-primary-rgb: #{HexToRGB(#ec5c2a)};
-  --color-green: #19cb75;
+  --color-green: #75da52;
   --color-red: #ee5743;
   --color-yellow: #f2c94c;
 
@@ -60,9 +60,11 @@
   --loader-overlay-background: rgba(255, 255, 255, 0.5);
 
   // ui
+  --input-background-color: #ffffff;
   --swiper-bullet-color: #f0f0f0;
   --breadcrumbs-separator-color: #dddddd;
   --plusminus-control-color: #a0a0a0;
+  --progress-background-color: #e0e0e0;
 
   //shadows
   --box-shadow-large: 0px 16px 48px rgba(0, 0, 0, 0.08);
@@ -75,17 +77,29 @@
   --badge-blue-background: #c9f0fc;
 }
 
-.dark-mode {
+.theme-dark {
   --color-background: #000;
   --color-font: #fff;
+  --color-font-rgb: #{HexToRGB(#fff)};
+  --color-font-invert: #000;
 
-  // brand colors
   --color-bg: #151515;
+  --color-bg-darken: #151515;
+  --color-border: #151515;
+  --color-separator: #151515;
 
   // components
   --header-background: #000;
   --product-background: #151515;
   --component-background: #151515;
+  --modal-background: rgba(255, 255, 255, 0.2);
+  --modal-body-background: #000;
+  --loader-overlay-background: rgba(0, 0, 0, 0.5);
+
   // ui
+  --input-background-color: #151515;
   --swiper-bullet-color: #151515;
+  --breadcrumbs-separator-color: #151515;
+  --plusminus-control-color: #151515;
+  --progress-background-color: #151515;
 }

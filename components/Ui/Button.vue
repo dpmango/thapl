@@ -82,9 +82,10 @@ watch(
 <style lang="scss" scoped>
 .button {
   -webkit-appearance: none;
+  appearance: none;
   position: relative;
   padding: 0;
-  display: inline-block;
+  display: inline-flex;
   border: 1px solid transparent;
   box-sizing: border-box;
   border-radius: var(--button-border-radius);
@@ -157,7 +158,7 @@ watch(
       outline: none;
     }
 
-    &[disabled] {
+    &[disabled='true'] {
       background: #e3e9ef;
       color: var(--color-disabled);
       pointer-events: none;

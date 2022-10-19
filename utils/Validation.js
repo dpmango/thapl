@@ -14,7 +14,7 @@ export const clearString = (v, removeSpaces) => {
   return value
 }
 
-const isValidNumber = (v) => {
+export const isValidNumber = (v) => {
   return Number.isFinite(+v)
 }
 
@@ -56,4 +56,10 @@ export const validEmail = (v) => {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
   return reg.test(value)
+}
+
+export const validAdress = (v) => {
+  const value = clearString(v)
+
+  return value.split(' ').length >= 2 && /\d+/.test(value)
 }

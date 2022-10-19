@@ -1,6 +1,9 @@
 <template>
   <div class="error">
-    <img :src="imgSrc" alt="" />
+    <div class="error__media">
+      <nuxt-icon v-if="icon" :name="icon" />
+      <img v-else-if="image" :src="imgSrc" alt="" />
+    </div>
 
     <h4 class="error__title h4-title">{{ title }}</h4>
 
@@ -20,6 +23,10 @@ const props = defineProps({
     type: String,
     default: 'error-default',
   },
+  icon: {
+    type: String,
+    default: '',
+  },
   title: {
     type: String,
   },
@@ -33,7 +40,9 @@ const getImage = async () => {
 }
 
 watchEffect(async () => {
-  imgSrc.value = await getImage()
+  if (!props.icon) {
+    imgSrc.value = await getImage()
+  }
 })
 </script>
 
@@ -43,6 +52,14 @@ watchEffect(async () => {
   max-width: 385px;
   margin-left: auto;
   margin-right: auto;
+  &__media {
+    font-size: 0;
+    display: flex;
+    justify-content: center;
+    .nuxt-icon {
+      font-size: 60px;
+    }
+  }
   &__title {
     margin-top: 20px;
   }

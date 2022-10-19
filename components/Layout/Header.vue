@@ -239,10 +239,10 @@ onBeforeUnmount(() => {
 }
 
 @include r($xl) {
-  .header {
-    &__logo {
-    }
-  }
+  // .header {
+  //   // &__logo {
+  //   // }
+  // }
 }
 
 @include r($lg) {
