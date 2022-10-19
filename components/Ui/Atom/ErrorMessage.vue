@@ -18,7 +18,7 @@
 const props = defineProps({
   image: {
     type: String,
-    default: 'error-default.svg',
+    default: 'error-default',
   },
   title: {
     type: String,
@@ -28,7 +28,7 @@ const props = defineProps({
 const imgSrc = ref(null)
 
 const getImage = async () => {
-  const module = await import(/* @vite-ignore */ `/assets/img/${props.image}`)
+  const module = await import(/* @vite-ignore */ `./../../../assets/img/${props.image}.svg`)
   return module.default.replace('@fs/', '')
 }
 

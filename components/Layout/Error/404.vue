@@ -2,7 +2,7 @@
   <div class="error">
     <div class="container">
       <div class="error__wrapper">
-        <UiAtomErrorMessage title="Ошибка 404" image="error-not-found.svg">
+        <UiAtomErrorMessage title="Ошибка 404" image="error-not-found">
           <template #content>
             Возможно, она когда-то была доступна по этой ссылке, но сейчас ее не существует.
             Попробуйте найти то, что ищете, начав с главной страницы.
