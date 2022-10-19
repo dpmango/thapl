@@ -13,8 +13,7 @@
           :list="deliveryOptions"
           :value="deliveryType"
           @on-change="(v) => (deliveryType = v)"
-        >
-        </UiToggle>
+        />
       </div>
 
       <div class="address__search">
@@ -26,7 +25,7 @@
           icon-position="left"
           :value="search"
           :error="errors.search"
-          @on-change="(v) => setFieldValue('search', v)"
+          @on-change="handleSearchChange"
         />
       </div>
 
@@ -44,11 +43,13 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
-import { useSessionStore } from '~/store'
+import { useDeliveryStore, useSessionStore } from '~/store'
 
 const { $env } = useNuxtApp()
 
 const session = useSessionStore()
+const deliveryStore = useDeliveryStore()
+
 const { app_settings } = storeToRefs(session)
 
 const deliveryOptions = ref([
@@ -78,6 +79,11 @@ const placeholderText = computed(() => {
 
   return ''
 })
+
+const handleSearchChange = (v) => {
+  setFieldValue('search', v)
+  deliveryStore.setCurrentAddress(null)
+}
 </script>
 
 <style lang="scss" scoped>

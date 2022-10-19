@@ -51,7 +51,7 @@ const toast = useToast()
 const { $env } = useNuxtApp()
 
 const deliveryStore = useDeliveryStore()
-const { zone, userAddress } = storeToRefs(deliveryStore)
+const { zone, userAddress, currentAddress } = storeToRefs(deliveryStore)
 
 const emit = defineEmits(['setSearch'])
 
@@ -63,10 +63,16 @@ const geoData = ref({
   text: '',
 })
 
-const setAddress = async ({ latitude, longitude, fullText }) => {
+const setAddress = async ({ latitude, longitude, name, fullText }) => {
   emit('setSearch', fullText)
 
   const zone = await deliveryStore.checkZone({ latitude, longitude })
+
+  deliveryStore.setCurrentAddress({
+    type: 'delivery',
+    name,
+    org_id: zone.organization.id,
+  })
 
   geoData.value = {
     requested: true,
@@ -75,6 +81,20 @@ const setAddress = async ({ latitude, longitude, fullText }) => {
     text: fullText,
   }
 }
+
+watch(
+  () => currentAddress.value,
+  (newVal) => {
+    if (!newVal) {
+      geoData.value = {
+        requested: false,
+        latitude: null,
+        longitude: null,
+        text: '',
+      }
+    }
+  }
+)
 
 const geolocationLoading = ref(false)
 
@@ -108,7 +128,12 @@ const geolocationSuccess = async (position) => {
 
     const geocoderAddress = geocoderTargetObj.metaDataProperty.GeocoderMetaData.Address.formatted
 
-    await setAddress({ latitude, longitude, fullText: geocoderAddress })
+    await setAddress({
+      latitude,
+      longitude,
+      name: geocoderTargetObj.name,
+      fullText: geocoderAddress,
+    })
 
     deliveryStore.saveAddress({
       latitude,

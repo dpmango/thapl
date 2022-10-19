@@ -13,7 +13,12 @@ export const useDeliveryStore = defineStore('delivery', {
 
       zone: {} as IZone,
       takeawayOrganization: {} as IOrganization,
+
+      currentAddress: null,
     }
+  },
+  persist: {
+    paths: ['currentAddress'],
   },
   getters: {
     currentRegionName(state) {
@@ -52,6 +57,13 @@ export const useDeliveryStore = defineStore('delivery', {
       this.getStoredAddresses()
     },
     serverInit() {},
+    setCurrentAddress(payload) {
+      if (payload) {
+        this.currentAddress = { ...payload }
+      } else {
+        this.currentAddress = null
+      }
+    },
     async checkZone({ latitude, longitude }) {
       const data = (await useApi('organization/check-zone', {
         method: 'POST',

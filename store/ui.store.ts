@@ -19,7 +19,7 @@ export const useUiStore = defineStore('ui', {
         this.mobileMenuActive = payload
       }
     },
-    setModal({ name, params }) {
+    setModal({ name, params }: { name: string; params?: any }) {
       this.modal = name
 
       if (params) {

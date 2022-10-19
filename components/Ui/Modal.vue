@@ -36,7 +36,11 @@ const props = defineProps({
   size: {
     type: String,
     default: 'normal',
-    validator: (v) => ['normal', 'large'].includes(v),
+    validator: (v) => ['normal', 'large', 'x-large'].includes(v),
+  },
+  padding: {
+    type: Boolean,
+    default: true,
   },
 })
 
@@ -46,6 +50,7 @@ const modifiers = computed(() => [
   `_${props.position}`,
   `_${props.size}`,
   `_${props.height}`,
+  !props.padding && '_no-padding',
 ])
 
 const isModalActive = computed(() => {
@@ -152,6 +157,17 @@ const closeModal = () => {
     }
   }
 
+  &._x-large {
+    .modal {
+      &__wrapper {
+        max-width: 968px;
+      }
+      &__content {
+        padding: 48px 48px;
+      }
+    }
+  }
+
   &._aside {
     flex-direction: column;
     align-items: flex-end;
@@ -179,6 +195,13 @@ const closeModal = () => {
       }
     }
   }
+
+  &._no-padding {
+    .modal__content {
+      padding: 0;
+    }
+  }
+
   &._active {
     pointer-events: all;
     opacity: 1;

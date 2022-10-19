@@ -1,5 +1,12 @@
 <template>
-  <div class="card" :data-id="product.id">
+  <div
+    class="card"
+    :data-id="product.id"
+    :class="[focused && '_focused']"
+    @click="handleProductClick"
+    @mouseenter="setFocused(true)"
+    @mouseleave="setFocused(false)"
+  >
     <div class="card__image">
       <img :src="product.image" :alt="product.title" />
       <div class="card__badges">
@@ -15,7 +22,12 @@
       <div class="card__description text-s c-gray">
         {{ product.description }}
       </div>
-      <div class="card__actions">
+      <div
+        class="card__actions"
+        @click.stop
+        @mouseenter="setFocused(false)"
+        @mouseleave="setFocused(true)"
+      >
         <div class="card__price text-l">{{ product.price }} ₽</div>
         <div class="card__add">
           <UiButton
@@ -41,10 +53,14 @@
 import { storeToRefs } from 'pinia'
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
-import { useCartStore } from '~/store'
+import { useCartStore, useDeliveryStore, useUiStore } from '~/store'
 
 const cartStore = useCartStore()
+const deliveryStore = useDeliveryStore()
+const ui = useUiStore()
+
 const { productQuantityInCart } = storeToRefs(cartStore)
+const { currentAddress } = storeToRefs(deliveryStore)
 
 const props = defineProps({
   product: {
@@ -53,6 +69,13 @@ const props = defineProps({
 })
 
 const handleSelect = () => {
+  if (!currentAddress.value) {
+    ui.setModal({ name: 'address' })
+    return
+  } else if (props.product.open_item_page_to_add) {
+    handleProductClick()
+    return
+  }
   cartStore.addToCart(props.product)
 }
 
@@ -63,6 +86,16 @@ const handleQuantityChange = (n: number) => {
     cartStore.changeQuantity({ id: props.product.id, quantity: n })
   }
 }
+
+const handleProductClick = () => {
+  ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
+}
+
+// focus
+const focused = ref(false)
+const setFocused = (v) => {
+  focused.value = v
+}
 </script>
 
 <style lang="scss" scoped>
@@ -70,6 +103,7 @@ const handleQuantityChange = (n: number) => {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
   &__image {
     position: relative;
     border-radius: var(--card-border-radius);
@@ -85,6 +119,7 @@ const handleQuantityChange = (n: number) => {
       height: 100%;
       // max-width: auto;
       object-fit: cover;
+      transition: transform 0.25s $ease;
     }
   }
   &__badges {
@@ -116,9 +151,15 @@ const handleQuantityChange = (n: number) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: default;
   }
   &__add {
     font-size: 0;
+  }
+  &._focused {
+    .card__image img {
+      transform: scale(1.04);
+    }
   }
 }
 </style>

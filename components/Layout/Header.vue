@@ -39,9 +39,15 @@
 
         <div class="col header__tile hidden-md">
           <div class="tile _action" @click="() => ui.setModal({ name: 'address' })">
-            <span class="tile__label tile__overflow">Адрес доставки</span>
+            <span class="tile__label tile__overflow">
+              <template v-if="currentAddress?.type === 'takeaway'">Адрес самовывоза</template>
+              <template v-else>Адрес доставки</template>
+            </span>
             <div class="tile__value">
-              <span class="tile__overflow">Укажите адрес</span>
+              <span class="tile__overflow">
+                <template v-if="currentAddress">{{ currentAddress.name }}</template>
+                <template v-else>Укажите адрес</template>
+              </span>
               <nuxt-icon name="caret" />
             </div>
           </div>
@@ -118,6 +124,7 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import _ from 'lodash'
 import { useSessionStore, useUiStore, useCartStore, useDeliveryStore } from '~/store'
 
@@ -130,7 +137,7 @@ const { $env } = useNuxtApp()
 const {
   app_settings: { site_settings },
 } = session
-const { currentRegionName } = deliveryStore
+const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
 
 defineProps({
   variant: {
