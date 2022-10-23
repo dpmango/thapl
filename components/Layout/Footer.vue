@@ -2,8 +2,15 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__wrapper">
-        <div v-if="showMenuSection" class="footer__section">
-          <div class="footer__section-title">Меню</div>
+        <div
+          v-if="showMenuSection"
+          class="footer__section _nav"
+          :class="[activeSection === 1 && '_active']"
+        >
+          <div class="footer__section-title h6-title" @click="handleAccordeon(1)">
+            Меню
+            <NuxtIcon name="caret" />
+          </div>
           <ul class="footer__section-list">
             <li v-for="link in productStore.navCategories">
               <NuxtLink :to="link.slug">{{ link.title }}</NuxtLink>
@@ -11,8 +18,15 @@
           </ul>
         </div>
 
-        <div v-if="app_settings.site_footer_menu" class="footer__section">
-          <div class="footer__section-title">{{ $env.footerNavTitle }}</div>
+        <div
+          v-if="app_settings.site_footer_menu"
+          class="footer__section _nav"
+          :class="[activeSection === 2 && '_active']"
+        >
+          <div class="footer__section-title h6-title" @click="handleAccordeon(2)">
+            {{ $env.footerNavTitle }}
+            <NuxtIcon name="caret" />
+          </div>
           <ul class="footer__section-list">
             <li v-for="link in app_settings.site_footer_menu">
               <UiAtomLinkType :link="link" />
@@ -21,7 +35,7 @@
         </div>
 
         <div v-if="showMarketingSection" class="footer__section">
-          <div class="footer__section-title">Мобильные приложения</div>
+          <div class="footer__section-title h6-title hidden-sm">Мобильные приложения</div>
           <ul class="footer__social-list">
             <li v-if="app_settings.app_store_id">
               <a :href="app_settings.app_store_id">
@@ -65,6 +79,12 @@ const showMenuSection = computed(() => {
 const showMarketingSection = computed(() => {
   return app_settings.value.app_store_id
 })
+
+// mobile accardeon
+const activeSection = ref(null)
+const handleAccordeon = (id) => {
+  activeSection.value = activeSection.value === id ? null : id
+}
 </script>
 
 <style lang="scss" scoped>
@@ -79,6 +99,9 @@ const showMarketingSection = computed(() => {
   &__section-title {
     font-weight: 500;
     color: var(--color-primary);
+    .nuxt-icon {
+      display: none;
+    }
   }
   &__section-list {
     margin: 12px -6px;
@@ -130,7 +153,77 @@ const showMarketingSection = computed(() => {
     color: var(--color-gray);
   }
   &__developer {
+    display: inline-block;
     font-size: 0;
+  }
+}
+
+@include r($sm) {
+  .footer {
+    &__wrapper {
+      padding-top: 0;
+      // todo - only if quickFilter
+      padding-bottom: 60px;
+    }
+    &__section {
+      margin-top: 24px;
+    }
+    &__section-list {
+      margin: 0;
+    }
+    &__bottom {
+      display: block;
+    }
+    &__developer {
+      margin-top: 12px;
+    }
+    // accordeon styles
+    &__section._nav {
+      margin: 0;
+      border-bottom: 1px solid var(--color-border);
+      .footer {
+        &__section-title {
+          display: flex;
+          align-items: center;
+          padding: 16px 0;
+          cursor: pointer;
+          .nuxt-icon {
+            display: block;
+            margin-left: auto;
+            font-size: 10px;
+            transition: transform 0.25s $ease;
+          }
+        }
+        &__section-list {
+          overflow-y: hidden;
+          height: 0;
+          opacity: 0;
+          transition: ease 0.3s;
+          visibility: hidden;
+          li {
+            flex: 0 0 100%;
+            &::after {
+              display: none;
+            }
+          }
+        }
+      }
+      &._active {
+        .footer {
+          &__section-title {
+            .nuxt-icon {
+              transform: rotate(180deg);
+            }
+          }
+          &__section-list {
+            height: auto;
+            visibility: visible;
+            opacity: 1;
+            padding-bottom: 16px;
+          }
+        }
+      }
+    }
   }
 }
 </style>

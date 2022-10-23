@@ -27,6 +27,7 @@
 <script setup>
 import _ from 'lodash'
 import { useProductStore } from '~/store'
+import { createScrollableAnchors } from '~~/utils/Elements'
 
 const navlist = ref(null)
 const hideFromIdx = ref(99)
@@ -71,23 +72,7 @@ const handleLinksScroll = () => {
   // TODO - refactor to refs
   const scrollTop = window.scrollY
   const smoothLinks = document.querySelectorAll('.js-nav .nav__link')
-  const sections = []
-  const links = []
-
-  for (let i = 0; i < smoothLinks.length; i++) {
-    const link = smoothLinks[i]
-    const href = link.getAttribute('href')
-    const name = href.substring(2, href.length)
-    const section = document.getElementById(name)
-
-    if (section) {
-      sections.unshift(section)
-      links.push({
-        name,
-        dom: link,
-      })
-    }
-  }
+  const { sections, links } = createScrollableAnchors(smoothLinks)
 
   const headerOffset = document.querySelector('.header__bottom').offsetHeight + 24
 

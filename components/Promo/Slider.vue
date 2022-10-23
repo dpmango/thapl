@@ -117,9 +117,19 @@ onMounted(() => {
 @include r($md) {
   .promo {
     margin: 16px 0px 36px;
-    &._wide {
+    &._wide,
+    &._narrow {
       .promo__slide {
         height: var(--promo-height-md);
+      }
+    }
+    &._narrow {
+      .promo__slider {
+        :deep(.swiper-slide) {
+          flex-basis: 198px;
+          width: 198px;
+          margin-right: 24px;
+        }
       }
     }
   }
@@ -127,9 +137,35 @@ onMounted(() => {
 
 @include r($sm) {
   .promo {
-    &._wide {
+    &__slide {
+      border-radius: var(--card-border-radius-sm);
+    }
+
+    &._wide,
+    &._narrow {
       .promo__slide {
         height: var(--promo-height-sm);
+      }
+    }
+    &._narrow {
+      .promo {
+        &__slider {
+          :deep(.swiper-slide) {
+            flex-basis: 108px;
+            width: 108px;
+            margin-right: 12px;
+          }
+        }
+        &__slide {
+          padding: 2px;
+        }
+        &__slide-bg {
+          top: 2px;
+          left: 2px;
+          width: calc(100% - 4px);
+          height: calc(100% - 4px);
+          border-radius: 8px;
+        }
       }
     }
   }

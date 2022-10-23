@@ -20,6 +20,10 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
+  navScrollOffset: {
+    type: [Boolean, Number, String],
+    default: true,
+  },
 })
 
 const emit = defineEmits(['onClick'])
@@ -35,7 +39,7 @@ const navLinkProps = computed(() => {
 const handleNavClick = () => {
   if ($env.catalogType === 'singlepage') {
     // e.preventDefault()
-    scrollToElement(props.link.slug)
+    scrollToElement(props.link.slug, props.navScrollOffset)
   }
 
   emit('onClick')

@@ -52,6 +52,40 @@ h6 {
   }
 }
 
+@each $size, $px in $sizes {
+  @include r(#{$px}) {
+    .h1-title-#{$size} {
+      font-size: 48px;
+      line-height: calc(38 / 28);
+    }
+
+    .h2-title-#{$size} {
+      font-size: 28px;
+      line-height: calc(38 / 28);
+    }
+
+    .h3-title-#{$size} {
+      font-size: 24px;
+      line-height: calc(30 / 20);
+    }
+
+    .h4-title-#{$size} {
+      font-size: 20px;
+      line-height: calc(30 / 20);
+    }
+
+    .h5-title-#{$size} {
+      font-size: 20px;
+      line-height: calc(30 / 20);
+    }
+
+    .h6-title-#{$size} {
+      font-size: 16px;
+      line-height: calc(24 / 16);
+    }
+  }
+}
+
 // paragraphs
 p {
   margin: 0;

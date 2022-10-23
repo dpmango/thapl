@@ -94,4 +94,53 @@ const setFilter = (key) => {
     border-radius: 50px;
   }
 }
+
+@include r($sm) {
+  .filter {
+    bottom: 0px;
+    padding: 0 0px;
+    &__wrapper {
+      display: block;
+    }
+    &__categories {
+      justify-content: center;
+      margin-right: 0px;
+      border-radius: 0px;
+      li {
+        flex: 0 0 auto;
+        &:last-child {
+          .filter__link::after {
+            display: none;
+          }
+        }
+      }
+    }
+    &__link {
+      position: relative;
+      font-weight: 500;
+      padding: 10px 24px;
+      color: var(--color-gray);
+      cursor: pointer;
+      transition: color 0.25s $ease;
+      &::after {
+        display: inline-block;
+        content: ' ';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        height: 20px;
+        width: 1px;
+        transform: translateY(-50%);
+        background: var(--color-separator);
+      }
+
+      &._active {
+        color: var(--color-font);
+      }
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+}
 </style>
