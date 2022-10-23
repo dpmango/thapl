@@ -63,7 +63,7 @@
         </div>
 
         <div class="header__actions-mobile visible-md">
-          <div class="action" @click="() => ui.setModal({ name: 'cart' })">
+          <div class="action" @click="handleCartOpen">
             <div class="action__icon">
               <nuxt-icon name="cart" />
               <div v-if="cartStore.cart.length" class="action__counter">
@@ -109,13 +109,13 @@
 
       <!-- bottom -->
       <div class="header__bottom">
-        <div v-if="$env.useSearch" class="header__search">
+        <div v-if="$env.useSearch" class="header__search" @click="ui.setSearchActive(true)">
           <NuxtIcon name="search" />
         </div>
 
         <LayoutNavScroller class="header__nav" />
 
-        <div class="header__cta" @click="() => ui.setModal({ name: 'cart' })">
+        <div class="header__cta" @click="handleCartOpen">
           <UiButton>Корзина</UiButton>
         </div>
       </div>
@@ -155,6 +155,14 @@ const topRef = ref(null)
 const toggleMobile = () => {
   const headerHeight = headerRef.value.offsetHeight
   ui.setMobileMenu({ active: !ui.mobileMenuActive, offset: headerHeight })
+}
+
+const handleCartOpen = () => {
+  if (deliveryStore.currentAddress) {
+    ui.setModal({ name: 'cart' })
+  } else {
+    ui.setModal({ name: 'address' })
+  }
 }
 
 // this.scrollSticky = _.throttle(this.handleSticky, 50)

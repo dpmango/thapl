@@ -10,7 +10,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useSessionStore, useProductStore, useDeliveryStore, useUiStore } from '~/store'
-import { scrollPageToTop } from '~/utils'
+import { scrollPageToTop, createSeoTags } from '~/utils'
 
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
@@ -18,15 +18,12 @@ const ui = useUiStore()
 
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
-  if (loaded.value) scrollPageToTop() // no scroll on initial load
-  loaded.value = true
-  ui.closeAllModals()
-})
+  if (loaded.value) {
+    scrollPageToTop()
+    ui.closeAllModals()
+  }
 
-useHead({
-  bodyAttrs: {
-    class: `theme-${$env.theme}`,
-  },
+  loaded.value = true
 })
 
 // onMounted(() => {
@@ -43,7 +40,19 @@ const deliveryStore = useDeliveryStore()
 const sessionStore = useSessionStore()
 const { region } = storeToRefs(deliveryStore)
 
-const init = await useInit()
+const initData = await useInit()
+
+useHead({
+  title: $env.projectName,
+  bodyAttrs: {
+    class: `theme-${$env.theme}`,
+  },
+  ...createSeoTags({
+    title: initData.site_settings?.page?.seo_title,
+    description: initData.site_settings?.page?.seo_description,
+    content_data: initData.site_settings?.page?.content_data,
+  }),
+})
 
 const { data: catalog, error: categoriesError } = await useAsyncData('catalog', () =>
   productStore.getCatalog()
@@ -57,12 +66,14 @@ if ($env.useRegions) {
   )
 
   const regionCookie = useCookieState('x-thapl-region-id')
-  deliveryStore.region.value = regionCookie.value
+  // const regionCookieClient = useCookie('x-thapl-region-id')
+  region.value = regionCookie.value
+  // regionCookieClient.value = regionCookie.value
 
   $log.log('🧙‍♂️ ASYNC REGIONS', { regions: regions.value })
 }
 
-if (init.app_settings.takeaway_enabled || !$env.takeawayOnly) {
+if (initData.app_settings.takeaway_enabled || !$env.takeawayOnly) {
   const { data: restaurants, error: restaurantsError } = await useAsyncData(
     'organizations-for-takeaway',
     () => deliveryStore.getRestaurants()

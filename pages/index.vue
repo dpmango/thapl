@@ -39,7 +39,7 @@ const productStore = useProductStore()
 const { $env, $log } = useNuxtApp()
 
 useHead({
-  title: 'Главная',
+  title: `Главная - ${$env.projectName}`,
 })
 
 const headers = useHeaders()

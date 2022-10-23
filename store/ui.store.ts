@@ -10,6 +10,7 @@ export const useUiStore = defineStore('ui', {
       mobileMenuOffest: 0,
       modal: [] as string[],
       modalParams: null,
+      searchActive: false,
     }
   },
   actions: {
@@ -48,6 +49,9 @@ export const useUiStore = defineStore('ui', {
     closeAllModals() {
       this.modal = []
       this.modalParams = null
+    },
+    setSearchActive(v) {
+      this.searchActive = v
     },
   },
 })

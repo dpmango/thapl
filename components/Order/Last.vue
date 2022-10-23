@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="col col-2 col-lg-6 col-sm-12">
-          <div class="last__action action _review">
+          <div v-if="$env.useTestimonials" class="last__action action _review">
             <div class="action__icon hidden-sm">
               <nuxt-icon name="like" />
             </div>
@@ -29,6 +29,10 @@
     </div>
   </section>
 </template>
+
+<script setup>
+const { $env } = useNuxtApp()
+</script>
 
 <style lang="scss" scoped>
 .last {

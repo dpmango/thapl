@@ -18,9 +18,16 @@
 
 <script setup>
 import { localStorageKeepArray } from '~/utils'
+
+const { $env, $log } = useNuxtApp()
+
 const crumbs = [{ href: '/', label: 'Заголовок' }]
 
 const route = useRoute()
+
+useHead({
+  title: `Акция - ${$env.projectName}`,
+})
 
 onMounted(() => {
   localStorageKeepArray('viewedPromo', route.params.slug)

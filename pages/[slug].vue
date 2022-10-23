@@ -9,9 +9,15 @@
 </template>
 
 <script setup>
+const { $env, $log } = useNuxtApp()
+
 const crumbs = [{ href: '/', label: 'Заголовок' }]
 
 const route = useRoute()
+
+useHead({
+  title: `Страница- ${$env.projectName}`,
+})
 </script>
 
 <style lang="scss" scoped>

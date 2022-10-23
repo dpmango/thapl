@@ -34,6 +34,10 @@ const { data: categoryData, error: categoriesError } = await useAsyncData(
     })
 )
 
+useHead({
+  title: `${categoryData.value.title} - ${$env.projectName}`,
+})
+
 $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
 
 if (!categoryData.value) {

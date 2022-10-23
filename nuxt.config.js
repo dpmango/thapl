@@ -3,6 +3,8 @@ import eslintPlugin from 'vite-plugin-eslint'
 export default defineNuxtConfig({
   ssr: true,
 
+  experimental: { writeEarlyHints: false },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],
 
@@ -20,12 +22,14 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      projectName: '',
       apiBase: '',
       theme: '',
       catalogType: '',
       promoListType: '',
       useRegions: '',
       useSearch: '',
+      useTestimonials: '',
       takeawayOnly: '',
       footerNavTitle: '',
 
@@ -77,7 +81,6 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Thapl',
       htmlAttrs: {
         lang: 'ru',
       },
@@ -89,13 +92,6 @@ export default defineNuxtConfig({
         },
         { name: 'format-detection', content: 'telephone=no' },
       ],
-      // link: [
-      //   { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-      //   { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-      //   { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
-      //   { rel: 'manifest', href: '/site.webmanifest' },
-      //   { rel: 'mask-icon', href: '/safari-pinned-tab.svg' },
-      // ],
     },
   },
 })

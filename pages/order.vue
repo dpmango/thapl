@@ -4,6 +4,13 @@
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+// definePageMeta({ layout: 'default' })
+const { $env, $log } = useNuxtApp()
+
+useHead({
+  title: `Оформление заказа - ${$env.projectName}`,
+})
+</script>
 
 <style lang="scss" scoped></style>
