@@ -67,6 +67,8 @@ const inputRef = ref(null)
 
 const emit = defineEmits(['onChange'])
 
+defineExpose({ inputRef })
+
 const props = defineProps({
   value: {
     type: String,

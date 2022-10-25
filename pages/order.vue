@@ -1,12 +1,16 @@
 <template>
   <main class="page__content">
-    <OrderCheckout />
+    <OrderCheckout v-if="cartStore.cart.length > 0" />
+    <OrderCheckoutEmpty />
   </main>
 </template>
 
 <script setup>
+import { useCartStore } from '~/store'
 // definePageMeta({ layout: 'default' })
 const { $env, $log } = useNuxtApp()
+
+const cartStore = useCartStore()
 
 useHead({
   title: `Оформление заказа - ${$env.projectName}`,

@@ -36,6 +36,9 @@ export default defineNuxtConfig({
       yandexMetrikaID: '',
       yandexMapsKey: '',
       googleID: '',
+
+      geocoderSearchedCities: '',
+      geocoderBoundedBy: '',
     },
   },
 

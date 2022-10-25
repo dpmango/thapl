@@ -17,5 +17,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   if (config.public.yandexMapsKey) {
     nuxtApp.vueApp.use(plugin, settings)
+    nuxtApp.provide('ymConfig', settings)
   }
 })

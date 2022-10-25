@@ -55,6 +55,10 @@ const { zone, userAddress, currentAddress } = storeToRefs(deliveryStore)
 
 const emit = defineEmits(['setSearch'])
 
+const props = defineProps({
+  geocoderSuggestionObj: Object,
+})
+
 // geolocation
 const geoData = ref({
   requested: false,
@@ -63,11 +67,35 @@ const geoData = ref({
   text: '',
 })
 
-const setAddress = async ({ latitude, longitude, name, fullText }) => {
-  emit('setSearch', fullText)
+// Приходит от родительского компонента с поиском
+watch(
+  () => props.geocoderSuggestionObj,
+  async (newVal) => {
+    const coordinates = newVal.geometry._coordinates
+    const data = newVal.properties._data
+
+    await setAddress(
+      {
+        latitude: coordinates[0],
+        longitude: coordinates[1],
+        name: data.name,
+        description: data.description,
+        fullText: data.text,
+      },
+      false
+    )
+  }
+)
+
+const setAddress = async (
+  { latitude, longitude, name, description, fullText },
+  setInput = true
+) => {
+  if (setInput) emit('setSearch', fullText)
 
   const zone = await deliveryStore.checkZone({ latitude, longitude })
 
+  // store
   deliveryStore.setCurrentAddress({
     type: 'delivery',
     name,
@@ -76,12 +104,22 @@ const setAddress = async ({ latitude, longitude, name, fullText }) => {
     org_id: zone.organization.id,
   })
 
+  // display component
   geoData.value = {
     requested: true,
     latitude,
     longitude,
     text: fullText,
   }
+
+  // localstorage
+  deliveryStore.saveAddress({
+    latitude,
+    longitude,
+    name,
+    description,
+    fullText,
+  })
 }
 
 watch(
@@ -131,13 +169,6 @@ const geolocationSuccess = async (position) => {
     const geocoderAddress = geocoderTargetObj.metaDataProperty.GeocoderMetaData.Address.formatted
 
     await setAddress({
-      latitude,
-      longitude,
-      name: geocoderTargetObj.name,
-      fullText: geocoderAddress,
-    })
-
-    deliveryStore.saveAddress({
       latitude,
       longitude,
       name: geocoderTargetObj.name,

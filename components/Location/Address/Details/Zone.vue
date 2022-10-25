@@ -68,7 +68,7 @@ const handleToOrderClick = () => {
     display: inline-flex;
     align-items: center;
     margin-top: 8px;
-    svg {
+    .nuxt-icon {
       color: var(--color-primary);
       font-size: 22px;
       margin-right: 6px;

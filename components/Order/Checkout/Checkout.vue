@@ -123,11 +123,16 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
-import { useDeliveryStore } from '~/store'
+import { useToast } from 'vue-toastification/dist/index.mjs'
+import { useDeliveryStore, useCartStore } from '~/store'
 import { clearString, clearPhone, validPhone, validAdress, formatPrice } from '~/utils'
 
 const deliveryStore = useDeliveryStore()
+const cartStore = useCartStore()
 const { currentAddress } = storeToRefs(deliveryStore)
+
+const toast = useToast()
+const router = useRouter()
 
 const { priceData } = useCheckout()
 
@@ -201,18 +206,48 @@ const requestCheckout = async () => {
 
   loading.value = true
 
-  await useApi('checkout', {
+  const response = await useApi('order/create', {
     method: 'POST',
+    headers: useHeaders(),
     body: {
       name: name.value,
       phone: phone.value,
-      contact: contact.value,
+      not_call: contact.value === 'message',
       address: address.value,
+      lat: currentAddress.value.latitude,
+      lng: currentAddress.value.longitude,
       deliveryDate: deliveryDate.value,
       deliveryTime: deliveryTime.value,
-      payment: payment.value,
+      payment_method: payment.value,
+      cart: cartStore.cart.map((x) => ({
+        catalog_item_id: x.id,
+        count: x.q,
+        modifiers: [],
+      })),
     },
-  }).catch(useCatchError)
+  }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
+
+  if (response) {
+    toast.success(`Заказ ${response.order_id} Оформлен`)
+    cartStore.resetCart()
+    router.push('/')
+  }
+
+  // "email": "string",
+  // "intercom": "string",
+  // "entrance": "string",
+  // "floor": "string",
+  // "apt": "string",
+  // "comment": "string",
+  // "time_to_delivery": "string",
+  // "points": 0,
+  // "gift_id": 0,
+  // "promo_id": 0,
+  // "promo_code": "string",
+  // "change": "string",
+  // "persons_count": "string",
+  // "not_heat": true,
+  // "order_type": 0,
 
   loading.value = false
 }
