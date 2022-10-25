@@ -7,7 +7,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   nuxtApp.provide('log', {
     log: (...args) => {
-      if (isDev) console.log(...args)
+      // if (isDev)
+      console.log(...args)
     },
     logServer: (...args) => {
       console.log(...args)
