@@ -1,14 +1,16 @@
 <template>
-  <div class="digits">
+  <div class="digits" :class="[error && '_error']">
     <input
       v-for="(digit, index) in digits"
       :key="index"
       ref="inputRefs"
       class="digit"
       maxlength="1"
+      :inputmode="allowLetters ? 'text' : 'numeric'"
       type="text"
       :value="digit"
-      @keydown="(e) => handleKeyBackspace(e, index)"
+      v-bind="$attrs"
+      @keydown="(e) => handleKeyDown(e, index)"
       @input="(e: any) => handleChangeDigits(e.target.value, index)"
     />
   </div>
@@ -19,6 +21,14 @@ const initialDigits = Array.from<string>({ length: 4 }).fill('')
 const enLettersRegex = /^[a-zA-Z]+$/
 
 const props = defineProps({
+  value: {
+    type: String,
+    default: '',
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
   allowLetters: {
     type: Boolean,
     default: false,
@@ -30,13 +40,17 @@ const emit = defineEmits(['onChange'])
 const digits = ref(initialDigits)
 const inputRefs = ref([])
 
-const updateDigits = (i: number, value: string) => {
-  if (!props.allowLetters && +value < 0 && +value > 9) {
-    return
-  } else if (props.allowLetters && +value < 0 && +value > 9 && !enLettersRegex.test(value)) {
-    return
+watch(
+  () => props.value,
+  (newVal) => {
+    if (!newVal) {
+      digits.value = initialDigits
+      inputRefs.value[0].focus()
+    }
   }
+)
 
+const updateDigits = (i: number, value: string) => {
   const newDigits = [...digits.value]
   newDigits[i] = props.allowLetters ? value.toUpperCase() : value.replace(/[^\d]$/, '')
   emit('onChange', newDigits.join(''))
@@ -44,12 +58,6 @@ const updateDigits = (i: number, value: string) => {
 }
 
 const handleChangeDigits = (value: string, i: number) => {
-  if (!props.allowLetters && isNaN(+value)) {
-    return
-  } else if (props.allowLetters && isNaN(+value) && !enLettersRegex.test(value)) {
-    return
-  }
-
   updateDigits(i, value)
 
   if (i < inputRefs.value.length - 1) {
@@ -59,15 +67,20 @@ const handleChangeDigits = (value: string, i: number) => {
   }
 }
 
-const handleKeyBackspace = (event: KeyboardEvent, i: number) => {
+const handleKeyDown = (event: KeyboardEvent, i: number) => {
   const keyPressed = event.key
-  if (keyPressed !== 'Backspace') return
 
-  if (digits.value[i]) {
-    updateDigits(i, '')
-  } else if (i > 0) {
-    updateDigits(i - 1, '')
-    inputRefs.value[i - 1].focus()
+  if (keyPressed === 'Backspace') {
+    if (digits.value[i]) {
+      updateDigits(i, '')
+    } else if (i > 0) {
+      updateDigits(i - 1, '')
+      inputRefs.value[i - 1].focus()
+    }
+  } else if (!props.allowLetters && isNaN(+keyPressed)) {
+    event.preventDefault()
+  } else if (props.allowLetters && isNaN(+keyPressed) && !enLettersRegex.test(keyPressed)) {
+    event.preventDefault()
   }
 }
 </script>
@@ -82,6 +95,12 @@ const handleKeyBackspace = (event: KeyboardEvent, i: number) => {
     margin-right: 12px;
     &:last-child {
       margin-right: 0;
+    }
+  }
+  &._error {
+    .digit {
+      background: #ffcccc;
+      border-color: var(--color-red);
     }
   }
 }

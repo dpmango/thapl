@@ -5,7 +5,7 @@ export { scrollToElement, scrollPageToTop, scrollWithSpeed, lockBody, unlockBody
 export { clearSocialLink, removeUrlParameter } from './Url'
 export { copyToClipboard } from './Clipboard'
 export { localStorageKeepArray, localStorageGet } from './LocalStorage'
-export { formatMinutes } from './Date'
+export { formatMinutes, pad, secondsToStamp } from './Date'
 export { formatPrice, Plurize } from './Numbers'
 export {
   clearString,

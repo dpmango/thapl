@@ -3,7 +3,7 @@ import eslintPlugin from 'vite-plugin-eslint'
 export default defineNuxtConfig({
   ssr: true,
 
-  experimental: { writeEarlyHints: false },
+  experimental: { writeEarlyHints: false, inlineSSRStyles: false },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],

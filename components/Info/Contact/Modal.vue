@@ -1,13 +1,17 @@
 <template>
   <UiModal name="contacts" position="aside" height="fill">
     <div class="contact">
+      <div class="contact__head visible-sm">
+        <div class="h4-title">Контакты</div>
+      </div>
+
       <div class="contact__list">
         <li v-for="contact in list">
-          <span class="text-m fw-500 c-gray">{{ contact.label }}</span>
+          <span class="text-m text-sm-s fw-500 c-gray">{{ contact.label }}</span>
           <a
             :href="contact.value"
             :target="contact.text ? '_blank' : ''"
-            class="h2-title"
+            class="h2-title h6-title-sm"
             :class="[contact.text && '_link']"
           >
             {{ contact.text || contact.value }}
@@ -49,9 +53,11 @@ const list = computed(() => {
 
 <style lang="scss" scoped>
 .contact {
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   &__list {
+    margin: auto 0;
     li {
       display: flex;
       flex-direction: column;
@@ -71,6 +77,25 @@ const list = computed(() => {
           &:hover {
             color: var(--color-primary);
           }
+        }
+      }
+    }
+  }
+}
+
+@include r($sm) {
+  .contact {
+    &__head {
+      margin-bottom: 28px;
+      padding-right: 30px;
+    }
+    &__list {
+      margin: 0;
+      li {
+        align-items: flex-start;
+        margin-bottom: 20px;
+        a {
+          margin-top: 4px;
         }
       }
     }

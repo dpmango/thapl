@@ -1,7 +1,7 @@
 <template>
   <main class="page__content">
     <OrderCheckout v-if="cartStore.cart.length > 0" />
-    <OrderCheckoutEmpty />
+    <OrderCheckoutEmpty v-else />
   </main>
 </template>
 

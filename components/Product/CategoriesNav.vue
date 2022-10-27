@@ -1,5 +1,10 @@
 <template>
-  <div ref="navRef" class="nav js-nav-cat" :style="{ top: `${stickyTop}px` }">
+  <div
+    ref="navRef"
+    class="nav js-nav-cat"
+    :class="[ui.mobileMenuActive && '_hidden']"
+    :style="{ top: `${stickyTop}px` }"
+  >
     <div ref="scrollerRef" class="nav__scroller">
       <ul class="nav__list">
         <li v-for="(link, idx) in productStore.navCategories" :key="link.id">
@@ -21,12 +26,13 @@
 // для десктоп - смотреть в папке Layout/Nav/NavScroller
 
 import _ from 'lodash'
-import { useProductStore } from '~/store'
+import { useProductStore, useUiStore } from '~/store'
 import { createScrollableAnchors } from '~~/utils/Elements'
 
 const { $env } = useNuxtApp()
 
 const productStore = useProductStore()
+const ui = useUiStore()
 
 // sticky position
 const navRef = ref(null)
@@ -160,6 +166,9 @@ onBeforeUnmount(() => {
 @include r($md) {
   .nav {
     display: block;
+    &._hidden {
+      visibility: hidden;
+    }
   }
 }
 </style>

@@ -78,6 +78,7 @@
             <NuxtLink v-if="session.app_settings.loyalty?.enabled" to="/ui" class="action">
               <div class="action__icon">
                 <nuxt-icon name="heart" />
+                <div class="action__counter _top">223</div>
               </div>
               <div class="action__text">Бонусы</div>
             </NuxtLink>
@@ -116,7 +117,12 @@
         <LayoutNavScroller class="header__nav" />
 
         <div class="header__cta" @click="handleCartOpen">
-          <UiButton>Корзина</UiButton>
+          <UiButton>
+            Корзина
+            <div v-if="cartStore.cart.length" class="header__cta-counter">
+              {{ cartStore.cart.length }}
+            </div>
+          </UiButton>
         </div>
       </div>
     </div>
@@ -232,6 +238,23 @@ onBeforeUnmount(() => {
   }
   &__cta {
     flex: 0 0 auto;
+  }
+  &__cta-counter {
+    position: relative;
+    padding-left: 12px;
+    margin-left: 12px;
+    &::before {
+      display: inline-block;
+      content: ' ';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 20px;
+      transform: translateY(-50%);
+      background: currentColor;
+      opacity: 0.2;
+    }
   }
   &__hamburger {
     display: none;
@@ -371,10 +394,17 @@ onBeforeUnmount(() => {
     line-height: 18px;
     min-width: 18px;
     min-height: 18px;
+    padding: 0 6px;
     text-align: center;
-    border-radius: 50%;
+    border-radius: 12px;
     background: var(--color-primary);
     color: var(--color-font-invert);
+    &._top {
+      bottom: auto;
+      top: -6px;
+      right: auto;
+      left: calc(100% - 6px);
+    }
   }
   &__text {
     margin-top: 4px;

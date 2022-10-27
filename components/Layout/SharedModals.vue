@@ -4,7 +4,7 @@
   <LocationRegionModal v-if="$env.useRegions" />
   <LocationAddressModal />
   <LocationClosedModal />
-  <ContactModal />
+  <InfoContactModal />
   <ProductModal />
   <ProductSearchOverlay />
 </template>

@@ -1,8 +1,8 @@
 <template>
   <div class="takeaway">
     <ul v-if="!restaurantSelected" class="takeaway__list">
-      <LocationAddressList
-        v-for="(restaurant, idx) in restaurants"
+      <UiAtomAddressRow
+        v-for="(restaurant, idx) in restaurantsSearched"
         :key="idx"
         :title="restaurant.title"
         :description="[restaurant.phone, restaurant.working_hours]"
@@ -30,6 +30,24 @@ const { $log } = useNuxtApp()
 const deliveryStore = useDeliveryStore()
 const { restaurants, takeawayOrganization, currentAddress } = storeToRefs(deliveryStore)
 
+const props = defineProps({
+  search: String,
+})
+
+// поиск ресторнов
+const restaurantsSearched = computed(() => {
+  const searchStr = props.search.trim().toLowerCase()
+
+  if (searchStr.length >= 2) {
+    return restaurants.value.filter((x) => {
+      return x.title.toLowerCase().includes(searchStr)
+    })
+  }
+
+  return restaurants.value
+})
+
+// логика выбора ресторана
 const restaurantSelected = ref(null)
 
 const selectRestaurant = async (restaurant) => {

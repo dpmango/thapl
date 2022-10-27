@@ -37,4 +37,10 @@ const isCompleate = computed(() => {
     }
   }
 }
+
+@include r($sm) {
+  .progress {
+    height: 4px;
+  }
+}
 </style>

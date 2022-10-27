@@ -390,11 +390,15 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .input {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   z-index: 1;
   &__wrapper {
     position: relative;
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
   &__label {
     display: block;

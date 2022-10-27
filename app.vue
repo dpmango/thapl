@@ -42,6 +42,11 @@ const { region } = storeToRefs(deliveryStore)
 
 const initData = await useInit()
 
+// TODO - установка куки в клиент от init (баг useCookieState)
+// не работает когда useCookieState работает в SSR контексте
+const apiCookieClient = useCookie('x-thapl-apitoken')
+apiCookieClient.value = initData.api_token
+
 useHead({
   title: $env.projectName,
   bodyAttrs: {

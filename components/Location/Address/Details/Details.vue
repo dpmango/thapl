@@ -76,4 +76,39 @@ const { zone } = storeToRefs(deliveryStore)
     margin-top: 66px;
   }
 }
+
+@include r($md) {
+  .location {
+    &__info {
+      margin-top: 4px;
+    }
+    &__map {
+      height: 180px;
+    }
+  }
+}
+
+@include r($sm) {
+  .location {
+    padding-bottom: calc(76px - 24px + 16px);
+    &__map {
+      height: 105px;
+    }
+    &__cta,
+    :deep(.location__cta) {
+      position: absolute;
+      z-index: 2;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin-top: 0px;
+      padding: 16px 24px;
+      background: var(--modal-body-background);
+      box-shadow: var(--box-shadow-extra-large);
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
 </style>

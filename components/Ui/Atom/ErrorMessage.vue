@@ -5,9 +5,9 @@
       <img v-else-if="image" :src="imgSrc" alt="" />
     </div>
 
-    <h4 class="error__title h4-title">{{ title }}</h4>
+    <h4 class="error__title h4-title h6-title-sm">{{ title }}</h4>
 
-    <p class="error__content text-m">
+    <p class="error__content text-m text-sm-s">
       <slot name="content" />
     </p>
 
@@ -68,6 +68,28 @@ watchEffect(async () => {
   }
   &__cta {
     margin-top: 28px;
+  }
+}
+
+@include r($sm) {
+  .error {
+    &__media {
+      img {
+        max-height: 40px;
+      }
+      .nuxt-icon {
+        font-size: 40px;
+      }
+    }
+    &__title {
+      margin-top: 12px;
+    }
+    &__content {
+      margin-top: 12px;
+    }
+    &__cta {
+      margin-top: 20px;
+    }
   }
 }
 </style>

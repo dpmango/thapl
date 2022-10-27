@@ -1,7 +1,14 @@
 <template>
   <component
     :is="getElement"
-    :class="['button', theme, size, isEmpty && '_iconOnly', showLoader && '_loading']"
+    :class="[
+      'button',
+      theme,
+      size,
+      disabled && '_disabled',
+      isEmpty && '_iconOnly',
+      showLoader && '_loading',
+    ]"
     :href="href"
     :to="to"
     v-bind="$attrs"
@@ -41,6 +48,10 @@ const props = defineProps({
   iconLeft: String,
   to: String,
   loading: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
     type: Boolean,
     default: false,
   },
@@ -86,6 +97,7 @@ watch(
   position: relative;
   padding: 0;
   display: inline-flex;
+  justify-content: center;
   border: 1px solid transparent;
   box-sizing: border-box;
   border-radius: var(--button-border-radius);
@@ -208,6 +220,12 @@ watch(
     .button__content {
       padding: 4px 0 !important;
     }
+  }
+
+  &._disabled {
+    background: #e3e9ef;
+    color: var(--color-disabled);
+    pointer-events: none;
   }
 
   // sizes

@@ -1,6 +1,6 @@
 <template>
   <UiModal name="address" size="large">
-    <div class="address">
+    <div class="address" :class="[`_type-${deliveryType}`]">
       <div class="address__head">
         <div class="h2-title">
           <template v-if="deliveryType === 1">Куда доставить?</template>
@@ -8,11 +8,11 @@
         </div>
 
         <UiToggle
-          v-if="showOptions"
+          v-if="showDeliveryType"
           class="address__toggle"
           :list="deliveryOptions"
           :value="deliveryType"
-          @on-change="(v) => (deliveryType = v)"
+          @on-change="handleDeliveryTypeChange"
         />
       </div>
 
@@ -37,7 +37,11 @@
         @set-search="(v) => setFieldValue('search', v)"
       />
 
-      <LocationAddressTakeaway v-if="deliveryType === 2" class="address__delivery" />
+      <LocationAddressTakeaway
+        v-if="deliveryType === 2"
+        class="address__delivery"
+        :search="search"
+      />
     </div>
   </UiModal>
 </template>
@@ -55,17 +59,25 @@ const deliveryStore = useDeliveryStore()
 
 const { app_settings } = storeToRefs(session)
 
+// тип доставки
 const deliveryOptions = ref([
   { id: 1, label: 'Доставка' },
   { id: 2, label: 'Самовывоз' },
 ])
 
-const showOptions = computed(() => {
+const showDeliveryType = computed(() => {
   return app_settings.value.takeaway_enabled || !$env.takeawayOnly
 })
 
-const deliveryType = ref(showOptions.value ? 1 : 2)
+const deliveryType = ref(showDeliveryType.value ? 1 : 2)
 
+const handleDeliveryTypeChange = (v) => {
+  deliveryType.value = v
+  setFieldValue('search', '')
+  deliveryStore.setCurrentAddress(null)
+}
+
+// работа с поиском
 const loading = ref(false)
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { search: '' },
@@ -88,7 +100,7 @@ const handleSearchChange = (v) => {
   deliveryStore.setCurrentAddress(null)
 }
 
-// ymaps suggestions
+// Подсказки яндекс
 const ymapsInstance = ref(null)
 const searchRef = ref(null)
 const suggestView = ref(null)
@@ -115,8 +127,6 @@ const initSuggestions = (ym) => {
     ...{
       provider: {
         suggest: (request) => {
-          // if (!requestSend) { // todo - any need in checking initialization?
-          $log.log('suggestion provider initialized')
           return ymaps.suggest(request).then(transformSuggestions)
         },
       },
@@ -148,6 +158,7 @@ const transformSuggestions = (suggestions) => {
   return suggestions
 }
 
+// действия с результатом геокодера
 const geocoderHandler = (res) => {
   const geoObject = res.geoObjects.get(0)
 
@@ -210,9 +221,57 @@ onMounted(async () => {
   }
   &__search {
     margin-top: 28px;
+    :deep(.ymaps-2-1-79-search__suggest) {
+      top: 16px;
+      border: 0;
+      border-radius: var(--input-border-radius);
+      overflow: hidden;
+    }
+    :deep(.ymaps-2-1-79-suggest-item) {
+      margin: 0;
+      font-family: var(--font-base);
+      font-size: 16px;
+      line-height: 26px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    :deep(.ymaps-2-1-79-search__suggest-item) {
+      padding: 19px 24px;
+      transition: background 0.25s $ease;
+    }
+    :deep(.ymaps-2-1-79-search__suggest-item_selected_yes) {
+      background: var(--color-bg);
+    }
+    :deep(.ymaps-2-1-79-search__suggest-highlight) {
+      font-weight: 500;
+    }
   }
   &__delivery {
     margin-top: 28px;
+  }
+  &._type-2 {
+    :deep(ymaps) {
+      display: none !important;
+    }
+  }
+}
+
+@include r($md) {
+  .address {
+    &__head {
+      display: block;
+      .toggle {
+        margin-top: 28px;
+      }
+    }
+    &__search {
+      margin-top: 16px;
+      :deep(.ymaps-2-1-79-search__suggest-item) {
+        padding: 12px 16px;
+      }
+    }
+    &__delivery {
+      margin-top: 16px;
+    }
   }
 }
 </style>

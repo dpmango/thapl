@@ -12,24 +12,33 @@
       @keyup="key_event"
     />
     <div class="auth__cta">
-      <UiButton :block="true" :disabled="nextDisabled" :loading="loading" @click="next"
-        >Выслать код</UiButton
-      >
+      <UiButton :block="true" :disabled="nextDisabled" :loading="loading" @click="next">
+        Выслать код
+      </UiButton>
     </div>
-    <div class="auth__note">
-      Продолжая, вы соглашаетесь со
-      <a href="#" target="_blank">сбором и обработкой персональных данных</a> и
+    <div class="auth__note text-s">
+      Продолжая, вы соглашаетесь
+      <template v-if="app_settings.privacy_link">со</template>
+      <template v-else>c&nbsp;</template>
+      <template v-if="app_settings.privacy_link">
+        <a :href="app_settings.privacy_link" target="_blank">
+          сбором и обработкой персональных данных
+        </a>
+        и
+      </template>
       <a href="#" target="_blank">пользовательским соглашением</a>
     </div>
   </div>
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { clearPhone, validPhone } from '~/utils'
 import { useSessionStore } from '~/store'
 
 const session = useSessionStore()
+const { app_settings } = storeToRefs(session)
 
 const loading = ref(false)
 
@@ -70,7 +79,7 @@ const next = async () => {
       phone: '+7' + clearPhone(phone.value),
       key: '1',
     },
-  }).catch(console.warn)
+  }).catch(useCatchError)
 
   loading.value = false
 
@@ -94,8 +103,6 @@ const next = async () => {
   }
   &__note {
     margin-top: 16px;
-    font-size: 14px;
-    line-height: 22px;
     color: var(--color-gray);
     text-align: center;
     a {
@@ -104,6 +111,18 @@ const next = async () => {
       &:hover {
         color: var(--color-font);
       }
+    }
+  }
+}
+
+@include r($sm) {
+  .auth {
+    &__title {
+      text-align: left;
+      padding-right: 30px;
+    }
+    &__note {
+      text-align: left;
     }
   }
 }

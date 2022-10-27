@@ -3,7 +3,7 @@
     <div class="product">
       <UiLoader v-if="true" position="overlay" :loading="loading" />
       <div v-if="product" class="product__wrapper">
-        <div class="product__media">
+        <div class="product__media hidden-md">
           <div class="product__image">
             <img :src="product.image" :alt="product.title" />
           </div>
@@ -11,16 +11,24 @@
         <div class="product__body">
           <div class="product__scroller">
             <div class="product__title h4-title">
-              <UiAtomLongWords :text="product.title" />
+              <UiAtomLongWords :text="product.title" />&nbsp;
+              <span v-if="product.is_hot">🌶</span>
             </div>
             <div class="product__weight text-s c-gray">
               {{ product.packing_weights }}
             </div>
+
+            <div class="product__media visible-md">
+              <div class="product__image">
+                <img :src="product.image" :alt="product.title" />
+              </div>
+            </div>
+
             <div class="product__description text-s">
               {{ product.description }}
             </div>
 
-            <UiToggle
+            <!-- <UiToggle
               class="product__options"
               :autosize="true"
               size="small"
@@ -36,7 +44,7 @@
               :list="optionsModList"
               :value="optionsMod"
               @on-change="(v) => (optionsMod = v)"
-            />
+            /> -->
           </div>
 
           <div class="product__cta">
@@ -83,6 +91,8 @@ const fetchProduct = async (id) => {
     params: { id },
   }).catch(useCatchError)
 
+  $log.log('opened product', { data })
+
   if (data) {
     product.value = { ...data }
   }
@@ -125,6 +135,7 @@ watch(
   }
   &__image {
     position: relative;
+    width: 100%;
     border-radius: var(--card-border-radius);
     font-size: 0;
     padding-bottom: var(--product-card-ar);
@@ -177,7 +188,59 @@ watch(
     }
     :deep(.plusminus) {
       max-width: 100%;
+      width: 100%;
       background: var(--color-bg-darken);
+    }
+  }
+}
+
+@include r(1120) {
+  .product {
+    &__title {
+      padding-right: 30px;
+    }
+  }
+}
+
+@include r($lg) {
+  .product {
+    &__media {
+      flex: 0 0 55%;
+      padding: 32px;
+    }
+    &__body {
+      flex: 0 0 45%;
+    }
+  }
+}
+
+@include r($md) {
+  .product {
+    &__scroller {
+      padding: 24px;
+    }
+    &__media {
+      margin: 20px auto;
+      padding: 0;
+      max-width: 240px;
+    }
+    &__body {
+      flex: 0 0 100%;
+      background: transparent;
+    }
+    &__cta {
+      padding: 16px 24px;
+      box-shadow: var(--box-shadow-extra-large);
+      background: transaprent;
+    }
+  }
+}
+
+@include r($sm) {
+  .product {
+    height: 100%;
+    &__wrapper {
+      height: 100%;
     }
   }
 }

@@ -46,6 +46,7 @@ export const useInit = async () => {
     session.setInit(data.value)
     apiCookie.value = api_token
     userCookie.value = user_token
+
     if (region_predefined) {
       regionCookie.value = region_predefined
     }

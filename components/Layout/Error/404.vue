@@ -32,4 +32,21 @@
     }
   }
 }
+
+@include r($md) {
+  .error {
+    &__wrapper {
+      margin: 68px auto;
+      min-height: 1px;
+    }
+  }
+}
+
+@include r($sm) {
+  .error {
+    &__wrapper {
+      margin: 52px auto;
+    }
+  }
+}
 </styles>

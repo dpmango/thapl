@@ -42,7 +42,7 @@ export const useCheckout = () => {
 
     return {
       remained: 0,
-      match: false,
+      match: true,
     }
   })
 

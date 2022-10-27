@@ -14,6 +14,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useUiStore } from '~/store'
+import { lockBody, unlockBody } from '~/utils'
 
 const ui = useUiStore()
 const { modal: activeModal, modalParams } = storeToRefs(ui)
@@ -71,6 +72,17 @@ const closeModal = () => {
     ui.closeModal()
   }
 }
+
+watch(
+  () => isModalActive.value,
+  (newVal) => {
+    if (newVal) {
+      lockBody()
+    } else {
+      unlockBody()
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>
@@ -107,6 +119,7 @@ const closeModal = () => {
 
   &__close {
     position: absolute;
+    z-index: 2;
     top: 50%;
     width: 48px;
     height: 48px;
@@ -118,9 +131,9 @@ const closeModal = () => {
     border-radius: 50%;
     font-size: 16px;
     cursor: pointer;
-    transition: opacity 0.25s $ease;
+    transition: color 0.25s $ease;
     &:hover {
-      opacity: 0.7;
+      color: var(--color-primary);
     }
   }
   &._center {
@@ -221,14 +234,29 @@ const closeModal = () => {
   }
 }
 
+@include r(1120) {
+  .modal {
+    &._x-large {
+      .modal {
+        &__close {
+          top: 14px;
+          left: auto;
+          right: 8px;
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
 @include r($lg) {
   .modal {
     &._large {
       .modal {
         &__close {
-          top: 16px;
+          top: 14px;
           left: auto;
-          right: 6px;
+          right: 8px;
           transform: none;
         }
       }
@@ -249,21 +277,79 @@ const closeModal = () => {
       }
     }
 
-    // &._large {
-    //   .modal {
-    //   }
-    // }
+    &._large {
+      .modal {
+        &__content {
+          padding: 24px;
+        }
+      }
+    }
 
     &._aside {
       .modal {
-        // &__wrapper {
-        //   // max-width: 516px;
-        // }
         &__close {
           top: 16px;
           left: auto;
           right: 6px;
           transform: none;
+        }
+      }
+    }
+
+    &._no-padding {
+      .modal__content {
+        padding: 0;
+      }
+    }
+  }
+}
+
+@include r($sm) {
+  .modal {
+    &._normal {
+      .modal {
+        &__close {
+          top: 14px;
+          left: auto;
+          right: 8px;
+          transform: none;
+        }
+      }
+    }
+
+    // центрированные модальные в мобильной версии
+    // normal прибиты к низу
+    // large и x_large растянуты на 100% высоты
+    &._center {
+      padding: 0;
+      .modal {
+        &__content {
+          border-radius: var(--card-border-radius-sm);
+        }
+      }
+
+      &._normal {
+        .modal {
+          &__wrapper {
+            margin-top: auto;
+            max-width: 100%;
+          }
+          &__content {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+        }
+      }
+
+      &._large,
+      &._x-large {
+        .modal {
+          &__wrapper {
+            height: 100%;
+          }
+          &__content {
+            border-radius: 0;
+          }
         }
       }
     }

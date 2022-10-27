@@ -28,16 +28,21 @@ export const useCartStore = defineStore('cart', {
         }
       },
     cartPrice: (state): number => {
-      let sum = 0
-
-      state.cart.forEach((c) => {
+      return state.cart.reduce((acc, c) => {
         const product = state.products.find((x) => x.id === c.id)
         if (product) {
-          sum += product.price * c.q
+          acc += product.price * c.q
         }
-      })
 
-      return sum
+        return acc
+      }, 0)
+    },
+    cartToApi: (state) => {
+      return state.cart.map((x) => ({
+        catalog_item_id: x.id,
+        count: x.q,
+        modifiers: [],
+      }))
     },
   },
   actions: {

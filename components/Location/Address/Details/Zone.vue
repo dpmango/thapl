@@ -1,36 +1,38 @@
 <template>
   <div class="info row">
-    <div class="info__col col">
-      <p class="text-s">Можем доставить</p>
-      <h5 class="info__value h5-title">
+    <div class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Можем доставить</p>
+      <h5 class="info__value h5-title h6-title-md">
         <template v-if="zone.is_open">Сегодня</template>
         <template v-else><strong>Завтра</strong></template>
       </h5>
     </div>
-    <div class="info__col col">
-      <p class="text-s">Время доставки</p>
-      <h5 class="info__value h5-title">
+    <div class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Время доставки</p>
+      <h5 class="info__value h5-title h6-title-md">
         <NuxtIcon v-if="zone.organization.is_high_load_state" name="high-load" />
         <template v-if="zone.max_time">{{ formatMinutes(zone.max_time) }}</template>
       </h5>
     </div>
-    <div v-if="workingTime" class="info__col col">
-      <p class="text-s">Часы работы</p>
-      <h5 class="info__value h5-title">
+    <div v-if="workingTime" class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Часы работы</p>
+      <h5 class="info__value h5-title h6-title-md">
         {{ workingTime }}
       </h5>
     </div>
-    <div v-if="minOrderPrice" class="info__col col">
-      <p class="text-s">Заказ от</p>
-      <h5 class="info__value h5-title">{{ formatPrice(minOrderPrice) }} ₽</h5>
+    <div v-if="minOrderPrice" class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Заказ от</p>
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(minOrderPrice) }} ₽</h5>
     </div>
-    <div v-if="zone.delivery_price" class="info__col col">
-      <p class="text-s">Стоимость доставки</p>
-      <h5 class="info__value h5-title">{{ formatPrice(zone.delivery_price) }} ₽</h5>
+    <div v-if="zone.delivery_price" class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Стоимость доставки</p>
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(zone.delivery_price) }} ₽</h5>
     </div>
-    <div v-if="zone.free_delivery_min_price" class="info__col col">
-      <p class="text-s">Бесплатная доcтавка от</p>
-      <h5 class="info__value h5-title">{{ formatPrice(zone.free_delivery_min_price) }} ₽</h5>
+    <div v-if="zone.free_delivery_min_price" class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Бесплатная доcтавка от</p>
+      <h5 class="info__value h5-title h6-title-md">
+        {{ formatPrice(zone.free_delivery_min_price) }} ₽
+      </h5>
     </div>
   </div>
 
@@ -72,6 +74,26 @@ const handleToOrderClick = () => {
       color: var(--color-primary);
       font-size: 22px;
       margin-right: 6px;
+    }
+  }
+}
+
+@include r($md) {
+  .info {
+    &__col {
+      margin-top: 20px;
+    }
+  }
+}
+
+@include r($sm) {
+  .info {
+    &__value {
+      margin-top: 4px;
+      .nuxt-icon {
+        font-size: 18px;
+        margin-right: 4px;
+      }
     }
   }
 }

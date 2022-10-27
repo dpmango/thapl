@@ -15,8 +15,11 @@
       <div class="card__title h6-title">
         <UiAtomLongWords :text="product.title" />
       </div>
-      <div class="card__description text-s c-gray">
+      <div v-if="!product.only_pre_order" class="card__description text-s c-gray">
         {{ product.packing_weights }}
+      </div>
+      <div v-else class="card__preorder text-s c-primary">
+        Этот товар доступен только по предзаказу
       </div>
       <div
         class="card__action"
@@ -137,6 +140,9 @@ const setFocused = (v) => {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     word-wrap: break-word;
+  }
+  &__preorder {
+    margin-top: 4px;
   }
   &__action {
     display: flex;

@@ -104,19 +104,16 @@ p {
 }
 
 .text-m {
-  font-weight: 400;
   font-size: 16px;
   line-height: calc(26 / 16);
 }
 
 .text-s {
-  font-weight: 400;
   font-size: 14px;
   line-height: calc(22 / 14);
 }
 
 .text-xs {
-  font-weight: 400;
   font-size: 12px;
 }
 
@@ -130,25 +127,21 @@ $sizes: (
 @each $size, $px in $sizes {
   @include r(#{$px}) {
     .text-#{$size}-l {
-      font-weight: 400;
       font-size: 18px;
       line-height: calc(27 / 18);
     }
 
     .text-#{$size}-m {
-      font-weight: 400;
       font-size: 16px;
       line-height: calc(24 / 16);
     }
 
     .text-#{$size}-s {
-      font-weight: 400;
       font-size: 14px;
       line-height: calc(21 / 14);
     }
 
     .text-#{$size}-xs {
-      font-weight: 400;
       font-size: 12px;
       line-height: calc(16 / 12);
     }

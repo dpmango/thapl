@@ -24,12 +24,16 @@
         <ProductCardCart v-for="product in products" :key="product.id" :product="product" />
       </div>
 
-      <div class="cart__meta">
+      <div v-if="zoneData.isDelivery" class="cart__meta">
         <div class="text-m">Доставка</div>
         <div class="cart__meta-value">
           <template v-if="priceData.delivery">{{ priceData.delivery }} ₽</template>
           <template v-else>Бесплатно</template>
         </div>
+      </div>
+      <div v-else-if="zoneData.isTakeaway" class="cart__meta">
+        <div class="text-m">Самовывоз</div>
+        <div class="cart__meta-value">Бесплатно</div>
       </div>
     </div>
 
@@ -101,6 +105,32 @@ const { priceData, zoneData, minOrderData, freeDeliveryData } = useCheckout()
   &__cta-note {
     text-align: center;
     margin-bottom: 12px;
+  }
+}
+
+@include r($sm) {
+  .cart {
+    &__head {
+      padding: 24px 24px 16px;
+    }
+    &__scroller {
+      padding: 0px 24px;
+    }
+    &__list {
+      margin-top: 12px;
+    }
+    &__delivery {
+      padding: 16px 16px;
+    }
+    &__delivery-progress {
+      margin: 8px 0;
+    }
+    &__cta {
+      padding: 16px 24px;
+    }
+    &__cta-note {
+      margin-bottom: 8px;
+    }
   }
 }
 </style>

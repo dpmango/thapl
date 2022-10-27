@@ -1,32 +1,32 @@
 <template>
   <div class="info row">
-    <div class="info__col col">
-      <p class="text-s">Можете забрать</p>
-      <h5 class="info__value h5-title">
+    <div class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Можете забрать</p>
+      <h5 class="info__value h5-title h6-title-md">
         <template v-if="organization.is_open">Сегодня</template>
         <template v-else><strong>Завтра</strong></template>
       </h5>
     </div>
-    <div class="info__col col">
-      <p class="text-s">Время готовки</p>
-      <h5 class="info__value h5-title">TODO</h5>
+    <div class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Время готовки</p>
+      <h5 class="info__value h5-title h6-title-md">TODO</h5>
     </div>
-    <div class="info__col col">
-      <p class="text-s">Часы работы</p>
-      <h5 class="info__value h5-title">TODO</h5>
+    <div class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Часы работы</p>
+      <h5 class="info__value h5-title h6-title-md">TODO</h5>
     </div>
-    <div class="info__col col">
-      <p class="text-s">Заказ от</p>
-      <h5 class="info__value h5-title">TODO</h5>
+    <div class="info__col col col-md-4 col-sm-6">
+      <p class="text-s c-gray">Заказ от</p>
+      <h5 class="info__value h5-title h6-title-md">TODO</h5>
     </div>
-    <!-- <div class="info__col col">
+    <!-- <div class="info__col col col-md-4 col-sm-6">
       <p class="text-s">Время доставки</p>
       <h5 class="info__value h5-title">
         <template v-if="organization.is_high_load_state">is_high_load_state - icon</template>
         <template v-if="zone.max_time">{{ formatMinutes(zone.max_time) }}</template>
       </h5>
     </div> -->
-    <!-- <div v-if="workingTime" class="info__col col">
+    <!-- <div v-if="workingTime" class="info__col col col-md-4 col-sm-6">
       <p class="text-s">Часы работы</p>
       <h5 class="info__value h5-title">
         {{ workingTime }}
@@ -71,6 +71,22 @@ const handleToOrderClick = () => {
   }
   &__value {
     margin-top: 8px;
+  }
+}
+
+@include r($md) {
+  .info {
+    &__col {
+      margin-top: 20px;
+    }
+  }
+}
+
+@include r($sm) {
+  .info {
+    &__value {
+      margin-top: 4px;
+    }
   }
 }
 </style>

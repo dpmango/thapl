@@ -12,7 +12,7 @@
       </UiButton>
 
       <ul class="delivery__list">
-        <LocationAddressList
+        <UiAtomAddressRow
           v-for="(address, idx) in userAddress"
           :key="idx"
           :title="address.name"

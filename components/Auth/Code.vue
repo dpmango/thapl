@@ -1,10 +1,10 @@
 <template>
   <h2 class="auth__title h2-title">
-    <span v-if="error" class="c-red">Неверный код</span>
+    <span v-if="apiError" class="c-red">Неверный код</span>
     <span v-else>Введите код</span>
   </h2>
   <div class="auth__form">
-    <div class="auth__note">
+    <div class="auth__note text-s">
       Код отправлен смс-сообщением на номер телефона {{ phone }}<br />
       <a class="c-primary" href="#" @click.prevent="emit('change-view', 'phone')">Изменить номер</a>
     </div>
@@ -13,14 +13,18 @@
         name="code"
         type="text"
         :value="code"
-        :error="!!error || errors.code"
-        @on-change="(v) => setFieldValue('code', v)"
+        :error="!!apiError"
+        @on-change="handleCodeChange"
         @keyup="key_event"
       />
     </div>
     <div class="auth__cta">
       <UiButton :block="true" :loading="loading" :disabled="nextDisabled" @click="next">
-        Выслать код
+        <template v-if="meta.valid"> Войти </template>
+        <template v-else-if="timeToResend > 0">
+          Обновить код через {{ secondsToStamp(timeToResend) }}
+        </template>
+        <template v-else>Получить новый код</template>
       </UiButton>
     </div>
   </div>
@@ -30,13 +34,13 @@
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useSessionStore, useUiStore } from '~/store'
-import { clearPhone } from '~/utils'
+import { clearPhone, secondsToStamp } from '~/utils'
 
 const session = useSessionStore()
 const ui = useUiStore()
 const { phone } = storeToRefs(session)
 
-const error = ref(null)
+const apiError = ref(null)
 const loading = ref(false)
 
 const emit = defineEmits(['change-view'])
@@ -45,12 +49,30 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { code: '' },
 })
 
-const { value: code, meta } = useField('code', (v) => {
+const {
+  value: code,
+  meta,
+  resetField,
+} = useField('code', (v) => {
   return v.length === 4
 })
 
+const handleCodeChange = (v) => {
+  setFieldValue('code', v)
+  apiError.value = null
+}
+
+// таймер 2 минуты перед повторной отправкой
+const timeToResend = ref(120)
+
+const interval = setInterval(() => {
+  if (timeToResend.value === 0) return
+  timeToResend.value = timeToResend.value - 1
+}, 1000)
+
 const nextDisabled = computed(() => {
-  return !meta.dirty || Object.keys(errors.value).length !== 0
+  if (meta.valid) return false
+  return timeToResend.value !== 0
 })
 
 const key_event = (e) => {
@@ -62,9 +84,34 @@ const key_event = (e) => {
   }
 }
 
+const resendCode = async () => {
+  timeToResend.value = 120
+  apiError.value = false
+  loading.value = true
+
+  await useApi('user/get-code', {
+    method: 'POST',
+    headers: useHeaders(),
+    body: {
+      phone: '+7' + clearPhone(phone.value),
+      key: '1',
+    },
+  }).catch(useCatchError)
+
+  loading.value = false
+}
+
 const next = async () => {
   const { valid, errors } = await validate()
-  if (!valid) return
+
+  if (!valid) {
+    if (timeToResend.value === 0) {
+      resendCode()
+      resetField()
+    }
+
+    return
+  }
 
   // error.value = null
   loading.value = true
@@ -77,7 +124,8 @@ const next = async () => {
       phone: '+7' + clearPhone(phone.value),
     },
   }).catch((err) => {
-    error.value = err.data.message
+    apiError.value = err.data.message
+    resetField()
   })
 
   loading.value = false
@@ -99,8 +147,6 @@ const next = async () => {
   }
 
   &__note {
-    font-size: 14px;
-    line-height: 22px;
     color: var(--color-gray);
     text-align: center;
     a {
@@ -116,6 +162,23 @@ const next = async () => {
   }
   &__cta {
     margin-top: 28px;
+  }
+}
+
+@include r($sm) {
+  .auth {
+    &__title {
+      text-align: left;
+      padding-right: 30px;
+    }
+    &__note {
+      text-align: left;
+    }
+    &__code {
+      .digits {
+        margin-left: 0;
+      }
+    }
   }
 }
 </style>
