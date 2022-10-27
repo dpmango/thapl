@@ -1,4 +1,5 @@
 import { ILoyalty } from './Loyalty'
+import { IUser } from './User'
 
 export interface IPage {
   seo_title: null
@@ -46,6 +47,6 @@ export interface IAppSettings {
 export interface IInit {
   api_token: string | null
   user_token?: string | null
-  user: any | null
+  user: IUser | null
   app_settings: IAppSettings
 }

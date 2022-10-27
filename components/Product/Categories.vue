@@ -2,7 +2,7 @@
   <section class="categories">
     <div class="container">
       <div class="row">
-        <div v-for="category in categories" class="col col-3 col-lg-6 col-sm-12">
+        <div v-for="category in categories" class="col">
           <NuxtLink :to="`/category/${category.slug}`" class="category" :data-id="category.id">
             <div v-if="category.image" class="category__image">
               <img :src="category.image" :alt="category.title" />
@@ -31,6 +31,52 @@ const props = defineProps({
 <style lang="scss" scoped>
 .categories {
   margin: 68px 0 80px;
+  .col {
+    flex: 0 0 $col3;
+    &:first-child {
+      flex-basis: $col6;
+    }
+    &:nth-child(6) {
+      flex-basis: $col6;
+    }
+  }
+}
+
+@include r($lg) {
+  .categories {
+    .col {
+      flex: 0 0 $col4;
+      &:first-child {
+        flex-basis: $col8;
+      }
+      &:nth-child(6) {
+        flex-basis: $col8;
+      }
+    }
+  }
+}
+
+@include r($md) {
+  .categories {
+    margin: 36px 0 52px;
+    .col {
+      flex: 0 0 $col6;
+      &:first-child {
+        flex-basis: $col12;
+      }
+      &:nth-child(6) {
+        flex-basis: $col12;
+      }
+    }
+  }
+}
+
+@include r($sm) {
+  .categories {
+    .col {
+      flex: 0 0 $col12;
+    }
+  }
 }
 
 .category {
@@ -40,6 +86,7 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
+  min-height: var(--category-height);
   background: rgba(var(--color-primary-rgb), 0.12);
   border-radius: var(--card-border-radius);
   overflow: hidden;
@@ -49,6 +96,13 @@ const props = defineProps({
     top: 0;
     right: 0;
     bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    img {
+      flex: 1 1 auto;
+      object-fit: cover;
+    }
   }
   &__content {
     position: relative;
@@ -58,6 +112,20 @@ const props = defineProps({
   }
   &__title {
     color: var(--color-primary);
+  }
+}
+
+@include r($md) {
+  .category {
+    min-height: var(--category-height-md);
+    margin-bottom: 24px;
+  }
+}
+
+@include r($sm) {
+  .category {
+    min-height: var(--category-height-sm);
+    margin-bottom: 12px;
   }
 }
 </style>

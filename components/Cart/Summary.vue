@@ -4,7 +4,7 @@
       <div class="h2-title">Корзина</div>
       <!-- <p class="text-xs">freeDeliveryData: {{ freeDeliveryData }}</p>
       <p class="text-xs">minOrderData: {{ minOrderData }}</p> -->
-      <div v-if="zoneData.isDelivery" class="cart__delivery">
+      <div v-if="freeDeliveryData.show" class="cart__delivery">
         <div class="h6-title">
           <template v-if="freeDeliveryData.match">Бесплатная доставка</template>
           <template v-else>Доставка {{ formatPrice(priceData.delivery) }} ₽</template>

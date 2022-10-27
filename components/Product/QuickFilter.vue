@@ -1,5 +1,5 @@
 <template>
-  <div class="filter">
+  <div v-if="quickFilter.categories" class="filter">
     <div class="filter__wrapper">
       <ul class="filter__categories">
         <li v-for="category in quickFilter.categories">

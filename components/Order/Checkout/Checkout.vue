@@ -339,7 +339,7 @@ const { value: payment } = useField('payment', (v) => v, {
 })
 
 const paymentOptions = ref([
-  { id: 1, label: 'Картой на сайте' },
+  { id: 1030, label: 'Картой на сайте' },
   { id: 2, label: 'Картой курьеру' },
   { id: 3, label: 'Наличными' },
 ])
@@ -385,16 +385,18 @@ const requestCheckout = async () => {
       not_heat: heat.value === 'no',
       // pack: pack.value,
       persons_count: personsCount.value,
-      payment_method: payment.value,
+      payment_method: payment.value.toString(),
       change: change.value,
       cart: cartStore.cartToApi,
     },
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
 
-  if (response) {
+  if (response && response.suceess) {
     toast.success(`Заказ ${response.order_id} Оформлен`)
     cartStore.resetCart()
     router.push('/')
+  } else {
+    useCatchError(response, response.error_field)
   }
 
   // "email": "string",

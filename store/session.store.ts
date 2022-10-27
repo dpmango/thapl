@@ -1,12 +1,13 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { IInit, IAppSettings, ISiteSettings } from '~/interface/Site'
+import { IUser } from '~/interface/User'
 
 export const useSessionStore = defineStore('session', {
   state: () => {
     return {
       api_token: null,
       user_token: null,
-      user: {} as any,
+      user: {} as IUser,
       app_settings: {} as IAppSettings,
 
       phone: '',

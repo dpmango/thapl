@@ -31,7 +31,7 @@ export const useCheckout = () => {
 
   // логика минимальный заказ
   const minOrderData = computed(() => {
-    if (currentAddressType.value === 'delivery') {
+    if (zoneData.value.isDelivery) {
       const leftToMinOrder = minOrderPrice.value - cartPrice.value
 
       return {
@@ -48,7 +48,7 @@ export const useCheckout = () => {
 
   // логика бесплатная доставка
   const freeDeliveryData = computed(() => {
-    if (currentAddressType.value === 'delivery' && zone.value) {
+    if (zoneData.value.isDelivery && zoneData.value.hasZone) {
       const leftToFreeDelivery = zone.value.free_delivery_min_price - cartPrice.value
       const freeDeliveryProgress = Math.round(
         (cartPrice.value / zone.value.free_delivery_min_price) * 100
@@ -57,6 +57,7 @@ export const useCheckout = () => {
       return {
         remained: leftToFreeDelivery,
         progress: freeDeliveryProgress,
+        show: zone.value.free_delivery_min_price > 0,
         match: leftToFreeDelivery <= 0,
       }
     }
@@ -64,6 +65,7 @@ export const useCheckout = () => {
     return {
       remained: 0,
       progress: 0,
+      show: false,
       match: true,
     }
   })

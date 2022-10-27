@@ -45,11 +45,45 @@
               :value="optionsMod"
               @on-change="(v) => (optionsMod = v)"
             /> -->
+
+            <div v-if="product.modifier_groups?.length" class="product__modifiers">
+              <div
+                v-for="(group, idx) in product.modifier_groups"
+                :key="idx"
+                class="product__modifier"
+              >
+                <div class="h6-title">{{ group.title }}</div>
+                <div class="product__modifier-note text-xs c-gray">
+                  Нужно выбрать от {{ group.min_items }} до {{ group.max_items }} ингредиентов
+                </div>
+                <div class="product__modifier-list">
+                  <div
+                    v-for="option in group.items"
+                    :key="option.id"
+                    class="product__modifier-option mod-option text-m"
+                    @click="changeModifier(option)"
+                  >
+                    <span class="mod-option__name">{{ option.title }}</span>
+                    <span class="mod-option__price">{{ formatPrice(option.price) }} ₽</span>
+                    <UiCheckbox
+                      class="mod-option__radio"
+                      type="radio"
+                      :checked="modifierGroups.some((x) => x.id === option.id)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="product__cta">
-            <ProductCardAddToCart :product="product" btn-theme="primary" :should-emit="false">
-              В корзину &bull; {{ product.price }} ₽
+            <ProductCardAddToCart
+              :product="product"
+              :modifiers="modifierGroups"
+              btn-theme="primary"
+              :should-emit="false"
+            >
+              В корзину &bull; {{ priceWithModifiers }} ₽
             </ProductCardAddToCart>
           </div>
         </div>
@@ -60,6 +94,7 @@
 
 <script setup>
 import { useUiStore } from '~/store'
+import { formatPrice } from '~/utils'
 
 const { $env, $log } = useNuxtApp()
 
@@ -82,6 +117,30 @@ const optionsModList = ref([
 ])
 
 const optionsMod = ref(null)
+
+// модификаторы товара
+const modifierGroups = ref([])
+
+const priceWithModifiers = computed(() => {
+  let price = product.value.price
+
+  if (modifierGroups.value.length) {
+    modifierGroups.value.forEach((x) => {
+      price += x.price
+    })
+  }
+
+  return price
+})
+
+// TODO - валдиация обязательный выбор
+const changeModifier = (opt) => {
+  if (modifierGroups.value.some((x) => x.id === opt.id)) {
+    modifierGroups.value = modifierGroups.value.filter((x) => x.id === opt.id)
+  } else {
+    modifierGroups.value = [opt]
+  }
+}
 
 const fetchProduct = async (id) => {
   loading.value = true
@@ -178,6 +237,27 @@ watch(
     margin-top: 12px;
     background: var(--color-bg-darken);
   }
+  // &__modifiers{}
+  &__modifier {
+    margin: 12px 0;
+  }
+  &__modifier-note {
+    margin-top: 12px;
+    background: var(--color-bg-darken);
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 8px 12px;
+  }
+  &__modifier-list {
+    margin-top: 16px;
+  }
+  &__modifier-option {
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   &__cta {
     flex: 0 0 auto;
     padding: 24px 32px;
@@ -191,6 +271,27 @@ watch(
       width: 100%;
       background: var(--color-bg-darken);
     }
+  }
+}
+
+.mod-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  &__name {
+    display: inline-block;
+    flex: 1 1 auto;
+    padding-right: 16px;
+  }
+  &__price {
+    display: inline-block;
+    font-weight: 500;
+    color: var(--color-primary);
+    flex: 0 0 auto;
+  }
+  &__radio {
+    flex: 0 0 auto;
+    margin-left: 12px;
   }
 }
 

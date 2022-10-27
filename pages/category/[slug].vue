@@ -30,6 +30,7 @@ const { data: categoryData, error: categoriesError } = await useAsyncData(
       headers: useHeaders(),
       params: {
         id: DangerAsyncCategoryInStore.id,
+        // slug: params.slug
       },
     })
 )

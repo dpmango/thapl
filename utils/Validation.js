@@ -1,4 +1,9 @@
 /* eslint-disable no-useless-escape */
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+// eslint-disable-next-line import/no-named-as-default-member
+dayjs.extend(customParseFormat)
+
 export const clearString = (v, removeSpaces) => {
   let value = ''
   if (typeof v === 'string') {
@@ -62,4 +67,24 @@ export const validAdress = (v) => {
   const value = clearString(v)
 
   return value.split(' ').length >= 2 && /\d+/.test(value)
+}
+
+export function validDate(value, dateNow) {
+  value = value || ''
+  const djsObj = dayjs(value, 'DD/MM/YYYY', true)
+
+  if (!djsObj.isValid()) return false
+  if (djsObj.year() < 1920) return false
+  if (djsObj.isAfter(dayjs(dateNow))) return false
+
+  return true
+}
+
+export const dateMask = {
+  mask: 'D#/M#/Y###',
+  tokens: {
+    D: { pattern: /[0-3]/ },
+    M: { pattern: /[0-1]/ },
+    Y: { pattern: /[1-2]/ },
+  },
 }

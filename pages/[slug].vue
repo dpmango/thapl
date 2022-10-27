@@ -16,7 +16,7 @@ const crumbs = [{ href: '/', label: 'Заголовок' }]
 const route = useRoute()
 
 useHead({
-  title: `Страница- ${$env.projectName}`,
+  title: `Страница - ${$env.projectName}`,
 })
 </script>
 

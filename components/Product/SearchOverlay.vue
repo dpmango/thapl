@@ -33,6 +33,8 @@ import {
   formatUGC,
   prepareSmartSearchRegexp,
   clearMorphologyInSearchTerm,
+  lockBody,
+  unlockBody,
 } from '~/utils'
 
 const ui = useUiStore()
@@ -64,6 +66,17 @@ const searchedProducts = computed(() => {
 
   return []
 })
+
+watch(
+  () => ui.searchActive,
+  (newVal) => {
+    if (newVal) {
+      lockBody()
+    } else {
+      unlockBody()
+    }
+  }
+)
 </script>
 
 <style lang="scss">

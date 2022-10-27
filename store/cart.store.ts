@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { ICartInner } from '~/interface/Cart'
+import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct } from '~/interface/Product'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
@@ -48,8 +48,16 @@ export const useCartStore = defineStore('cart', {
   actions: {
     // TODO баг когда q = 0 (вернуть товар) и нажимаем добавить в коризну из продуктов
     // changeQuantity в коризне vs addToCart в списке
-    async addToCart(product, quantity = 1) {
-      this.cart.push({ id: product.id, q: quantity || 1 })
+    async addToCart(product, quantity = 1, modifiers) {
+      const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
+      if (modifiers?.length) {
+        cartObj.modifiers = modifiers.map((x) => ({
+          id: x.id,
+          q: 1,
+        }))
+      }
+
+      this.cart.push(cartObj)
       this.products.push(product)
 
       await this.sendCartAnalytics({
@@ -57,7 +65,12 @@ export const useCartStore = defineStore('cart', {
         body: {
           catolog_item_id: product.id,
           count: quantity || 1,
-          modifiers: [],
+          modifiers: modifiers?.length
+            ? modifiers.map((x) => ({
+                catolog_item_modifier_id: x.id,
+                count: 1,
+              }))
+            : [],
         },
       })
     },

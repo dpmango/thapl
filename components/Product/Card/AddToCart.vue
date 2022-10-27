@@ -29,6 +29,10 @@ const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
   },
+  modifiers: {
+    type: Array,
+    default: () => [],
+  },
   btnTheme: {
     type: String,
     default: '',
@@ -50,7 +54,7 @@ const handleSelect = () => {
     return
   }
 
-  cartStore.addToCart(props.product)
+  cartStore.addToCart(props.product, 1, props.modifiers)
 }
 
 const handleQuantityChange = (n: number) => {

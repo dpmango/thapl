@@ -8,7 +8,6 @@ export default defineNuxtConfig({
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],
 
-  // 445, 474, 172, 439, 419, 296
   proxy: {
     options: {
       target: process.env.NUXT_PUBLIC_API_BASE,

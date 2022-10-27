@@ -14,6 +14,8 @@ export {
   validPhone,
   validEmail,
   validAdress,
+  validDate,
+  dateMask,
 } from './Validation'
 export { formatUGC, prepareSmartSearchRegexp, clearMorphologyInSearchTerm } from './Strings'
 export { createScrollableAnchors } from './Elements'

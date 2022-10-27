@@ -115,6 +115,12 @@ export const useProductStore = defineStore('product', {
         }
       })
 
+      if (categories.length === 1) {
+        return {
+          categories: null,
+        }
+      }
+
       return {
         categories,
       }
