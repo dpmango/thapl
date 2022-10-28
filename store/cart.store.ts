@@ -1,10 +1,10 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { ICartInner } from '~/interface/Cart'
+import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct } from '~/interface/Product'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
 // products держит массив добавленных продуктов в исходном виде
-// Обновить по реализации апи
+// TODO - продумать вариант с гидрацией когда сложно получить flatCatalog (категории, концепции)
 
 export const useCartStore = defineStore('cart', {
   state: () => {
@@ -28,31 +28,85 @@ export const useCartStore = defineStore('cart', {
         }
       },
     cartPrice: (state): number => {
-      let sum = 0
-
-      state.cart.forEach((c) => {
+      return state.cart.reduce((acc, c) => {
         const product = state.products.find((x) => x.id === c.id)
         if (product) {
-          sum += product.price * c.q
+          acc += product.price * c.q
         }
-      })
 
-      return sum
+        return acc
+      }, 0)
+    },
+    cartToApi: (state) => {
+      return state.cart.map((x) => ({
+        catalog_item_id: x.id,
+        count: x.q,
+        modifiers: [],
+      }))
     },
   },
   actions: {
     // TODO баг когда q = 0 (вернуть товар) и нажимаем добавить в коризну из продуктов
     // changeQuantity в коризне vs addToCart в списке
-    addToCart(product, quantity = 1) {
-      this.cart.push({ id: product.id, q: quantity || 1 })
+    async addToCart(product, quantity = 1, modifiers) {
+      const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
+      if (modifiers?.length) {
+        cartObj.modifiers = modifiers.map((x) => ({
+          id: x.id,
+          q: 1,
+        }))
+      }
+
+      this.cart.push(cartObj)
       this.products.push(product)
+
+      await this.sendCartAnalytics({
+        action: 'add',
+        body: {
+          catolog_item_id: product.id,
+          count: quantity || 1,
+          modifiers: modifiers?.length
+            ? modifiers.map((x) => ({
+                catolog_item_modifier_id: x.id,
+                count: 1,
+              }))
+            : [],
+        },
+      })
     },
-    changeQuantity({ id, quantity }) {
+    async changeQuantity({ id, quantity }) {
       this.cart = this.cart.map((x) => (x.id === id ? { id: x.id, q: quantity } : x))
+
+      await this.sendCartAnalytics({
+        action: 'add',
+        body: {
+          catolog_item_id: id,
+          count: quantity,
+          modifiers: [],
+        },
+      })
     },
-    removeFromCart(id: number) {
+    async removeFromCart(id: number) {
       this.cart = this.cart.filter((x) => x.id !== id)
       this.products = this.products.filter((x) => x.id !== id)
+
+      await this.sendCartAnalytics({
+        action: 'remove',
+        body: {
+          catolog_item_id: id,
+        },
+      })
+    },
+    resetCart() {
+      this.cart = []
+      this.products = []
+    },
+    async sendCartAnalytics({ action, body }) {
+      await useApi(`cart/${action}`, {
+        method: 'POST',
+        headers: useHeaders(),
+        body,
+      }).catch((err) => useCatchError(err, '', true))
     },
 
     hydrateProducts(product: IProduct) {

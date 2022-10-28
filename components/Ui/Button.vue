@@ -1,7 +1,14 @@
 <template>
   <component
     :is="getElement"
-    :class="['button', theme, size, isEmpty && '_iconOnly']"
+    :class="[
+      'button',
+      theme,
+      size,
+      disabled && '_disabled',
+      isEmpty && '_iconOnly',
+      showLoader && '_loading',
+    ]"
     :href="href"
     :to="to"
     v-bind="$attrs"
@@ -15,6 +22,10 @@
         <nuxt-icon :name="iconRight" />
       </i>
     </div>
+
+    <span v-if="showLoader" class="button__loader">
+      <nuxt-icon name="loading"></nuxt-icon>
+    </span>
   </component>
 </template>
 
@@ -36,6 +47,14 @@ const props = defineProps({
   iconRight: String,
   iconLeft: String,
   to: String,
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const getElement = computed(() => {
@@ -52,14 +71,33 @@ const slots = useSlots()
 const isEmpty = computed(() => {
   return !slots.default
 })
+
+const showLoader = ref(false)
+let timer = null
+
+watch(
+  () => props.loading,
+  (newVal, oldVal) => {
+    if (newVal === true) {
+      timer = setTimeout(() => {
+        showLoader.value = true
+      }, 200)
+    } else if (newVal === false) {
+      showLoader.value = false
+      clearTimeout(timer)
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>
 .button {
   -webkit-appearance: none;
+  appearance: none;
   position: relative;
   padding: 0;
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
   border: 1px solid transparent;
   box-sizing: border-box;
   border-radius: var(--button-border-radius);
@@ -97,6 +135,25 @@ const isEmpty = computed(() => {
     }
   }
 
+  &__loader {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s $ease;
+    .nuxt-icon {
+      animation: rotateLoader 1s linear infinite;
+    }
+  }
+
   // themes
   &.primary {
     background: var(--color-primary);
@@ -113,7 +170,7 @@ const isEmpty = computed(() => {
       outline: none;
     }
 
-    &[disabled] {
+    &[disabled='true'] {
       background: #e3e9ef;
       color: var(--color-disabled);
       pointer-events: none;
@@ -165,6 +222,12 @@ const isEmpty = computed(() => {
     }
   }
 
+  &._disabled {
+    background: #e3e9ef;
+    color: var(--color-disabled);
+    pointer-events: none;
+  }
+
   // sizes
   &.large {
     .button__content {
@@ -193,6 +256,26 @@ const isEmpty = computed(() => {
   &[block] {
     display: block;
     width: 100%;
+  }
+
+  &._loading {
+    .button {
+      &__content {
+        opacity: 0;
+      }
+      &__loader {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@keyframes rotateLoader {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

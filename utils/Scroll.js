@@ -1,13 +1,22 @@
-export const scrollToElement = (id, page) => {
-  if (!page) {
-    const element = document.getElementById(id)
-    if (!element) return
+export const scrollToElement = (id, headerTarget = true) => {
+  const element = document.getElementById(id)
+  if (!element) return
 
-    const headerOffset = document.querySelector('.header__bottom').offsetHeight + 24
-    const targetTop = element.getBoundingClientRect().top + window.pageYOffset - headerOffset
-
-    window.scrollTo({ top: targetTop, behavior: 'smooth' })
+  let headerOffset = 0
+  if (headerTarget === true) {
+    // применяется для десктопа (прокрутка относительно sticky меню)
+    headerOffset = document.querySelector('.header__bottom').offsetHeight + 24
+  } else if (typeof headerTarget === 'string') {
+    // применяется с указанием селектора элемента шапки (или люббого другого элемента)
+    headerOffset = document.querySelector(headerTarget).offsetHeight + 24
+  } else if (typeof headerTarget === 'number') {
+    // либо указать оффсет числом
+    headerOffset = headerTarget
   }
+
+  const targetTop = element.getBoundingClientRect().top + window.pageYOffset - headerOffset
+
+  window.scrollTo({ top: targetTop, behavior: 'smooth' })
 }
 
 export const scrollPageToTop = () => {
@@ -40,4 +49,25 @@ export const scrollWithSpeed = (to, duration = 500, el) => {
     }
   }
   animateScroll()
+}
+
+export const lockBody = () => {
+  document.querySelector('body').classList.add('js-locked')
+
+  const div = document.createElement('div')
+  div.style.overflowY = 'scroll'
+  div.style.width = '50px'
+  div.style.height = '50px'
+  document.body.append(div)
+
+  const scrollWidth = div.offsetWidth - div.clientWidth
+
+  div.remove()
+
+  document.querySelector('body').style.marginRight = scrollWidth + 'px'
+}
+
+export const unlockBody = () => {
+  document.querySelector('body').classList.remove('js-locked')
+  document.querySelector('body').removeAttribute('style')
 }

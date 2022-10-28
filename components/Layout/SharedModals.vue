@@ -3,7 +3,10 @@
   <CartModal />
   <LocationRegionModal v-if="$env.useRegions" />
   <LocationAddressModal />
-  <ContactModal />
+  <LocationClosedModal />
+  <InfoContactModal />
+  <ProductModal />
+  <ProductSearchOverlay />
 </template>
 
 <script setup>

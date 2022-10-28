@@ -1,15 +1,15 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { IInit, IAppSettings, ISiteSettings } from '~/interface/Site'
+import { IUser } from '~/interface/User'
 
 export const useSessionStore = defineStore('session', {
   state: () => {
     return {
       api_token: null,
       user_token: null,
-      user: {} as any,
+      user: {} as IUser,
       app_settings: {} as IAppSettings,
-      region: null,
-      regions: [],
+
       phone: '',
     }
   },
@@ -27,9 +27,9 @@ export const useSessionStore = defineStore('session', {
       }
       return null
     },
-    currentRegionName(state) {
+    isPreorderAvailable(state) {
       try {
-        return state.regions.find((x) => x.id === state.region).title
+        return state.app_settings.order_to_time
       } catch {
         return null
       }
@@ -56,21 +56,6 @@ export const useSessionStore = defineStore('session', {
 
       const userToken = useCookieState('x-thapl-authorization')
       userToken.value = user_token
-    },
-    setCurrentRegion(region) {
-      this.region = region
-    },
-    async getRegions(region) {
-      const headers = useHeaders()
-
-      const data = await useApi('organization/get-regions', {
-        method: 'GET',
-        headers,
-      })
-
-      this.regions = [...data]
-
-      return []
     },
   },
 })

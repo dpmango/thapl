@@ -20,6 +20,9 @@ body {
   margin: 0;
   touch-action: pan-y;
   -webkit-text-size-adjust: none;
+  &.js-locked {
+    overflow: hidden;
+  }
 }
 
 @include r($md) {

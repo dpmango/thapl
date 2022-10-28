@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <UiModal name="cart" position="aside" height="fill">
+    <UiModal name="cart" position="aside" height="fill" :padding="false" :scrolling="false">
       <CartEmpty v-if="products.length === 0" />
       <CartSummary v-else />
     </UiModal>
@@ -10,42 +10,31 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCartStore, useProductStore } from '~/store'
-import { PerformanceLog } from '~/utils'
 
 const { $env, $log } = useNuxtApp()
 
 const cartStore = useCartStore()
 const productStore = useProductStore()
 const { cart, products } = storeToRefs(cartStore)
-const { catalog } = storeToRefs(productStore)
+const { flatCatalog } = storeToRefs(productStore)
 
 onMounted(() => {
+  // TODO - tmp
   // populate cart products by ids (SSR + cookie)
-  const DEV_perf = performance.now()
-
-  const flatCatalog = catalog.value.reduce((acc, x) => {
-    acc = [...acc, ...x.catalog_items]
-    x.sub_categories.forEach((sub) => {
-      acc = [...acc, ...sub.catalog_items]
+  if ($env.catalogType === 'singlepage') {
+    cart.value.forEach((c) => {
+      const product = flatCatalog.value.find((x) => x.id === c.id)
+      cartStore.hydrateProducts(product)
     })
-
-    return acc
-  }, [])
-  PerformanceLog(DEV_perf, 'flatCatalog')
-
-  // $log.log({ flatCatalog })
-
-  cart.value.forEach((c) => {
-    const product = flatCatalog.find((x) => x.id === c.id)
-    cartStore.hydrateProducts(product)
-  })
-
-  PerformanceLog(DEV_perf, 'cartPopulated')
+  }
 })
 </script>
 
 <style lang="scss" scoped>
 .cart {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

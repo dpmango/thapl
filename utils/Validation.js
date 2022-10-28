@@ -1,4 +1,29 @@
-export function clearPhone(str) {
+/* eslint-disable no-useless-escape */
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+// eslint-disable-next-line import/no-named-as-default-member
+dayjs.extend(customParseFormat)
+
+export const clearString = (v, removeSpaces) => {
+  let value = ''
+  if (typeof v === 'string') {
+    value = v.trim()
+  } else if (typeof v === 'number') {
+    value = `${v}`
+  }
+
+  if (removeSpaces) {
+    value = value.replaceAll(' ', '').replaceAll('-', '')
+  }
+
+  return value
+}
+
+export const isValidNumber = (v) => {
+  return Number.isFinite(+v)
+}
+
+export const clearPhone = (str) => {
   let num = str.replace(/\+7 \(/, '')
   num = num.replace(/\) /, '')
   num = num.replace(/-/, '')
@@ -7,7 +32,7 @@ export function clearPhone(str) {
   return num
 }
 
-export function validPhone(value) {
+export const validPhone = (value) => {
   value = value || ''
   let valid = true
   const arr = []
@@ -29,14 +54,37 @@ export function validPhone(value) {
   }
 }
 
-export function validEmail(value) {
+export const validEmail = (v) => {
+  const value = clearString(v)
+
+  const reg =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+  return reg.test(value)
+}
+
+export const validAdress = (v) => {
+  const value = clearString(v)
+
+  return value.split(' ').length >= 2 && /\d+/.test(value)
+}
+
+export function validDate(value, dateNow) {
   value = value || ''
-  let valid = true
-  const reg = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,8})$/
+  const djsObj = dayjs(value, 'DD/MM/YYYY', true)
 
-  if (!value || value.length < 1 || reg.test(value) === false) {
-    valid = false
-  }
+  if (!djsObj.isValid()) return false
+  if (djsObj.year() < 1920) return false
+  if (djsObj.isAfter(dayjs(dateNow))) return false
 
-  return valid
+  return true
+}
+
+export const dateMask = {
+  mask: 'D#/M#/Y###',
+  tokens: {
+    D: { pattern: /[0-3]/ },
+    M: { pattern: /[0-1]/ },
+    Y: { pattern: /[1-2]/ },
+  },
 }

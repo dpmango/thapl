@@ -1,11 +1,12 @@
 const lastTime = new Date().getTime()
 
-export const PerformanceLog = (DEV_perf, name) => {
+export const PerformanceLog = (DEV_perf, name, fromStart) => {
   const DEV_perf_end = performance.now()
 
-  console.log(
-    `PERF :: ${name} :: ${(DEV_perf_end - DEV_perf).toFixed(2)} ms :: fromstart ${(
-      new Date().getTime() - lastTime
-    ).toFixed(2)} ms`
-  )
+  const fromStartTag = fromStart
+    ? `:: fromstart ${(new Date().getTime() - lastTime).toFixed(2)} ms`
+    : ''
+
+  // eslint-disable-next-line no-console
+  console.log(`PERF :: ${name} :: ${(DEV_perf_end - DEV_perf).toFixed(2)} ms ${fromStartTag}`)
 }

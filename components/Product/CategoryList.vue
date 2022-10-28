@@ -26,4 +26,22 @@ const props = defineProps({
     }
   }
 }
+
+@include r($md) {
+  .category {
+    &__list {
+      .card {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .row .col:last-child {
+        .card:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}
 </style>

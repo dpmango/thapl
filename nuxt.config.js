@@ -3,17 +3,11 @@ import eslintPlugin from 'vite-plugin-eslint'
 export default defineNuxtConfig({
   ssr: true,
 
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    '@pinia/nuxt',
-    'nuxt-proxy',
-    '@nuxtjs/robots',
-    '@nuxtjs/google-fonts',
-    'nuxt-icons',
-    'floating-vue/nuxt',
-  ],
+  experimental: { writeEarlyHints: false, inlineSSRStyles: false },
 
-  // 445, 474, 172, 439, 419, 296
+  // Modules: https://go.nuxtjs.dev/config-modules
+  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],
+
   proxy: {
     options: {
       target: process.env.NUXT_PUBLIC_API_BASE,
@@ -27,10 +21,23 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      projectName: '',
       apiBase: '',
       theme: '',
       catalogType: '',
+      promoListType: '',
       useRegions: '',
+      useSearch: '',
+      useTestimonials: '',
+      takeawayOnly: '',
+      footerNavTitle: '',
+
+      yandexMetrikaID: '',
+      yandexMapsKey: '',
+      googleID: '',
+
+      geocoderSearchedCities: '',
+      geocoderBoundedBy: '',
     },
   },
 
@@ -70,9 +77,12 @@ export default defineNuxtConfig({
     ],
   },
 
+  nitro: {
+    compressPublicAssets: true,
+  },
+
   app: {
     head: {
-      title: 'Thapl',
       htmlAttrs: {
         lang: 'ru',
       },
@@ -84,37 +94,6 @@ export default defineNuxtConfig({
         },
         { name: 'format-detection', content: 'telephone=no' },
       ],
-      // link: [
-      //   { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-      //   { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-      //   { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
-      //   { rel: 'manifest', href: '/site.webmanifest' },
-      //   { rel: 'mask-icon', href: '/safari-pinned-tab.svg' },
-      // ],
-      script: [
-        {
-          hid: 'gtm-script1',
-          src: 'https://www.googletagmanager.com/gtag/js?id=G-',
-          defer: true,
-          async: true,
-        },
-        {
-          hid: 'gtm-script2',
-          children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'G-');
-        `,
-        },
-      ],
     },
-  },
-
-  // https://github.com/nuxt-community/robots-module
-  robots: {
-    UserAgent: '*',
-    Disallow: ['/example/'],
   },
 })

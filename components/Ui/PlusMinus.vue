@@ -1,5 +1,5 @@
 <template>
-  <div class="plusminus" :class="[`_${size}`]">
+  <div class="plusminus" :class="[`_${size}`, asInput && '_asinput']">
     <i class="plusminus__minus" @click="handleMinusClick" />
     <input
       class="plusminus__input"
@@ -22,10 +22,18 @@ const props = defineProps({
     type: Number,
     default: 99,
   },
+  minValue: {
+    type: Number,
+    default: 0,
+  },
   size: {
     type: String,
     default: 'medium',
     validator: (v) => ['medium', 'small'].includes(v),
+  },
+  asInput: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -53,6 +61,7 @@ const handleChange = (value) => {
   let emitValue = value
 
   if (!value) emitValue = 0
+  if (value <= props.minValue) emitValue = props.minValue
   if (value > props.maxValue) emitValue = props.maxValue
   if (!Number.isFinite(+value)) emitValue = props.value
 
@@ -102,7 +111,7 @@ const handleChange = (value) => {
     }
   }
   &__input {
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     width: min-content;
     -webkit-appearance: none;
     font-weight: 500;
@@ -150,6 +159,29 @@ const handleChange = (value) => {
       &__input {
         padding: 8px 0px;
         font-size: 14px;
+      }
+    }
+  }
+  &._asinput {
+    max-width: 100%;
+    width: 100%;
+    border-radius: var(--input-border-radius);
+    background: var(--input-background-color);
+    border: 1px solid var(--color-border);
+    .plusminus {
+      &__input {
+        order: 1;
+        text-align: left;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      &__minus {
+        order: 2;
+        border-left: 1px solid var(--color-separator);
+      }
+      &__plus {
+        order: 3;
+        border-left: 1px solid var(--color-separator);
       }
     }
   }

@@ -31,7 +31,7 @@
           <div class="tile _action" @click="() => ui.setModal({ name: 'region' })">
             <span class="tile__label tile__overflow">Город</span>
             <div class="tile__value">
-              <span class="tile__overflow">{{ session.currentRegionName }}</span>
+              <span class="tile__overflow">{{ currentRegionName }}</span>
               <nuxt-icon name="caret" />
             </div>
           </div>
@@ -39,9 +39,15 @@
 
         <div class="col header__tile hidden-md">
           <div class="tile _action" @click="() => ui.setModal({ name: 'address' })">
-            <span class="tile__label tile__overflow">Адрес доставки</span>
+            <span class="tile__label tile__overflow">
+              <template v-if="currentAddress?.type === 'takeaway'">Адрес самовывоза</template>
+              <template v-else>Адрес доставки</template>
+            </span>
             <div class="tile__value">
-              <span class="tile__overflow">Укажите адрес</span>
+              <span class="tile__overflow">
+                <template v-if="currentAddress">{{ currentAddress.name }}</template>
+                <template v-else>Укажите адрес</template>
+              </span>
               <nuxt-icon name="caret" />
             </div>
           </div>
@@ -57,7 +63,7 @@
         </div>
 
         <div class="header__actions-mobile visible-md">
-          <div class="action" @click="() => ui.setModal({ name: 'cart' })">
+          <div class="action" @click="handleCartOpen">
             <div class="action__icon">
               <nuxt-icon name="cart" />
               <div v-if="cartStore.cart.length" class="action__counter">
@@ -69,9 +75,10 @@
 
         <div class="col header__actions row">
           <div class="col">
-            <NuxtLink to="/ui" class="action">
+            <NuxtLink v-if="session.app_settings.loyalty?.enabled" to="/ui" class="action">
               <div class="action__icon">
                 <nuxt-icon name="heart" />
+                <div class="action__counter _top">223</div>
               </div>
               <div class="action__text">Бонусы</div>
             </NuxtLink>
@@ -103,12 +110,19 @@
 
       <!-- bottom -->
       <div class="header__bottom">
-        <div class="header__search">
+        <div v-if="$env.useSearch" class="header__search" @click="ui.setSearchActive(true)">
           <NuxtIcon name="search" />
         </div>
+
         <LayoutNavScroller class="header__nav" />
-        <div class="header__cta" @click="() => ui.setModal({ name: 'cart' })">
-          <UiButton>Корзина</UiButton>
+
+        <div class="header__cta" @click="handleCartOpen">
+          <UiButton>
+            Корзина
+            <div v-if="cartStore.cart.length" class="header__cta-counter">
+              {{ cartStore.cart.length }}
+            </div>
+          </UiButton>
         </div>
       </div>
     </div>
@@ -116,17 +130,20 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import _ from 'lodash'
-import { useSessionStore, useUiStore, useCartStore } from '~/store'
+import { useSessionStore, useUiStore, useCartStore, useDeliveryStore } from '~/store'
 
 const ui = useUiStore()
 const session = useSessionStore()
 const cartStore = useCartStore()
+const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
 const {
   app_settings: { site_settings },
 } = session
+const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
 
 defineProps({
   variant: {
@@ -144,6 +161,14 @@ const topRef = ref(null)
 const toggleMobile = () => {
   const headerHeight = headerRef.value.offsetHeight
   ui.setMobileMenu({ active: !ui.mobileMenuActive, offset: headerHeight })
+}
+
+const handleCartOpen = () => {
+  if (deliveryStore.currentAddress) {
+    ui.setModal({ name: 'cart' })
+  } else {
+    ui.setModal({ name: 'address' })
+  }
 }
 
 // this.scrollSticky = _.throttle(this.handleSticky, 50)
@@ -214,6 +239,23 @@ onBeforeUnmount(() => {
   &__cta {
     flex: 0 0 auto;
   }
+  &__cta-counter {
+    position: relative;
+    padding-left: 12px;
+    margin-left: 12px;
+    &::before {
+      display: inline-block;
+      content: ' ';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 20px;
+      transform: translateY(-50%);
+      background: currentColor;
+      opacity: 0.2;
+    }
+  }
   &__hamburger {
     display: none;
   }
@@ -228,10 +270,10 @@ onBeforeUnmount(() => {
 }
 
 @include r($xl) {
-  .header {
-    &__logo {
-    }
-  }
+  // .header {
+  //   // &__logo {
+  //   // }
+  // }
 }
 
 @include r($lg) {
@@ -352,10 +394,17 @@ onBeforeUnmount(() => {
     line-height: 18px;
     min-width: 18px;
     min-height: 18px;
+    padding: 0 6px;
     text-align: center;
-    border-radius: 50%;
+    border-radius: 12px;
     background: var(--color-primary);
     color: var(--color-font-invert);
+    &._top {
+      bottom: auto;
+      top: -6px;
+      right: auto;
+      left: calc(100% - 6px);
+    }
   }
   &__text {
     margin-top: 4px;

@@ -12,43 +12,36 @@ h6 {
 .h3-title,
 .h4-title,
 .h5-title,
-.subtitle-1,
-.subtitle-2 {
-  font-weight: 600;
+.h6-title {
+  font-weight: 500;
 }
 
 .h1-title {
-  font-size: 56px;
-  line-height: calc(62 / 56);
-  letter-spacing: -0.01em;
+  font-size: 48px;
+  line-height: calc(38 / 28);
 }
 
 .h2-title {
-  font-weight: 500;
   font-size: 28px;
   line-height: calc(38 / 28);
 }
 
 .h3-title {
-  font-weight: 500;
   font-size: 24px;
   line-height: calc(30 / 20);
 }
 
 .h4-title {
-  font-weight: 500;
   font-size: 20px;
   line-height: calc(30 / 20);
 }
 
 .h5-title {
-  font-weight: 500;
   font-size: 20px;
   line-height: calc(30 / 20);
 }
 
 .h6-title {
-  font-weight: 500;
   font-size: 16px;
   line-height: calc(24 / 16);
 }
@@ -56,6 +49,40 @@ h6 {
 @include r($md) {
   .h2-title {
     font-size: 20px;
+  }
+}
+
+@each $size, $px in $sizes {
+  @include r(#{$px}) {
+    .h1-title-#{$size} {
+      font-size: 48px;
+      line-height: calc(38 / 28);
+    }
+
+    .h2-title-#{$size} {
+      font-size: 28px;
+      line-height: calc(38 / 28);
+    }
+
+    .h3-title-#{$size} {
+      font-size: 24px;
+      line-height: calc(30 / 20);
+    }
+
+    .h4-title-#{$size} {
+      font-size: 20px;
+      line-height: calc(30 / 20);
+    }
+
+    .h5-title-#{$size} {
+      font-size: 20px;
+      line-height: calc(30 / 20);
+    }
+
+    .h6-title-#{$size} {
+      font-size: 16px;
+      line-height: calc(24 / 16);
+    }
   }
 }
 
@@ -70,41 +97,6 @@ p {
   }
 }
 
-.wysiwyg {
-  p,
-  ul,
-  ol,
-  img,
-  button,
-  blockquote,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  table {
-    & + p,
-    & + blockquote,
-    & + table {
-      margin-top: 1em;
-    }
-
-    & + ul,
-    & + ol,
-    & + button,
-    & + img,
-    & + h1,
-    & + h2,
-    & + h3,
-    & + h4,
-    & + h5,
-    & + h6 {
-      margin-top: 1em;
-    }
-  }
-}
-
 .text-l {
   font-weight: 500;
   font-size: 18px;
@@ -112,21 +104,17 @@ p {
 }
 
 .text-m {
-  font-weight: 400;
   font-size: 16px;
   line-height: calc(26 / 16);
 }
 
 .text-s {
-  font-weight: 400;
   font-size: 14px;
   line-height: calc(22 / 14);
 }
 
 .text-xs {
-  font-weight: 400;
   font-size: 12px;
-  line-height: calc(16 / 12);
 }
 
 $sizes: (
@@ -139,25 +127,21 @@ $sizes: (
 @each $size, $px in $sizes {
   @include r(#{$px}) {
     .text-#{$size}-l {
-      font-weight: 400;
       font-size: 18px;
       line-height: calc(27 / 18);
     }
 
     .text-#{$size}-m {
-      font-weight: 400;
       font-size: 16px;
       line-height: calc(24 / 16);
     }
 
     .text-#{$size}-s {
-      font-weight: 400;
       font-size: 14px;
       line-height: calc(21 / 14);
     }
 
     .text-#{$size}-xs {
-      font-weight: 400;
       font-size: 12px;
       line-height: calc(16 / 12);
     }
@@ -212,6 +196,48 @@ li {
       height: 6px;
       border-radius: 50%;
       background: var(--color-primary);
+    }
+  }
+}
+
+// wysiwyg
+.wysiwyg {
+  p:not([class]) {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: calc(26 / 16);
+  }
+
+  p,
+  ul,
+  ol,
+  img,
+  button,
+  blockquote,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  table {
+    & + p,
+    & + blockquote,
+    & + table {
+      margin-top: 1em;
+    }
+
+    & + ul,
+    & + ol,
+    & + button,
+    & + img,
+    & + h1,
+    & + h2,
+    & + h3,
+    & + h4,
+    & + h5,
+    & + h6 {
+      margin-top: 1em;
     }
   }
 }

@@ -3,25 +3,44 @@
     <PromoSlider :slides="promoData" />
     <OrderLast />
     <ProductPopular />
-    <ProductCategory
-      v-for="category in productStore.catalog"
-      :key="category.id"
-      :category="category"
+
+    <template v-if="$env.catalogType === 'singlepage'">
+      <ProductCategoriesNav />
+      <LazyProductCategory
+        v-for="category in productStore.catalogWithFilter"
+        :key="category.id"
+        :category="category"
+      />
+      <ProductQuickFilter />
+    </template>
+
+    <ProductCategories
+      v-else-if="$env.catalogType === 'categories'"
+      :categories="productStore.catalog"
     />
-    <DevInfo />
+
+    <!-- <ProductConceptions
+      v-else-if="$env.catalogType === 'conceptions'"
+      :categories="productStore.catalog"
+    /> -->
+    <template v-else-if="$env.catalogType === 'conceptions'">
+      <h2 class="h2-title">TODO {{ productStore.catalog }}</h2>
+    </template>
+
+    <UiDevInfo />
     <InfoAbout />
   </main>
 </template>
 
 <script setup>
-import { useSessionStore, useProductStore } from '~/store'
+import { useProductStore } from '~/store'
 
 // definePageMeta({ layout: 'default' })
-const session = useSessionStore()
 const productStore = useProductStore()
+const { $env, $log } = useNuxtApp()
 
 useHead({
-  title: 'Главная',
+  title: `Главная - ${$env.projectName}`,
 })
 
 const headers = useHeaders()
@@ -31,14 +50,10 @@ const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
     method: 'GET',
     headers,
     params: {
-      list_type: 1,
+      list_type: $env.promoListType,
     },
   })
 )
 
-// const { data: categories2, error } = await useAsyncData('categories2', () =>
-//   productStore.getCategories()
-// )
-
-// console.log({ promoData })
+$log.log({ promoData: promoData.value })
 </script>

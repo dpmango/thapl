@@ -28,11 +28,11 @@
 
 <script setup>
 import { useField, useForm } from 'vee-validate'
-import { useSessionStore } from '~/store'
+import { useDeliveryStore } from '~/store'
 
 const { $env } = useNuxtApp()
 const regionCookie = useCookieState('x-thapl-region-id')
-const session = useSessionStore()
+const deliveryStore = useDeliveryStore()
 
 const loading = ref(false)
 
@@ -41,10 +41,6 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
 })
 
 const { value: search } = useField('search')
-
-// const { data: regionsData, error: regionsError } = await useAsyncData('regions', () =>
-//   session.getRegions()
-// )
 
 const handleRegionSelect = (region, e) => {
   e.preventDefault()
@@ -60,7 +56,7 @@ const handleRegionSelect = (region, e) => {
 
 const filteredList = computed(() => {
   const searchStr = search.value.trim().toLowerCase()
-  return session.regions.filter((x) => x.title.toLowerCase().includes(searchStr))
+  return deliveryStore.regions.filter((x) => x.title.toLowerCase().includes(searchStr))
 })
 </script>
 

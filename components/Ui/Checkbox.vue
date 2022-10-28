@@ -63,7 +63,7 @@ const isRadio = computed(() => {
 })
 
 const change = () => {
-  emit('change', !this.checked)
+  emit('change')
 }
 </script>
 
@@ -129,25 +129,6 @@ const change = () => {
     .cb {
       &__icon {
         border-radius: 50%;
-        &::after {
-          display: inline-block;
-          content: ' ';
-          position: absolute;
-          top: 1px;
-          right: 1px;
-          bottom: 1px;
-          left: 1px;
-          background: var(--color-primary);
-          opacity: 0.5;
-          border-radius: 50%;
-          transform: scale(0);
-          transition: opacity 0.25s $ease, transform 0.25s $ease;
-          will-change: transform, opacity;
-        }
-
-        .nuxt-icon {
-          display: none !important;
-        }
       }
     }
   }
@@ -166,6 +147,7 @@ const change = () => {
     .cb {
       &__icon {
         border-color: var(--color-primary);
+        background: var(--color-primary);
         &::after {
           transform: scale(1);
           opacity: 1;
