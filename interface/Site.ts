@@ -28,6 +28,8 @@ export interface ISiteSettings {
 export interface IAppSettings {
   ask_address_on_first_enter: boolean
   app_store_id: string
+  app_store_link: string
+  play_store_link: string
   whatsapp: string
   tg: string
   instagram: string

@@ -34,6 +34,9 @@ export const useSessionStore = defineStore('session', {
         return null
       }
     },
+    hasMarketingSection(state) {
+      return state.app_settings.app_store_link || state.app_settings.play_store_link
+    },
   },
   actions: {
     setInit(payload: IInit) {

@@ -60,11 +60,7 @@
 
       <div v-if="showMarketingSection" class="mobile-menu__nav">
         <ul class="socials">
-          <li v-if="app_settings.app_store_id">
-            <a :href="app_settings.app_store_id">
-              <img src="~/assets/img/app-store.svg" alt="app store" />
-            </a>
-          </li>
+          <UiAtomMobileApps />
         </ul>
       </div>
     </div>
@@ -74,6 +70,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useUiStore, useSessionStore, useProductStore } from '~/store'
+import { lockBody, unlockBody } from '~/utils'
 
 const { $env } = useNuxtApp()
 
@@ -81,7 +78,7 @@ const ui = useUiStore()
 const session = useSessionStore()
 const productStore = useProductStore()
 const { mobileMenuOffest } = storeToRefs(ui)
-const { app_settings } = storeToRefs(session)
+const { app_settings, hasMarketingSection } = storeToRefs(session)
 
 const closeMobile = () => {
   ui.setMobileMenu(false)
@@ -98,10 +95,16 @@ const style = computed(() => {
 // search
 const search = ref('')
 
-// display
-const showMarketingSection = computed(() => {
-  return app_settings.value.app_store_id
-})
+watch(
+  () => ui.searchActive,
+  (newVal) => {
+    if (newVal) {
+      lockBody()
+    } else {
+      unlockBody()
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>
@@ -237,7 +240,7 @@ const showMarketingSection = computed(() => {
   margin: 4px -12px;
   display: flex;
   flex-wrap: wrap;
-  li {
+  :deep(li) {
     flex: 0 0 168px;
     padding: 0 12px;
   }

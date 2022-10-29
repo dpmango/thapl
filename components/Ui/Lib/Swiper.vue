@@ -98,6 +98,33 @@ const params = ref({
     background: var(--color-primary);
   }
 
+  :deep(.swiper-button-prev),
+  :deep(.swiper-button-next) {
+    background: var(--swiper-nav-color);
+    border-radius: 50%;
+    opacity: 1;
+    width: 43px;
+    height: 43px;
+    color: var(--color-gray);
+    transition: background 0.25s $ease, opacity 0.25s $ease;
+    &:hover {
+      background: var(--color-primary);
+    }
+    &::after {
+      font-size: 20px;
+    }
+  }
+  :deep(.swiper-button-prev) {
+    left: 40px;
+  }
+  :deep(.swiper-button-next) {
+    right: 40px;
+  }
+  :deep(.swiper-button-disabled) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   @include r($md) {
     :deep(.swiper-pagination) {
       margin-top: 12px;
