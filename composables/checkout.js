@@ -12,7 +12,8 @@ export const useCheckout = () => {
     return {
       isDelivery: currentAddressType?.value === 'delivery',
       isTakeaway: currentAddressType?.value === 'takeaway',
-      hasZone: Object.keys(zone).length,
+      hasZone: !!Object.keys(zone.value).length,
+      isOpen: zone.value?.is_open,
     }
   })
 

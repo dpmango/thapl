@@ -58,7 +58,7 @@
         </ul>
       </nav>
 
-      <div v-if="showMarketingSection" class="mobile-menu__nav">
+      <div v-if="hasMarketingSection" class="mobile-menu__nav">
         <ul class="socials">
           <UiAtomMobileApps />
         </ul>

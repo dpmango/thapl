@@ -1,10 +1,13 @@
 <template>
-  <div class="toggle" :class="[`_${size}`, autosize && '_autosize', error && '_error']">
+  <div
+    class="toggle"
+    :class="[`_${theme}`, `_${size}`, autosize && '_autosize', error && '_error']"
+  >
     <label
       v-for="(item, idx) in list"
       :key="item.id || idx"
       class="toggle__item"
-      :class="[value === (item.id || idx) && '_active']"
+      :class="[value === (item.id || idx) && '_active', item.disabled && '_disabled']"
       @click.prevent="() => change(item.id || idx)"
     >
       <span class="toggle__text">
@@ -19,7 +22,7 @@ const emit = defineEmits(['onChange'])
 
 const props = defineProps({
   value: {
-    type: Number,
+    type: [String, Number],
     required: true,
   },
   list: {
@@ -34,6 +37,11 @@ const props = defineProps({
     type: String,
     default: 'medium',
     validator: (v) => ['medium', 'small'].includes(v),
+  },
+  theme: {
+    type: String,
+    default: 'default',
+    validator: (v) => ['default', 'spaced'].includes(v),
   },
   autosize: {
     type: Boolean,
@@ -65,6 +73,10 @@ const change = (id) => {
         color: var(--color-font);
       }
     }
+    &._disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
     &:hover {
       .toggle__text {
         color: var(--color-font);
@@ -75,6 +87,26 @@ const change = (id) => {
     font-weight: 500;
     color: var(--color-gray);
     transition: color 0.25s $ease;
+  }
+
+  &._spaced {
+    flex-wrap: wrap;
+    background: transparent;
+    border-radius: 0;
+    margin-bottom: -20px;
+    .toggle {
+      &__item {
+        margin-right: 20px;
+        margin-bottom: 20px;
+        background: var(--color-bg);
+        &:last-child {
+          margin-right: 0;
+        }
+        &._active {
+          background: var(--component-background);
+        }
+      }
+    }
   }
 
   &._medium {
@@ -108,6 +140,16 @@ const change = (id) => {
       padding-left: 8px;
       padding-right: 8px;
       text-align: center;
+    }
+  }
+
+  &._error {
+    outline: 2px solid var(--color-red);
+    &._spaced {
+      outline: none;
+      .toggle__item {
+        outline: 2px solid var(--color-red);
+      }
     }
   }
 }

@@ -23,12 +23,15 @@ export default defineNuxtConfig({
     public: {
       projectName: '',
       apiBase: '',
+      timezone: '',
       theme: '',
       catalogType: '',
       promoListType: '',
       useRegions: '',
       useSearch: '',
       useTestimonials: '',
+      orderDeliveryFutureDays: '',
+      orderDeliveryTimeSlots: '',
       takeawayOnly: '',
       footerNavTitle: '',
 

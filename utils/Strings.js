@@ -48,3 +48,7 @@ function escapeRegExp(string) {
 function trimRightChars(str, chars) {
   return str.replace(new RegExp(`${chars}$`, 'g'), '')
 }
+
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}

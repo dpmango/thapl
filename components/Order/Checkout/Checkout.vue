@@ -67,6 +67,7 @@
                   :value="address"
                   :error="errors.address"
                   @on-change="(v) => setFieldValue('address', v)"
+                  @on-changable="ui.setModal({ name: 'address' })"
                 />
               </div>
             </div>
@@ -75,6 +76,7 @@
               <div class="ui-label">Дата доставки</div>
               <div class="checkout__toggle-grid">
                 <UiToggle
+                  theme="spaced"
                   :list="deliveryDateOptions"
                   :value="deliveryDate"
                   :error="errors.deliveryDate"
@@ -87,6 +89,7 @@
               <div class="ui-label">Время доставки</div>
               <div class="checkout__toggle-grid">
                 <UiToggle
+                  theme="spaced"
                   :list="deliveryTimeOptions"
                   :value="deliveryTime"
                   :error="errors.deliveryTime"
@@ -97,7 +100,7 @@
           </template>
 
           <!-- поля для самовывоза -->
-          <template v-if="zoneData.isTakeaway">
+          <template v-else-if="zoneData.isTakeaway">
             <div class="checkout__row row">
               <div class="col col-12">
                 <UiInput
@@ -108,7 +111,18 @@
                   :value="address"
                   :error="errors.address"
                   @on-change="(v) => setFieldValue('address', v)"
+                  @on-changable="ui.setModal({ name: 'address' })"
                 />
+              </div>
+            </div>
+          </template>
+
+          <!-- кейс закрытым окном выбора -->
+          <template v-else>
+            <div class="checkout__row">
+              <div class="h2-title checkout__no-address">
+                Адрес не выбран.
+                <a href="#" @click.prevent="ui.setModal({ name: 'address' })">Выбрать</a>
               </div>
             </div>
           </template>
@@ -181,6 +195,7 @@
             <div class="ui-label">Способ оплаты</div>
             <div class="checkout__toggle-grid">
               <UiToggle
+                theme="spaced"
                 :list="paymentOptions"
                 :value="payment"
                 :error="errors.payment"
@@ -219,6 +234,12 @@
           <h1 class="h2-title visible-lg">Оформление заказа</h1>
 
           <OrderCheckoutSummary />
+
+          <!-- <div class="dev wysiwyg">
+            <p class="text-xs c-gray">zoneData: {{ zoneData }}</p>
+            <p class="text-xs c-gray">orderDay: {{ orderDay }}</p>
+            <p class="text-xs c-gray">orderDaySelected: {{ orderDaySelected }}</p>
+          </div> -->
         </div>
       </div>
     </div>
@@ -228,21 +249,27 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
+import dayjs from 'dayjs'
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { useDeliveryStore, useCartStore } from '~/store'
+import { useDeliveryStore, useCartStore, useSessionStore, useUiStore } from '~/store'
 import {
   scrollPageToTop,
   clearString,
   isValidNumber,
   validPhone,
-  validAdress,
   formatPrice,
+  generateDaysFrom,
+  generateTimeSlots,
 } from '~/utils'
 
+const sessionStore = useSessionStore()
 const deliveryStore = useDeliveryStore()
 const cartStore = useCartStore()
+const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
+const { app_settings } = storeToRefs(sessionStore)
 
+const { $env } = useNuxtApp()
 const toast = useToast()
 const router = useRouter()
 
@@ -253,19 +280,23 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     name: '',
     phone: '',
     contact: '',
-    address: currentAddress.value.name,
-    deliveryDate: 1,
-    deliveryTime: 1,
+    address: currentAddress.value?.name,
+    deliveryDate: '',
+    deliveryTime: '',
     heat: '',
     pack: '',
     personsCount: 1,
-    payment: 1,
+    payment: '',
     change: '',
   },
 })
 
+const edgeFieldsValid = computed(() => {
+  return currentAddress.value?.name
+})
+
 const checkoutDisabled = computed(() => {
-  return Object.keys(errors.value).length !== 0
+  return Object.keys(errors.value).length !== 0 || !edgeFieldsValid.value
 })
 
 // контакты
@@ -286,28 +317,120 @@ const { value: contact, meta: contactMeta } = useField(
   }
 )
 
+watch(
+  () => currentAddress.value,
+  (newVal) => {
+    setFieldValue('address', newVal?.name)
+  },
+  { deep: true }
+)
+
 // адрес и время
 const { value: address, meta: addressMeta } = useField('address', (v) => {
   return clearString(v).length >= 2 ? true : 'Введите адрес'
 })
 
-const { value: deliveryDate } = useField('deliveryDate', (v) => v, {
-  type: 'radio',
+const { value: deliveryDate } = useField(
+  'deliveryDate',
+  (v) => {
+    return v ? true : 'Выберите дату'
+  },
+  {
+    type: 'radio',
+  }
+)
+
+// текущее время пользователя либо следующий день (логика только для выбора опций)
+// const noTimeOptionsAvailable = ref(false)
+const orderDay = computed(() => {
+  let userDate = dayjs().tz($env.timezone)
+  let isToday = true
+
+  // TODO - поставить время работы from
+  // ставит следующий день если зона закрыта (например вечернее время 20-24)
+  // если заказ происходит утром (0-8), то нет необходимости менять дату
+  if (!zoneData.value.isOpen && userDate.hour() >= 10) {
+    userDate = userDate.add(1, 'day')
+    isToday = false
+  }
+
+  return {
+    day: userDate,
+    isToday,
+  }
 })
 
-const deliveryDateOptions = ref([
-  { id: 1, label: 'Сегодня' },
-  { id: 2, label: 'В другой день' },
-])
+// выбор даты доставки с возможностью указать N дней вперед
+const deliveryDateOptions = computed(() => {
+  const startLabel = orderDay.value.isToday ? 'Сегодня' : 'Завтра'
+  const subtractDays = orderDay.value.isToday ? 0 : 1
+  // TODO - выходные если указано в параметрах api
 
-const { value: deliveryTime } = useField('deliveryTime', (v) => v, {
-  type: 'radio',
+  if (!app_settings.value.order_to_time && $env.orderDeliveryFutureDays) {
+    return [
+      { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
+      ...generateDaysFrom(orderDay.value.day, $env.orderDeliveryFutureDays - subtractDays),
+    ]
+  }
+
+  return [
+    { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
+    { id: 0, label: 'В другой день' },
+  ]
 })
 
-const deliveryTimeOptions = ref([
-  { id: 1, label: 'Как можно скорее' },
-  { id: 2, label: 'Ко времени' },
-])
+const { value: deliveryTime } = useField(
+  'deliveryTime',
+  (v) => {
+    return v ? true : 'Выберите время'
+  },
+  {
+    type: 'radio',
+  }
+)
+
+// контроль времени в зависимости от выбранной даты (логика только для выбора опций)
+const orderDaySelected = computed(() => {
+  let orderDaySelected = orderDay.value.day
+
+  if (deliveryDate.value) {
+    // созданная дата 0:00 минут (все слоты будут доступны)
+    const dayFromString = dayjs(deliveryDate.value, 'DD.MM.YYYY', true).tz($env.timezone)
+
+    // не меняем время если заказ на Сегодня
+    if (!dayFromString.isToday()) {
+      orderDaySelected = dayFromString
+    }
+  }
+
+  return orderDaySelected
+})
+
+// время доставки включая сгенерированные слоты
+const deliveryTimeOptions = computed(() => {
+  if ($env.orderDeliveryTimeSlots) {
+    const startTime = orderDaySelected.value.hour(10).minute(0)
+    const endTime = orderDaySelected.value.hour(20).minute(0)
+
+    // начальное, конечное, интервал в часах, now с указанием насколько задержать заказ
+    return generateTimeSlots(startTime, endTime, 2, orderDaySelected.value.add(2, 'hour'))
+  }
+
+  return [
+    { id: 1, label: 'Как можно скорее' },
+    { id: 2, label: 'Ко времени' },
+  ]
+})
+
+// при изменении даты сбрасывать время
+watch(
+  () => deliveryDate.value,
+  (newVal) => {
+    setFieldValue('deliveryTime', '')
+  }
+)
+
+// TODO если нет доступных слотов, ставить следующий день
 
 // подгорев блюд
 const { value: heat, meta: heatMeta } = useField(
@@ -334,9 +457,15 @@ const packOptions = ref([{ id: 1, label: 'Компактная', price: 300 }])
 const { value: personsCount, meta: personsCountMeta } = useField('personsCount', (v) => v)
 
 // Оплата, сдача
-const { value: payment } = useField('payment', (v) => v, {
-  type: 'radio',
-})
+const { value: payment } = useField(
+  'payment',
+  (v) => {
+    return v ? true : 'Выберите способ оплаты'
+  },
+  {
+    type: 'radio',
+  }
+)
 
 const paymentOptions = ref([
   { id: 1030, label: 'Картой на сайте' },
@@ -362,8 +491,8 @@ const loading = ref(false)
 
 const requestCheckout = async () => {
   const { valid, errors } = await validate()
-  console.log({ valid, errors })
-  if (!valid) {
+
+  if (!valid && !edgeFieldsValid.value) {
     scrollPageToTop()
     return
   }
@@ -380,8 +509,7 @@ const requestCheckout = async () => {
       address: address.value,
       lat: currentAddress.value.latitude,
       lng: currentAddress.value.longitude,
-      deliveryDate: deliveryDate.value,
-      deliveryTime: deliveryTime.value,
+      date: `${deliveryDate.value} ${deliveryTime.value}`, // DD.MM.YYYY HH:mm
       not_heat: heat.value === 'no',
       // pack: pack.value,
       persons_count: personsCount.value,
@@ -447,7 +575,15 @@ const requestCheckout = async () => {
     }
   }
   // &__toggle-grid{}
-
+  &__no-address {
+    a {
+      color: var(--color-primary);
+      transition: color 0.25s $ease;
+      &:hover {
+        color: var(--color-font);
+      }
+    }
+  }
   &__cta {
     margin-top: 48px;
     display: flex;
