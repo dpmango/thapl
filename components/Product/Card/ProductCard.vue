@@ -9,7 +9,7 @@
   >
     <div class="card__image-wrapper">
       <div class="card__image">
-        <img :src="product.image" :alt="product.title" />
+        <img :src="product.image || '/no_photo.jpg'" :alt="product.title" />
         <div class="card__badges">
           <UiBadge v-for="tag in product.tags" :key="tag.id" theme="green" size="small">
             {{ tag.tag }}

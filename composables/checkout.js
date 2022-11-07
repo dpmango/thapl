@@ -9,11 +9,19 @@ export const useCheckout = () => {
 
   // хелперы по методу доставки / самовывоз
   const zoneData = computed(() => {
+    const isDelivery = currentAddressType?.value === 'delivery'
+    const isTakeaway = currentAddressType?.value === 'takeaway'
+
+    let orderType = null
+    if (isTakeaway) orderType = '10'
+    if (isDelivery) orderType = '20'
+
     return {
-      isDelivery: currentAddressType?.value === 'delivery',
-      isTakeaway: currentAddressType?.value === 'takeaway',
+      isDelivery,
+      isTakeaway,
       hasZone: !!Object.keys(zone.value).length,
       isOpen: zone.value?.is_open,
+      orderType,
     }
   })
 

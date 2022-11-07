@@ -5,7 +5,7 @@
       <div v-if="product" class="product__wrapper">
         <div class="product__media hidden-md">
           <div class="product__image">
-            <img :src="product.image" :alt="product.title" />
+            <img :src="product.image || '/no_photo.jpg'" :alt="product.title" />
           </div>
         </div>
         <div class="product__body">
@@ -20,7 +20,7 @@
 
             <div class="product__media visible-md">
               <div class="product__image">
-                <img :src="product.image" :alt="product.title" />
+                <img :src="product.image || '/no_photo.jpg'" :alt="product.title" />
               </div>
             </div>
 
