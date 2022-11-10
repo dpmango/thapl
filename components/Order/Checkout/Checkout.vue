@@ -467,10 +467,11 @@ const { value: payment } = useField(
   }
 )
 
+// 1 - наличные, 3 - картой курьеру, 1030 - картой онлайн, 1050 - картой через SDK, 1040 - pay сервисами через SDK
 const paymentOptions = ref([
   { id: 1030, label: 'Картой на сайте' },
-  { id: 2, label: 'Картой курьеру' },
-  { id: 3, label: 'Наличными' },
+  { id: 3, label: 'Картой курьеру' },
+  { id: 1, label: 'Наличными' },
 ])
 
 const { value: change, meta: changeMeta } = useField('change', (v) => {
@@ -492,7 +493,7 @@ const loading = ref(false)
 const requestCheckout = async () => {
   const { valid, errors } = await validate()
 
-  if (!valid && !edgeFieldsValid.value) {
+  if (!valid || !edgeFieldsValid.value) {
     scrollPageToTop()
     return
   }
@@ -506,6 +507,7 @@ const requestCheckout = async () => {
       name: name.value,
       phone: phone.value,
       not_call: contact.value === 'message',
+      order_type: zoneData.value.orderType,
       address: address.value,
       lat: currentAddress.value.latitude,
       lng: currentAddress.value.longitude,
