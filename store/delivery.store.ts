@@ -66,6 +66,7 @@ export const useDeliveryStore = defineStore('delivery', {
     },
     serverInit() {},
     setCurrentAddress(payload) {
+      console.log({ payload })
       if (payload) {
         this.currentAddress = { ...payload }
       } else {

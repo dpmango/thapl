@@ -82,7 +82,7 @@ watch(
 <style lang="scss">
 .search {
   position: fixed;
-  z-index: 9;
+  z-index: 20;
   top: 0;
   left: 0;
   width: 100%;

@@ -38,6 +38,8 @@
     <UiButton v-if="organization.is_open">Перейти к заказу</UiButton>
     <UiButton v-else-if="isPreorderAvailable">Сделать предзаказ</UiButton>
     <UiButton v-else>Посмотреть меню</UiButton>
+
+    <UiButton theme="outline" @click.stop="handleReturn">Выбрать другой адрес</UiButton>
   </div>
 </template>
 
@@ -61,6 +63,10 @@ const ui = useUiStore()
 
 const handleToOrderClick = () => {
   ui.closeModal()
+}
+
+const handleReturn = () => {
+  deliveryStore.setCurrentAddress(null)
 }
 </script>
 

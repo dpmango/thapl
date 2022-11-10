@@ -32,14 +32,8 @@
 
       <!-- nav -->
       <nav class="mobile-menu__nav">
-        <div v-if="$env.useSearch" class="mobile-menu__search">
-          <UiInput
-            icon="search"
-            icon-position="left"
-            placeholder="Поиск блюд"
-            :value="search"
-            @on-change="(v) => (search = v)"
-          />
+        <div v-if="$env.useSearch" class="mobile-menu__search" @click="openSearch">
+          <UiInput icon="search" icon-position="left" placeholder="Поиск блюд" />
         </div>
         <ul class="nav">
           <li v-for="link in productStore.navCategories" :key="link.id">
@@ -92,11 +86,13 @@ const style = computed(() => {
   }
 })
 
-// search
-const search = ref('')
+const openSearch = () => {
+  ui.setSearchActive(true)
+  ui.setMobileMenu(false)
+}
 
 watch(
-  () => ui.searchActive,
+  () => ui.mobileMenuActive,
   (newVal) => {
     if (newVal) {
       lockBody()
