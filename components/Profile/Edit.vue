@@ -134,12 +134,15 @@ const saveProfile = async () => {
 
   loading.value = true
 
-  const response = await useApi('profile/save', {
+  const response = await useApi('profile/set-user-data', {
     method: 'POST',
     headers: useHeaders(),
     body: {
       name: name.value,
       surname: surname.value,
+      email: email.value,
+      phone: phone.value,
+      birthday: birthday.value,
     },
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
 
@@ -150,8 +153,7 @@ const saveProfile = async () => {
 <style lang="scss" scoped>
 .profile {
   margin: 60px 0 120px;
-  &__nav {
-  }
+  // &__nav {}
   &__info-col {
     margin-top: 36px;
   }

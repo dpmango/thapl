@@ -1,0 +1,264 @@
+// wysiwyg
+.wysiwyg {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 48px;
+    line-height: calc(38 / 28);
+    margin-bottom: 36px;
+  }
+
+  h2 {
+    font-size: 28px;
+    line-height: calc(38 / 28);
+    margin-bottom: 36px;
+  }
+
+  h3 {
+    font-size: 24px;
+    line-height: calc(30 / 20);
+    margin-bottom: 24px;
+  }
+
+  h4 {
+    font-size: 20px;
+    line-height: calc(30 / 20);
+    margin-bottom: 24px;
+  }
+
+  h5 {
+    font-size: 20px;
+    line-height: calc(30 / 20);
+    margin-bottom: 24px;
+  }
+
+  h6 {
+    font-size: 16px;
+    line-height: calc(24 / 16);
+    margin-bottom: 16px;
+  }
+
+  p:not([class]) {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: calc(26 / 16);
+  }
+
+  p a {
+    text-decoration: underline;
+    text-decoration-skip-ink: all;
+  }
+
+  ul,
+  ol {
+    padding: 0;
+    margin-left: -40px;
+    li {
+      position: relative;
+      display: block;
+      padding-left: 40px;
+      margin-bottom: 1.58em;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: calc(26 / 16);
+      &:last-child {
+        margin-bottom: 0;
+      }
+      &::before {
+        display: inline-block;
+        content: ' ';
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--color-primary);
+      }
+    }
+  }
+  ol {
+    counter-reset: section;
+    li {
+      counter-increment: section;
+      &::before {
+        content: counter(section) '.';
+      }
+    }
+  }
+  ul {
+    li {
+      &::before {
+        content: '—';
+      }
+    }
+  }
+
+  figure {
+    background: var(--color-bg);
+    border-radius: var(--card-border-radius);
+    padding: 44px;
+    margin: 32px 68px 32px;
+  }
+
+  blockquote {
+    padding: 0;
+    margin: 0;
+    p {
+      position: relative;
+      &::before,
+      &::after {
+        position: absolute;
+        color: var(--color-primary);
+      }
+      &::before {
+        top: -0.1em;
+        left: -12px;
+        content: '«';
+      }
+      &::after {
+        content: '»';
+      }
+    }
+    p:not([class]) {
+      font-size: 20px;
+      line-height: calc(30 / 20);
+    }
+  }
+
+  figcaption {
+    margin-top: 20px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: calc(26 / 16);
+    cite {
+      font-style: normal;
+      display: block;
+      font-weight: 400;
+      color: var(--color-gray);
+    }
+  }
+
+  p,
+  ul,
+  ol,
+  img,
+  button,
+  blockquote,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  table {
+    & + p,
+    & + ul,
+    & + ol,
+    & + blockquote,
+    & + table {
+      margin-top: 1.58em;
+    }
+
+    & + button,
+    & + img,
+    & + h1,
+    & + h2,
+    & + h3,
+    & + h4,
+    & + h5,
+    & + h6 {
+      margin-top: 1.5em;
+    }
+  }
+}
+
+@include r($lg) {
+  .wysiwyg {
+    ul,
+    ol {
+      margin-left: 0;
+    }
+  }
+}
+
+@include r($md) {
+  .wysiwyg {
+    h1 {
+      font-size: 32px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 24px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    h5 {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    h6 {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    p:not([class]) {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: calc(22 / 14);
+    }
+
+    ul,
+    ol {
+      li {
+        padding-left: 28px;
+        font-size: 14px;
+        margin-bottom: 1.32em;
+      }
+    }
+
+    figure {
+      padding: 20px;
+      margin: 24px 0px;
+    }
+
+    blockquote {
+      p {
+        &::before {
+          top: -0.1em;
+          left: -12px;
+          content: '«';
+        }
+        &::after {
+          content: '»';
+        }
+      }
+      p:not([class]) {
+        font-size: 16px;
+        line-height: calc(26 / 16);
+      }
+    }
+
+    figcaption {
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: calc(22 / 16);
+    }
+  }
+}

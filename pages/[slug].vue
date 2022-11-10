@@ -1,8 +1,6 @@
 <template>
   <main class="page__content page">
     <div class="container _narrow">
-      <UiCrumbs class="page__crumbs" :list="crumbs" />
-
       <ContentUniversal />
     </div>
   </main>
@@ -22,12 +20,19 @@ useHead({
 
 <style lang="scss" scoped>
 .page {
-  margin: 40px 0 120px;
+  margin: 60px 0 120px;
+  overflow: hidden;
   &__crumbs {
     margin: 36px 0;
   }
   &__copy {
     margin: 36px 0;
+  }
+}
+
+@include r($md) {
+  .page {
+    margin: 44px 0 72px;
   }
 }
 </style>

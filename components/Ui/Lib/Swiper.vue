@@ -64,14 +64,14 @@ const params = ref({
 
   :deep(.swiper-scrollbar) {
     position: static;
-    margin-top: 24px;
+    margin-top: 16px;
     background: var(--swiper-bullet-color);
     cursor: grab;
-    border-radius: 0;
+    border-radius: 2px;
   }
   :deep(.swiper-scrollbar-drag) {
     background: var(--color-primary);
-    border-radius: 0;
+    border-radius: 2px;
   }
   :deep(.swiper-pagination) {
     position: static;
@@ -103,9 +103,9 @@ const params = ref({
     background: var(--swiper-nav-color);
     border-radius: 50%;
     opacity: 1;
-    width: 43px;
-    height: 43px;
-    color: var(--color-gray);
+    width: 48px;
+    height: 48px;
+    color: var(--color-font);
     transition: background 0.25s $ease, opacity 0.25s $ease;
     &:hover {
       background: var(--color-primary);
