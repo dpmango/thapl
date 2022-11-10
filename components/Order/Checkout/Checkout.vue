@@ -513,7 +513,7 @@ const requestCheckout = async () => {
       not_heat: heat.value === 'no',
       // pack: pack.value,
       persons_count: personsCount.value,
-      payment_method: payment.value.toString(),
+      payment_method: payment.value,
       change: change.value,
       cart: cartStore.cartToApi,
     },

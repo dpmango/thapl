@@ -5,7 +5,7 @@
       <div v-if="product" class="product__wrapper">
         <div class="product__media hidden-md">
           <div class="product__image">
-            <img :src="product.image" :alt="product.title" />
+            <UiAtomProductImage :src="product.image" :alt="product.title" />
           </div>
         </div>
         <div class="product__body">
@@ -20,7 +20,7 @@
 
             <div class="product__media visible-md">
               <div class="product__image">
-                <img :src="product.image" :alt="product.title" />
+                <UiAtomProductImage :src="product.image" :alt="product.title" />
               </div>
             </div>
 
@@ -223,9 +223,9 @@ watch(
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  // &__title {
-  //   word-break: break-all;
-  // }
+  &__title {
+    word-break: break-word;
+  }
   &__weight {
     margin-top: 8px;
   }
