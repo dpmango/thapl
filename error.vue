@@ -2,7 +2,7 @@
   <div class="page">
     <LayoutHeader />
     <main class="page__content">
-      <LayoutError404 v-if="error.statusCode === '404'" />
+      <LayoutError404 v-if="+error.statusCode === 404" />
       <LayoutError500 v-else />
     </main>
     <LayoutFooter />

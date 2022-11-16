@@ -204,7 +204,7 @@
             </div>
           </div>
 
-          <div v-if="payment === 3" class="checkout__row row">
+          <div v-if="payment === 1" class="checkout__row row">
             <div class="col col-6 col-sm-12">
               <UiInput
                 name="change"
@@ -514,17 +514,34 @@ const requestCheckout = async () => {
       date: `${deliveryDate.value} ${deliveryTime.value}`, // DD.MM.YYYY HH:mm
       not_heat: heat.value === 'no',
       // pack: pack.value,
-      persons_count: personsCount.value,
+      persons_count: personsCount.value.toString(),
       payment_method: payment.value,
       change: change.value,
       cart: cartStore.cartToApi,
+      comment: process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : '',
     },
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
 
-  if (response && response.suceess) {
+  const handleSuccess = () => {
     toast.success(`Заказ ${response.order_id} Оформлен`)
     cartStore.resetCart()
     router.push('/')
+  }
+
+  if (response && response.suceess) {
+    if (payment.value === 1030) {
+      const paymentData = await useApi('order/get-payment-data', {
+        method: 'POST',
+        headers: useHeaders(),
+        params: {
+          id: response.order_id,
+        },
+      }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору'))
+
+      console.log(paymentData)
+    } else {
+      handleSuccess()
+    }
   } else {
     useCatchError(response, response.error_field)
   }
