@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 // 1000.00 -> 1 000.00
 export const formatPrice = (num, digits) => {
   const trailingZeros = digits !== undefined ? digits : 0

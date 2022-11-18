@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   experimental: { writeEarlyHints: false, inlineSSRStyles: false },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],
+  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons'],
 
   proxy: {
     options: {
