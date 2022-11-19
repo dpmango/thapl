@@ -1,7 +1,7 @@
 export const quickFilterKeys = [
   {
     product_key: 'is_best',
-    label: 'Хиты',
+    label: 'Популярное',
   },
   {
     product_key: 'is_new',
@@ -17,18 +17,18 @@ export const quickFilterKeys = [
   },
   {
     product_key: 'is_low_energy',
-    label: 'Диетические',
+    label: 'Низкоколорийное',
   },
   {
     product_key: 'is_high_temperature',
-    label: 'Горячие',
+    label: 'Горячее',
   },
   {
     product_key: 'is_hot',
-    label: 'Острые 🌶',
+    label: 'Острое 🌶',
   },
   {
     product_key: 'is_vegan',
-    label: 'Веганские 🌱',
+    label: 'Вегетарианское 🌱',
   },
 ]

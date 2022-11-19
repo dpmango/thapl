@@ -21,6 +21,7 @@
       <div class="card__title h4-title h6-title-sm">
         <UiAtomLongWords :text="product.title" />
       </div>
+
       <div class="card__description text-s c-gray">
         {{ product.description }}
       </div>
@@ -55,6 +56,7 @@ const ui = useUiStore()
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
+    default: () => {},
   },
 })
 
@@ -64,9 +66,14 @@ const handleProductClick = () => {
 
 // focus
 const focused = ref(false)
-const setFocused = (v) => {
+const setFocused = (v: boolean) => {
   focused.value = v
 }
+
+// const mounted = ref(false)
+// onMounted(() => {
+//   mounted.value = true
+// })
 </script>
 
 <style lang="scss" scoped>
@@ -89,7 +96,6 @@ const setFocused = (v) => {
       left: 0;
       width: 100%;
       height: 100%;
-      // max-width: auto;
       object-fit: cover;
       transition: transform 0.35s ease-out;
     }

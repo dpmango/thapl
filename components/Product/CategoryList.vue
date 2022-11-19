@@ -2,7 +2,9 @@
   <div class="category__list">
     <div class="row">
       <div v-for="card in list" :key="card.id" class="col col-3 col-lg-4 col-md-6 col-sm-12">
-        <ProductCard :product="card" />
+        <LazyHydrate :when-visible="{ rootMargin: '50px' }">
+          <ProductCard :product="card" />
+        </LazyHydrate>
       </div>
     </div>
   </div>

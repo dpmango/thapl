@@ -1,11 +1,11 @@
 <template>
-  <section v-if="popularList && popularList.length" class="popular">
+  <section class="popular">
     <div class="container">
-      <h2 class="popular__title h2-title">Часто заказывают</h2>
+      <h2 class="popular__title h2-title">{{ data.title }}</h2>
 
       <UiLibSwiper class="popular__slider" :params="swiperParams">
-        <SwiperSlide v-for="(card, idx) in popularList" :key="idx">
-          <ProductCardMini :name="card.title" :description="card.description" :price="card.price" />
+        <SwiperSlide v-for="(card, idx) in data.catalog_items" :key="idx">
+          <ProductCardMini :product="card" />
         </SwiperSlide>
       </UiLibSwiper>
     </div>
@@ -16,6 +16,13 @@
 import { SwiperSlide } from 'swiper/vue'
 
 const { $env, $log } = useNuxtApp()
+
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => null,
+  },
+})
 
 const swiperParams = {
   slidesPerView: 'auto',
@@ -30,20 +37,11 @@ const swiperParams = {
     sensitivity: 0.7,
   },
 }
-
-const { data: popularList, error: categoriesError } = await useAsyncData('popular', () =>
-  api('catalog/get-popular-items', {
-    method: 'GET',
-    headers: useHeaders(),
-  })
-)
-
-$log.log({ popularList })
 </script>
 
 <style lang="scss" scoped>
 .popular {
-  margin: 80px 0 20px;
+  margin: 20px 0 20px;
   overflow: hidden;
   padding-bottom: 60px;
   &__slider {

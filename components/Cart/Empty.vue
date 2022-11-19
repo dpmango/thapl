@@ -14,7 +14,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore, useUiStore, useDeliveryStore } from '~~/store'
+import { useSessionStore, useUiStore, useDeliveryStore } from '~/store'
 import { formatPrice } from '~/utils'
 
 const sessionStore = useSessionStore()

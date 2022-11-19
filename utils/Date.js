@@ -31,6 +31,10 @@ export const formatMinutes = (v) => {
   return `${hh}${mm}`
 }
 
+export const dateToTimestamp = (v) => {
+  return dayjs(v, 'YYYY-MM-DD HH:mm:ss', true).format('DD MMMM YYYY, HH:mm')
+}
+
 export const secondsToStamp = (sec) => {
   const minutes = pad(Math.floor(sec / 60))
   const seconds = pad(sec % 60)

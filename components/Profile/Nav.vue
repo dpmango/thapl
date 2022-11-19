@@ -16,11 +16,28 @@
 .nav {
   display: flex;
   align-items: center;
+  overflow-y: auto;
+  max-width: 100vw;
   li {
+    position: relative;
     flex: 0 0 auto;
     margin-right: 44px;
+    &::after {
+      display: inline-block;
+      content: ' ';
+      position: absolute;
+      top: 50%;
+      right: -22px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--color-border);
+    }
     &:last-child {
       margin-right: 0;
+      &::after {
+        display: none;
+      }
     }
   }
   a {
@@ -36,6 +53,20 @@
     }
     &:hover {
       color: var(--color-font);
+    }
+  }
+}
+
+@include r($md) {
+  .nav {
+    li {
+      margin-right: 36px;
+      &::after {
+        right: -18px;
+      }
+    }
+    a {
+      font-size: 20px;
     }
   }
 }

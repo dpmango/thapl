@@ -30,13 +30,13 @@ const emit = defineEmits(['onClick'])
 
 const navLinkProps = computed(() => {
   if ($env.catalogType === 'singlepage') {
-    return `#${props.link.slug}`
+    return `/#${props.link.slug}`
   } else {
     return `/category/${props.link.slug}`
   }
 })
 
-const handleNavClick = () => {
+const handleNavClick = (e) => {
   if ($env.catalogType === 'singlepage') {
     // e.preventDefault()
     scrollToElement(props.link.slug, props.navScrollOffset)

@@ -37,7 +37,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore } from '~~/store'
+import { useSessionStore } from '~/store'
 
 const sessionStore = useSessionStore()
 const { user } = storeToRefs(sessionStore)
