@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { PerformanceLog } from '~/utils'
+import { PerformanceLog } from '#imports'
 import { quickFilterKeys } from '~/store/product/helpers'
 import { ICategory, ICategoryFull, IProduct } from '~/interface/Product'
 

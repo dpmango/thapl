@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { formatPrice, dateToTimestamp, Plurize } from '~/utils'
+import { formatPrice, dateToTimestamp, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
 

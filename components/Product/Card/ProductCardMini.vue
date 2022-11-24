@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
-import { formatPrice } from '~/utils'
+import { formatPrice } from '#imports'
 
 const props = defineProps({
   product: {

@@ -10,7 +10,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useSessionStore, useProductStore, useDeliveryStore, useUiStore } from '~/store'
-import { scrollPageToTop, createSeoTags } from '~/utils'
+import { scrollPageToTop, createSeoTags } from '#imports'
 
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp

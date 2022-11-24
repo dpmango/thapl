@@ -51,7 +51,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '~/store'
-import { formatPrice } from '~/utils'
+import { formatPrice } from '#imports'
 
 const cartStore = useCartStore()
 const { products } = storeToRefs(cartStore)

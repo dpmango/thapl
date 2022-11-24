@@ -25,7 +25,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useSessionStore } from '~/store'
-import { clearSocialLink } from '~/utils'
+import { clearSocialLink } from '#imports'
 
 const sessionStore = useSessionStore()
 const {

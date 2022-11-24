@@ -76,7 +76,7 @@ import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useSessionStore } from '~/store'
-import { clearString, validPhone, validEmail, validDate, dateMask } from '~/utils'
+import { clearString, validPhone, validEmail, validDate, dateMask } from '#imports'
 
 const sessionStore = useSessionStore()
 const { user } = storeToRefs(sessionStore)

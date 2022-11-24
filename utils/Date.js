@@ -5,7 +5,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import isToday from 'dayjs/plugin/isToday'
 import locale_ru from 'dayjs/locale/ru'
-import { Plurize } from '~/utils'
+import { Plurize } from '#imports'
 
 dayjs.extend(customParseFormat)
 dayjs.extend(utc)

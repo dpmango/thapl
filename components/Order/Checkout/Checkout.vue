@@ -260,7 +260,7 @@ import {
   formatPrice,
   generateDaysFrom,
   generateTimeSlots,
-} from '~/utils'
+} from '#imports'
 
 const sessionStore = useSessionStore()
 const deliveryStore = useDeliveryStore()

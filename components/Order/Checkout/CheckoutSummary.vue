@@ -51,7 +51,7 @@
 import _ from 'lodash'
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '~/store'
-import { formatPrice, Plurize } from '~/utils'
+import { formatPrice, Plurize } from '#imports'
 
 const cartStore = useCartStore()
 const { cart, products, productQuantityInCart } = storeToRefs(cartStore)

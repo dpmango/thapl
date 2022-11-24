@@ -34,7 +34,7 @@
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useSessionStore, useUiStore } from '~/store'
-import { clearPhone, secondsToStamp } from '~/utils'
+import { clearPhone, secondsToStamp } from '#imports'
 
 const session = useSessionStore()
 const ui = useUiStore()

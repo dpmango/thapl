@@ -15,7 +15,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore } from '~/store'
-import { formatPrice } from '~/utils'
+import { formatPrice } from '#imports'
 
 const deliveryStore = useDeliveryStore()
 

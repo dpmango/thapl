@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { IZone, IOrganization, IUserAddress, IOrganizationTakeaway } from 'interface/Delivery'
-import { localStorageKeepArray, localStorageGet } from '~/utils'
+import { localStorageKeepArray, localStorageGet } from '#imports'
 
 export const useDeliveryStore = defineStore('delivery', {
   state: () => {

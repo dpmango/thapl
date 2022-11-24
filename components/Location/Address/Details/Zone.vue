@@ -48,7 +48,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
-import { formatMinutes, formatPrice } from '~/utils'
+import { formatMinutes, formatPrice } from '#imports'
 
 const deliveryStore = useDeliveryStore()
 const sessionStore = useSessionStore()

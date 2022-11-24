@@ -18,7 +18,7 @@
 
 <script setup>
 import { SwiperSlide } from 'swiper/vue'
-import { localStorageGet } from '~/utils'
+import { localStorageGet } from '#imports'
 
 const props = defineProps({
   slides: {

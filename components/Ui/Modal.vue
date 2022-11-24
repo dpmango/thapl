@@ -14,7 +14,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useUiStore } from '~/store'
-import { lockBody, unlockBody } from '~/utils'
+import { lockBody, unlockBody } from '#imports'
 
 const ui = useUiStore()
 const { modal: activeModal, modalParams } = storeToRefs(ui)

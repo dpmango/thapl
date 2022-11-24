@@ -94,7 +94,7 @@
 
 <script setup>
 import { useUiStore } from '~/store'
-import { formatPrice } from '~/utils'
+import { formatPrice } from '#imports'
 
 const { $env, $log } = useNuxtApp()
 

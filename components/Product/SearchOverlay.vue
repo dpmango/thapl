@@ -35,7 +35,7 @@ import {
   clearMorphologyInSearchTerm,
   lockBody,
   unlockBody,
-} from '~/utils'
+} from '#imports'
 
 const ui = useUiStore()
 const productStore = useProductStore()

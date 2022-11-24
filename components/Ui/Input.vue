@@ -57,7 +57,7 @@
 <script setup>
 import _ from 'lodash'
 import { nanoid } from 'nanoid'
-import { capitalizeFirstLetter } from '~/utils'
+import { capitalizeFirstLetter } from '#imports'
 // const { $sanitize } = useNuxtApp()
 
 const id = nanoid()

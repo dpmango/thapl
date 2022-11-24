@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { scrollToElement } from '~/utils'
+import { scrollToElement } from '#imports'
 
 const { $env } = useNuxtApp()
 
