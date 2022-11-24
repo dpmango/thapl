@@ -44,7 +44,7 @@ export const useSessionStore = defineStore('session', {
 
       this.api_token = api_token
       this.user_token = user_token
-      this.user = user
+      this.user = user || {}
       this.app_settings = app_settings
     },
     setPhone(phone) {
