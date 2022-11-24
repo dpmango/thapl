@@ -24,10 +24,13 @@
                 type="tel"
                 label="Телефон"
                 placeholder="+7"
+                :disabled="phoneLocked"
+                :changable="phoneLocked"
                 :value="phone"
                 mask="+7 (###) ###-##-##"
                 :error="errors.phone"
                 @on-change="(v) => setFieldValue('phone', v)"
+                @on-changable="phoneEditing = true"
               />
             </div>
           </div>
@@ -281,7 +284,7 @@ const deliveryStore = useDeliveryStore()
 const cartStore = useCartStore()
 const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
-const { app_settings } = storeToRefs(sessionStore)
+const { app_settings, user } = storeToRefs(sessionStore)
 
 const { $env } = useNuxtApp()
 const toast = useToast()
@@ -292,7 +295,7 @@ const { priceData, zoneData } = useCheckout()
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: {
     name: '',
-    phone: '',
+    phone: user.value.username || '',
     contact: '',
     address: currentAddress.value?.name,
     deliveryDate: '',
@@ -331,6 +334,14 @@ const { value: contact, meta: contactMeta } = useField(
     type: 'radio',
   }
 )
+
+const phoneEditing = ref(false)
+const phoneLocked = computed(() => {
+  if (phoneEditing.value) return false
+  if (user.value.username) return true
+
+  return false
+})
 
 watch(
   () => currentAddress.value,

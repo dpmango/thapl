@@ -25,7 +25,11 @@ onMounted(async () => {
   if ($env.catalogType === 'singlepage') {
     cart.value.forEach((c) => {
       const product = flatCatalog.value.find((x) => x.id === c.id)
-      cartStore.hydrateProducts(product)
+      if (product) {
+        cartStore.hydrateProducts(product)
+      } else {
+        cartStore.removeFromCart(c.id)
+      }
     })
   } else {
     // запрос по id продуктов
@@ -39,6 +43,23 @@ onMounted(async () => {
     if (res) {
       res.forEach((product) => {
         cartStore.hydrateProducts(product)
+      })
+
+      const getDifference = (a, b) => {
+        return a.filter((element) => {
+          return !b.includes(element)
+        })
+      }
+
+      const notFoundCartIds = getDifference(
+        cart.value.map((x) => x.id),
+        res.map((x) => x.id)
+      )
+
+      $log.log({ notFoundCartIds })
+
+      notFoundCartIds.forEach((id) => {
+        cartStore.removeFromCart(id)
       })
     }
   }
