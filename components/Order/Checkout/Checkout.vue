@@ -218,6 +218,20 @@
             </div>
           </div>
 
+          <div class="checkout__row row">
+            <div class="col col-12">
+              <UiInput
+                type="textarea"
+                rows="3"
+                name="comment"
+                label="Комментарий"
+                :value="comment"
+                :error="errors.comment"
+                @on-change="(v) => setFieldValue('comment', v)"
+              />
+            </div>
+          </div>
+
           <!-- промокод -->
 
           <!-- действия -->
@@ -288,6 +302,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     personsCount: 1,
     payment: '',
     change: '',
+    comment: '',
   },
 })
 
@@ -333,6 +348,7 @@ const { value: address, meta: addressMeta } = useField('address', (v) => {
 const { value: deliveryDate } = useField(
   'deliveryDate',
   (v) => {
+    if (zoneData.value.isTakeaway) return true
     return v ? true : 'Выберите дату'
   },
   {
@@ -382,6 +398,7 @@ const deliveryDateOptions = computed(() => {
 const { value: deliveryTime } = useField(
   'deliveryTime',
   (v) => {
+    if (zoneData.value.isTakeaway) return true
     return v ? true : 'Выберите время'
   },
   {
@@ -475,7 +492,7 @@ const paymentOptions = ref([
 ])
 
 const { value: change, meta: changeMeta } = useField('change', (v) => {
-  if (!v || payment.value !== 3) return true
+  if (!v || payment.value !== 1) return true
 
   if (!isValidNumber(v)) {
     return 'Введите сумму (числом)'
@@ -485,6 +502,11 @@ const { value: change, meta: changeMeta } = useField('change', (v) => {
     return 'Сумма должна быть больше стоимости заказа'
   }
 
+  return true
+})
+
+// Комментарий
+const { value: comment } = useField('comment', (v) => {
   return true
 })
 
@@ -500,26 +522,36 @@ const requestCheckout = async () => {
 
   loading.value = true
 
+  const orderObject = {
+    name: name.value,
+    phone: phone.value,
+    not_call: contact.value === 'message',
+    order_type: zoneData.value.orderType,
+    address: address.value,
+    lat: currentAddress.value.latitude,
+    lng: currentAddress.value.longitude,
+    not_heat: heat.value === 'no',
+    // pack: pack.value,
+    persons_count: personsCount.value.toString(),
+    payment_method: payment.value,
+
+    cart: cartStore.cartToApi,
+    comment:
+      process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : comment.value,
+  }
+
+  if (zoneData.value.isDelivery) {
+    orderObject.date = `${deliveryDate.value} ${deliveryTime.value}` // DD.MM.YYYY HH:mm
+  }
+
+  if (payment.value === 1) {
+    orderObject.change = change.value
+  }
+
   const response = await useApi('order/create', {
     method: 'POST',
     headers: useHeaders(),
-    body: {
-      name: name.value,
-      phone: phone.value,
-      not_call: contact.value === 'message',
-      order_type: zoneData.value.orderType,
-      address: address.value,
-      lat: currentAddress.value.latitude,
-      lng: currentAddress.value.longitude,
-      date: `${deliveryDate.value} ${deliveryTime.value}`, // DD.MM.YYYY HH:mm
-      not_heat: heat.value === 'no',
-      // pack: pack.value,
-      persons_count: personsCount.value.toString(),
-      payment_method: payment.value,
-      change: change.value,
-      cart: cartStore.cartToApi,
-      comment: process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : '',
-    },
+    body: orderObject,
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
 
   const handleSuccess = () => {
@@ -551,13 +583,11 @@ const requestCheckout = async () => {
   // "entrance": "string",
   // "floor": "string",
   // "apt": "string",
-  // "comment": "string",
   // "time_to_delivery": "string",
   // "points": 0,
   // "gift_id": 0,
   // "promo_id": 0,
   // "promo_code": "string",
-  // "order_type": 0,
 
   loading.value = false
 }
