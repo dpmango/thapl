@@ -3,7 +3,7 @@
     <UiLibSwiper :params="swiperParams" :auto-height="true">
       <SwiperSlide v-for="(slide, idx) in slides" :key="idx">
         <div class="slider__slide">
-          <img :src="slide.img" alt="" />
+          <img :src="slide.url" alt="" />
         </div>
       </SwiperSlide>
     </UiLibSwiper>

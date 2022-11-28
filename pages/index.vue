@@ -31,7 +31,6 @@
       <h2 class="h2-title">TODO {{ productStore.catalog }}</h2>
     </template>
 
-    <UiDevInfo />
     <InfoAbout />
   </main>
 </template>

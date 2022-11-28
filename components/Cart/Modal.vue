@@ -56,8 +56,6 @@ onMounted(async () => {
         res.map((x) => x.id)
       )
 
-      $log.log({ notFoundCartIds })
-
       notFoundCartIds.forEach((id) => {
         cartStore.removeFromCart(id)
       })

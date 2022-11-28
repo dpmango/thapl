@@ -1,21 +1,55 @@
 <template>
   <div class="content wysiwyg">
-    <div class="content__section">
-      <h2>О ресторане</h2>
-      <p>
-        Обычно люди приходят в Додо Пиццу, чтобы просто поесть. Наши промоутеры раздают листовки про
-        кусочек пиццы за двадцать рублей или ещё что-то выгодное. Мы делаем это как первый шаг,
-        чтобы познакомиться.
-      </p>
-      <p>
-        Но для нас Додо — не только пицца. Это и пицца тоже, но в первую очередь это большое дело,
-        которое вдохновляет нас, заставляет <a href="#">каждое утро просыпаться</a> и с интересом
-        продолжать работу.
-      </p>
-      <p>В чём же наш интерес? Сейчас расскажем.</p>
+    <div v-for="block in blocks" :key="block.id" class="content__section">
+      <template v-if="block.type === 'header'">
+        <h1 v-if="block.data.level === 1">{{ block.data.text }}</h1>
+        <h2 v-if="block.data.level === 2">{{ block.data.text }}</h2>
+        <h3 v-if="block.data.level === 3">{{ block.data.text }}</h3>
+        <h4 v-if="block.data.level === 4">{{ block.data.text }}</h4>
+        <h5 v-if="block.data.level === 5">{{ block.data.text }}</h5>
+        <h6 v-if="block.data.level === 6">{{ block.data.text }}</h6>
+      </template>
+
+      <template v-else-if="block.type === 'paragraph'">
+        <p>{{ block.data.text }}</p>
+      </template>
+
+      <template v-else-if="block.type === 'list'">
+        <ol v-if="block.data.style === 'ordered'">
+          <li v-for="li in block.data.items">{{ li }}</li>
+        </ol>
+        <ul v-else-if="block.data.style === 'unordered'">
+          <li v-for="li in block.data.items">{{ li }}</li>
+        </ul>
+      </template>
+
+      <template v-else-if="block.type === 'quote'">
+        <figure>
+          <blockquote>
+            <p>
+              {{ block.data.text }}
+            </p>
+          </blockquote>
+          <figcaption>
+            {{ block.data.caption }}
+          </figcaption>
+        </figure>
+      </template>
+
+      <template v-else-if="block.type === 'image'">
+        <ContentMediaSlider class="content__slider" :slides="[block.data.file]" />
+      </template>
+
+      <template v-else-if="block.type === 'delimiter'">
+        <hr />
+      </template>
+
+      <!-- <template v-else>
+        {{ block }}
+      </template> -->
     </div>
 
-    <div class="content__section">
+    <!-- <div class="content__section">
       <h4>Идеальные ингредиенты</h4>
       <p>
         Почему мы так хотим познакомиться? Потому что дальше пицца делает всё сама. Люди видят, что
@@ -190,11 +224,18 @@
         placeholder="https://images.freeimages.com/images/large-previews/ebd/flamenco-1551386.jpg"
         src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const props = defineProps({
+  blocks: {
+    type: Array,
+    default: () => [],
+  },
+})
+</script>
 
 <style lang="scss">
 .content {
