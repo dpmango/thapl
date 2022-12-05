@@ -26,9 +26,8 @@ const { data, error } = await useAsyncData('page/get-data', () =>
 )
 
 $log.log('🧙‍♂️ ASYNC PAGE', { data: data.value })
-$log.error(error)
 
-if (error) {
+if (error && error.value) {
   setResponseStatus(404)
 }
 
