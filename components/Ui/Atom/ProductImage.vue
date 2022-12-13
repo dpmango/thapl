@@ -5,7 +5,7 @@
 <script setup>
 const props = defineProps({
   src: {
-    type: String,
+    type: [String, null],
     default: null,
   },
   alt: {

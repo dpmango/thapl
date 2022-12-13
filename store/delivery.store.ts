@@ -21,7 +21,18 @@ export const useDeliveryStore = defineStore('delivery', {
     paths: ['currentAddress'],
   },
   getters: {
-    currentAddressType(state) {
+    currentOrderType(state) {
+      const isDelivery = this.currentAddressType === 'delivery'
+      const isTakeaway = this.currentAddressType === 'takeaway'
+
+      let orderType: number | null = null
+      if (isTakeaway) orderType = 10
+      if (isDelivery) orderType = 20
+      // if (isRestaurant) orderType = 30
+
+      return orderType
+    },
+    currentAddressType(state): string | null {
       try {
         return state.currentAddress.type
       } catch {
@@ -29,11 +40,11 @@ export const useDeliveryStore = defineStore('delivery', {
       }
     },
     currentRegionName(state) {
-      try {
-        return state.regions.find((x) => x.id === state.region).title
-      } catch {
-        return null
+      const region = state.regions.find((x) => x.id === state.region)
+      if (region) {
+        return region.title
       }
+      return null
     },
     minOrderPrice(state) {
       try {

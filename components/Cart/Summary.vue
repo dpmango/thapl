@@ -22,6 +22,12 @@
     <div class="cart__scroller">
       <div class="cart__list">
         <ProductCardCart v-for="product in products" :key="product.id" :product="product" />
+        <ProductCardCart
+          v-for="product in gifts"
+          :key="product.catalog_item.id"
+          :gift-count="product.count"
+          :product="product.catalog_item"
+        />
       </div>
 
       <div v-if="zoneData.isDelivery" class="cart__meta">
@@ -35,6 +41,8 @@
         <div class="text-m">Самовывоз</div>
         <div class="cart__meta-value">Бесплатно</div>
       </div>
+
+      <CartAddons v-if="suggestions?.length" class="cart__addons" :list="suggestions" />
     </div>
 
     <div class="cart__cta">
@@ -48,14 +56,30 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useCartStore } from '~/store'
+import { useCartStore, useUiStore } from '~/store'
 import { formatPrice } from '#imports'
 
+const ui = useUiStore()
 const cartStore = useCartStore()
-const { products } = storeToRefs(cartStore)
+const { products, gifts, suggestions } = storeToRefs(cartStore)
+const { modal: activeModal } = storeToRefs(ui)
 const { priceData, zoneData, minOrderData, freeDeliveryData } = useCheckout()
+
+onMounted(() => {
+  cartStore.getGifts()
+  cartStore.getSuggestions()
+})
+
+watch(
+  () => activeModal.value,
+  (newVal) => {
+    if (newVal.includes('cart')) {
+      cartStore.getPromo({})
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>
@@ -95,6 +119,9 @@ const { priceData, zoneData, minOrderData, freeDeliveryData } = useCheckout()
   &__meta-value {
     font-weight: 500;
   }
+  &__addons {
+    margin: 8px 0 20px;
+  }
   &__cta {
     flex: 0 0 auto;
     margin-top: auto;
@@ -124,6 +151,9 @@ const { priceData, zoneData, minOrderData, freeDeliveryData } = useCheckout()
     }
     &__delivery-progress {
       margin: 8px 0;
+    }
+    &__addons {
+      margin: 0 0 16px;
     }
     &__cta {
       padding: 16px 24px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="plusminus" :class="[`_${size}`, asInput && '_asinput']">
+  <div class="plusminus" :class="[`_${size}`, disabled && '_disabled', asInput && '_asinput']">
     <i class="plusminus__minus" @click="handleMinusClick" />
     <input
       class="plusminus__input"
@@ -15,8 +15,12 @@
 <script setup>
 const props = defineProps({
   value: {
-    type: Number,
+    type: [Number, null],
     required: true,
+  },
+  disabled: {
+    type: Boolean,
+    required: false,
   },
   maxValue: {
     type: Number,
@@ -58,6 +62,7 @@ const preventInput = (e) => {
 }
 
 const handleChange = (value) => {
+  if (props.disabled) return
   let emitValue = value
 
   if (!value) emitValue = 0
@@ -182,6 +187,15 @@ const handleChange = (value) => {
       &__plus {
         order: 3;
         border-left: 1px solid var(--color-separator);
+      }
+    }
+  }
+  &._disabled {
+    pointer-events: none;
+    .plusminus {
+      &__minus,
+      &__plus {
+        opacity: 0;
       }
     }
   }

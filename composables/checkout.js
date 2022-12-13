@@ -4,7 +4,7 @@ import { useCartStore, useDeliveryStore } from '~/store'
 export const useCheckout = () => {
   const deliveryStore = useDeliveryStore()
   const cartStore = useCartStore()
-  const { currentAddressType, zone, minOrderPrice } = storeToRefs(deliveryStore)
+  const { currentOrderType, currentAddressType, zone, minOrderPrice } = storeToRefs(deliveryStore)
   const { cartPrice } = storeToRefs(cartStore)
 
   // хелперы по методу доставки / самовывоз
@@ -12,16 +12,12 @@ export const useCheckout = () => {
     const isDelivery = currentAddressType?.value === 'delivery'
     const isTakeaway = currentAddressType?.value === 'takeaway'
 
-    let orderType = null
-    if (isTakeaway) orderType = 10
-    if (isDelivery) orderType = 20
-
     return {
       isDelivery,
       isTakeaway,
       hasZone: !!Object.keys(zone.value).length,
       isOpen: zone.value?.is_open,
-      orderType,
+      orderType: currentOrderType.value,
     }
   })
 

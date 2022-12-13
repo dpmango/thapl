@@ -60,19 +60,26 @@ const props = defineProps({
 })
 
 // geolocation
+interface IGeoData {
+  requested: boolean
+  latitude: number | null
+  longitude: number | null
+  text: string
+}
+
 const geoData = ref({
   requested: false,
   latitude: null,
   longitude: null,
   text: '',
-})
+} as IGeoData)
 
 // Приходит от родительского компонента с поиском
 watch(
   () => props.geocoderSuggestionObj,
   async (newVal) => {
-    const coordinates = newVal.geometry._coordinates
-    const data = newVal.properties._data
+    const coordinates = newVal?.geometry._coordinates
+    const data = newVal?.properties._data
 
     await setAddress(
       {
@@ -88,7 +95,13 @@ watch(
 )
 
 const setAddress = async (
-  { latitude, longitude, name, description, fullText },
+  {
+    latitude,
+    longitude,
+    name,
+    description,
+    fullText,
+  }: { latitude: number; longitude: number; name: string; description: string; fullText: string },
   setInput = true
 ) => {
   if (setInput) emit('setSearch', fullText)
@@ -148,7 +161,7 @@ const findMyLocation = () => {
   }
 }
 
-const geolocationSuccess = async (position) => {
+const geolocationSuccess = async (position: any) => {
   if (!position.coords.latitude || !position.coords.longitude) {
     return null
   }
@@ -172,7 +185,7 @@ const geolocationSuccess = async (position) => {
       latitude,
       longitude,
       name: geocoderTargetObj.name,
-      description: geocoderTargetObj.description,
+      description: geocoderTargetObj.description || '',
       fullText: geocoderAddress,
     })
   } catch {
@@ -183,7 +196,7 @@ const geolocationSuccess = async (position) => {
   geolocationLoading.value = false
 }
 
-const geolocationFailure = (positionError) => {
+const geolocationFailure = (positionError: any) => {
   try {
     if (positionError.code === 1) {
       toast.error('Разрешите геолокацию в браузере')

@@ -32,6 +32,11 @@ export interface IProduct {
   image: null | string
 }
 
+export interface IGift {
+  catalog_item: IProduct
+  count: number
+}
+
 export interface ICategory {
   id: number
   title: string

@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier } from '~/interface/Cart'
-import { IProduct } from '~/interface/Product'
+import { IProduct, IGift } from '~/interface/Product'
+import { useDeliveryStore } from '~/store'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
 // products держит массив добавленных продуктов в исходном виде
@@ -12,6 +13,8 @@ export const useCartStore = defineStore('cart', {
       cart: [] as ICartInner[],
       products: [] as IProduct[],
       stoplist: [] as IProduct[],
+      gifts: [] as IGift[],
+      suggestions: [] as IProduct[],
     }
   },
   persist: {
@@ -21,11 +24,11 @@ export const useCartStore = defineStore('cart', {
     productQuantityInCart:
       (state) =>
       (id: number): number | null => {
-        try {
-          return state.cart.find((x) => x.id === id).q
-        } catch {
-          return null
+        const product = state.cart.find((x) => x.id === id)
+        if (product) {
+          return product.q
         }
+        return null
       },
     cartPrice: (state): number => {
       return state.cart.reduce((acc, c) => {
@@ -48,10 +51,10 @@ export const useCartStore = defineStore('cart', {
   actions: {
     // TODO баг когда q = 0 (вернуть товар) и нажимаем добавить в коризну из продуктов
     // changeQuantity в коризне vs addToCart в списке
-    async addToCart(product, quantity = 1, modifiers) {
+    async addToCart(product: IProduct, quantity = 1, modifiers: ICartModifier[]) {
       const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
       if (modifiers?.length) {
-        cartObj.modifiers = modifiers.map((x) => ({
+        cartObj.modifiers = modifiers.map((x: ICartModifier) => ({
           id: x.id,
           q: 1,
         }))
@@ -60,6 +63,8 @@ export const useCartStore = defineStore('cart', {
       this.cart.push(cartObj)
       this.products.push(product)
 
+      await this.getGifts()
+      await this.getSuggestions()
       await this.sendCartAnalytics({
         action: 'add',
         body: {
@@ -74,9 +79,11 @@ export const useCartStore = defineStore('cart', {
         },
       })
     },
-    async changeQuantity({ id, quantity }) {
+    async changeQuantity({ id, quantity }: { id: number; quantity: number }) {
       this.cart = this.cart.map((x) => (x.id === id ? { id: x.id, q: quantity } : x))
 
+      await this.getGifts()
+      await this.getSuggestions()
       await this.sendCartAnalytics({
         action: 'add',
         body: {
@@ -90,6 +97,8 @@ export const useCartStore = defineStore('cart', {
       this.cart = this.cart.filter((x) => x.id !== id)
       this.products = this.products.filter((x) => x.id !== id)
 
+      await this.getGifts()
+      await this.getSuggestions()
       await this.sendCartAnalytics({
         action: 'remove',
         body: {
@@ -100,8 +109,53 @@ export const useCartStore = defineStore('cart', {
     resetCart() {
       this.cart = []
       this.products = []
+      this.gifts = []
     },
-    async sendCartAnalytics({ action, body }) {
+    async getGifts() {
+      const deliveryStore = useDeliveryStore()
+
+      const res = (await useApi('cart/get-additives', {
+        method: 'POST',
+        headers: useHeaders(),
+        body: {
+          order_type: deliveryStore.currentOrderType,
+          cart: this.cartToApi,
+        },
+      })) as IGift[]
+
+      this.gifts = res
+    },
+    async getSuggestions() {
+      const deliveryStore = useDeliveryStore()
+
+      const res = (await useApi('cart/get-suggest', {
+        method: 'POST',
+        headers: useHeaders(),
+        body: {
+          order_type: deliveryStore.currentOrderType,
+          cart: this.cartToApi,
+        },
+      })) as IProduct[]
+
+      this.suggestions = res
+    },
+    async getPromo({ code, time_to_delivery }: { code?: string; time_to_delivery?: string }) {
+      const deliveryStore = useDeliveryStore()
+
+      const res = (await useApi('cart/check-promo', {
+        method: 'POST',
+        headers: useHeaders(),
+        body: {
+          order_type: deliveryStore.currentOrderType,
+          cart: this.cartToApi,
+          time_to_delivery,
+          promo_code: code,
+        },
+      })) as IProduct[]
+
+      this.suggestions = res
+    },
+    async sendCartAnalytics({ action, body }: { action: 'add' | 'remove'; body: any }) {
       await useApi(`cart/${action}`, {
         method: 'POST',
         headers: useHeaders(),

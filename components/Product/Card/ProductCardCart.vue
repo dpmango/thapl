@@ -15,10 +15,13 @@
       <div class="card__title h6-title">
         <UiAtomLongWords :text="product.title" />
       </div>
-      <div v-if="!product.only_pre_order" class="card__description text-s c-gray">
+      <div
+        v-if="product.packing_weights && !product.only_pre_order"
+        class="card__description text-s c-gray"
+      >
         {{ product.packing_weights }}
       </div>
-      <div v-else class="card__preorder text-s c-primary">
+      <div v-else-if="product.only_pre_order" class="card__preorder text-s c-primary">
         Этот товар доступен только по предзаказу
       </div>
       <div
@@ -28,9 +31,10 @@
         @mouseleave="setFocused(true)"
       >
         <UiPlusMinus
-          v-if="productQuantityInCart(product.id) !== 0"
+          v-if="isGiftProduct || productQuantityInCart(product.id) !== 0"
           size="small"
-          :value="productQuantityInCart(product.id)"
+          :disabled="isGiftProduct"
+          :value="isGiftProduct ? giftCount : productQuantityInCart(product.id)"
           @on-change="handleQuantityChange"
         />
         <template v-else>
@@ -40,7 +44,10 @@
       </div>
     </div>
     <div class="card__meta">
-      <div class="card__price h6-title">{{ product.price }} ₽</div>
+      <div class="card__price h6-title">
+        <template v-if="giftCount">Бесплатно</template>
+        <template v-else>{{ product.price }} ₽</template>
+      </div>
     </div>
   </div>
 </template>
@@ -58,7 +65,17 @@ const { productQuantityInCart } = storeToRefs(cartStore)
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
+    default: () => {},
   },
+  giftCount: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+})
+
+const isGiftProduct = computed(() => {
+  return typeof props.giftCount === 'number'
 })
 
 const handleReturn = () => {
