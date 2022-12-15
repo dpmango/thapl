@@ -23,3 +23,11 @@ export const clearSocialLink = (v) => {
 
   return result
 }
+
+export const openExternalLink = (url) => {
+  if (window.opener == null) {
+    window.location.href = url
+  } else {
+    window.open(url)
+  }
+}

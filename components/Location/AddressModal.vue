@@ -211,6 +211,7 @@ onMounted(async () => {
 .address {
   // &__title {
   // }
+  min-height: 440px;
   &__head {
     display: flex;
     align-items: center;

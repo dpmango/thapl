@@ -75,6 +75,51 @@
               </div>
             </div>
 
+            <div class="checkout__row row">
+              <div class="col col-6">
+                <UiInput
+                  name="entrance"
+                  label="Подъезд"
+                  placeholder=""
+                  :value="entrance"
+                  :error="errors.entrance"
+                  @on-change="(v) => setFieldValue('entrance', v)"
+                />
+              </div>
+              <div class="col col-6">
+                <UiInput
+                  name="floor"
+                  label="Этаж"
+                  placeholder=""
+                  :value="floor"
+                  :error="errors.floor"
+                  @on-change="(v) => setFieldValue('floor', v)"
+                />
+              </div>
+            </div>
+            <div class="checkout__row row">
+              <div class="col col-6">
+                <UiInput
+                  name="apt"
+                  label="Квартира/офис"
+                  placeholder=""
+                  :value="apt"
+                  :error="errors.apt"
+                  @on-change="(v) => setFieldValue('apt', v)"
+                />
+              </div>
+              <div class="col col-6">
+                <UiInput
+                  name="intercom"
+                  label="Домофон"
+                  placeholder=""
+                  :value="intercom"
+                  :error="errors.intercom"
+                  @on-change="(v) => setFieldValue('intercom', v)"
+                />
+              </div>
+            </div>
+
             <div class="checkout__row">
               <div class="ui-label">Дата доставки</div>
               <div class="checkout__toggle-grid">
@@ -277,6 +322,7 @@ import {
   formatPrice,
   generateDaysFrom,
   generateTimeSlots,
+  openExternalLink,
 } from '#imports'
 
 const sessionStore = useSessionStore()
@@ -286,7 +332,7 @@ const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
 const { app_settings, user } = storeToRefs(sessionStore)
 
-const { $env } = useNuxtApp()
+const { $env, $log } = useNuxtApp()
 const toast = useToast()
 const router = useRouter()
 
@@ -298,6 +344,10 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     phone: user.value.username || '',
     contact: '',
     address: currentAddress.value?.name,
+    entrance: '',
+    floor: '',
+    apt: '',
+    intercom: '',
     deliveryDate: '',
     deliveryTime: '',
     heat: '',
@@ -354,6 +404,23 @@ watch(
 // адрес и время
 const { value: address, meta: addressMeta } = useField('address', (v) => {
   return clearString(v).length >= 2 ? true : 'Введите адрес'
+})
+
+const { value: entrance, meta: entranceMeta } = useField('entrance', (v) => {
+  if (zoneData.value.isTakeaway) return true
+  return true
+})
+const { value: floor, meta: floorMeta } = useField('floor', (v) => {
+  if (zoneData.value.isTakeaway) return true
+  return true
+})
+const { value: apt, meta: aptMeta } = useField('apt', (v) => {
+  if (zoneData.value.isTakeaway) return true
+  return true
+})
+const { value: intercom, meta: intercomMeta } = useField('intercom', (v) => {
+  if (zoneData.value.isTakeaway) return true
+  return true
 })
 
 const { value: deliveryDate } = useField(
@@ -524,12 +591,12 @@ const { value: comment } = useField('comment', (v) => {
 const loading = ref(false)
 
 const requestCheckout = async () => {
-  const { valid, errors } = await validate()
+  // const { valid, errors } = await validate()
 
-  if (!valid || !edgeFieldsValid.value) {
-    scrollPageToTop()
-    return
-  }
+  // if (!valid || !edgeFieldsValid.value) {
+  //   scrollPageToTop()
+  //   return
+  // }
 
   loading.value = true
 
@@ -553,6 +620,10 @@ const requestCheckout = async () => {
 
   if (zoneData.value.isDelivery) {
     orderObject.date = `${deliveryDate.value} ${deliveryTime.value}` // DD.MM.YYYY HH:mm
+    orderObject.entrance = entrance.value
+    orderObject.floor = floor.value
+    orderObject.apt = apt.value
+    orderObject.intercom = intercom.value
   }
 
   if (payment.value === 1) {
@@ -563,7 +634,7 @@ const requestCheckout = async () => {
     method: 'POST',
     headers: useHeaders(),
     body: orderObject,
-  }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
+  }).catch((err) => useCatchError(err, 'Что-то пошло не так. Обратитесь в поддержку'))
 
   const handleSuccess = () => {
     toast.success(`Заказ ${response.order_id} Оформлен`)
@@ -571,7 +642,7 @@ const requestCheckout = async () => {
     router.push('/')
   }
 
-  if (response && response.suceess) {
+  if (response && response.suceess && response.order_id) {
     if (payment.value === 1030) {
       const paymentData = await useApi('order/get-payment-data', {
         method: 'POST',
@@ -579,21 +650,35 @@ const requestCheckout = async () => {
         params: {
           id: response.order_id,
         },
-      }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору'))
+      }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь в поддержку'))
 
-      console.log(paymentData)
+      if (paymentData.link) {
+        openExternalLink(paymentData.link)
+      } else if (paymentData.success) {
+        handleSuccess()
+      }
     } else {
       handleSuccess()
     }
   } else {
-    useCatchError(response, response.error_field)
+    $log.error(response)
+    const { error_field, error_reason, error_text } = response
+
+    if (error_reason === 10) {
+      toast.error('Неверные данные. Проверьте заполненные поля')
+      setErrors({
+        [error_field]: error_text || 'Ошибка',
+      })
+    } else if (error_reason === 20) {
+      ui.setModal({ name: 'orgnotfound' })
+    } else if (error_reason === 30) {
+      ui.setModal({ name: 'closed' })
+    } else if (!error_reason) {
+      toast.error(error_text || 'Что-то пошло не так. Обратитесь в поддержку')
+    }
   }
 
   // "email": "string",
-  // "intercom": "string",
-  // "entrance": "string",
-  // "floor": "string",
-  // "apt": "string",
   // "time_to_delivery": "string",
   // "points": 0,
   // "gift_id": 0,
