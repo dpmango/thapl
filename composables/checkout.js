@@ -6,7 +6,7 @@ export const useCheckout = () => {
   const deliveryStore = useDeliveryStore()
   const cartStore = useCartStore()
   const { currentOrderType, currentAddressType, zone, minOrderPrice } = storeToRefs(deliveryStore)
-  const { cartPrice, cart } = storeToRefs(cartStore)
+  const { cartPrice, cart, promo } = storeToRefs(cartStore)
 
   // хелперы по методу доставки / самовывоз
   const zoneData = computed(() => {
@@ -29,12 +29,20 @@ export const useCheckout = () => {
   const priceData = computed(() => {
     const deliverySum = freeDeliveryData.value.match ? 0 : zone.value.delivery_price
     const withDelivery = cartPrice.value + deliverySum
+    const promoSum = promo.value?.discount_sum
+    const pointsSum = 0
+
+    // - сумма примененных бонусов
+    // + упаковка
 
     return {
       pureProducts: cartPrice.value,
       delivery: deliverySum,
       withDelivery,
-      totalToPay: withDelivery + 0 + 0,
+      promoDiscount: promoSum,
+      pointsDiscount: pointsSum,
+      totalDiscount: promoSum + pointsSum,
+      totalToPay: withDelivery - promoSum - pointsSum,
     }
   })
 

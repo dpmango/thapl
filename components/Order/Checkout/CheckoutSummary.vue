@@ -8,15 +8,19 @@
       <div v-if="opened" class="scope__content">
         <div class="scope__section">
           <div class="scope__products">
-            <div v-for="product in products" class="scope__row">
+            <div v-for="product in allProducts" class="scope__row">
               <div class="scope__label text-m text-md-s">
                 {{ product.title }}
-                <span v-if="productQuantityInCart(product.id) !== 1" class="c-gray">
+                <span v-if="product.isGift" class="c-gray">Подарок </span>
+                <span v-else-if="productQuantityInCart(product.id) !== 1" class="c-gray">
                   × {{ productQuantityInCart(product.id) }}
                 </span>
               </div>
               <div class="scope__value h6-title text-md-s c-primary">
-                {{ formatPrice(product.price) }} ₽
+                <template v-if="product.isGift">
+                  <s>{{ formatPrice(product.price) }} ₽</s>
+                </template>
+                <template v-else>{{ formatPrice(product.price) }} ₽</template>
               </div>
             </div>
           </div>
@@ -33,6 +37,12 @@
             <div class="scope__value h6-title text-md-s">
               <template v-if="freeDeliveryData.match">Бесплатно</template>
               <template v-else>{{ formatPrice(priceData.delivery) }} ₽</template>
+            </div>
+          </div>
+          <div v-if="priceData.promoDiscount" class="scope__row">
+            <div class="scope__label text-m text-md-s c-gray">Скидка</div>
+            <div class="scope__value h6-title text-md-s">
+              -{{ formatPrice(priceData.promoDiscount) }} ₽
             </div>
           </div>
           <div class="scope__row">
@@ -54,11 +64,24 @@ import { useCartStore } from '~/store'
 import { formatPrice, Plurize } from '#imports'
 
 const cartStore = useCartStore()
-const { cart, products, productQuantityInCart } = storeToRefs(cartStore)
+const { cart, products, promo, productQuantityInCart } = storeToRefs(cartStore)
 const { priceData, zoneData, freeDeliveryData } = useCheckout()
 
+const allProducts = computed(() => {
+  const gifts = promo.value?.gifts?.map((x) => ({
+    ...x,
+    isGift: true,
+  }))
+
+  if (gifts && gifts.length) {
+    return [...products.value, ...gifts]
+  }
+
+  return products.value
+})
+
 const verboseCartCount = computed(() => {
-  const count = cart.value.length
+  const count = allProducts.value.length
   return `${count} ${Plurize(count, 'блюдо', 'блюда', 'блюд')}`
 })
 

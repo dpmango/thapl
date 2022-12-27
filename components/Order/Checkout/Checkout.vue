@@ -307,7 +307,7 @@
                   inputmode="numeric"
                   :value="points"
                   :error="errors.points"
-                  helper="Максимально можно списать 2 500"
+                  :helper="`Максимально можно списать ${formatPrice(promo?.available_points)}`"
                   @on-change="(v) => setFieldValue('points', v)"
                 />
               </div>
@@ -379,6 +379,7 @@ const cartStore = useCartStore()
 const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
 const { app_settings, user } = storeToRefs(sessionStore)
+const { promo } = storeToRefs(cartStore)
 
 const { $env, $log } = useNuxtApp()
 const toast = useToast()
@@ -650,7 +651,7 @@ const fetchPackingOptions = async () => {
 
 // Количество приборов
 const { value: personsCount, meta: personsCountMeta } = useField('personsCount', (v) => {
-  if (!$env.orderUsePacking) return true
+  if (!app_settings.value.show_persons) return true
   return v
 })
 
@@ -734,13 +735,13 @@ const showBonus = computed(() => {
   if (!combinedPromo.value) {
     return {
       promocode: bonusType.value === 1,
-      points: bonusType.value === 2,
+      points: bonusType.value === 2 && promo.value?.available_points > 0,
     }
   }
 
   return {
     promocode: true,
-    points: true,
+    points: promo.value?.available_points > 0,
   }
 })
 
@@ -751,7 +752,7 @@ const { value: promocode, meta: promocodeMeta } = useField('promocode', (v) => {
 
 const promocodeApplied = ref(false)
 
-const handlePromocodeClick = () => {
+const handlePromocodeClick = async () => {
   if (promocodeApplied.value) {
     promocodeApplied.value = false
     setFieldValue('promocode', '')
@@ -759,14 +760,25 @@ const handlePromocodeClick = () => {
     promocodeApplied.value = true
   }
 
-  fetchPromo()
+  await fetchPromo()
 }
 
 // Бонусная программа (боунсы)
 const { value: points, meta: pointsMeta } = useField('points', (v) => {
+  if (!v || bonusType.value !== 2) return true
+
+  if (!isValidNumber(v)) {
+    return 'Введите сумму (числом)'
+  }
+
+  if (v <= promo.value?.available_points) {
+    return 'Количество бонусов превышает доступный лимит'
+  }
+
   return true
 })
 
+// Бонусная программа (запросы, связанная логика)
 const fetchPromo = async () => {
   const requestObj = {}
 
@@ -778,6 +790,20 @@ const fetchPromo = async () => {
   }
 
   const res = await cartStore.getPromo(requestObj)
+
+  if (res.error_type === 2) {
+    toast.error('Для применения промокода необходимо авторизоваться')
+    ui.setModal({ name: 'auth' })
+  } else if (res.error_type === 1) {
+    toast.error('Промокод не найден')
+    promocodeApplied.value = false
+    setFieldValue('promocode', '')
+  } else if (res.error_type) {
+    // 3 or any
+    toast.error(res.error_text)
+  }
+
+  return res
 }
 
 watch(
@@ -789,6 +815,14 @@ watch(
       setFieldValue('bonus', '')
       promocodeApplied.value = false
     }
+  }
+)
+
+// проверка промокода после логина
+watch(
+  () => user.value.username,
+  (newVal) => {
+    if (newVal) fetchPromo()
   }
 )
 

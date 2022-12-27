@@ -1,3 +1,5 @@
+import { IProduct } from './Product'
+
 export interface ILoyalty {
   enabled: boolean
   combine_promo_and_bonus: boolean
@@ -14,4 +16,20 @@ export interface ILoyalty {
   REF_POINTS_NUM: number
   REF_POINTS_NUM_FOR_INVITE: null
   REF_MIN_ORDER: null
+}
+
+export interface IPromoDto {
+  available_points: number
+  discount_sum: number | null
+  discount_type: 1 | 2 | null
+  error_text: string | null
+  error_type: number
+  gifts: IProduct[]
+  has_promo: boolean
+  // next_promo_sum: null
+  // next_promo_text: null
+  // not_affects_on_minimal_order: boolean
+  // one_plus_one: any[]
+  promo_coupon_id: null
+  promo_id: number | null
 }

@@ -5,12 +5,12 @@ import { IUser } from '~/interface/User'
 export const useSessionStore = defineStore('session', {
   state: () => {
     return {
-      api_token: null,
-      user_token: null,
+      api_token: null as string | null,
+      user_token: null as string | null,
       user: {} as IUser,
       app_settings: {} as IAppSettings,
 
-      phone: '',
+      phone: '' as string,
     }
   },
   persist: {
@@ -42,13 +42,13 @@ export const useSessionStore = defineStore('session', {
     setInit(payload: IInit) {
       const { api_token, user_token, user, app_settings } = payload
 
-      this.api_token = api_token
-      this.user_token = user_token
+      this.api_token = api_token || null
+      this.user_token = user_token || null
       this.user = user || {}
       this.app_settings = app_settings
     },
-    setPhone(phone) {
-      this.phone = phone
+    setPhone(phone: string) {
+      this.phone = phone || ''
     },
     setSession(payload) {
       const { user, user_token } = payload

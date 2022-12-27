@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct, IGift } from '~/interface/Product'
+import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
@@ -12,9 +13,9 @@ export const useCartStore = defineStore('cart', {
     return {
       cart: [] as ICartInner[],
       products: [] as IProduct[],
-      stoplist: [] as IProduct[],
       gifts: [] as IGift[],
       suggestions: [] as IProduct[],
+      promo: null as IPromoDto | null,
     }
   },
   persist: {
@@ -151,9 +152,9 @@ export const useCartStore = defineStore('cart', {
           time_to_delivery,
           promo_code: code,
         },
-      })) as IProduct[]
+      })) as IPromoDto
 
-      this.suggestions = res
+      this.promo = { ...res }
 
       return res
     },
