@@ -95,34 +95,6 @@
                 />
               </div>
             </div>
-
-            <template v-if="app_settings.order_to_time">
-              <div class="checkout__row">
-                <div class="ui-label">Дата доставки</div>
-                <div class="checkout__toggle-grid">
-                  <UiToggle
-                    theme="spaced"
-                    :list="deliveryDateOptions"
-                    :value="deliveryDate"
-                    :error="errors.deliveryDate"
-                    @on-change="(v) => setFieldValue('deliveryDate', v)"
-                  />
-                </div>
-              </div>
-
-              <div class="checkout__row">
-                <div class="ui-label">Время доставки</div>
-                <div class="checkout__toggle-grid">
-                  <UiToggle
-                    theme="spaced"
-                    :list="deliveryTimeOptions"
-                    :value="deliveryTime"
-                    :error="errors.deliveryTime"
-                    @on-change="(v) => setFieldValue('deliveryTime', v)"
-                  />
-                </div>
-              </div>
-            </template>
           </template>
 
           <!-- поля для самовывоза -->
@@ -150,6 +122,46 @@
                 Адрес не выбран.
                 <a href="#" @click.prevent="ui.setModal({ name: 'address' })">Выбрать</a>
               </div>
+            </div>
+          </template>
+
+          <!-- Дата и время -->
+          <template v-if="true || app_settings.order_to_time">
+            <div class="checkout__row">
+              <div class="ui-label">Дата доставки</div>
+              <div class="checkout__toggle-grid">
+                <UiToggle
+                  theme="spaced"
+                  :list="deliveryDateOptions"
+                  :value="deliveryDate"
+                  :error="errors.deliveryDate"
+                  @on-change="(v) => setFieldValue('deliveryDate', v)"
+                />
+              </div>
+            </div>
+
+            <div class="checkout__row">
+              <div class="ui-label">Время доставки</div>
+              <div class="checkout__toggle-grid">
+                <UiToggle
+                  theme="spaced"
+                  :list="deliveryTimeOptions"
+                  :value="deliveryTime"
+                  :error="errors.deliveryTime"
+                  @on-change="(v) => setFieldValue('deliveryTime', v)"
+                />
+              </div>
+            </div>
+
+            <div v-if="deliveryTime === 2" class="checkout__row">
+              <UiRangeSlider
+                :min="deliveryRangeOptions.min"
+                :max="deliveryRangeOptions.max"
+                :step="deliveryRangeOptions.step"
+                :value="deliveryRange"
+                :minutes="true"
+                @on-change="(v) => setFieldValue('deliveryRange', +v)"
+              />
             </div>
           </template>
 
@@ -372,7 +384,7 @@ const { $env, $log } = useNuxtApp()
 const toast = useToast()
 const router = useRouter()
 
-const { priceData, zoneData } = useCheckout()
+const { priceData, zoneData, stopListData, slotsData } = useCheckout()
 
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: {
@@ -385,6 +397,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     intercom: '',
     deliveryDate: '',
     deliveryTime: '',
+    deliveryRange: 0,
     pack: '',
     personsCount: +app_settings.value.default_persons_count,
     not_call: false,
@@ -468,7 +481,7 @@ const { value: deliveryDate } = useField(
 // текущее время пользователя либо следующий день (логика только для выбора опций)
 // const noTimeOptionsAvailable = ref(false)
 const orderDay = computed(() => {
-  let userDate = dayjs().tz($env.timezone)
+  let userDate = dayjs().tz(zoneData.value?.organization?.timezone)
   let isToday = true
 
   // TODO - поставить время работы from
@@ -490,18 +503,21 @@ const deliveryDateOptions = computed(() => {
   const startLabel = orderDay.value.isToday ? 'Сегодня' : 'Завтра'
   const subtractDays = orderDay.value.isToday ? 0 : 1
 
-  // TODO - выходные если указано в параметрах api
-  if ($env.orderDeliveryFutureDays) {
+  if (slotsData.value.hasSlots) {
     return [
       { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
       ...generateDaysFrom(orderDay.value.day, $env.orderDeliveryFutureDays - subtractDays),
     ]
   }
 
-  return [
-    { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
-    { id: 0, label: 'В другой день' },
-  ]
+  const dayOptions = [{ id: 0, label: 'В другой день' }]
+
+  // + добавить есть доступные на сегодня слоты
+  if (showASAPTime.value) {
+    dayOptions.unshift({ id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel })
+  }
+
+  return dayOptions
 })
 
 const { value: deliveryTime } = useField(
@@ -522,7 +538,9 @@ const orderDaySelected = computed(() => {
 
   if (deliveryDate.value) {
     // созданная дата 0:00 минут (все слоты будут доступны)
-    const dayFromString = dayjs(deliveryDate.value, 'DD.MM.YYYY', true).tz($env.timezone)
+    const dayFromString = dayjs(deliveryDate.value, 'DD.MM.YYYY', true).tz(
+      zoneData.value?.organization?.timezone
+    )
 
     // не меняем время если заказ на Сегодня
     if (!dayFromString.isToday()) {
@@ -534,8 +552,12 @@ const orderDaySelected = computed(() => {
 })
 
 // время доставки включая сгенерированные слоты
+const showASAPTime = computed(() => {
+  return zoneData.value.isOpen && !stopListData.value.hasStops
+})
+
 const deliveryTimeOptions = computed(() => {
-  if ($env.orderDeliveryTimeSlots) {
+  if (slotsData.value.hasSlots) {
     const startTime = orderDaySelected.value.hour(10).minute(0)
     const endTime = orderDaySelected.value.hour(20).minute(0)
 
@@ -543,10 +565,13 @@ const deliveryTimeOptions = computed(() => {
     return generateTimeSlots(startTime, endTime, 2, orderDaySelected.value.add(2, 'hour'))
   }
 
-  return [
-    { id: 1, label: 'Как можно скорее' },
-    { id: 2, label: 'Ко времени' },
-  ]
+  const timeOptions = [{ id: 2, label: 'Ко времени' }]
+
+  if (showASAPTime.value) {
+    timeOptions.unshift({ id: 1, label: 'Как можно скорее' })
+  }
+
+  return timeOptions
 })
 
 // при изменении даты сбрасывать время
@@ -556,6 +581,19 @@ watch(
     setFieldValue('deliveryTime', '')
   }
 )
+
+// ползунок время доставки
+const { value: deliveryRange } = useField('deliveryRange', (v) => {
+  return true
+})
+
+const deliveryRangeOptions = computed(() => {
+  return {
+    min: zoneData.value.timeFrom,
+    max: zoneData.value.timeTo,
+    step: 15,
+  }
+})
 
 // TODO если нет доступных слотов, ставить следующий день
 

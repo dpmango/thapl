@@ -24,7 +24,6 @@ export default defineNuxtConfig({
       // базовые (тема)
       projectName: 'Thapl',
       apiBase: '',
-      timezone: 'Europe/Moscow',
       theme: 'orange',
       catalogType: 'singlepage',
       promoListType: 1,
@@ -39,8 +38,6 @@ export default defineNuxtConfig({
       orderNotCall: 'Не звонить',
       orderUseNotHeat: false,
       orderPaymentOptions: '1030,3,1',
-      orderDeliveryFutureDays: false,
-      orderDeliveryTimeSlots: false,
       takeawayOnly: false,
       footerNavTitle: 'Компания',
       // вендоры

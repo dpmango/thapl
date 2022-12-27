@@ -40,6 +40,13 @@ export interface IOrganization {
   stoped_temporary: boolean
   organization_is_open: boolean
   is_open: boolean
+  max_preorder_days: number
+  min_preorder_days: number
+  min_takeaway_gap: number
+  default_delivery_time_slots: any[]
+  default_takeaway_time_slots: any[]
+  delivery_dates_restrictions: any[]
+  takeaway_dates_restrictions: any[]
 }
 
 export interface PaymentData {

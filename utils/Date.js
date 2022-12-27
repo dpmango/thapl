@@ -21,6 +21,10 @@ export const pad = (v, size = 2) => {
   return s
 }
 
+export const dateToTimestamp = (v) => {
+  return dayjs(v, 'YYYY-MM-DD HH:mm:ss', true).format('DD MMMM YYYY, HH:mm')
+}
+
 export const formatMinutes = (v) => {
   const min = +v
 
@@ -31,8 +35,18 @@ export const formatMinutes = (v) => {
   return `${hh}${mm}`
 }
 
-export const dateToTimestamp = (v) => {
-  return dayjs(v, 'YYYY-MM-DD HH:mm:ss', true).format('DD MMMM YYYY, HH:mm')
+export const timestampToMinutes = (str) => {
+  const [hh, mm, ss] = (str || '00:00:00').split(':')
+
+  return +hh * 60 + +mm
+}
+
+export const minutesToTimestamp = (min = 0) => {
+  const hours = Math.floor(+min / 60)
+  const hh = hours || '00'
+  const mm = `${+min - hours * 60}`
+
+  return `${pad(hh)}:${pad(mm)}`
 }
 
 export const secondsToStamp = (sec) => {
