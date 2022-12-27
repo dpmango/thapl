@@ -14,11 +14,14 @@ const props = defineProps({
   error: Object,
 })
 
-const { $log } = useNuxtApp()
+const { $log, $env } = useNuxtApp()
 
 $log.warn(props.error)
 
 useHead({
   title: `Ошибка ${props.error.statusCode}`,
+  bodyAttrs: {
+    class: `theme-${$env.theme}`,
+  },
 })
 </script>
