@@ -1,5 +1,11 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { IZone, IOrganization, IUserAddress, IOrganizationTakeaway } from 'interface/Delivery'
+import {
+  IZone,
+  IOrganization,
+  IUserAddress,
+  IOrganizationTakeaway,
+  ICurrentAddress,
+} from 'interface/Delivery'
 import { localStorageKeepArray, localStorageGet } from '#imports'
 
 export const useDeliveryStore = defineStore('delivery', {
@@ -12,9 +18,9 @@ export const useDeliveryStore = defineStore('delivery', {
       userAddress: [] as IUserAddress[],
 
       zone: {} as IZone,
-      takeawayOrganization: {} as IOrganization,
+      takeawayOrganization: {} as IOrganizationTakeaway,
 
-      currentAddress: null,
+      currentAddress: null as ICurrentAddress | null,
     }
   },
   persist: {
@@ -77,7 +83,6 @@ export const useDeliveryStore = defineStore('delivery', {
     },
     serverInit() {},
     setCurrentAddress(payload) {
-      console.log({ payload })
       if (payload) {
         this.currentAddress = { ...payload }
       } else {
@@ -127,7 +132,7 @@ export const useDeliveryStore = defineStore('delivery', {
         params: {
           id,
         },
-      }).catch(useCatchError)) as IOrganization[]
+      }).catch(useCatchError)) as IOrganizationTakeaway
 
       this.takeawayOrganization = { ...data }
 
@@ -144,12 +149,11 @@ export const useDeliveryStore = defineStore('delivery', {
     },
 
     async hydrateZone() {
-      // TODO - refactor
       if (this.currentAddress?.type === 'delivery') {
         const { latitude, longitude } = this.currentAddress
         await this.checkZone({ latitude, longitude })
       } else if (this.currentAddress?.type === 'takeaway') {
-        // await this.getRestaurants()
+        await this.setTakeawayOrganization({ id: this.currentAddress?.org_id })
       }
     },
   },

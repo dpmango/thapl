@@ -61,7 +61,7 @@ const selectRestaurant = async (restaurant) => {
     deliveryStore.setCurrentAddress({
       type: 'takeaway',
       name: restaurant.title,
-      org_id: restaurant.id, // or restaurant.id
+      org_id: restaurant.id,
     })
   }
 }
