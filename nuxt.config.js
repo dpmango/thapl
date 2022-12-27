@@ -21,6 +21,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      // базовые (тема)
       projectName: 'Thapl',
       apiBase: '',
       timezone: 'Europe/Moscow',
@@ -30,11 +31,19 @@ export default defineNuxtConfig({
       useRegions: false,
       useSearch: true,
       useTestimonials: false,
+      // заказ
+      orderUsePacking: true,
+      orderPackingCompact: 'Компактная',
+      orderPackingSeparate: 'Отдельная',
+      orderUseNotCall: false,
+      orderNotCall: 'Не звонить',
+      orderUseNotHeat: false,
+      orderPaymentOptions: '1030,3,1',
       orderDeliveryFutureDays: false,
       orderDeliveryTimeSlots: false,
       takeawayOnly: false,
       footerNavTitle: 'Компания',
-
+      // вендоры
       yandexMetrikaID: '',
       yandexMapsKey: '',
       googleID: '',

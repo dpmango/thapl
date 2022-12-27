@@ -154,6 +154,8 @@ export const useCartStore = defineStore('cart', {
       })) as IProduct[]
 
       this.suggestions = res
+
+      return res
     },
     async sendCartAnalytics({ action, body }: { action: 'add' | 'remove'; body: any }) {
       await useApi(`cart/${action}`, {

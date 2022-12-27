@@ -34,6 +34,7 @@ export interface IAppSettings {
   tg: string
   instagram: string
   facebook: null
+  show_persons: boolean
   default_persons_count: string
   takeaway_enabled: boolean
   order_to_time: boolean

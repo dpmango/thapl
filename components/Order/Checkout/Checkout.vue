@@ -18,42 +18,18 @@
               />
             </div>
 
-            <div class="col col-6 col-sm-12">
+            <div v-if="!phoneExists" class="col col-6 col-sm-12">
               <UiInput
                 name="phone"
                 type="tel"
                 label="Телефон"
                 placeholder="+7"
-                :disabled="phoneLocked"
-                :changable="phoneLocked"
+                :disabled="phoneExists"
                 :value="phone"
                 mask="+7 (###) ###-##-##"
                 :error="errors.phone"
                 @on-change="(v) => setFieldValue('phone', v)"
-                @on-changable="phoneEditing = true"
               />
-            </div>
-          </div>
-
-          <div class="checkout__row">
-            <div class="ui-label">Способ связи</div>
-            <div class="checkout__radio-grid">
-              <UiCheckbox
-                type="radio"
-                :error="errors.contact"
-                :checked="contact === 'phone'"
-                @change="() => setFieldValue('contact', 'phone')"
-              >
-                Можно позвонить
-              </UiCheckbox>
-              <UiCheckbox
-                type="radio"
-                :error="errors.contact"
-                :checked="contact === 'message'"
-                @change="() => setFieldValue('contact', 'message')"
-              >
-                Только в сообщениях
-              </UiCheckbox>
             </div>
           </div>
 
@@ -120,31 +96,33 @@
               </div>
             </div>
 
-            <div class="checkout__row">
-              <div class="ui-label">Дата доставки</div>
-              <div class="checkout__toggle-grid">
-                <UiToggle
-                  theme="spaced"
-                  :list="deliveryDateOptions"
-                  :value="deliveryDate"
-                  :error="errors.deliveryDate"
-                  @on-change="(v) => setFieldValue('deliveryDate', v)"
-                />
+            <template v-if="app_settings.order_to_time">
+              <div class="checkout__row">
+                <div class="ui-label">Дата доставки</div>
+                <div class="checkout__toggle-grid">
+                  <UiToggle
+                    theme="spaced"
+                    :list="deliveryDateOptions"
+                    :value="deliveryDate"
+                    :error="errors.deliveryDate"
+                    @on-change="(v) => setFieldValue('deliveryDate', v)"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div class="checkout__row">
-              <div class="ui-label">Время доставки</div>
-              <div class="checkout__toggle-grid">
-                <UiToggle
-                  theme="spaced"
-                  :list="deliveryTimeOptions"
-                  :value="deliveryTime"
-                  :error="errors.deliveryTime"
-                  @on-change="(v) => setFieldValue('deliveryTime', v)"
-                />
+              <div class="checkout__row">
+                <div class="ui-label">Время доставки</div>
+                <div class="checkout__toggle-grid">
+                  <UiToggle
+                    theme="spaced"
+                    :list="deliveryTimeOptions"
+                    :value="deliveryTime"
+                    :error="errors.deliveryTime"
+                    @on-change="(v) => setFieldValue('deliveryTime', v)"
+                  />
+                </div>
               </div>
-            </div>
+            </template>
           </template>
 
           <!-- поля для самовывоза -->
@@ -175,31 +153,8 @@
             </div>
           </template>
 
-          <!-- подогрев блюд -->
-          <div class="checkout__row">
-            <div class="ui-label">Подогрев блюд</div>
-            <div class="checkout__radio-grid">
-              <UiCheckbox
-                type="radio"
-                :error="errors.heat"
-                :checked="heat === 'no'"
-                @change="() => setFieldValue('heat', 'no')"
-              >
-                Не нужно
-              </UiCheckbox>
-              <UiCheckbox
-                type="radio"
-                :error="errors.heat"
-                :checked="heat === 'yes'"
-                @change="() => setFieldValue('heat', 'yes')"
-              >
-                Подогрейте, пожалуйста
-              </UiCheckbox>
-            </div>
-          </div>
-
           <!-- Упаковка -->
-          <div v-if="packOptions.length" class="checkout__row">
+          <div v-if="$env.orderUsePacking && packingOptions.length" class="checkout__row">
             <div class="ui-label">Упаковка</div>
             <div class="checkout__radio-grid">
               <UiCheckbox
@@ -211,30 +166,56 @@
                 Не важно
               </UiCheckbox>
               <UiCheckbox
-                v-for="opt in packOptions"
+                v-for="opt in packingOptions"
                 :key="opt.value"
                 type="radio"
                 :error="errors.pack"
                 :checked="pack === opt.value"
                 @change="() => setFieldValue('pack', opt.value)"
               >
-                {{ opt.label }} <span class="c-gray">+{{ formatPrice(opt.price) }} ₽</span>
+                {{ opt.label }}
+                <span v-if="opt.price" class="c-gray">+{{ formatPrice(opt.price) }} ₽</span>
               </UiCheckbox>
             </div>
           </div>
 
           <!-- Приборы -->
-          <div class="checkout__row row">
+          <div v-if="app_settings.show_persons" class="checkout__row row">
             <div class="col col-6 col-sm-12">
               <div class="ui-label">Количество приборов</div>
               <UiPlusMinus
                 size="medium"
                 :as-input="true"
-                :min-value="1"
+                :min-value="0"
                 :max-value="25"
                 :value="personsCount"
                 @on-change="(v) => setFieldValue('personsCount', v)"
               />
+            </div>
+          </div>
+
+          <!-- Дополнительные поля -->
+          <div v-if="$env.orderUseNotCall || $env.orderUseNotHeat" class="checkout__row">
+            <div class="ui-label">Дополнительно</div>
+            <div class="checkout__radio-grid">
+              <UiCheckbox
+                v-if="$env.orderUseNotCall"
+                type="checkbox"
+                :error="errors.not_call"
+                :checked="not_call"
+                @change="() => setFieldValue('not_call', !not_call)"
+              >
+                {{ $env.orderNotCall }}
+              </UiCheckbox>
+              <UiCheckbox
+                v-if="$env.orderUseNotHeat"
+                type="checkbox"
+                :error="errors.not_heat"
+                :checked="not_heat"
+                @change="() => setFieldValue('not_heat', !not_heat)"
+              >
+                Без подогрева блюд
+              </UiCheckbox>
             </div>
           </div>
 
@@ -266,6 +247,62 @@
             </div>
           </div>
 
+          <div v-if="requireEmail" class="checkout__row row">
+            <div class="col col-6 col-sm-12">
+              <UiInput
+                name="email"
+                label="Email"
+                placeholder="Введите email"
+                :value="email"
+                :error="errors.email"
+                @on-change="(v) => setFieldValue('email', v)"
+              />
+            </div>
+          </div>
+
+          <!-- промокод  / бонус -->
+          <template v-if="app_settings.loyalty?.enabled">
+            <div v-if="!combinedPromo" class="checkout__row">
+              <div class="ui-label">Бонусная программа</div>
+              <div class="checkout__toggle-grid">
+                <UiToggle
+                  theme="spaced"
+                  :list="bonusOptions"
+                  :value="bonusType"
+                  :error="errors.bonusType"
+                  @on-change="(v) => setFieldValue('bonusType', v)"
+                />
+              </div>
+            </div>
+
+            <div class="checkout__row row">
+              <div v-if="showBonus.promocode" class="col col-6 col-sm-12">
+                <UiInput
+                  name="promocode"
+                  label="Промокод"
+                  :value="promocode"
+                  :error="errors.promocode"
+                  :changable="promocodeApplied ? 'Изменить' : 'Применить'"
+                  @on-change="(v) => setFieldValue('promocode', v)"
+                  @on-changable="handlePromocodeClick"
+                />
+              </div>
+              <div v-if="showBonus.points" class="col col-6 col-sm-12">
+                <UiInput
+                  name="points"
+                  label="Сколько бонусов списать"
+                  placeholder="100"
+                  inputmode="numeric"
+                  :value="points"
+                  :error="errors.points"
+                  helper="Максимально можно списать 2 500"
+                  @on-change="(v) => setFieldValue('points', v)"
+                />
+              </div>
+            </div>
+          </template>
+
+          <!-- Комментарий -->
           <div class="checkout__row row">
             <div class="col col-12">
               <UiInput
@@ -279,8 +316,6 @@
               />
             </div>
           </div>
-
-          <!-- промокод -->
 
           <!-- действия -->
           <div class="checkout__cta">
@@ -319,6 +354,7 @@ import {
   clearString,
   isValidNumber,
   validPhone,
+  validEmail,
   formatPrice,
   generateDaysFrom,
   generateTimeSlots,
@@ -342,7 +378,6 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: {
     name: '',
     phone: user.value.username || '',
-    contact: '',
     address: currentAddress.value?.name,
     entrance: '',
     floor: '',
@@ -350,11 +385,16 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     intercom: '',
     deliveryDate: '',
     deliveryTime: '',
-    heat: '',
     pack: '',
-    personsCount: 1,
+    personsCount: +app_settings.value.default_persons_count,
+    not_call: false,
+    not_heat: false,
     payment: '',
     change: '',
+    email: '',
+    bonusType: 1,
+    promocode: '',
+    points: '',
     comment: '',
   },
 })
@@ -377,17 +417,7 @@ const { value: phone, meta: phoneMeta } = useField('phone', (v) => {
   return valid || phone_error_text
 })
 
-const { value: contact, meta: contactMeta } = useField(
-  'contact',
-  (v) => (v && v.length ? true : 'Выберите способ связи'),
-  {
-    type: 'radio',
-  }
-)
-
-const phoneEditing = ref(false)
-const phoneLocked = computed(() => {
-  if (phoneEditing.value) return false
+const phoneExists = computed(() => {
   if (user.value.username) return true
 
   return false
@@ -427,6 +457,7 @@ const { value: deliveryDate } = useField(
   'deliveryDate',
   (v) => {
     if (zoneData.value.isTakeaway) return true
+    if (!app_settings.value.order_to_time) return true
     return v ? true : 'Выберите дату'
   },
   {
@@ -458,9 +489,9 @@ const orderDay = computed(() => {
 const deliveryDateOptions = computed(() => {
   const startLabel = orderDay.value.isToday ? 'Сегодня' : 'Завтра'
   const subtractDays = orderDay.value.isToday ? 0 : 1
-  // TODO - выходные если указано в параметрах api
 
-  if (!app_settings.value.order_to_time && $env.orderDeliveryFutureDays) {
+  // TODO - выходные если указано в параметрах api
+  if ($env.orderDeliveryFutureDays) {
     return [
       { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
       ...generateDaysFrom(orderDay.value.day, $env.orderDeliveryFutureDays - subtractDays),
@@ -477,6 +508,7 @@ const { value: deliveryTime } = useField(
   'deliveryTime',
   (v) => {
     if (zoneData.value.isTakeaway) return true
+    if (!app_settings.value.order_to_time) return true
     return v ? true : 'Выберите время'
   },
   {
@@ -527,15 +559,6 @@ watch(
 
 // TODO если нет доступных слотов, ставить следующий день
 
-// подгорев блюд
-const { value: heat, meta: heatMeta } = useField(
-  'heat',
-  (v) => (v && v.length ? true : 'Выберите подогрев блюд'),
-  {
-    type: 'radio',
-  }
-)
-
 // упаковка
 const { value: pack, meta: packMeta } = useField(
   'pack',
@@ -545,13 +568,65 @@ const { value: pack, meta: packMeta } = useField(
   }
 )
 
-// TODO - получать с API
-const packOptions = ref([{ id: 1, label: 'Компактная', price: 300 }])
+const packingData = ref(null)
+const packingOptions = computed(() => {
+  if (!packingData.value) return []
+
+  const options = []
+
+  Object.keys(packingData.value).forEach((key) => {
+    const priceVal = packingData.value[key]
+
+    if (priceVal !== -1) {
+      let label = 'Бесплатная'
+      if (key === 'compact_pack') {
+        label = $env.orderPackingCompact
+      } else if (key === 'separate_pack') {
+        label = $env.orderPackingSeparate
+      }
+
+      options.push({ id: key, label, price: priceVal })
+    }
+  })
+
+  return options
+})
+
+const fetchPackingOptions = async () => {
+  if (!$env.orderUsePacking) return null
+
+  const data = await useApi('cart/get-packing', {
+    method: 'POST',
+    headers: useHeaders(),
+    body: {
+      cart: cartStore.cartToApi,
+    },
+  }).catch((err) =>
+    useCatchError(err, 'Ошибка при получении вариантов упаковки. Обратитесь в поддержку')
+  )
+
+  if (data) {
+    packingData.value = data
+  }
+}
 
 // Количество приборов
-const { value: personsCount, meta: personsCountMeta } = useField('personsCount', (v) => v)
+const { value: personsCount, meta: personsCountMeta } = useField('personsCount', (v) => {
+  if (!$env.orderUsePacking) return true
+  return v
+})
 
-// Оплата, сдача
+// Дополнительные поля (связь)
+const { value: not_call, meta: contactMeta } = useField('not_call', (v) => true, {
+  type: 'checkbox',
+})
+
+// Дополнительные поля (подгорев блюд)
+const { value: not_heat, meta: heatMeta } = useField('not_heat', (v) => true, {
+  type: 'checkbox',
+})
+
+// Оплата
 const { value: payment } = useField(
   'payment',
   (v) => {
@@ -562,13 +637,21 @@ const { value: payment } = useField(
   }
 )
 
-// 1 - наличные, 3 - картой курьеру, 1030 - картой онлайн, 1050 - картой через SDK, 1040 - pay сервисами через SDK
-const paymentOptions = ref([
-  { id: 1030, label: 'Картой на сайте' },
-  { id: 3, label: 'Картой курьеру' },
-  { id: 1, label: 'Наличными' },
-])
+// 1050 - картой через SDK, 1040 - pay сервисами через SDK
+const paymentOptions = computed(() => {
+  const envOptions = $env.orderPaymentOptions.split(',')
 
+  const optionsList = [
+    // +  сбп
+    { id: 1030, label: 'Картой онлайн' },
+    { id: 3, label: zoneData.value.isDelivery ? 'Картой курьеру' : 'Картой в ресторане' },
+    { id: 1, label: 'Наличными' },
+  ]
+
+  return envOptions.map((key) => ({ ...optionsList.find((x) => x.id === +key) }))
+})
+
+// Доп. поля оплаты (почта, сдача)
 const { value: change, meta: changeMeta } = useField('change', (v) => {
   if (!v || payment.value !== 1) return true
 
@@ -583,34 +666,118 @@ const { value: change, meta: changeMeta } = useField('change', (v) => {
   return true
 })
 
+const requireEmail = computed(() => {
+  if (![1030, 1040, 1050].includes(payment.value)) return false
+  return zoneData.value?.organization.payment_data?.need_email
+})
+
+const { value: email } = useField('email', (v) => {
+  if (!requireEmail.value) return true
+  return validEmail(v) ? true : 'Введите email'
+})
+
+// Бонусная программа
+const { value: bonusType } = useField('bonusType', (v) => {
+  return true
+})
+
+const bonusOptions = computed(() => {
+  return [
+    { id: 1, label: 'Промокод' },
+    { id: 2, label: 'Бонусы' },
+  ]
+})
+
+const combinedPromo = computed(() => {
+  return app_settings.value.loyalty?.combine_promo_and_bonus
+})
+
+const showBonus = computed(() => {
+  if (!combinedPromo.value) {
+    return {
+      promocode: bonusType.value === 1,
+      points: bonusType.value === 2,
+    }
+  }
+
+  return {
+    promocode: true,
+    points: true,
+  }
+})
+
+// Бонусная программа (промокод)
+const { value: promocode, meta: promocodeMeta } = useField('promocode', (v) => {
+  return true
+})
+
+const promocodeApplied = ref(false)
+
+const handlePromocodeClick = () => {
+  if (promocodeApplied.value) {
+    promocodeApplied.value = false
+    setFieldValue('promocode', '')
+  } else {
+    promocodeApplied.value = true
+  }
+
+  fetchPromo()
+}
+
+// Бонусная программа (боунсы)
+const { value: points, meta: pointsMeta } = useField('points', (v) => {
+  return true
+})
+
+const fetchPromo = async () => {
+  const requestObj = {}
+
+  if (promocode.value) {
+    requestObj.code = promocode.value
+  }
+  if (deliveryTime.value) {
+    requestObj.time_to_delivery = deliveryTime.value
+  }
+
+  const res = await cartStore.getPromo(requestObj)
+}
+
+watch(
+  () => bonusType.value,
+  (newVal) => {
+    if (newVal === 1) {
+      setFieldValue('points', '')
+    } else if (newVal === 2) {
+      setFieldValue('bonus', '')
+      promocodeApplied.value = false
+    }
+  }
+)
+
 // Комментарий
 const { value: comment } = useField('comment', (v) => {
   return true
 })
 
+// Запрос на создание
 const loading = ref(false)
-
 const requestCheckout = async () => {
-  // const { valid, errors } = await validate()
+  const { valid, errors } = await validate()
 
-  // if (!valid || !edgeFieldsValid.value) {
-  //   scrollPageToTop()
-  //   return
-  // }
+  if (!valid || !edgeFieldsValid.value) {
+    scrollPageToTop()
+    return
+  }
 
   loading.value = true
 
   const orderObject = {
     name: name.value,
     phone: phone.value,
-    not_call: contact.value === 'message',
     order_type: zoneData.value.orderType,
     address: address.value,
     lat: currentAddress.value.latitude,
     lng: currentAddress.value.longitude,
-    not_heat: heat.value === 'no',
-    // pack: pack.value,
-    persons_count: personsCount.value.toString(),
     payment_method: payment.value,
 
     cart: cartStore.cartToApi,
@@ -626,9 +793,40 @@ const requestCheckout = async () => {
     orderObject.intercom = intercom.value
   }
 
+  if ($env.orderUsePacking) {
+    orderObject.pack = pack.value
+  }
+
+  if (app_settings.value.show_persons) {
+    orderObject.persons_count = personsCount.value.toString()
+  }
+
+  if ($env.orderUseNotCall) {
+    orderObject.not_call = not_call.value
+  }
+
+  if ($env.orderUseNotHeat) {
+    orderObject.not_heat = not_heat.value
+  }
+
   if (payment.value === 1) {
     orderObject.change = change.value
   }
+
+  if (requireEmail.value) {
+    orderObject.email = email.value
+  }
+
+  if (promocode.value) {
+    // "promo_id": 0,
+    orderObject.promo_code = promocode.value
+  }
+  if (points.value) {
+    orderObject.points = points.value
+  }
+
+  // "time_to_delivery": "string",
+  // "gift_id": 0,
 
   const response = await useApi('order/create', {
     method: 'POST',
@@ -678,15 +876,13 @@ const requestCheckout = async () => {
     }
   }
 
-  // "email": "string",
-  // "time_to_delivery": "string",
-  // "points": 0,
-  // "gift_id": 0,
-  // "promo_id": 0,
-  // "promo_code": "string",
-
   loading.value = false
 }
+
+onMounted(() => {
+  fetchPackingOptions()
+  fetchPromo()
+})
 </script>
 
 <style lang="scss" scoped>

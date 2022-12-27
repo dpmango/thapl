@@ -34,7 +34,8 @@
           <nuxt-icon :name="icon" />
         </i>
         <span v-if="changable" class="input__changable" @click="emit('onChangable')">
-          <span>Изменить</span>
+          <span v-if="typeof changable === 'string'">{{ changable }}</span>
+          <span v-else>Изменить</span>
         </span>
       </div>
 
@@ -50,6 +51,8 @@
         </ul>
       </div>
     </div>
+
+    <div v-if="helper" class="input__helper text-s c-gray">{{ helper }}</div>
     <div v-if="showErrorText" class="input__error">{{ error }}</div>
   </div>
 </template>
@@ -89,6 +92,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  helper: {
+    type: String,
+    default: '',
+  },
   // presentation
   theme: {
     type: String,
@@ -110,7 +117,7 @@ const props = defineProps({
     validator: (size) => ['left', 'right'].includes(size),
   },
   changable: {
-    type: Boolean,
+    type: [Boolean, String],
     default: false,
   },
   // modifiers
@@ -506,6 +513,10 @@ onBeforeUnmount(() => {
     font-size: 12px;
     line-height: 1.5;
     color: var(--color-red);
+  }
+
+  &__helper {
+    margin-top: 12px;
   }
   // &__eye {
   //   cursor: pointer;

@@ -6,7 +6,6 @@
       // https://pinia.vuejs.org/
       "@pinia/nuxt"
     ],
-    "noImplicitAny": false,
-  },
-
+    "noImplicitAny": false
+  }
 }

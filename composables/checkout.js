@@ -18,6 +18,7 @@ export const useCheckout = () => {
       hasZone: !!Object.keys(zone.value).length,
       isOpen: zone.value?.is_open,
       orderType: currentOrderType.value,
+      organization: zone.value?.organization,
     }
   })
 
