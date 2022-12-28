@@ -1,6 +1,7 @@
 <template>
   <AuthModal />
   <CartModal />
+  <CartStopList />
   <LocationRegionModal v-if="$env.useRegions" />
   <LocationAddressModal />
   <LocationClosedModal />

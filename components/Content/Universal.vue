@@ -2,37 +2,34 @@
   <div class="content wysiwyg">
     <div v-for="block in blocks" :key="block.id" class="content__section">
       <template v-if="block.type === 'header'">
-        <h1 v-if="block.data.level === 1">{{ block.data.text }}</h1>
-        <h2 v-if="block.data.level === 2">{{ block.data.text }}</h2>
-        <h3 v-if="block.data.level === 3">{{ block.data.text }}</h3>
-        <h4 v-if="block.data.level === 4">{{ block.data.text }}</h4>
-        <h5 v-if="block.data.level === 5">{{ block.data.text }}</h5>
-        <h6 v-if="block.data.level === 6">{{ block.data.text }}</h6>
+        <h1 v-if="block.data.level === 1" v-html="block.data.text" />
+        <h2 v-if="block.data.level === 2" v-html="block.data.text" />
+        <h3 v-if="block.data.level === 3" v-html="block.data.text" />
+        <h4 v-if="block.data.level === 4" v-html="block.data.text" />
+        <h5 v-if="block.data.level === 5" v-html="block.data.text" />
+        <h6 v-if="block.data.level === 6" v-html="block.data.text" />
       </template>
 
       <template v-else-if="block.type === 'paragraph'">
-        <p>{{ block.data.text }}</p>
+        <p v-html="block.data.text" />
       </template>
 
       <template v-else-if="block.type === 'list'">
         <ol v-if="block.data.style === 'ordered'">
-          <li v-for="li in block.data.items">{{ li }}</li>
+          <li v-for="li in block.data.items" v-html="li" />
         </ol>
         <ul v-else-if="block.data.style === 'unordered'">
-          <li v-for="li in block.data.items">{{ li }}</li>
+          <li v-for="li in block.data.items" v-html="li" />
         </ul>
       </template>
 
       <template v-else-if="block.type === 'quote'">
         <figure>
           <blockquote>
-            <p>
-              {{ block.data.text }}
-            </p>
+            <p v-html="block.data.text" />
           </blockquote>
-          <figcaption>
-            {{ block.data.caption }}
-          </figcaption>
+
+          <figcaption v-html="block.data.caption" />
         </figure>
       </template>
 
@@ -42,6 +39,10 @@
 
       <template v-else-if="block.type === 'delimiter'">
         <hr />
+      </template>
+
+      <template v-else-if="block.type === 'raw'">
+        <div v-html="block.data.html"></div>
       </template>
 
       <!-- <template v-else>

@@ -9,7 +9,7 @@ export const useUiStore = defineStore('ui', {
       mobileMenuActive: false,
       mobileMenuOffest: 0,
       modal: [] as string[],
-      modalParams: null,
+      modalParams: null as any | null,
       searchActive: false,
     }
   },
@@ -37,7 +37,6 @@ export const useUiStore = defineStore('ui', {
       } else {
         this.modal = [name]
       }
-
       if (params) {
         this.modalParams = params
       }

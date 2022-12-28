@@ -94,10 +94,8 @@ export const useDeliveryStore = defineStore('delivery', {
         method: 'POST',
         headers: useHeaders(),
         body: {
-          // lat: latitude,
-          lat: 55.66887,
-          lng: 37.441142,
-          // lng: longitude,
+          lat: latitude,
+          lng: longitude,
         },
       })) as IZone
 

@@ -1,5 +1,10 @@
 <template>
-  <a href="#" class="card" :class="[isProductInCart && '_incart']" @click="handleProductClick">
+  <a
+    href="#"
+    class="card"
+    :class="[isProductInCart && '_incart', stoplisted && '_stoplisted']"
+    @click="handleProductClick"
+  >
     <div class="card__media">
       <div class="card__image">
         <UiAtomProductImage :src="product.image" :alt="product.title" />
@@ -7,7 +12,6 @@
     </div>
     <div class="card__body">
       <div class="card__title text-s fw-500">
-        s
         <UiAtomLongWords :text="product.title" />
       </div>
       <div v-if="product.packing_weights" class="card__description text-s c-gray">
@@ -32,6 +36,10 @@ const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
     default: () => {},
+  },
+  stoplisted: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -59,6 +67,15 @@ const handleProductClick = () => {
   &._incart {
     cursor: default;
     outline: 2px solid var(--color-primary);
+  }
+  &._stoplisted {
+    outline: none;
+    .card__image {
+      filter: grayscale(1);
+    }
+    .card__price {
+      display: none;
+    }
   }
   &__media {
     flex: 0 0 48px;

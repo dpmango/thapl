@@ -107,6 +107,7 @@ const setAddress = async (
   if (setInput) emit('setSearch', fullText)
 
   const zone = await deliveryStore.checkZone({ latitude, longitude })
+  if (!zone.found) return
 
   // store
   deliveryStore.setCurrentAddress({

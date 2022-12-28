@@ -507,7 +507,7 @@ const deliveryDateOptions = computed(() => {
   if (slotsData.value.hasSlots) {
     return [
       { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
-      ...generateDaysFrom(orderDay.value.day, $env.orderDeliveryFutureDays - subtractDays),
+      ...generateDaysFrom(orderDay.value.day, 3 - subtractDays),
     ]
   }
 
@@ -707,7 +707,7 @@ const { value: change, meta: changeMeta } = useField('change', (v) => {
 
 const requireEmail = computed(() => {
   if (![1030, 1040, 1050].includes(payment.value)) return false
-  return zoneData.value?.organization.payment_data?.need_email
+  return zoneData.value?.organization?.payment_data?.need_email
 })
 
 const { value: email } = useField('email', (v) => {
@@ -932,7 +932,7 @@ const requestCheckout = async () => {
     }
   } else {
     $log.error(response)
-    const { error_field, error_reason, error_text } = response
+    const { error_field, error_reason, error_text, stoped_items } = response
 
     if (error_reason === 10) {
       toast.error('Неверные данные. Проверьте заполненные поля')
@@ -942,7 +942,12 @@ const requestCheckout = async () => {
     } else if (error_reason === 20) {
       ui.setModal({ name: 'orgnotfound' })
     } else if (error_reason === 30) {
-      ui.setModal({ name: 'closed' })
+      if (Object.keys(stoped_items).length) {
+        const ids = Object.keys(stoped_items).map((key) => stoped_items[key])
+        ui.setModal({ name: 'stoplist', params: { ids, closable: false } })
+      } else {
+        ui.setModal({ name: 'closed' })
+      }
     } else if (!error_reason) {
       toast.error(error_text || 'Что-то пошло не так. Обратитесь в поддержку')
     }
