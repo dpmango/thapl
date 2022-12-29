@@ -3,19 +3,22 @@ export const formatPrice = (num, digits) => {
   const trailingZeros = digits !== undefined ? digits : 0
 
   const spacesRegex = /\B(?=(\d{3})+(?!\d))/g
+  let value = ''
   if (num === null || num === undefined) {
     return '0.00'
   }
 
   if (typeof num === 'number') {
-    return num.toFixed(trailingZeros).replace(spacesRegex, ' ')
+    value = num.toFixed(trailingZeros).replace(spacesRegex, ' ')
+  } else if (typeof num === 'string') {
+    value = parseFloat(num).toFixed(trailingZeros).replace(spacesRegex, ' ')
   }
 
-  if (typeof num === 'string') {
-    return parseFloat(num).toFixed(trailingZeros).replace(spacesRegex, ' ')
+  if (+value === 0) {
+    return 'Бесплатно'
   }
 
-  return ''
+  return `${value} ₽`
 }
 
 export const Plurize = (number, one, two, five) => {

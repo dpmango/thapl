@@ -82,14 +82,15 @@ const sessionStore = useSessionStore()
 const { user } = storeToRefs(sessionStore)
 
 const toast = useToast()
+const router = useRouter()
 
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: {
-    name: user.name || '',
-    surname: user.surname || '',
-    phone: user.phone || '',
-    email: user.email || '',
-    birthday: user.birthday || '',
+    name: user.value.name || '',
+    surname: user.value.surname || '',
+    phone: user.value.username || '',
+    email: user.value.email || '',
+    birthday: user.value.birthday || '',
   },
 })
 
@@ -134,17 +135,25 @@ const saveProfile = async () => {
 
   loading.value = true
 
+  const requestObj = {
+    name: name.value,
+    surname: surname.value,
+    email: email.value,
+    phone: phone.value,
+    birthday: birthday.value,
+  }
+
   const response = await useApi('profile/set-user-data', {
     method: 'POST',
     headers: useHeaders(),
-    body: {
-      name: name.value,
-      surname: surname.value,
-      email: email.value,
-      phone: phone.value,
-      birthday: birthday.value,
-    },
+    body: requestObj,
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
+
+  if (response?.success) {
+    toast.success('Профиль обновлен')
+    sessionStore.updateUser(requestObj)
+    router.push('/profile')
+  }
 
   loading.value = false
 }

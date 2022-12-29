@@ -1,11 +1,12 @@
 import { storeToRefs } from 'pinia'
 import { useCartStore, useDeliveryStore } from '~/store'
-import { timestampToMinutes } from '#imports'
+import { timestampToMinutes, Plurize } from '#imports'
 
 export const useCheckout = () => {
   const deliveryStore = useDeliveryStore()
   const cartStore = useCartStore()
-  const { currentOrderType, currentAddressType, zone, minOrderPrice } = storeToRefs(deliveryStore)
+  const { currentOrderType, currentAddressType, zone, takeawayOrganization, minOrderPrice } =
+    storeToRefs(deliveryStore)
   const { cartPrice, cart, promo } = storeToRefs(cartStore)
 
   // хелперы по методу доставки / самовывоз
@@ -19,7 +20,7 @@ export const useCheckout = () => {
       hasZone: !!Object.keys(zone.value).length,
       isOpen: zone.value?.is_open,
       orderType: currentOrderType.value,
-      organization: zone.value?.organization,
+      organization: isDelivery ? zone.value?.organization : takeawayOrganization.value,
       timeFrom: timestampToMinutes(zone.value?.time_from),
       timeTo: timestampToMinutes(zone.value?.time_to),
     }
@@ -87,6 +88,26 @@ export const useCheckout = () => {
     }
   })
 
+  // логика промо
+  const promoData = computed(() => {
+    const hasPromo = promo.value?.has_promo
+
+    const verboseGifts = computed(() => {
+      const count = promo.value?.gifts?.length
+      return `${count} ${Plurize(count, 'подарок', 'подарка', 'подарков')}`
+    })
+
+    return {
+      hasPromo,
+      isOnePlusOne: promo.value?.discount_type === 7,
+      isGift: promo.value?.discount_type === 6,
+      discountSum: promo.value?.discount_sum,
+      giftCount: promo.value?.gifts?.length,
+      gifts: promo.value?.gifts || [],
+      verboseGifts,
+    }
+  })
+
   // логика стоплисты
   const stopListData = computed(() => {
     const orgStopList = zoneData.value.organization?.stop_list || []
@@ -127,6 +148,7 @@ export const useCheckout = () => {
     priceData,
     minOrderData,
     freeDeliveryData,
+    promoData,
     stopListData,
     slotsData,
   }

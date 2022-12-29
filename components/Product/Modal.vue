@@ -64,7 +64,7 @@
                     @click="changeModifier(option)"
                   >
                     <span class="mod-option__name">{{ option.title }}</span>
-                    <span class="mod-option__price">{{ formatPrice(option.price) }} ₽</span>
+                    <span class="mod-option__price">{{ formatPrice(option.price) }}</span>
                     <UiCheckbox
                       class="mod-option__radio"
                       type="radio"
@@ -83,7 +83,7 @@
               btn-theme="primary"
               :should-emit="false"
             >
-              В корзину &bull; {{ priceWithModifiers }} ₽
+              В корзину &bull; {{ priceWithModifiers }}
             </ProductCardAddToCart>
           </div>
         </div>

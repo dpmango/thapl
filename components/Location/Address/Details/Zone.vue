@@ -22,16 +22,16 @@
     </div>
     <div v-if="minOrderPrice" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Заказ от</p>
-      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(minOrderPrice) }} ₽</h5>
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(minOrderPrice) }}</h5>
     </div>
     <div v-if="zone.delivery_price" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Стоимость доставки</p>
-      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(zone.delivery_price) }} ₽</h5>
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(zone.delivery_price) }}</h5>
     </div>
     <div v-if="zone.free_delivery_min_price" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Бесплатная доcтавка от</p>
       <h5 class="info__value h5-title h6-title-md">
-        {{ formatPrice(zone.free_delivery_min_price) }} ₽
+        {{ formatPrice(zone.free_delivery_min_price) }}
       </h5>
     </div>
   </div>

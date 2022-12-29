@@ -60,7 +60,12 @@ export const useSessionStore = defineStore('session', {
       const userToken = useCookieState('x-thapl-authorization')
       userToken.value = user_token
     },
-    updateUser(payload) {},
+    updateUser(payload) {
+      this.user = {
+        ...this.user,
+        ...payload,
+      }
+    },
   },
 })
 

@@ -27,9 +27,12 @@ export default defineNuxtConfig({
       theme: 'orange',
       catalogType: 'singlepage',
       promoListType: 1,
+      stopListType: 1,
       useRegions: false,
       useSearch: true,
       useTestimonials: false,
+      takeawayOnly: false,
+      footerNavTitle: 'Компания',
       // заказ
       orderUsePacking: true,
       orderPackingCompact: 'Компактная',
@@ -38,8 +41,6 @@ export default defineNuxtConfig({
       orderNotCall: 'Не звонить',
       orderUseNotHeat: false,
       orderPaymentOptions: '1030,3,1',
-      takeawayOnly: false,
-      footerNavTitle: 'Компания',
       // вендоры
       yandexMetrikaID: '',
       yandexMapsKey: '',

@@ -18,9 +18,9 @@
               </div>
               <div class="scope__value h6-title text-md-s c-primary">
                 <template v-if="product.isGift">
-                  <s>{{ formatPrice(product.price) }} ₽</s>
+                  <s>{{ formatPrice(product.price) }}</s>
                 </template>
-                <template v-else>{{ formatPrice(product.price) }} ₽</template>
+                <template v-else>{{ formatPrice(product.price) }}</template>
               </div>
             </div>
           </div>
@@ -29,26 +29,30 @@
           <div class="scope__row">
             <div class="scope__label text-m text-md-s c-gray">{{ verboseCartCount }}</div>
             <div class="scope__value h6-title text-md-s">
-              {{ formatPrice(priceData.pureProducts) }} ₽
+              {{ formatPrice(priceData.pureProducts) }}
             </div>
           </div>
           <div v-if="zoneData.isDelivery" class="scope__row">
             <div class="scope__label text-m text-md-s c-gray">Доставка</div>
             <div class="scope__value h6-title text-md-s">
               <template v-if="freeDeliveryData.match">Бесплатно</template>
-              <template v-else>{{ formatPrice(priceData.delivery) }} ₽</template>
+              <template v-else>{{ formatPrice(priceData.delivery) }}</template>
             </div>
           </div>
-          <div v-if="priceData.promoDiscount" class="scope__row">
+          <div v-if="promoData.hasPromo" class="scope__row">
             <div class="scope__label text-m text-md-s c-gray">Скидка</div>
             <div class="scope__value h6-title text-md-s">
-              -{{ formatPrice(priceData.promoDiscount) }} ₽
+              <template v-if="promoData.discountSum">
+                -{{ formatPrice(promoData.discountSum) }}
+              </template>
+              <template v-else-if="promoData.isOnePlusOne">1+1</template>
+              <template v-else-if="promoData.isGift">{{ promoData.verboseGifts }}</template>
             </div>
           </div>
           <div class="scope__row">
             <div class="scope__label h6-title text-md-s">Сумма заказа</div>
             <div class="scope__value h6-title text-md-s">
-              {{ formatPrice(priceData.totalToPay) }} ₽
+              {{ formatPrice(priceData.totalToPay) }}
             </div>
           </div>
         </div>
@@ -65,7 +69,7 @@ import { formatPrice, Plurize } from '#imports'
 
 const cartStore = useCartStore()
 const { cart, products, promo, productQuantityInCart } = storeToRefs(cartStore)
-const { priceData, zoneData, freeDeliveryData } = useCheckout()
+const { priceData, zoneData, promoData, freeDeliveryData } = useCheckout()
 
 const allProducts = computed(() => {
   const gifts = promo.value?.gifts?.map((x) => ({

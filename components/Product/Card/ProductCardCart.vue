@@ -25,17 +25,21 @@
         Этот товар доступен только по предзаказу
       </div>
       <div
+        v-if="!isGift"
         class="card__action"
         @click.stop
         @mouseenter="setFocused(false)"
         @mouseleave="setFocused(true)"
       >
         <UiPlusMinus
-          v-if="isGiftProduct || productQuantityInCart(product.id) !== 0"
+          v-if="isAddProduct || productQuantityInCart(product.id) !== 0"
           size="small"
-          :disabled="isGiftProduct"
-          :value="isGiftProduct ? giftCount : productQuantityInCart(product.id)"
-          @on-change="handleQuantityChange"
+          :value="
+            isAddProduct
+              ? productQuantityInCart(product.id) || additiveCount
+              : productQuantityInCart(product.id)
+          "
+          @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
         <template v-else>
           <UiButton theme="secondary" @click="handleReturn"> Вернуть </UiButton>
@@ -45,8 +49,8 @@
     </div>
     <div class="card__meta">
       <div class="card__price h6-title">
-        <template v-if="giftCount">Бесплатно</template>
-        <template v-else>{{ product.price }} ₽</template>
+        <template v-if="!isGift">{{ formatPrice(product.price) }}</template>
+        <template v-else>Бесплатно</template>
       </div>
     </div>
   </div>
@@ -67,15 +71,19 @@ const props = defineProps({
     type: Object as PropType<IProduct>,
     default: () => {},
   },
-  giftCount: {
+  additiveCount: {
     type: Number,
     required: false,
     default: null,
   },
+  isGift: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const isGiftProduct = computed(() => {
-  return typeof props.giftCount === 'number'
+const isAddProduct = computed(() => {
+  return typeof props.additiveCount === 'number'
 })
 
 const handleReturn = () => {
@@ -86,8 +94,15 @@ const handleRemove = () => {
   cartStore.removeFromCart(props.product.id)
 }
 
-const handleQuantityChange = (n: number) => {
+const handleQuantityChange = (n: number, isAddProduct) => {
   // Don't remove, instead show return to cart (with quantity = 0)
+  if (isAddProduct) {
+    // сперва добавить в корзину
+    if (productQuantityInCart.value(props.product.id) === null) {
+      cartStore.addToCart(props.product, 1, [])
+    }
+  }
+
   cartStore.changeQuantity({ id: props.product.id, quantity: n })
 }
 

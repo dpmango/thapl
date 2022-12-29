@@ -44,7 +44,7 @@
         <div class="footer__section">
           <div class="footer__bottom">
             <div class="footer__copy">© 2020 Thapl.com, все права защищены</div>
-            <a href="/" target="_blank" class="footer__developer">
+            <a href="https://thapl.com" target="_blank" class="footer__developer">
               <img src="~/assets/img/developer.svg" alt="MainBrain" />
             </a>
           </div>

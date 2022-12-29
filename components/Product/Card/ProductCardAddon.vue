@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="card__actions">
-      <div class="card__price text-s fw-600">{{ formatPrice(product.price) }} ₽</div>
+      <div class="card__price text-s fw-600">{{ formatPrice(product.price) }}</div>
     </div>
   </a>
 </template>

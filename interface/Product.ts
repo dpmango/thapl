@@ -32,7 +32,7 @@ export interface IProduct {
   image: null | string
 }
 
-export interface IGift {
+export interface IAdditive {
   catalog_item: IProduct
   count: number
 }

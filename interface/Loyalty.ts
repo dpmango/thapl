@@ -21,7 +21,7 @@ export interface ILoyalty {
 export interface IPromoDto {
   available_points: number
   discount_sum: number | null
-  discount_type: 1 | 2 | null
+  discount_type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | null
   error_text: string | null
   error_type: number
   gifts: IProduct[]

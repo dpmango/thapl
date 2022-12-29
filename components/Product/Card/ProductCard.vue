@@ -31,7 +31,7 @@
         @mouseenter="setFocused(false)"
         @mouseleave="setFocused(true)"
       >
-        <div class="card__price text-l hidden-sm">{{ product.price }} ₽</div>
+        <div class="card__price text-l hidden-sm">{{ product.price }}</div>
 
         <ProductCardAddToCart
           :product="product"
@@ -39,7 +39,7 @@
           @on-before-add="handleProductClick"
         >
           <span class="hidden-sm">Выбрать</span>
-          <span class="visible-sm">{{ product.price }} ₽</span>
+          <span class="visible-sm">{{ product.price }}</span>
         </ProductCardAddToCart>
       </div>
     </div>

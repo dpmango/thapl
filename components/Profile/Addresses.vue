@@ -18,7 +18,7 @@
           <template #content>
             Зайдите в меню, выберите блюда, которые хотите съесть, а мы оперативно доставим ваш
             заказ от
-            {{ formatPrice(minOrderPrice) }} ₽.
+            {{ formatPrice(minOrderPrice) }}.
           </template>
           <template #action>
             <UiButton to="/">Перейти в меню</UiButton>

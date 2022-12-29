@@ -7,13 +7,13 @@
       <div v-if="freeDeliveryData.show" class="cart__delivery">
         <div class="h6-title">
           <template v-if="freeDeliveryData.match">Бесплатная доставка</template>
-          <template v-else>Доставка {{ formatPrice(priceData.delivery) }} ₽</template>
+          <template v-else>Доставка {{ formatPrice(priceData.delivery) }}</template>
         </div>
         <UiProgress class="cart__delivery-progress" :width="freeDeliveryData.progress" />
         <div class="text-s c-gray">
           <template v-if="freeDeliveryData.match"> Приятно, не правда ли? </template>
           <template v-else>
-            До бесплатной не хватает {{ formatPrice(freeDeliveryData.remained) }} ₽
+            До бесплатной не хватает {{ formatPrice(freeDeliveryData.remained) }}
           </template>
         </div>
       </div>
@@ -23,17 +23,18 @@
       <div class="cart__list">
         <ProductCardCart v-for="product in products" :key="product.id" :product="product" />
         <ProductCardCart
-          v-for="product in gifts"
-          :key="product.catalog_item.id"
-          :gift-count="product.count"
-          :product="product.catalog_item"
+          v-for="additive in additivesNotInCart"
+          :key="additive.catalog_item.id"
+          :additive-count="additive.count"
+          :product="additive.catalog_item"
         />
+        <ProductCardCart v-if="promoData.giftCount" :is-gift="true" :product="promoData.gifts[0]" />
       </div>
 
       <div v-if="zoneData.isDelivery" class="cart__meta">
         <div class="text-m">Доставка</div>
         <div class="cart__meta-value">
-          <template v-if="priceData.delivery">{{ priceData.delivery }} ₽</template>
+          <template v-if="priceData.delivery">{{ priceData.delivery }}</template>
           <template v-else>Бесплатно</template>
         </div>
       </div>
@@ -41,16 +42,26 @@
         <div class="text-m">Самовывоз</div>
         <div class="cart__meta-value">Бесплатно</div>
       </div>
+      <div v-if="promoData.hasPromo" class="cart__meta">
+        <div class="text-m">Скидка</div>
+        <div class="cart__meta-value">
+          <template v-if="promoData.discountSum">
+            -{{ formatPrice(promoData.discountSum) }}
+          </template>
+          <template v-else-if="promoData.isOnePlusOne">1+1</template>
+          <template v-else-if="promoData.isGift">{{ promoData.verboseGifts }}</template>
+        </div>
+      </div>
 
       <CartAddons v-if="suggestions?.length" class="cart__addons" :list="suggestions" />
     </div>
 
     <div class="cart__cta">
       <p v-if="!minOrderData.match" class="cart__cta-note text-m c-gray">
-        До минимального заказа {{ formatPrice(minOrderData.remained) }} ₽
+        До минимального заказа {{ formatPrice(minOrderData.remained) }}
       </p>
       <UiButton to="/order" :block="true" :disabled="!minOrderData.match">
-        Оформить заказ &bull; {{ priceData.withDelivery }} ₽
+        Оформить заказ &bull; {{ priceData.withDelivery }}
       </UiButton>
     </div>
   </div>
@@ -63,22 +74,39 @@ import { formatPrice } from '#imports'
 
 const ui = useUiStore()
 const cartStore = useCartStore()
-const { products, gifts, suggestions } = storeToRefs(cartStore)
+const { cart, products, additives, suggestions, promo, productQuantityInCart } =
+  storeToRefs(cartStore)
 const { modal: activeModal } = storeToRefs(ui)
-const { priceData, zoneData, minOrderData, freeDeliveryData } = useCheckout()
 
-onMounted(() => {
-  cartStore.getGifts()
-  cartStore.getSuggestions()
+const { priceData, zoneData, minOrderData, freeDeliveryData, promoData } = useCheckout()
+
+const additivesNotInCart = computed(() => {
+  return additives.value.filter((x) => productQuantityInCart.value(x.catalog_item.id) === null)
 })
+
+const fetchCartData = () => {
+  cartStore.getaAdditives()
+  cartStore.getSuggestions()
+  cartStore.getPromo({})
+}
 
 watch(
   () => activeModal.value,
   (newVal) => {
     if (newVal.includes('cart')) {
-      cartStore.getPromo({})
+      fetchCartData()
     }
   }
+)
+
+watch(
+  () => cart.value,
+  (newCart) => {
+    if (newCart.length) {
+      fetchCartData()
+    }
+  },
+  { deep: true }
 )
 </script>
 

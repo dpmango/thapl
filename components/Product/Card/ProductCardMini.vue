@@ -13,7 +13,7 @@
         {{ product.description }}
       </div>
       <div class="card__actions">
-        <div class="card__price text-l">{{ formatPrice(product.price) }} ₽</div>
+        <div class="card__price text-l">{{ formatPrice(product.price) }}</div>
       </div>
     </div>
   </div>

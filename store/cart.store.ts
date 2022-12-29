@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier } from '~/interface/Cart'
-import { IProduct, IGift } from '~/interface/Product'
+import { IProduct, IAdditive } from '~/interface/Product'
 import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
 
@@ -13,7 +13,7 @@ export const useCartStore = defineStore('cart', {
     return {
       cart: [] as ICartInner[],
       products: [] as IProduct[],
-      gifts: [] as IGift[],
+      additives: [] as IAdditive[],
       suggestions: [] as IProduct[],
       promo: null as IPromoDto | null,
     }
@@ -64,8 +64,6 @@ export const useCartStore = defineStore('cart', {
       this.cart.push(cartObj)
       this.products.push(product)
 
-      await this.getGifts()
-      await this.getSuggestions()
       await this.sendCartAnalytics({
         action: 'add',
         body: {
@@ -83,8 +81,6 @@ export const useCartStore = defineStore('cart', {
     async changeQuantity({ id, quantity }: { id: number; quantity: number }) {
       this.cart = this.cart.map((x) => (x.id === id ? { id: x.id, q: quantity } : x))
 
-      await this.getGifts()
-      await this.getSuggestions()
       await this.sendCartAnalytics({
         action: 'add',
         body: {
@@ -98,8 +94,6 @@ export const useCartStore = defineStore('cart', {
       this.cart = this.cart.filter((x) => x.id !== id)
       this.products = this.products.filter((x) => x.id !== id)
 
-      await this.getGifts()
-      await this.getSuggestions()
       await this.sendCartAnalytics({
         action: 'remove',
         body: {
@@ -110,9 +104,9 @@ export const useCartStore = defineStore('cart', {
     resetCart() {
       this.cart = []
       this.products = []
-      this.gifts = []
+      this.additives = []
     },
-    async getGifts() {
+    async getaAdditives() {
       const deliveryStore = useDeliveryStore()
 
       const res = (await useApi('cart/get-additives', {
@@ -122,11 +116,13 @@ export const useCartStore = defineStore('cart', {
           order_type: deliveryStore.currentOrderType,
           cart: this.cartToApi,
         },
-      })) as IGift[]
+      })) as IAdditive[]
 
-      this.gifts = res
+      this.additives = res
     },
     async getSuggestions() {
+      if (!this.cart.length) return null
+
       const deliveryStore = useDeliveryStore()
 
       const res = (await useApi('cart/get-suggest', {
@@ -139,6 +135,8 @@ export const useCartStore = defineStore('cart', {
       })) as IProduct[]
 
       this.suggestions = res
+
+      return res
     },
     async getPromo({ code, time_to_delivery }: { code?: string; time_to_delivery?: string }) {
       const deliveryStore = useDeliveryStore()
