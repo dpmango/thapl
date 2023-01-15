@@ -46,7 +46,7 @@
                 -{{ formatPrice(promoData.discountSum) }}
               </template>
               <template v-else-if="promoData.isOnePlusOne">1+1</template>
-              <template v-else-if="promoData.isGift">{{ promoData.verboseGifts }}</template>
+              <span v-else-if="promoData.giftCount">{{ promoData.verboseGifts }}</span>
             </div>
           </div>
           <div class="scope__row">

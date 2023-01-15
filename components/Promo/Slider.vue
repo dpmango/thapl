@@ -82,6 +82,9 @@ onMounted(() => {
           flex-basis: 100%;
           width: 100%;
           margin-right: 32px;
+          &:last-child {
+            margin-right: 0;
+          }
         }
       }
     }

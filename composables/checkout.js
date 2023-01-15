@@ -100,11 +100,10 @@ export const useCheckout = () => {
     return {
       hasPromo,
       isOnePlusOne: promo.value?.discount_type === 7,
-      isGift: promo.value?.discount_type === 6,
       discountSum: promo.value?.discount_sum,
       giftCount: promo.value?.gifts?.length,
       gifts: promo.value?.gifts || [],
-      verboseGifts,
+      verboseGifts: verboseGifts.value,
     }
   })
 

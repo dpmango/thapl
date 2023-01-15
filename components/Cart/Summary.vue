@@ -49,7 +49,7 @@
             -{{ formatPrice(promoData.discountSum) }}
           </template>
           <template v-else-if="promoData.isOnePlusOne">1+1</template>
-          <template v-else-if="promoData.isGift">{{ promoData.verboseGifts }}</template>
+          <template v-else-if="promoData.giftCount">{{ promoData.verboseGifts }}</template>
         </div>
       </div>
 
@@ -61,7 +61,7 @@
         До минимального заказа {{ formatPrice(minOrderData.remained) }}
       </p>
       <UiButton to="/order" :block="true" :disabled="!minOrderData.match">
-        Оформить заказ &bull; {{ priceData.withDelivery }}
+        Оформить заказ &bull; {{ formatPrice(priceData.withDelivery) }}
       </UiButton>
     </div>
   </div>

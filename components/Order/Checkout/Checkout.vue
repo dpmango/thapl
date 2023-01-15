@@ -285,46 +285,44 @@
           </div>
 
           <!-- промокод  / бонус -->
-          <template v-if="app_settings.loyalty?.enabled">
-            <div v-if="!combinedPromo" class="checkout__row" data-name="section_promo">
-              <div class="ui-label">Бонусная программа</div>
-              <div class="checkout__toggle-grid">
-                <UiToggle
-                  theme="spaced"
-                  :list="bonusOptions"
-                  :value="bonusType"
-                  :error="errors.bonusType"
-                  @on-change="(v) => setFieldValue('bonusType', v)"
-                />
-              </div>
+          <div v-if="combinedPromo" class="checkout__row" data-name="section_promo">
+            <div class="ui-label">Бонусная программа</div>
+            <div class="checkout__toggle-grid">
+              <UiToggle
+                theme="spaced"
+                :list="bonusOptions"
+                :value="bonusType"
+                :error="errors.bonusType"
+                @on-change="(v) => setFieldValue('bonusType', v)"
+              />
             </div>
+          </div>
 
-            <div class="checkout__row row" data-name="section_promo">
-              <div v-if="showBonus.promocode" class="col col-6 col-sm-12">
-                <UiInput
-                  name="promocode"
-                  label="Промокод"
-                  :value="promocode"
-                  :error="errors.promocode"
-                  :changable="promocodeApplied ? 'Изменить' : 'Применить'"
-                  @on-change="(v) => setFieldValue('promocode', v)"
-                  @on-changable="handlePromocodeClick"
-                />
-              </div>
-              <div v-if="showBonus.points" class="col col-6 col-sm-12">
-                <UiInput
-                  name="points"
-                  label="Сколько бонусов списать"
-                  placeholder="100"
-                  inputmode="numeric"
-                  :value="points"
-                  :error="errors.points"
-                  :helper="`Максимально можно списать ${formatPrice(promo?.available_points)}`"
-                  @on-change="(v) => setFieldValue('points', v)"
-                />
-              </div>
+          <div class="checkout__row row" data-name="section_promo">
+            <div v-if="showBonus.promocode" class="col col-6 col-sm-12">
+              <UiInput
+                name="promocode"
+                label="Промокод"
+                :value="promocode"
+                :error="errors.promocode"
+                :changable="promocodeApplied ? 'Изменить' : 'Применить'"
+                @on-change="(v) => setFieldValue('promocode', v)"
+                @on-changable="handlePromocodeClick"
+              />
             </div>
-          </template>
+            <div v-if="showBonus.points" class="col col-6 col-sm-12">
+              <UiInput
+                name="points"
+                label="Сколько бонусов списать"
+                placeholder="100"
+                inputmode="numeric"
+                :value="points"
+                :error="errors.points"
+                :helper="`Максимально можно списать ${formatPrice(promo?.available_points)}`"
+                @on-change="(v) => setFieldValue('points', v)"
+              />
+            </div>
+          </div>
 
           <!-- Комментарий -->
           <div class="checkout__row row" data-name="section_comment">
