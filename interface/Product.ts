@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 export interface IProduct {
   id: number
   title: string
@@ -28,8 +29,21 @@ export interface IProduct {
   is_low_energy: boolean
   tags: any[]
   open_item_page_to_add: boolean
-  modifier_groups: null
+  modifier_groups: IModifierGroup[] | null
   image: null | string
+}
+
+export interface IModifierGroup {
+  title: string
+  max_items: number
+  min_items: number
+  items: IModifierItem[]
+}
+
+export interface IModifierItem {
+  id: number
+  title: string
+  price: number
 }
 
 export interface IAdditive {

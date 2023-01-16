@@ -2,7 +2,7 @@
   <div class="order">
     <div class="order__head text-s">
       <span class="c-gray">{{ dateToTimestamp(order.created_at) }}</span>
-      <span class="c-primary">Статус {{ order.status }}</span>
+      <span :class="[verboseStatus.className]">{{ verboseStatus.text }}</span>
       <span class="c-gray">{{ order.address }}</span>
     </div>
 
@@ -40,9 +40,7 @@
     </div>
 
     <div v-if="actions" class="order__actions">
-      <UiButton v-if="order.can_be_payed" @click="handleOrderPay(order.id)">
-        Оплатить заказ
-      </UiButton>
+      <UiButton v-if="order.can_be_payed" @click="handleOrderPay"> Оплатить заказ </UiButton>
       <UiButton
         v-if="order.can_show_courier_location"
         theme="secondary"
@@ -54,27 +52,86 @@
       <UiButton
         v-if="$env.useTestimonials && order.user_can_send_review"
         theme="secondary"
-        @click="handleOrderCancel"
+        @click="handleOrderRate"
       >
         Оценить заказ
+      </UiButton>
+      <UiButton v-if="[30, 5].includes(order.status)" theme="secondary" @click="handleOrderRepeat">
+        Повторить заказ
       </UiButton>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
+import { IOrder } from '~/interface/Order'
 import { formatPrice, dateToTimestamp, Plurize } from '#imports'
+import { useProfileStore, useCartStore } from '~/store'
+
+const profileStore = useProfileStore()
+const cartStore = useCartStore()
 
 const { $env, $log } = useNuxtApp()
+const router = useRouter()
 
 const props = defineProps({
-  order: Object,
+  order: {
+    type: Object as PropType<IOrder>,
+    default: () => {},
+  },
   actions: Boolean,
 })
 
+const verboseStatus = computed(() => {
+  let className = 'c-primary'
+  let text = ''
+
+  switch (props.order.status) {
+    case 0:
+      className = 'c-primary'
+      text = 'Новый'
+      break
+    case 7:
+      className = 'c-primary'
+      text = 'Подтвержден'
+      break
+    case 10:
+      className = 'c-primary'
+      text = 'В процессе'
+      break
+    case 15:
+      className = 'c-primary'
+      text = 'Приготовлен'
+      break
+    case 20:
+      className = 'c-primary'
+      text = 'Доставляется'
+      break
+    case 30:
+      className = 'c-primary'
+      text = 'Доставлен'
+      break
+    case 5:
+      className = 'c-red'
+      text = 'Отменен'
+      break
+    default:
+      className = 'c-red'
+      text = props.order.status.toString()
+
+      break
+  }
+
+  return {
+    className,
+    text,
+  }
+})
+
 const orders = computed(() => {
-  let rest = null
-  const stats = []
+  let rest = null as { title: string; price: number } | null
+  const stats = [] as { title: string; value: string }[]
   const cartLength = props.order.cart.length
 
   if (cartLength >= 3) {
@@ -83,7 +140,7 @@ const orders = computed(() => {
     rest = {
       title: `Еще ${products.length} ${Plurize(products.length, 'блюдо', 'блюда', 'блюд')}`,
       price: products.reduce((acc, x) => {
-        acc += x.price
+        acc = acc + x.catalog_item.price * x.cartItem.count
         return acc
       }, 0),
     }
@@ -131,18 +188,42 @@ const orders = computed(() => {
 
 const handleOrderDelivery = () => {}
 
-const handleOrderCancel = () => {}
+const handleOrderCancel = async () => {
+  await useApi('profile/cancel-order', {
+    method: 'POST',
+    headers: useHeaders(),
+    body: {
+      ids: [props.order.id],
+    },
+  }).catch((err) => useCatchError(err, 'Ошибка. Обратитесь к администратору'))
 
-const handleOrderPay = async (id) => {
+  await profileStore.getOrders()
+}
+
+const handleOrderPay = async () => {
   const paymentData = await useApi('order/get-payment-data', {
     method: 'POST',
     headers: useHeaders(),
     params: {
-      id,
+      id: props.order.id,
     },
   }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору'))
 
   console.log(paymentData)
+}
+
+const handleOrderRate = (id) => {
+  useCatchError(null, 'Не подключено')
+}
+
+const handleOrderRepeat = () => {
+  cartStore.resetCart()
+
+  props.order.cart.forEach((x) => {
+    cartStore.addToCart(x.catalog_item, x.cartItem.count, [])
+  })
+
+  router.push('/order')
 }
 </script>
 

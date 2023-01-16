@@ -31,17 +31,12 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useDeliveryStore } from '~/store'
+import { useDeliveryStore, useProfileStore } from '~/store'
 
 const deliveryStore = useDeliveryStore()
+const profileStore = useProfileStore()
 const { minOrderPrice } = storeToRefs(deliveryStore)
-
-const props = defineProps({
-  orders: {
-    type: Array,
-    default: () => null,
-  },
-})
+const { orders } = storeToRefs(profileStore)
 </script>
 
 <style lang="scss" scoped>

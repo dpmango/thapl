@@ -174,6 +174,7 @@
             <div class="ui-label">Упаковка</div>
             <div class="checkout__radio-grid">
               <UiCheckbox
+                name="packing"
                 type="radio"
                 :error="errors.pack"
                 :checked="pack === 'no'"
@@ -184,6 +185,7 @@
               <UiCheckbox
                 v-for="opt in packingOptions"
                 :key="opt.value"
+                name="packing"
                 type="radio"
                 :error="errors.pack"
                 :checked="pack === opt.value"
@@ -285,7 +287,7 @@
           </div>
 
           <!-- промокод  / бонус -->
-          <div v-if="combinedPromo" class="checkout__row" data-name="section_promo">
+          <div v-if="!combinedPromo" class="checkout__row" data-name="section_promo">
             <div class="ui-label">Бонусная программа</div>
             <div class="checkout__toggle-grid">
               <UiToggle
@@ -806,7 +808,7 @@ const { value: points, meta: pointsMeta } = useField('points', (v) => {
     return 'Введите сумму (числом)'
   }
 
-  if (v <= promo.value?.available_points) {
+  if (v > promo.value?.available_points) {
     return 'Количество бонусов превышает доступный лимит'
   }
 
