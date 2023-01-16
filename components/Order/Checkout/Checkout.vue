@@ -978,7 +978,7 @@ const highlightError = (errors) => {
     }
 
     const domEl = document.querySelector(`[data-name="section_${scrollSection}"]`)
-    console.log(domEl)
+
     if (domEl) {
       scrollToElement(domEl)
     } else {

@@ -1,5 +1,5 @@
 // 1000.00 -> 1 000.00
-export const formatPrice = (num, digits) => {
+export const formatPrice = (num, digits, showFree = true) => {
   const trailingZeros = digits !== undefined ? digits : 0
 
   const spacesRegex = /\B(?=(\d{3})+(?!\d))/g
@@ -15,7 +15,11 @@ export const formatPrice = (num, digits) => {
   }
 
   if (+value === 0) {
-    return 'Бесплатно'
+    if (showFree) {
+      return 'Бесплатно'
+    } else {
+      return ''
+    }
   }
 
   return `${value} ₽`

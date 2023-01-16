@@ -54,20 +54,33 @@
               >
                 <div class="h6-title">{{ group.title }}</div>
                 <div class="product__modifier-note text-xs c-gray">
-                  Нужно выбрать от {{ group.min_items }} до {{ group.max_items }} ингредиентов
+                  <template v-if="group.min_items === 0">
+                    Опционально, максимум {{ group.max_items }}
+                    {{ Plurize(group.max_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
+                  </template>
+                  <template v-else-if="group.min_items === group.max_items">
+                    Нужно выбрать минимум {{ group.min_items }}
+                    {{ Plurize(group.min_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
+                  </template>
+                  <template v-else>
+                    Нужно выбрать от {{ group.min_items }} до
+                    {{ group.max_items }} ингредиентов</template
+                  >
                 </div>
                 <div class="product__modifier-list">
                   <div
                     v-for="option in group.items"
                     :key="option.id"
                     class="product__modifier-option mod-option text-m"
-                    @click="changeModifier(option)"
+                    @click="changeModifier(option, idx, group.min_items > 0)"
                   >
                     <span class="mod-option__name">{{ option.title }}</span>
                     <span class="mod-option__price">{{ formatPrice(option.price) }}</span>
                     <UiCheckbox
                       class="mod-option__radio"
-                      type="radio"
+                      :name="`mod_radio_${idx}`"
+                      :error="modifierErrors.includes(idx)"
+                      :type="group.min_items > 0 ? 'radio' : 'checkbox'"
                       :checked="modifierGroups.some((x) => x.id === option.id)"
                     />
                   </div>
@@ -81,9 +94,10 @@
               :product="product"
               :modifiers="modifierGroups"
               btn-theme="primary"
-              :should-emit="false"
+              :should-emit="hasUnselectedModifiers"
+              @on-before-add="showModifiersToast"
             >
-              В корзину &bull; {{ priceWithModifiers }}
+              В корзину &bull; {{ formatPrice(priceWithModifiers) }}
             </ProductCardAddToCart>
           </div>
         </div>
@@ -92,15 +106,19 @@
   </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType, Ref } from 'vue'
+import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useUiStore } from '~/store'
-import { formatPrice } from '#imports'
+import { IProduct, IModifierItem } from 'interface/Product'
+import { formatPrice, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
+const toast = useToast()
 
 const ui = useUiStore()
 
-const product = ref(null)
+const product = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
 
 const optionsSizeList = ref([
@@ -119,9 +137,15 @@ const optionsModList = ref([
 const optionsMod = ref(null)
 
 // модификаторы товара
-const modifierGroups = ref([])
+interface IModifierGroup extends IModifierItem {
+  groupID: number
+}
+
+const modifierGroups = ref([]) as Ref<IModifierGroup[]>
+const modifierErrors = ref([]) as Ref<number[]>
 
 const priceWithModifiers = computed(() => {
+  if (!product.value) return 0
   let price = product.value.price
 
   if (modifierGroups.value.length) {
@@ -133,13 +157,62 @@ const priceWithModifiers = computed(() => {
   return price
 })
 
-// TODO - валдиация обязательный выбор
-const changeModifier = (opt) => {
-  if (modifierGroups.value.some((x) => x.id === opt.id)) {
-    modifierGroups.value = modifierGroups.value.filter((x) => x.id === opt.id)
-  } else {
-    modifierGroups.value = [opt]
+const changeModifier = (opt, groupID, isRadio) => {
+  const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)
+  const hasGroup = modifierGroups.value.some((x) => x.groupID === groupID)
+
+  const removeCurrent = () => {
+    modifierGroups.value = modifierGroups.value.filter((x) => {
+      if (x.groupID === groupID) {
+        return x.id !== opt.id
+      }
+
+      return false
+    })
   }
+
+  if (isRadio && hasGroup) {
+    modifierGroups.value = modifierGroups.value.map((x) => {
+      if (x.groupID === groupID) {
+        return { ...opt, groupID }
+      }
+      return x
+    })
+
+    return
+  } else if (hasAdded) {
+    removeCurrent()
+    return
+  }
+
+  modifierGroups.value = [...modifierGroups.value, { ...opt, groupID }]
+}
+
+const validateModifiers = () => {
+  const errors = [] as number[]
+  if (product.value?.modifier_groups) {
+    product.value?.modifier_groups.forEach((group, idx) => {
+      const itemsInGroup = modifierGroups.value.filter((x) => x.groupID === idx)
+
+      if (itemsInGroup.length > group.max_items) {
+        errors.push(idx)
+      } else if (itemsInGroup.length < group.min_items) {
+        errors.push(idx)
+      }
+    })
+  }
+
+  modifierErrors.value = [...errors]
+  return errors
+}
+
+const hasUnselectedModifiers = computed(() => {
+  const errors = validateModifiers()
+  return !!errors.length
+})
+
+const showModifiersToast = () => {
+  toast.error('Выберите параметры блюда')
 }
 
 const fetchProduct = async (id) => {
@@ -240,12 +313,19 @@ watch(
   // &__modifiers{}
   &__modifier {
     margin: 12px 0;
+    .h6-title {
+      text-transform: uppercase;
+    }
+    & + & {
+      margin-top: 24px;
+    }
   }
   &__modifier-note {
     margin-top: 12px;
     background: var(--color-bg-darken);
     border-radius: 8px;
     font-weight: 500;
+    line-height: 1.7;
     padding: 8px 12px;
   }
   &__modifier-list {
@@ -282,6 +362,7 @@ watch(
     display: inline-block;
     flex: 1 1 auto;
     padding-right: 16px;
+    text-transform: capitalize;
   }
   &__price {
     display: inline-block;

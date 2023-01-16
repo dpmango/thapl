@@ -208,8 +208,6 @@ const handleOrderPay = async () => {
       id: props.order.id,
     },
   }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору'))
-
-  console.log(paymentData)
 }
 
 const handleOrderRate = (id) => {
