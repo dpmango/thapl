@@ -5,6 +5,11 @@
         <div class="slider__slide">
           <img :src="slide.url" alt="" />
         </div>
+        <caption v-if="slide.caption">
+          {{
+            slide.caption
+          }}
+        </caption>
       </SwiperSlide>
     </UiLibSwiper>
   </div>
@@ -27,6 +32,7 @@ const swiperParams = {
   navigation: {
     clickable: true,
   },
+  pagination: true,
 }
 </script>
 
