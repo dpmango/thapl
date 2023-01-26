@@ -21,6 +21,7 @@ nuxtApp.hook('page:finish', () => {
   if (loaded.value) {
     scrollPageToTop()
     ui.closeAllModals()
+    ui.setMobileMenu(false)
   }
 
   loaded.value = true

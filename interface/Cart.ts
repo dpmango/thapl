@@ -5,7 +5,15 @@ export interface ICartInner {
   modifiers?: ICartModifier[]
 }
 
+export interface ICardModifierInner {
+  id: number
+  price: number
+  groupID: number
+  title: string
+}
+
 export interface ICartModifier {
   id: number
+  price: number
   q: number
 }

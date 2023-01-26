@@ -143,6 +143,7 @@ interface IModifierGroup extends IModifierItem {
 
 const modifierGroups = ref([]) as Ref<IModifierGroup[]>
 const modifierErrors = ref([]) as Ref<number[]>
+const modifierShowErorrs = ref(false)
 
 const priceWithModifiers = computed(() => {
   if (!product.value) return 0
@@ -163,11 +164,12 @@ const changeModifier = (opt, groupID, isRadio) => {
 
   const removeCurrent = () => {
     modifierGroups.value = modifierGroups.value.filter((x) => {
+      // sort only in current group
       if (x.groupID === groupID) {
         return x.id !== opt.id
       }
 
-      return false
+      return true
     })
   }
 
@@ -202,6 +204,10 @@ const validateModifiers = () => {
     })
   }
 
+  if (errors.length === 0) {
+    modifierShowErorrs.value = false
+  }
+
   modifierErrors.value = [...errors]
   return errors
 }
@@ -212,7 +218,8 @@ const hasUnselectedModifiers = computed(() => {
 })
 
 const showModifiersToast = () => {
-  toast.error('Выберите параметры блюда')
+  modifierShowErorrs.value = true
+  // toast.error('Выберите параметры блюда')
 }
 
 const fetchProduct = async (id) => {

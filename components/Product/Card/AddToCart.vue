@@ -16,6 +16,7 @@
 import { PropType } from 'vue'
 import { storeToRefs } from 'pinia'
 import { IProduct } from '~/interface/Product'
+import { ICardModifierInner } from '~/interface/Cart'
 import { useCartStore, useDeliveryStore, useUiStore } from '~/store'
 
 const ui = useUiStore()
@@ -31,7 +32,7 @@ const props = defineProps({
     default: () => {},
   },
   modifiers: {
-    type: Array,
+    type: Array as PropType<ICardModifierInner[]>,
     default: () => [],
   },
   btnTheme: {

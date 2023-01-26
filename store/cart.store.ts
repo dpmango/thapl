@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { ICartInner, ICartModifier } from '~/interface/Cart'
+import { ICartInner, ICartModifier, ICardModifierInner } from '~/interface/Cart'
 import { IProduct, IAdditive } from '~/interface/Product'
 import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
@@ -35,7 +35,13 @@ export const useCartStore = defineStore('cart', {
       return state.cart.reduce((acc, c) => {
         const product = state.products.find((x) => x.id === c.id)
         if (product) {
-          acc += product.price * c.q
+          const modifiersTotal =
+            c.modifiers?.reduce((modAcc, mod) => {
+              modAcc += mod.price * mod.q
+              return modAcc
+            }, 0) || 0
+
+          acc += (product.price + modifiersTotal) * c.q
         }
 
         return acc
@@ -45,18 +51,23 @@ export const useCartStore = defineStore('cart', {
       return state.cart.map((x) => ({
         catalog_item_id: x.id,
         count: x.q,
-        modifiers: [],
+        modifiers:
+          x.modifiers?.map((mod) => ({
+            catolog_item_modifier_id: mod.id,
+            count: 1,
+          })) || [],
       }))
     },
   },
   actions: {
     // TODO баг когда q = 0 (вернуть товар) и нажимаем добавить в коризну из продуктов
     // changeQuantity в коризне vs addToCart в списке
-    async addToCart(product: IProduct, quantity = 1, modifiers: ICartModifier[]) {
+    async addToCart(product: IProduct, quantity = 1, modifiers: ICardModifierInner[]) {
       const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
       if (modifiers?.length) {
-        cartObj.modifiers = modifiers.map((x: ICartModifier) => ({
+        cartObj.modifiers = modifiers.map((x: ICardModifierInner) => ({
           id: x.id,
+          price: x.price,
           q: 1,
         }))
       }
@@ -79,14 +90,14 @@ export const useCartStore = defineStore('cart', {
       })
     },
     async changeQuantity({ id, quantity }: { id: number; quantity: number }) {
-      this.cart = this.cart.map((x) => (x.id === id ? { id: x.id, q: quantity } : x))
+      this.cart = this.cart.map((x) => (x.id === id ? { ...x, id: x.id, q: quantity } : x))
 
       await this.sendCartAnalytics({
         action: 'add',
         body: {
           catolog_item_id: id,
           count: quantity,
-          modifiers: [],
+          // modifiers: [],
         },
       })
     },
