@@ -13,6 +13,9 @@
             <div class="product__title h4-title">
               <UiAtomLongWords :text="product.title" />&nbsp;
               <span v-if="product.is_hot">🌶</span>
+              <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
+                &nbsp;(В корзине уже {{ countWithModifiersInCart }})
+              </span>
             </div>
             <div class="product__weight text-s c-gray">
               {{ product.packing_weights }}
@@ -53,7 +56,11 @@
                 class="product__modifier"
               >
                 <div class="h6-title">{{ group.title }}</div>
-                <div class="product__modifier-note text-xs c-gray">
+
+                <div
+                  class="product__modifier-note text-xs c-gray"
+                  :class="[modifierShowErorrs && modifierErrors.includes(idx) && 'c-red _error']"
+                >
                   <template v-if="group.min_items === 0">
                     Опционально, максимум {{ group.max_items }}
                     {{ Plurize(group.max_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
@@ -75,7 +82,9 @@
                     @click="changeModifier(option, idx, group.min_items > 0)"
                   >
                     <span class="mod-option__name">{{ option.title }}</span>
-                    <span class="mod-option__price">{{ formatPrice(option.price) }}</span>
+                    <span v-if="formatPrice(option.price, 0, false)" class="mod-option__price">
+                      +{{ formatPrice(option.price, 0, false) }}
+                    </span>
                     <UiCheckbox
                       class="mod-option__radio"
                       :name="`mod_radio_${idx}`"
@@ -108,8 +117,9 @@
 
 <script setup lang="ts">
 import { PropType, Ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { useUiStore } from '~/store'
+import { useCartStore, useUiStore } from '~/store'
 import { IProduct, IModifierItem } from 'interface/Product'
 import { formatPrice, Plurize } from '#imports'
 
@@ -117,6 +127,8 @@ const { $env, $log } = useNuxtApp()
 const toast = useToast()
 
 const ui = useUiStore()
+const cartStore = useCartStore()
+const { cart, productsCountInCart } = storeToRefs(cartStore)
 
 const product = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
@@ -162,7 +174,15 @@ const changeModifier = (opt, groupID, isRadio) => {
   const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)
   const hasGroup = modifierGroups.value.some((x) => x.groupID === groupID)
 
-  const removeCurrent = () => {
+  // радиокнопки и группа
+  if (isRadio && hasGroup) {
+    modifierGroups.value = modifierGroups.value.map((x) => {
+      return x.groupID === groupID ? { ...opt, groupID } : x
+    })
+
+    return
+  } else if (hasAdded) {
+    // чекбоксы (removeCurrent)
     modifierGroups.value = modifierGroups.value.filter((x) => {
       // sort only in current group
       if (x.groupID === groupID) {
@@ -171,25 +191,11 @@ const changeModifier = (opt, groupID, isRadio) => {
 
       return true
     })
-  }
-
-  if (isRadio && hasGroup) {
-    modifierGroups.value = modifierGroups.value.map((x) => {
-      if (x.groupID === groupID) {
-        return { ...opt, groupID }
-      }
-      return x
-    })
-
-    return
-  } else if (hasAdded) {
-    removeCurrent()
     return
   }
 
   modifierGroups.value = [...modifierGroups.value, { ...opt, groupID }]
 }
-
 const validateModifiers = () => {
   const errors = [] as number[]
   if (product.value?.modifier_groups) {
@@ -221,6 +227,12 @@ const showModifiersToast = () => {
   modifierShowErorrs.value = true
   // toast.error('Выберите параметры блюда')
 }
+
+const countWithModifiersInCart = computed(() => {
+  if (!product.value?.id) return 0
+
+  return productsCountInCart.value(product.value?.id)
+})
 
 const fetchProduct = async (id) => {
   loading.value = true

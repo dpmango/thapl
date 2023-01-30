@@ -3,6 +3,7 @@ import { ICartInner, ICartModifier, ICardModifierInner } from '~/interface/Cart'
 import { IProduct, IAdditive } from '~/interface/Product'
 import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
+import { isArraysEqual } from '#imports'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
 // products держит массив добавленных продуктов в исходном виде
@@ -22,12 +23,35 @@ export const useCartStore = defineStore('cart', {
     paths: ['cart'],
   },
   getters: {
+    // просто считает количство товаров в корзине по id
+    productsCountInCart: (state) => (id: number) => {
+      const matchingProducts = state.cart.filter((x) => x.id === id)
+
+      return matchingProducts.length
+    },
+    // считает с учетом выбранных модификаторов товара
     productQuantityInCart:
       (state) =>
-      (id: number): number | null => {
-        const product = state.cart.find((x) => x.id === id)
-        if (product) {
-          return product.q
+      (id: number, modifiers?: ICardModifierInner[]): number | null => {
+        const matchingProducts = state.cart.filter((x) => x.id === id)
+        if (matchingProducts.length) {
+          // проверка на полное совпадение модификторов
+          if (modifiers?.length) {
+            const modifierIds = modifiers.map((x) => x.id)
+            let productWithModifiersInCart: number | null = null
+
+            matchingProducts.forEach((p) => {
+              const productModifiers = p.modifiers?.map((x) => x.id) || []
+              if (isArraysEqual(productModifiers, modifierIds)) {
+                productWithModifiersInCart = p.q
+              }
+            })
+
+            return productWithModifiersInCart
+          }
+
+          // в противном случае .filter должен вернуть только 1 товар по совпадению id
+          return matchingProducts[0].q
         }
         return null
       },
@@ -73,7 +97,8 @@ export const useCartStore = defineStore('cart', {
       }
 
       this.cart.push(cartObj)
-      this.products.push(product)
+      // чистка дубликатов оригинальных обьектов товара
+      this.products = [...new Map([...this.products, product].map((x) => [x.id, x])).values()]
 
       await this.sendCartAnalytics({
         action: 'add',
@@ -92,6 +117,8 @@ export const useCartStore = defineStore('cart', {
     async changeQuantity({ id, quantity }: { id: number; quantity: number }) {
       this.cart = this.cart.map((x) => (x.id === id ? { ...x, id: x.id, q: quantity } : x))
 
+      // находить по индексу с учетом модификаторов
+
       await this.sendCartAnalytics({
         action: 'add',
         body: {
@@ -104,6 +131,8 @@ export const useCartStore = defineStore('cart', {
     async removeFromCart(id: number) {
       this.cart = this.cart.filter((x) => x.id !== id)
       this.products = this.products.filter((x) => x.id !== id)
+
+      // находить по индексу с учетом модификаторов
 
       await this.sendCartAnalytics({
         action: 'remove',

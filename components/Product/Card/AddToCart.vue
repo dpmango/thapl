@@ -1,12 +1,12 @@
 <template>
   <div class="add-to-cart">
-    <UiButton v-if="!productQuantityInCart(product.id)" :theme="btnTheme" @click="handleSelect">
+    <UiButton v-if="!productQuantityWithModifier" :theme="btnTheme" @click="handleSelect">
       <slot />
     </UiButton>
     <UiPlusMinus
       v-else
       size="medium"
-      :value="productQuantityInCart(product.id)"
+      :value="productQuantityWithModifier"
       @on-change="handleQuantityChange"
     />
   </div>
@@ -23,7 +23,7 @@ const ui = useUiStore()
 const deliveryStore = useDeliveryStore()
 const cartStore = useCartStore()
 
-const { productQuantityInCart } = storeToRefs(cartStore)
+const { productQuantityInCart, productsCountInCart } = storeToRefs(cartStore)
 const { currentAddress } = storeToRefs(deliveryStore)
 
 const props = defineProps({
@@ -45,17 +45,27 @@ const props = defineProps({
   },
 })
 
+const productQuantityWithModifier = computed(() => {
+  const count = productsCountInCart.value(props.product.id)
+  if (count > 1 && !props.modifiers.length) {
+    // несколько товаров с модификаторами, отображать как новый товар
+    // пока не получены новые модификаторы (тогда считается как отдельный товар)
+    return 0
+  }
+
+  return productQuantityInCart.value(props.product.id, props.modifiers)
+})
+
 const emit = defineEmits(['onBeforeAdd'])
 
 const handleSelect = () => {
   if (!currentAddress.value) {
     ui.setModal({ name: 'address' })
     return
-  } else if (props.shouldEmit && props.product.open_item_page_to_add) {
+  } else if (props.shouldEmit) {
     emit('onBeforeAdd')
     return
   }
-
   cartStore.addToCart(props.product, 1, props.modifiers)
 }
 

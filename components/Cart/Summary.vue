@@ -11,8 +11,8 @@
         </div>
         <UiProgress class="cart__delivery-progress" :width="freeDeliveryData.progress" />
         <div class="text-s c-gray">
-          <template v-if="freeDeliveryData.match"> Приятно, не правда ли? </template>
-          <template v-else>
+          <!-- <template v-if="freeDeliveryData.match"> Приятно, не правда ли? </template> -->
+          <template v-if="!freeDeliveryData.match">
             До бесплатной не хватает {{ formatPrice(freeDeliveryData.remained) }}
           </template>
         </div>
@@ -21,7 +21,7 @@
 
     <div class="cart__scroller">
       <div class="cart__list">
-        <ProductCardCart v-for="product in products" :key="product.id" :product="product" />
+        <ProductCardCart v-for="(cartItem, idx) in cart" :key="idx" :cart-item="cartItem" />
         <ProductCardCart
           v-for="additive in additivesNotInCart"
           :key="additive.catalog_item.id"
@@ -99,6 +99,7 @@ watch(
   }
 )
 
+// todo следить в debounce режиме
 watch(
   () => cart.value,
   (newCart) => {

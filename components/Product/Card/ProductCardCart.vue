@@ -60,6 +60,7 @@
 import { storeToRefs } from 'pinia'
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
+import { ICartInner } from '~/interface/Cart'
 import { useCartStore, useUiStore } from '~/store'
 
 const cartStore = useCartStore()
@@ -70,6 +71,10 @@ const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
     default: () => {},
+  },
+  cartItem: {
+    type: Object as PropType<ICartInner>,
+    default: null,
   },
   additiveCount: {
     type: Number,
