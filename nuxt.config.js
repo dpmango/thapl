@@ -6,7 +6,21 @@ export default defineNuxtConfig({
   experimental: { writeEarlyHints: false, inlineSSRStyles: false },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons'],
+  modules: [
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-proxy',
+    '@nuxtjs/google-fonts',
+    'nuxt-icons',
+  ],
+
+  piniaPersistedstate: {
+    cookieOptions: {
+      maxAge: 60 * 60 * 24 * 30 * 6,
+      sameSite: 'strict',
+    },
+    storage: 'cookies',
+  },
 
   proxy: {
     options: {
@@ -58,12 +72,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.scss'],
 
   googleFonts: {
-    families: {
-      Inter: {
-        wght: [400, 500, 600, 700],
-        ital: [400],
-      },
-    },
+    families: {},
   },
 
   vite: {

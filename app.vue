@@ -10,11 +10,13 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useSessionStore, useProductStore, useDeliveryStore, useUiStore } from '~/store'
-import { scrollPageToTop, createSeoTags } from '#imports'
+import { scrollPageToTop, createSeoTags, APP_VERSION } from '#imports'
 
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
 const ui = useUiStore()
+
+$log.log(`APP Version: ${APP_VERSION}`)
 
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
