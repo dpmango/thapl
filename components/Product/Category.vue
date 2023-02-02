@@ -23,7 +23,10 @@ import { PropType } from 'vue'
 import { ICategoryFull } from '~/interface/Product'
 
 const props = defineProps({
-  category: Object as PropType<ICategoryFull>,
+  category: {
+    type: Object as PropType<ICategoryFull>,
+    default: () => {},
+  },
   showTitle: {
     type: Boolean,
     default: true,

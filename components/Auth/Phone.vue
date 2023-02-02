@@ -34,7 +34,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
-import { clearPhone, validPhone } from '~/utils'
+import { clearPhone, validPhone } from '#imports'
 import { useSessionStore } from '~/store'
 
 const session = useSessionStore()

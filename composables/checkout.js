@@ -1,18 +1,28 @@
 import { storeToRefs } from 'pinia'
 import { useCartStore, useDeliveryStore } from '~/store'
+import { timestampToMinutes, Plurize } from '#imports'
 
 export const useCheckout = () => {
   const deliveryStore = useDeliveryStore()
   const cartStore = useCartStore()
-  const { currentAddressType, zone, minOrderPrice } = storeToRefs(deliveryStore)
-  const { cartPrice } = storeToRefs(cartStore)
+  const { currentOrderType, currentAddressType, zone, takeawayOrganization, minOrderPrice } =
+    storeToRefs(deliveryStore)
+  const { cartPrice, cart, promo } = storeToRefs(cartStore)
 
   // хелперы по методу доставки / самовывоз
   const zoneData = computed(() => {
+    const isDelivery = currentAddressType?.value === 'delivery'
+    const isTakeaway = currentAddressType?.value === 'takeaway'
+
     return {
-      isDelivery: currentAddressType?.value === 'delivery',
-      isTakeaway: currentAddressType?.value === 'takeaway',
-      hasZone: Object.keys(zone).length,
+      isDelivery,
+      isTakeaway,
+      hasZone: !!Object.keys(zone.value).length,
+      isOpen: zone.value?.is_open,
+      orderType: currentOrderType.value,
+      organization: isDelivery ? zone.value?.organization : takeawayOrganization.value,
+      timeFrom: timestampToMinutes(zone.value?.time_from),
+      timeTo: timestampToMinutes(zone.value?.time_to),
     }
   })
 
@@ -20,12 +30,20 @@ export const useCheckout = () => {
   const priceData = computed(() => {
     const deliverySum = freeDeliveryData.value.match ? 0 : zone.value.delivery_price
     const withDelivery = cartPrice.value + deliverySum
+    const promoSum = promo.value?.discount_sum
+    const pointsSum = 0
+
+    // - сумма примененных бонусов
+    // + упаковка
 
     return {
       pureProducts: cartPrice.value,
       delivery: deliverySum,
       withDelivery,
-      totalToPay: withDelivery + 0 + 0,
+      promoDiscount: promoSum,
+      pointsDiscount: pointsSum,
+      totalDiscount: promoSum + pointsSum,
+      totalToPay: withDelivery - promoSum - pointsSum,
     }
   })
 
@@ -70,10 +88,67 @@ export const useCheckout = () => {
     }
   })
 
+  // логика промо
+  const promoData = computed(() => {
+    const hasPromo = promo.value?.has_promo
+
+    const verboseGifts = computed(() => {
+      const count = promo.value?.gifts?.length
+      return `${count} ${Plurize(count, 'подарок', 'подарка', 'подарков')}`
+    })
+
+    return {
+      hasPromo,
+      isOnePlusOne: promo.value?.discount_type === 7,
+      discountSum: promo.value?.discount_sum,
+      giftCount: promo.value?.gifts?.length,
+      gifts: promo.value?.gifts || [],
+      verboseGifts: verboseGifts.value,
+    }
+  })
+
+  // логика стоплисты
+  const stopListData = computed(() => {
+    const orgStopList = zoneData.value.organization?.stop_list || []
+    const cartIds = cart.value.map((x) => x.id)
+
+    const stopped = cartIds.filter((x) => orgStopList.includes(x))
+
+    return {
+      all: orgStopList,
+      hasStops: stopped.length,
+      stopped,
+    }
+  })
+
+  // логика слоты
+  const slotsData = computed(() => {
+    const organization = zoneData.value.organization || {}
+
+    const slotKey = zoneData.value.isDelivery
+      ? 'default_delivery_time_slots'
+      : 'default_takeaway_time_slots'
+    const restrictionsKey = zoneData.value.isDelivery
+      ? 'delivery_dates_restrictions'
+      : 'takeaway_dates_restrictions'
+
+    const slots = organization[slotKey] || []
+    const restrictions = organization[restrictionsKey] || []
+
+    return {
+      hasSlots: !!organization[slotKey],
+      slots,
+      restrictions,
+    }
+  })
+
   return {
     zoneData,
     priceData,
     minOrderData,
     freeDeliveryData,
+    promoData,
+    stopListData,
+    slotsData,
   }
 }

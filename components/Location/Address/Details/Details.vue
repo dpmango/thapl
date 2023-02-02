@@ -74,6 +74,13 @@ const { zone } = storeToRefs(deliveryStore)
   &__cta,
   :deep(.location__cta) {
     margin-top: 66px;
+    margin-bottom: -12px;
+    display: flex;
+    flex-wrap: wrap;
+    .button {
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
   }
 }
 

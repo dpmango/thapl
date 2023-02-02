@@ -5,12 +5,12 @@ import { IUser } from '~/interface/User'
 export const useSessionStore = defineStore('session', {
   state: () => {
     return {
-      api_token: null,
-      user_token: null,
+      api_token: null as string | null,
+      user_token: null as string | null,
       user: {} as IUser,
       app_settings: {} as IAppSettings,
 
-      phone: '',
+      phone: '' as string,
     }
   },
   persist: {
@@ -34,18 +34,21 @@ export const useSessionStore = defineStore('session', {
         return null
       }
     },
+    hasMarketingSection(state) {
+      return state.app_settings.app_store_link || state.app_settings.play_store_link
+    },
   },
   actions: {
     setInit(payload: IInit) {
       const { api_token, user_token, user, app_settings } = payload
 
-      this.api_token = api_token
-      this.user_token = user_token
-      this.user = user
+      this.api_token = api_token || null
+      this.user_token = user_token || null
+      this.user = user || {}
       this.app_settings = app_settings
     },
-    setPhone(phone) {
-      this.phone = phone
+    setPhone(phone: string) {
+      this.phone = phone || ''
     },
     setSession(payload) {
       const { user, user_token } = payload
@@ -56,6 +59,12 @@ export const useSessionStore = defineStore('session', {
 
       const userToken = useCookieState('x-thapl-authorization')
       userToken.value = user_token
+    },
+    updateUser(payload) {
+      this.user = {
+        ...this.user,
+        ...payload,
+      }
     },
   },
 })

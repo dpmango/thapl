@@ -1,6 +1,12 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { IZone, IOrganization, IUserAddress, IOrganizationTakeaway } from 'interface/Delivery'
-import { localStorageKeepArray, localStorageGet } from '~/utils'
+import {
+  IZone,
+  IOrganization,
+  IUserAddress,
+  IOrganizationTakeaway,
+  ICurrentAddress,
+} from 'interface/Delivery'
+import { localStorageKeepArray, localStorageGet } from '#imports'
 
 export const useDeliveryStore = defineStore('delivery', {
   state: () => {
@@ -12,52 +18,57 @@ export const useDeliveryStore = defineStore('delivery', {
       userAddress: [] as IUserAddress[],
 
       zone: {} as IZone,
-      takeawayOrganization: {} as IOrganization,
+      takeawayOrganization: {} as IOrganizationTakeaway,
 
-      currentAddress: null,
+      currentAddress: null as ICurrentAddress | null,
     }
   },
   persist: {
     paths: ['currentAddress'],
   },
   getters: {
-    currentAddressType(state) {
-      try {
-        return state.currentAddress.type
-      } catch {
-        return null
-      }
+    currentOrderType(state) {
+      const isDelivery = this.currentAddressType === 'delivery'
+      const isTakeaway = this.currentAddressType === 'takeaway'
+
+      let orderType: number | null = null
+      if (isTakeaway) orderType = 10
+      if (isDelivery) orderType = 20
+      // if (isRestaurant) orderType = 30
+
+      return orderType
+    },
+    currentAddressType(state): string | null {
+      return state.currentAddress?.type || null
     },
     currentRegionName(state) {
-      try {
-        return state.regions.find((x) => x.id === state.region).title
-      } catch {
-        return null
+      const region = state.regions.find((x) => x.id === state.region)
+      if (region) {
+        return region.title as string
       }
+      return null
     },
     minOrderPrice(state) {
-      try {
-        return state.zone.min_order
-      } catch {
-        return null
-      }
+      return state.zone?.min_order || null
     },
-    workingTime(state) {
-      try {
-        const from = state.zone.time_from
-        const to = state.zone.time_to
+    workingTime:
+      (state) =>
+      (key = 'zone') => {
+        try {
+          const from = state[key].time_from
+          const to = state[key].time_to
 
-        if (state.zone.working_all_day) {
-          return 'Круглосуточно'
-        } else if (from && to) {
-          return `${from} : ${to}`
+          if (state[key].working_all_day) {
+            return 'Круглосуточно'
+          } else if (from && to) {
+            return `${from} : ${to}`
+          }
+
+          return ''
+        } catch {
+          return ''
         }
-
-        return ''
-      } catch {
-        return ''
-      }
-    },
+      },
   },
   actions: {
     clientInit() {
@@ -77,10 +88,8 @@ export const useDeliveryStore = defineStore('delivery', {
         method: 'POST',
         headers: useHeaders(),
         body: {
-          // lat: latitude,
-          lat: 55.66887,
-          lng: 37.441142,
-          // lng: longitude,
+          lat: latitude,
+          lng: longitude,
         },
       })) as IZone
 
@@ -115,7 +124,7 @@ export const useDeliveryStore = defineStore('delivery', {
         params: {
           id,
         },
-      }).catch(useCatchError)) as IOrganization[]
+      }).catch(useCatchError)) as IOrganizationTakeaway
 
       this.takeawayOrganization = { ...data }
 
@@ -132,12 +141,11 @@ export const useDeliveryStore = defineStore('delivery', {
     },
 
     async hydrateZone() {
-      // TODO - refactor
       if (this.currentAddress?.type === 'delivery') {
         const { latitude, longitude } = this.currentAddress
         await this.checkZone({ latitude, longitude })
       } else if (this.currentAddress?.type === 'takeaway') {
-        // await this.getRestaurants()
+        await this.setTakeawayOrganization({ id: this.currentAddress?.org_id })
       }
     },
   },

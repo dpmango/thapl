@@ -14,24 +14,24 @@
         <template v-if="zone.max_time">{{ formatMinutes(zone.max_time) }}</template>
       </h5>
     </div>
-    <div v-if="workingTime" class="info__col col col-md-4 col-sm-6">
+    <div v-if="workingTime('zone')" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Часы работы</p>
       <h5 class="info__value h5-title h6-title-md">
-        {{ workingTime }}
+        {{ workingTime('zone') }}
       </h5>
     </div>
     <div v-if="minOrderPrice" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Заказ от</p>
-      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(minOrderPrice) }} ₽</h5>
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(minOrderPrice) }}</h5>
     </div>
     <div v-if="zone.delivery_price" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Стоимость доставки</p>
-      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(zone.delivery_price) }} ₽</h5>
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(zone.delivery_price) }}</h5>
     </div>
     <div v-if="zone.free_delivery_min_price" class="info__col col col-md-4 col-sm-6">
-      <p class="text-s c-gray">Бесплатная доcтавка от</p>
+      <p class="text-s c-gray">Бесплатная доcтавка</p>
       <h5 class="info__value h5-title h6-title-md">
-        {{ formatPrice(zone.free_delivery_min_price) }} ₽
+        от {{ formatPrice(zone.free_delivery_min_price) }}
       </h5>
     </div>
   </div>
@@ -40,13 +40,15 @@
     <UiButton v-if="zone.is_open">Перейти к заказу</UiButton>
     <UiButton v-else-if="isPreorderAvailable">Сделать предзаказ</UiButton>
     <UiButton v-else>Посмотреть меню</UiButton>
+
+    <UiButton theme="outline" @click.stop="handleReturn">Выбрать другой адрес</UiButton>
   </div>
 </template>
 
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
-import { formatMinutes, formatPrice } from '~/utils'
+import { formatMinutes, formatPrice } from '#imports'
 
 const deliveryStore = useDeliveryStore()
 const sessionStore = useSessionStore()
@@ -58,6 +60,10 @@ const { isPreorderAvailable } = storeToRefs(sessionStore)
 
 const handleToOrderClick = () => {
   ui.closeModal()
+}
+
+const handleReturn = () => {
+  deliveryStore.setCurrentAddress(null)
 }
 </script>
 

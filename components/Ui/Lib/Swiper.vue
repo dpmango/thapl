@@ -64,14 +64,14 @@ const params = ref({
 
   :deep(.swiper-scrollbar) {
     position: static;
-    margin-top: 24px;
+    margin-top: 16px;
     background: var(--swiper-bullet-color);
     cursor: grab;
-    border-radius: 0;
+    border-radius: 2px;
   }
   :deep(.swiper-scrollbar-drag) {
     background: var(--color-primary);
-    border-radius: 0;
+    border-radius: 2px;
   }
   :deep(.swiper-pagination) {
     position: static;
@@ -96,6 +96,33 @@ const params = ref({
   }
   :deep(.swiper-pagination-bullet-active) {
     background: var(--color-primary);
+  }
+
+  :deep(.swiper-button-prev),
+  :deep(.swiper-button-next) {
+    background: var(--swiper-nav-color);
+    border-radius: 50%;
+    opacity: 1;
+    width: 48px;
+    height: 48px;
+    color: var(--color-font);
+    transition: background 0.25s $ease, opacity 0.25s $ease;
+    &:hover {
+      background: var(--color-primary);
+    }
+    &::after {
+      font-size: 20px;
+    }
+  }
+  :deep(.swiper-button-prev) {
+    left: 40px;
+  }
+  :deep(.swiper-button-next) {
+    right: 40px;
+  }
+  :deep(.swiper-button-disabled) {
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   @include r($md) {

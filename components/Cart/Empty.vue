@@ -3,7 +3,7 @@
     <UiAtomErrorMessage icon="cart-outline" title="В корзине пусто">
       <template #content>
         Зайдите в меню, выберите блюда, которые хотите съесть, а мы оперативно доставим ваш заказ от
-        {{ formatPrice(minOrderPrice) }} ₽.
+        {{ formatPrice(minOrderPrice) }}.
       </template>
       <template #action>
         <UiButton to="/" @click="ui.closeModal()">Перейти в меню</UiButton>
@@ -14,8 +14,8 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore, useUiStore, useDeliveryStore } from '~~/store'
-import { formatPrice } from '~/utils'
+import { useSessionStore, useUiStore, useDeliveryStore } from '~/store'
+import { formatPrice } from '#imports'
 
 const sessionStore = useSessionStore()
 const deliveryStore = useDeliveryStore()

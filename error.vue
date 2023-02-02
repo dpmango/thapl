@@ -2,7 +2,7 @@
   <div class="page">
     <LayoutHeader />
     <main class="page__content">
-      <LayoutError404 v-if="error.statusCode === '404'" />
+      <LayoutError404 v-if="+error.statusCode === 404" />
       <LayoutError500 v-else />
     </main>
     <LayoutFooter />
@@ -14,11 +14,14 @@ const props = defineProps({
   error: Object,
 })
 
-const { $log } = useNuxtApp()
+const { $log, $env } = useNuxtApp()
 
 $log.warn(props.error)
 
 useHead({
   title: `Ошибка ${props.error.statusCode}`,
+  bodyAttrs: {
+    class: `theme-${$env.theme}`,
+  },
 })
 </script>

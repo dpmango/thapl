@@ -2,7 +2,13 @@
   <label
     class="cb checkbox radio"
     :for="id"
-    :class="[isRadio && '_radio', checked && '_active', disabled && '_disabled', error && '_error']"
+    :class="[
+      isRadio && '_radio',
+      checked && '_active',
+      disabled && '_disabled',
+      error && '_error',
+      isEmpty && '_empty',
+    ]"
     @click.prevent="change"
   >
     <input
@@ -62,6 +68,11 @@ const isRadio = computed(() => {
   return props.type === 'radio'
 })
 
+const slots = useSlots()
+const isEmpty = computed(() => {
+  return !slots.default && !slots.toggle && !props.text
+})
+
 const change = () => {
   emit('change')
 }
@@ -81,6 +92,7 @@ const change = () => {
     position: absolute;
     left: 0;
     top: 0;
+    opacity: 0;
     pointer-events: none;
   }
 
@@ -191,6 +203,14 @@ const change = () => {
         &::after {
           transform: scale(0);
         }
+      }
+    }
+  }
+
+  &._empty {
+    .cb {
+      &__text {
+        padding-left: 0;
       }
     }
   }

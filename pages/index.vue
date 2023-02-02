@@ -2,15 +2,19 @@
   <main class="page__content">
     <PromoSlider :slides="promoData" />
     <OrderLast />
-    <ProductPopular />
+
+    <ProductPopular v-for="item in popularList.defaults" :key="item.id" :data="item" />
 
     <template v-if="$env.catalogType === 'singlepage'">
       <ProductCategoriesNav />
-      <LazyProductCategory
-        v-for="category in productStore.catalogWithFilter"
-        :key="category.id"
-        :category="category"
-      />
+      <template v-for="category in productStore.catalogWithFilter" :key="category.id">
+        <LazyProductCategory :category="category" />
+        <ProductPopular
+          v-if="findPopularForCategory(category.id)"
+          :data="findPopularForCategory(category.id)"
+        />
+      </template>
+
       <ProductQuickFilter />
     </template>
 
@@ -27,7 +31,6 @@
       <h2 class="h2-title">TODO {{ productStore.catalog }}</h2>
     </template>
 
-    <UiDevInfo />
     <InfoAbout />
   </main>
 </template>
@@ -43,17 +46,41 @@ useHead({
   title: `Главная - ${$env.projectName}`,
 })
 
-const headers = useHeaders()
-
 const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
   useApi('promo/get-for-main-page', {
     method: 'GET',
-    headers,
+    headers: useHeaders(),
     params: {
       list_type: $env.promoListType,
     },
   })
 )
 
-$log.log({ promoData: promoData.value })
+$log.log('🧙‍♂️ ASYNC PROMO', { promoData: promoData.value })
+
+const { data: popular, error: popularError } = await useAsyncData('popular', () =>
+  useApi('catalog/get-popular-items', {
+    method: 'GET',
+    headers: useHeaders(),
+  })
+)
+
+$log.log('🧙‍♂️ ASYNC POPULAR', { popular: popular.value })
+
+const popularList = computed(() => {
+  if (popular.value) {
+    return {
+      defaults: popular.value.filter((x) => !x.show_after_category_id),
+      ids: popular.value.filter((x) => x.show_after_category_id),
+    }
+  }
+  return {
+    defaults: [],
+    ids: [],
+  }
+})
+
+const findPopularForCategory = (catId) => {
+  return popularList.value.ids.find((x) => catId === x.show_after_category_id)
+}
 </script>

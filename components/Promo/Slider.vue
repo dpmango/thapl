@@ -18,7 +18,7 @@
 
 <script setup>
 import { SwiperSlide } from 'swiper/vue'
-import { localStorageGet } from '~/utils'
+import { localStorageGet } from '#imports'
 
 const props = defineProps({
   slides: {
@@ -82,6 +82,9 @@ onMounted(() => {
           flex-basis: 100%;
           width: 100%;
           margin-right: 32px;
+          &:last-child {
+            margin-right: 0;
+          }
         }
       }
     }

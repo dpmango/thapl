@@ -19,7 +19,7 @@ const productStore = useProductStore()
 const DangerAsyncCategoryInStore = productStore.categoryBySlug(params.slug)
 
 if (!DangerAsyncCategoryInStore) {
-  throw createError({ statusCode: 404 })
+  throw createError({ statusCode: 404, fatal: true })
 }
 
 const { data: categoryData, error: categoriesError } = await useAsyncData(
@@ -42,7 +42,7 @@ useHead({
 $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
 
 if (!categoryData.value) {
-  throw createError({ statusCode: 404 })
+  throw createError({ statusCode: 404, fatal: true })
 }
 
 const crumbs = ref([

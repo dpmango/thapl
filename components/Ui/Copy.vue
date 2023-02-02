@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { copyToClipboard } from '~/utils'
+import { copyToClipboard } from '#imports'
 
 const props = defineProps({
   text: {

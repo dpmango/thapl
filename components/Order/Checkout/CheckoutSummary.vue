@@ -8,15 +8,19 @@
       <div v-if="opened" class="scope__content">
         <div class="scope__section">
           <div class="scope__products">
-            <div v-for="product in products" class="scope__row">
+            <div v-for="product in allProducts" class="scope__row">
               <div class="scope__label text-m text-md-s">
                 {{ product.title }}
-                <span v-if="productQuantityInCart(product.id) !== 1" class="c-gray">
+                <span v-if="product.isGift" class="c-gray">Подарок </span>
+                <span v-else-if="productQuantityInCart(product.id) !== 1" class="c-gray">
                   × {{ productQuantityInCart(product.id) }}
                 </span>
               </div>
               <div class="scope__value h6-title text-md-s c-primary">
-                {{ formatPrice(product.price) }} ₽
+                <template v-if="product.isGift">
+                  <s>{{ formatPrice(product.price) }}</s>
+                </template>
+                <template v-else>{{ formatPrice(product.price) }}</template>
               </div>
             </div>
           </div>
@@ -25,20 +29,30 @@
           <div class="scope__row">
             <div class="scope__label text-m text-md-s c-gray">{{ verboseCartCount }}</div>
             <div class="scope__value h6-title text-md-s">
-              {{ formatPrice(priceData.pureProducts) }} ₽
+              {{ formatPrice(priceData.pureProducts) }}
             </div>
           </div>
           <div v-if="zoneData.isDelivery" class="scope__row">
             <div class="scope__label text-m text-md-s c-gray">Доставка</div>
             <div class="scope__value h6-title text-md-s">
               <template v-if="freeDeliveryData.match">Бесплатно</template>
-              <template v-else>{{ formatPrice(priceData.delivery) }} ₽</template>
+              <template v-else>{{ formatPrice(priceData.delivery) }}</template>
+            </div>
+          </div>
+          <div v-if="promoData.hasPromo" class="scope__row">
+            <div class="scope__label text-m text-md-s c-gray">Скидка</div>
+            <div class="scope__value h6-title text-md-s">
+              <template v-if="promoData.discountSum">
+                -{{ formatPrice(promoData.discountSum) }}
+              </template>
+              <template v-else-if="promoData.isOnePlusOne">1+1</template>
+              <span v-else-if="promoData.giftCount">{{ promoData.verboseGifts }}</span>
             </div>
           </div>
           <div class="scope__row">
             <div class="scope__label h6-title text-md-s">Сумма заказа</div>
             <div class="scope__value h6-title text-md-s">
-              {{ formatPrice(priceData.totalToPay) }} ₽
+              {{ formatPrice(priceData.totalToPay) }}
             </div>
           </div>
         </div>
@@ -51,14 +65,27 @@
 import _ from 'lodash'
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '~/store'
-import { formatPrice, Plurize } from '~/utils'
+import { formatPrice, Plurize } from '#imports'
 
 const cartStore = useCartStore()
-const { cart, products, productQuantityInCart } = storeToRefs(cartStore)
-const { priceData, zoneData, freeDeliveryData } = useCheckout()
+const { cart, products, promo, productQuantityInCart } = storeToRefs(cartStore)
+const { priceData, zoneData, promoData, freeDeliveryData } = useCheckout()
+
+const allProducts = computed(() => {
+  const gifts = promo.value?.gifts?.map((x) => ({
+    ...x,
+    isGift: true,
+  }))
+
+  if (gifts && gifts.length) {
+    return [...products.value, ...gifts]
+  }
+
+  return products.value
+})
 
 const verboseCartCount = computed(() => {
-  const count = cart.value.length
+  const count = allProducts.value.length
   return `${count} ${Plurize(count, 'блюдо', 'блюда', 'блюд')}`
 })
 

@@ -15,7 +15,7 @@
               @on-change="(v) => setFieldValue('name', v)"
             />
           </div>
-          <div class="profile__info-col col col-6 col-sm-12">
+          <!-- <div class="profile__info-col col col-6 col-sm-12">
             <UiInput
               name="surname"
               label="Фамилия"
@@ -24,13 +24,14 @@
               :error="errors.surname"
               @on-change="(v) => setFieldValue('surname', v)"
             />
-          </div>
+          </div> -->
           <div class="profile__info-col col col-6 col-sm-12">
             <UiInput
               name="phone"
               label="Номер телефона"
               placeholder="+7"
               mask="+7 (###) ###-##-##"
+              :disabled="true"
               :value="phone"
               :error="errors.phone"
               @on-change="(v) => setFieldValue('phone', v)"
@@ -75,21 +76,22 @@
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { useSessionStore } from '~~/store'
-import { clearString, validPhone, validEmail, validDate, dateMask } from '~/utils'
+import { useSessionStore } from '~/store'
+import { clearString, validPhone, validEmail, validDate, dateMask } from '#imports'
 
 const sessionStore = useSessionStore()
 const { user } = storeToRefs(sessionStore)
 
 const toast = useToast()
+const router = useRouter()
 
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: {
-    name: user.name || '',
-    surname: user.surname || '',
-    phone: user.phone || '',
-    email: user.email || '',
-    birthday: user.birthday || '',
+    name: user.value.name || '',
+    surname: user.value.surname || '',
+    phone: user.value.username || '',
+    email: user.value.email || '',
+    birthday: user.value.birthday || '',
   },
 })
 
@@ -134,14 +136,25 @@ const saveProfile = async () => {
 
   loading.value = true
 
-  const response = await useApi('profile/save', {
+  const requestObj = {
+    name: name.value,
+    surname: surname.value,
+    email: email.value,
+    phone: phone.value,
+    birthday: birthday.value,
+  }
+
+  const response = await useApi('profile/set-user-data', {
     method: 'POST',
     headers: useHeaders(),
-    body: {
-      name: name.value,
-      surname: surname.value,
-    },
+    body: requestObj,
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
+
+  if (response?.success) {
+    toast.success('Профиль обновлен')
+    sessionStore.updateUser(requestObj)
+    router.push('/profile')
+  }
 
   loading.value = false
 }
@@ -150,8 +163,7 @@ const saveProfile = async () => {
 <style lang="scss" scoped>
 .profile {
   margin: 60px 0 120px;
-  &__nav {
-  }
+  // &__nav {}
   &__info-col {
     margin-top: 36px;
   }

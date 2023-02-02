@@ -1,27 +1,34 @@
 <template>
   <div class="card">
     <div class="card__media">
-      <div class="card__image"></div>
+      <div class="card__image">
+        <UiAtomProductImage :src="product.image" :alt="product.title" />
+      </div>
     </div>
     <div class="card__body">
       <div class="card__title h6-title">
-        <UiAtomLongWords :text="name" />
+        <UiAtomLongWords :text="product.title" />
       </div>
       <div class="card__description text-s c-gray">
-        {{ description }}
+        {{ product.description }}
       </div>
       <div class="card__actions">
-        <div class="card__price text-l">{{ price }}</div>
+        <div class="card__price text-l">{{ formatPrice(product.price) }}</div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
+import { IProduct } from '~/interface/Product'
+import { formatPrice } from '#imports'
+
 const props = defineProps({
-  name: String,
-  description: String,
-  price: String,
+  product: {
+    type: Object as PropType<IProduct>,
+    default: () => {},
+  },
 })
 </script>
 
@@ -39,18 +46,20 @@ const props = defineProps({
   }
   &__image {
     position: relative;
+    z-index: 1;
     border-radius: 8px;
     font-size: 0;
     padding-bottom: var(--product-card-mini-ar);
     background: var(--color-bg);
+    overflow: hidden;
     img {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      max-width: auto;
       object-fit: cover;
+      transition: transform 0.35s ease-out;
     }
   }
   &__body {

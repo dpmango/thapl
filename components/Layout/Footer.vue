@@ -34,21 +34,17 @@
           </ul>
         </div>
 
-        <div v-if="showMarketingSection" class="footer__section">
+        <div v-if="hasMarketingSection" class="footer__section">
           <div class="footer__section-title h6-title hidden-sm">Мобильные приложения</div>
           <ul class="footer__social-list">
-            <li v-if="app_settings.app_store_id">
-              <a :href="app_settings.app_store_id">
-                <img src="~/assets/img/app-store.svg" alt="app store" />
-              </a>
-            </li>
+            <UiAtomMobileApps />
           </ul>
         </div>
 
         <div class="footer__section">
           <div class="footer__bottom">
             <div class="footer__copy">© 2020 Thapl.com, все права защищены</div>
-            <a href="/" target="_blank" class="footer__developer">
+            <a href="https://thapl.com" target="_blank" class="footer__developer">
               <img src="~/assets/img/developer.svg" alt="MainBrain" />
             </a>
           </div>
@@ -64,7 +60,7 @@ import { useProductStore, useSessionStore } from '~/store'
 
 const productStore = useProductStore()
 const sessionStore = useSessionStore()
-const { app_settings } = storeToRefs(sessionStore)
+const { app_settings, hasMarketingSection } = storeToRefs(sessionStore)
 
 const { $env } = useNuxtApp()
 
@@ -74,10 +70,6 @@ const showMenuSection = computed(() => {
   }
 
   return true
-})
-
-const showMarketingSection = computed(() => {
-  return app_settings.value.app_store_id
 })
 
 // mobile accardeon
@@ -140,7 +132,7 @@ const handleAccordeon = (id) => {
     margin: 20px 0;
     display: flex;
     flex-wrap: wrap;
-    li {
+    :deep(li) {
       flex: 0 0 auto;
       margin-right: 20px;
     }

@@ -9,7 +9,7 @@
   >
     <div class="card__image-wrapper">
       <div class="card__image">
-        <img :src="product.image" :alt="product.title" />
+        <UiAtomProductImage :src="product.image" :alt="product.title" />
         <div class="card__badges">
           <UiBadge v-for="tag in product.tags" :key="tag.id" theme="green" size="small">
             {{ tag.tag }}
@@ -21,6 +21,7 @@
       <div class="card__title h4-title h6-title-sm">
         <UiAtomLongWords :text="product.title" />
       </div>
+
       <div class="card__description text-s c-gray">
         {{ product.description }}
       </div>
@@ -30,7 +31,7 @@
         @mouseenter="setFocused(false)"
         @mouseleave="setFocused(true)"
       >
-        <div class="card__price text-l hidden-sm">{{ product.price }} ₽</div>
+        <div class="card__price text-l hidden-sm">{{ product.price }}</div>
 
         <ProductCardAddToCart
           :product="product"
@@ -38,7 +39,7 @@
           @on-before-add="handleProductClick"
         >
           <span class="hidden-sm">Выбрать</span>
-          <span class="visible-sm">{{ product.price }} ₽</span>
+          <span class="visible-sm">{{ product.price }}</span>
         </ProductCardAddToCart>
       </div>
     </div>
@@ -55,6 +56,7 @@ const ui = useUiStore()
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
+    default: () => {},
   },
 })
 
@@ -64,9 +66,14 @@ const handleProductClick = () => {
 
 // focus
 const focused = ref(false)
-const setFocused = (v) => {
+const setFocused = (v: boolean) => {
   focused.value = v
 }
+
+// const mounted = ref(false)
+// onMounted(() => {
+//   mounted.value = true
+// })
 </script>
 
 <style lang="scss" scoped>
@@ -89,7 +96,6 @@ const setFocused = (v) => {
       left: 0;
       width: 100%;
       height: 100%;
-      // max-width: auto;
       object-fit: cover;
       transition: transform 0.35s ease-out;
     }

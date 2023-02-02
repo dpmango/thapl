@@ -5,7 +5,7 @@
       <div v-if="product" class="product__wrapper">
         <div class="product__media hidden-md">
           <div class="product__image">
-            <img :src="product.image" :alt="product.title" />
+            <UiAtomProductImage :src="product.image" :alt="product.title" />
           </div>
         </div>
         <div class="product__body">
@@ -13,6 +13,9 @@
             <div class="product__title h4-title">
               <UiAtomLongWords :text="product.title" />&nbsp;
               <span v-if="product.is_hot">🌶</span>
+              <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
+                &nbsp;(В корзине уже {{ countWithModifiersInCart }})
+              </span>
             </div>
             <div class="product__weight text-s c-gray">
               {{ product.packing_weights }}
@@ -20,7 +23,7 @@
 
             <div class="product__media visible-md">
               <div class="product__image">
-                <img :src="product.image" :alt="product.title" />
+                <UiAtomProductImage :src="product.image" :alt="product.title" />
               </div>
             </div>
 
@@ -53,21 +56,40 @@
                 class="product__modifier"
               >
                 <div class="h6-title">{{ group.title }}</div>
-                <div class="product__modifier-note text-xs c-gray">
-                  Нужно выбрать от {{ group.min_items }} до {{ group.max_items }} ингредиентов
+
+                <div
+                  class="product__modifier-note text-xs c-gray"
+                  :class="[modifierShowErorrs && modifierErrors.includes(idx) && 'c-red _error']"
+                >
+                  <template v-if="group.min_items === 0">
+                    Опционально, максимум {{ group.max_items }}
+                    {{ Plurize(group.max_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
+                  </template>
+                  <template v-else-if="group.min_items === group.max_items">
+                    Нужно выбрать минимум {{ group.min_items }}
+                    {{ Plurize(group.min_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
+                  </template>
+                  <template v-else>
+                    Нужно выбрать от {{ group.min_items }} до
+                    {{ group.max_items }} ингредиентов</template
+                  >
                 </div>
                 <div class="product__modifier-list">
                   <div
                     v-for="option in group.items"
                     :key="option.id"
                     class="product__modifier-option mod-option text-m"
-                    @click="changeModifier(option)"
+                    @click="changeModifier(option, idx, group.min_items > 0)"
                   >
                     <span class="mod-option__name">{{ option.title }}</span>
-                    <span class="mod-option__price">{{ formatPrice(option.price) }} ₽</span>
+                    <span v-if="formatPrice(option.price, 0, false)" class="mod-option__price">
+                      +{{ formatPrice(option.price, 0, false) }}
+                    </span>
                     <UiCheckbox
                       class="mod-option__radio"
-                      type="radio"
+                      :name="`mod_radio_${idx}`"
+                      :error="modifierErrors.includes(idx)"
+                      :type="group.min_items > 0 ? 'radio' : 'checkbox'"
                       :checked="modifierGroups.some((x) => x.id === option.id)"
                     />
                   </div>
@@ -81,9 +103,10 @@
               :product="product"
               :modifiers="modifierGroups"
               btn-theme="primary"
-              :should-emit="false"
+              :should-emit="hasUnselectedModifiers"
+              @on-before-add="showModifiersToast"
             >
-              В корзину &bull; {{ priceWithModifiers }} ₽
+              В корзину &bull; {{ formatPrice(priceWithModifiers) }}
             </ProductCardAddToCart>
           </div>
         </div>
@@ -92,15 +115,22 @@
   </UiModal>
 </template>
 
-<script setup>
-import { useUiStore } from '~/store'
-import { formatPrice } from '~/utils'
+<script setup lang="ts">
+import { PropType, Ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useToast } from 'vue-toastification/dist/index.mjs'
+import { useCartStore, useUiStore } from '~/store'
+import { IProduct, IModifierItem } from 'interface/Product'
+import { formatPrice, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
+const toast = useToast()
 
 const ui = useUiStore()
+const cartStore = useCartStore()
+const { cart, productsCountInCart } = storeToRefs(cartStore)
 
-const product = ref(null)
+const product = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
 
 const optionsSizeList = ref([
@@ -119,9 +149,16 @@ const optionsModList = ref([
 const optionsMod = ref(null)
 
 // модификаторы товара
-const modifierGroups = ref([])
+interface IModifierGroup extends IModifierItem {
+  groupID: number
+}
+
+const modifierGroups = ref([]) as Ref<IModifierGroup[]>
+const modifierErrors = ref([]) as Ref<number[]>
+const modifierShowErorrs = ref(false)
 
 const priceWithModifiers = computed(() => {
+  if (!product.value) return 0
   let price = product.value.price
 
   if (modifierGroups.value.length) {
@@ -133,14 +170,69 @@ const priceWithModifiers = computed(() => {
   return price
 })
 
-// TODO - валдиация обязательный выбор
-const changeModifier = (opt) => {
-  if (modifierGroups.value.some((x) => x.id === opt.id)) {
-    modifierGroups.value = modifierGroups.value.filter((x) => x.id === opt.id)
-  } else {
-    modifierGroups.value = [opt]
+const changeModifier = (opt, groupID, isRadio) => {
+  const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)
+  const hasGroup = modifierGroups.value.some((x) => x.groupID === groupID)
+
+  // радиокнопки и группа
+  if (isRadio && hasGroup) {
+    modifierGroups.value = modifierGroups.value.map((x) => {
+      return x.groupID === groupID ? { ...opt, groupID } : x
+    })
+
+    return
+  } else if (hasAdded) {
+    // чекбоксы (removeCurrent)
+    modifierGroups.value = modifierGroups.value.filter((x) => {
+      // sort only in current group
+      if (x.groupID === groupID) {
+        return x.id !== opt.id
+      }
+
+      return true
+    })
+    return
   }
+
+  modifierGroups.value = [...modifierGroups.value, { ...opt, groupID }]
 }
+const validateModifiers = () => {
+  const errors = [] as number[]
+  if (product.value?.modifier_groups) {
+    product.value?.modifier_groups.forEach((group, idx) => {
+      const itemsInGroup = modifierGroups.value.filter((x) => x.groupID === idx)
+
+      if (itemsInGroup.length > group.max_items) {
+        errors.push(idx)
+      } else if (itemsInGroup.length < group.min_items) {
+        errors.push(idx)
+      }
+    })
+  }
+
+  if (errors.length === 0) {
+    modifierShowErorrs.value = false
+  }
+
+  modifierErrors.value = [...errors]
+  return errors
+}
+
+const hasUnselectedModifiers = computed(() => {
+  const errors = validateModifiers()
+  return !!errors.length
+})
+
+const showModifiersToast = () => {
+  modifierShowErorrs.value = true
+  // toast.error('Выберите параметры блюда')
+}
+
+const countWithModifiersInCart = computed(() => {
+  if (!product.value?.id) return 0
+
+  return productsCountInCart.value(product.value?.id)
+})
 
 const fetchProduct = async (id) => {
   loading.value = true
@@ -223,9 +315,9 @@ watch(
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  // &__title {
-  //   word-break: break-all;
-  // }
+  &__title {
+    word-break: break-word;
+  }
   &__weight {
     margin-top: 8px;
   }
@@ -240,12 +332,19 @@ watch(
   // &__modifiers{}
   &__modifier {
     margin: 12px 0;
+    .h6-title {
+      text-transform: uppercase;
+    }
+    & + & {
+      margin-top: 24px;
+    }
   }
   &__modifier-note {
     margin-top: 12px;
     background: var(--color-bg-darken);
     border-radius: 8px;
     font-weight: 500;
+    line-height: 1.7;
     padding: 8px 12px;
   }
   &__modifier-list {
@@ -282,6 +381,7 @@ watch(
     display: inline-block;
     flex: 1 1 auto;
     padding-right: 16px;
+    text-transform: capitalize;
   }
   &__price {
     display: inline-block;

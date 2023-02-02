@@ -1,9 +1,12 @@
-import { useSessionStore } from '~/store'
+import { storeToRefs } from 'pinia'
+import { useDeliveryStore, useSessionStore } from '~/store'
 
 export const useHeaders = () => {
-  const session = useSessionStore()
+  const sessionStore = useSessionStore()
+  const deliveryStore = useDeliveryStore()
 
-  const { api_token, user_token, region } = session
+  const { api_token, user_token, region } = sessionStore
+  const { zone, takeawayOrganization } = storeToRefs(deliveryStore)
 
   const headers = {}
   if (api_token) {
@@ -14,6 +17,20 @@ export const useHeaders = () => {
   }
   if (user_token) {
     headers['x-thapl-region-id'] = region
+  }
+
+  const orgDeliveryID = zone.value?.organization?.id
+  const orgTakeawayID = takeawayOrganization.value?.id
+  let targetOrganization = null
+
+  if (deliveryStore.currentAddressType === 'delivery') {
+    targetOrganization = orgDeliveryID
+  } else if (deliveryStore.currentAddressType === 'takeaway') {
+    targetOrganization = orgTakeawayID
+  }
+
+  if (targetOrganization) {
+    headers['x-thapl-organization-id'] = targetOrganization
   }
 
   return headers

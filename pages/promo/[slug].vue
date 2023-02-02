@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { localStorageKeepArray } from '~/utils'
+import { localStorageKeepArray } from '#imports'
 
 const { $env, $log } = useNuxtApp()
 

@@ -211,6 +211,7 @@ onMounted(async () => {
 .address {
   // &__title {
   // }
+  min-height: 440px;
   &__head {
     display: flex;
     align-items: center;
@@ -247,11 +248,6 @@ onMounted(async () => {
   }
   &__delivery {
     margin-top: 28px;
-  }
-  &._type-2 {
-    :deep(ymaps) {
-      display: none !important;
-    }
   }
 }
 

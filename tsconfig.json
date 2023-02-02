@@ -5,6 +5,7 @@
     "types": [
       // https://pinia.vuejs.org/
       "@pinia/nuxt"
-    ]
+    ],
+    "noImplicitAny": false
   }
 }

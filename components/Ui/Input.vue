@@ -20,13 +20,7 @@
         @blur="handleBlur"
       />
 
-      <span v-if="showLivePlaceholder" class="input__live-placeholder">
-        <span v-for="word in livePlaceholderWords" :class="[!word.visible && '_hidden']">
-          {{ word.content }}&nbsp;
-        </span>
-      </span>
-
-      <div class="input__icons">
+      <div ref="iconsRef" class="input__icons">
         <i v-if="loading" class="input__icon _loading">
           <nuxt-icon name="loading" />
         </i>
@@ -39,6 +33,10 @@
         <i v-if="icon" class="input__icon">
           <nuxt-icon :name="icon" />
         </i>
+        <span v-if="changable" class="input__changable" @click="emit('onChangable')">
+          <span v-if="typeof changable === 'string'">{{ changable }}</span>
+          <span v-else>Изменить</span>
+        </span>
       </div>
 
       <div class="input__suggestions suggestions" :class="[showSuggestions && '_active']">
@@ -53,6 +51,8 @@
         </ul>
       </div>
     </div>
+
+    <div v-if="helper" class="input__helper text-s c-gray">{{ helper }}</div>
     <div v-if="showErrorText" class="input__error">{{ error }}</div>
   </div>
 </template>
@@ -60,12 +60,13 @@
 <script setup>
 import _ from 'lodash'
 import { nanoid } from 'nanoid'
+import { capitalizeFirstLetter } from '#imports'
 // const { $sanitize } = useNuxtApp()
 
 const id = nanoid()
 const inputRef = ref(null)
 
-const emit = defineEmits(['onChange'])
+const emit = defineEmits(['onChange', 'onChangable'])
 
 defineExpose({ inputRef })
 
@@ -87,11 +88,11 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  livePlaceholder: {
-    type: [Array, null],
-    default: null,
-  },
   name: {
+    type: String,
+    default: '',
+  },
+  helper: {
     type: String,
     default: '',
   },
@@ -114,6 +115,10 @@ const props = defineProps({
     type: String,
     default: 'right',
     validator: (size) => ['left', 'right'].includes(size),
+  },
+  changable: {
+    type: [Boolean, String],
+    default: false,
   },
   // modifiers
   error: {
@@ -157,7 +162,7 @@ const modifiers = computed(() => [
   isFocusedOrNotBlank.value && '_focused',
   showError.value && '_error',
   props.disabled && '_disabled',
-  (props.icon || props.error) && `_ipos-${props.iconPosition}`,
+  `_ipos-${props.iconPosition}`,
   `_${props.theme}`,
   `_${props.size}`,
 ])
@@ -227,30 +232,33 @@ const handleAutocompleate = (e) => {
   }
 }
 
+// inputs width watcher
+const iconsRef = ref(null)
+
+const setInputOffsets = () => {
+  if (props.iconPosition === 'left') return
+  try {
+    const iconsWidth = iconsRef.value.offsetWidth + 15 + 10
+    inputRef.value.style[`padding${capitalizeFirstLetter(props.iconPosition)}`] = `${iconsWidth}px`
+  } catch {}
+}
+
+watch(
+  () => [props.value, props.error],
+  () => {
+    nextTick(setInputOffsets)
+  }
+)
+
 // error
 const showErrorText = computed(() => {
   if (isFocused.value) return false
   return typeof props.error === 'string'
 })
 
-// password
-const passwordVisible = ref(false)
-
-const isPassword = computed(() => {
-  return props.type === 'password'
-})
-
 const currentInputType = computed(() => {
-  if (isPassword.value) {
-    return passwordVisible.value ? 'text' : 'password'
-  }
-
   return props.type
 })
-
-const handlePasswordClick = () => {
-  passwordVisible.value = !this.passwordVisible.value
-}
 
 // clear
 const isClearable = computed(() => {
@@ -339,37 +347,6 @@ const textareaStyle = computed(() => {
   } else {
     return {}
   }
-})
-
-// livePlaceholder
-const showLivePlaceholder = computed(() => {
-  return props.livePlaceholder && isFocusedOrNotBlank.value
-})
-
-const livePlaceholderWords = computed(() => {
-  if (!props.livePlaceholder) return ''
-
-  const inputWords = props.value.split(' ')
-
-  const mindInputs = props.livePlaceholder.map((word, idx) => {
-    // const wordLength = word.length
-
-    if (inputWords[idx]) {
-      // const inputWordLength = inputWords[idx].length
-
-      return {
-        visible: false,
-        content: inputWords[idx],
-      }
-    }
-
-    return {
-      visible: true,
-      content: word,
-    }
-  })
-
-  return mindInputs
 })
 
 // hooks
@@ -492,6 +469,18 @@ onBeforeUnmount(() => {
     }
   }
 
+  &__changable {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: calc(22 / 14);
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: color 0.25s $ease;
+    &:hover {
+      color: var(--color-font);
+    }
+  }
+
   &__live-placeholder {
     position: absolute;
     z-index: 2;
@@ -524,6 +513,10 @@ onBeforeUnmount(() => {
     font-size: 12px;
     line-height: 1.5;
     color: var(--color-red);
+  }
+
+  &__helper {
+    margin-top: 12px;
   }
   // &__eye {
   //   cursor: pointer;

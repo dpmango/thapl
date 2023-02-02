@@ -8,30 +8,38 @@
   >
     <div class="card__media">
       <div class="card__image">
-        <img :src="product.image" :alt="product.title" />
+        <UiAtomProductImage :src="product.image" :alt="product.title" />
       </div>
     </div>
     <div class="card__body">
       <div class="card__title h6-title">
         <UiAtomLongWords :text="product.title" />
       </div>
-      <div v-if="!product.only_pre_order" class="card__description text-s c-gray">
+      <div
+        v-if="product.packing_weights && !product.only_pre_order"
+        class="card__description text-s c-gray"
+      >
         {{ product.packing_weights }}
       </div>
-      <div v-else class="card__preorder text-s c-primary">
+      <div v-else-if="product.only_pre_order" class="card__preorder text-s c-primary">
         Этот товар доступен только по предзаказу
       </div>
       <div
+        v-if="!isGift"
         class="card__action"
         @click.stop
         @mouseenter="setFocused(false)"
         @mouseleave="setFocused(true)"
       >
         <UiPlusMinus
-          v-if="productQuantityInCart(product.id) !== 0"
+          v-if="isAddProduct || productQuantityInCart(product.id) !== 0"
           size="small"
-          :value="productQuantityInCart(product.id)"
-          @on-change="handleQuantityChange"
+          :value="
+            isAddProduct
+              ? productQuantityInCart(product.id) || additiveCount
+              : productQuantityInCart(product.id)
+          "
+          @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
         <template v-else>
           <UiButton theme="secondary" @click="handleReturn"> Вернуть </UiButton>
@@ -40,7 +48,10 @@
       </div>
     </div>
     <div class="card__meta">
-      <div class="card__price h6-title">{{ product.price }} ₽</div>
+      <div class="card__price h6-title">
+        <template v-if="!isGift">{{ formatPrice(product.price) }}</template>
+        <template v-else>Бесплатно</template>
+      </div>
     </div>
   </div>
 </template>
@@ -49,36 +60,70 @@
 import { storeToRefs } from 'pinia'
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
+import { ICartInner } from '~/interface/Cart'
 import { useCartStore, useUiStore } from '~/store'
 
 const cartStore = useCartStore()
 const ui = useUiStore()
 const { productQuantityInCart } = storeToRefs(cartStore)
+const { products } = storeToRefs(cartStore)
 
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
+    default: () => {},
+  },
+  cartItem: {
+    type: Object as PropType<ICartInner>,
+    default: null,
+  },
+  additiveCount: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+  isGift: {
+    type: Boolean,
+    default: false,
   },
 })
 
+const renderProduct = computed(() => {
+  if (props.cartItem) {
+    return products.value.find((x) => x.id === props.cartItem.id) || {}
+  }
+  return renderProduct.value
+})
+
+const isAddProduct = computed(() => {
+  return typeof props.additiveCount === 'number'
+})
+
 const handleReturn = () => {
-  cartStore.changeQuantity({ id: props.product.id, quantity: 1 })
+  cartStore.changeQuantity({ id: renderProduct.value.id, quantity: 1 })
 }
 
 const handleRemove = () => {
-  cartStore.removeFromCart(props.product.id)
+  cartStore.removeFromCart(renderProduct.value.id)
 }
 
-const handleQuantityChange = (n: number) => {
+const handleQuantityChange = (n: number, isAddProduct) => {
   // Don't remove, instead show return to cart (with quantity = 0)
-  cartStore.changeQuantity({ id: props.product.id, quantity: n })
+  if (isAddProduct) {
+    // сперва добавить в корзину
+    if (productQuantityInCart.value(renderProduct.value.id) === null) {
+      cartStore.addToCart(renderProduct.value, 1, [])
+    }
+  }
+
+  cartStore.changeQuantity({ id: renderProduct.value.id, quantity: n })
 }
 
 const handleProductClick = () => {
   ui.setModal({
     name: 'product',
     keepPrevious: true,
-    params: { id: props.product.id, critical: props.product },
+    params: { id: renderProduct.value.id, critical: renderProduct.value },
   })
 }
 

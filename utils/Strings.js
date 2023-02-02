@@ -32,11 +32,13 @@ export function clearMorphologyInSearchTerm(searchTerm) {
     .replaceAll('`', ' ')
     .trim()
   let blocks = trimmedSearchTerm.split(' ')
-  ;['ые', 'ый', 'ая', 'ами', 'ой', 'ем', 'ие', 'ий', 'ой', 'иеся', 'ийся', 'аяся'].forEach((ch) => {
-    blocks = blocks.map((b) => {
-      return b.length >= 6 ? trimRightChars(b, ch) : b
-    })
-  })
+  ;['ы', 'ые', 'ый', 'ая', 'ами', 'ой', 'ем', 'ие', 'ий', 'ой', 'иеся', 'ийся', 'аяся'].forEach(
+    (ch) => {
+      blocks = blocks.map((b) => {
+        return b.length >= 4 ? trimRightChars(b, ch) : b
+      })
+    }
+  )
   const joined = blocks.join(' ')
   return joined
 }
@@ -47,4 +49,8 @@ function escapeRegExp(string) {
 
 function trimRightChars(str, chars) {
   return str.replace(new RegExp(`${chars}$`, 'g'), '')
+}
+
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }

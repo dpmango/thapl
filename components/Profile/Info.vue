@@ -12,17 +12,17 @@
           </div>
           <div class="profile__info-col col col-6 col-sm-12">
             <span class="text-s c-gray">Телефон</span>
-            <div v-if="user.phone" class="h5-title">{{ user.username }}</div>
+            <div v-if="user.username" class="h5-title">{{ user.username }}</div>
             <div v-else class="h5-title c-gray">—</div>
           </div>
           <div class="profile__info-col col col-6 col-sm-12">
             <span class="text-s c-gray">Электронная почта</span>
-            <div v-if="user.phone" class="h5-title">{{ user.email }}</div>
+            <div v-if="user.email" class="h5-title">{{ user.email }}</div>
             <div v-else class="h5-title c-gray">—</div>
           </div>
           <div class="profile__info-col col col-6 col-sm-12">
             <span class="text-s c-gray">Дата рождения</span>
-            <div v-if="user.phone" class="h5-title">{{ user.birthday }}</div>
+            <div v-if="user.birthday" class="h5-title">{{ user.birthday }}</div>
             <div v-else class="h5-title c-gray">—</div>
           </div>
         </div>
@@ -37,7 +37,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore } from '~~/store'
+import { useSessionStore } from '~/store'
 
 const sessionStore = useSessionStore()
 const { user } = storeToRefs(sessionStore)

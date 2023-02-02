@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   experimental: { writeEarlyHints: false, inlineSSRStyles: false },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons', 'floating-vue/nuxt'],
+  modules: ['@pinia/nuxt', 'nuxt-proxy', '@nuxtjs/google-fonts', 'nuxt-icons'],
 
   proxy: {
     options: {
@@ -21,17 +21,27 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      projectName: '',
+      // базовые (тема)
+      projectName: 'Thapl',
       apiBase: '',
-      theme: '',
-      catalogType: '',
-      promoListType: '',
-      useRegions: '',
-      useSearch: '',
-      useTestimonials: '',
-      takeawayOnly: '',
-      footerNavTitle: '',
-
+      theme: 'orange',
+      catalogType: 'singlepage',
+      promoListType: 1,
+      stopListType: 1,
+      useRegions: false,
+      useSearch: true,
+      useTestimonials: false,
+      takeawayOnly: false,
+      footerNavTitle: 'Компания',
+      // заказ
+      orderUsePacking: true,
+      orderPackingCompact: 'Компактная',
+      orderPackingSeparate: 'Отдельная',
+      orderUseNotCall: false,
+      orderNotCall: 'Не звонить',
+      orderUseNotHeat: false,
+      orderPaymentOptions: '1030,3,1',
+      // вендоры
       yandexMetrikaID: '',
       yandexMapsKey: '',
       googleID: '',
