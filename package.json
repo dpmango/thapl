@@ -1,7 +1,7 @@
 {
   "name": "thapl",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "engines": {
     "node": ">=16.11.0"
   },
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@nuxtjs/google-fonts": "^3.0.0-0",
+    "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
     "@pinia/nuxt": "^0.4.6",
     "@vee-validate/i18n": "^4.7.3",
     "dayjs": "^1.11.7",
@@ -42,7 +43,6 @@
     "nuxt": "^3.1.1",
     "nuxt-icons": "^3.1.0",
     "nuxt-proxy": "^0.4.1",
-    "pinia-plugin-persistedstate": "^3.0.2",
     "swiper": "^9.0.1",
     "vee-validate": "^4.7.3",
     "vue-gtag-next": "^1.14.0",
