@@ -40,23 +40,19 @@
     </div>
 
     <div v-if="actions" class="order__actions">
-      <UiButton v-if="order.can_be_payed" @click="handleOrderPay"> Оплатить заказ </UiButton>
-      <UiButton
-        v-if="order.can_show_courier_location"
-        theme="secondary"
-        @click="handleOrderDelivery"
-      >
+      <UiButton v-if="order.can_be_payed" @click="handlePay"> Оплатить заказ </UiButton>
+      <UiButton v-if="order.can_show_courier_location" theme="secondary" @click="handleDelivery">
         Подробно о доставке
       </UiButton>
-      <UiButton v-if="order.can_be_canceled" @click="handleOrderCancel"> Отменить заказ </UiButton>
+      <UiButton v-if="order.can_be_canceled" @click="handleCancel"> Отменить заказ </UiButton>
       <UiButton
         v-if="$env.useTestimonials && order.user_can_send_review"
         theme="secondary"
-        @click="handleOrderRate"
+        @click="handleRate"
       >
         Оценить заказ
       </UiButton>
-      <UiButton v-if="[30, 5].includes(order.status)" theme="secondary" @click="handleOrderRepeat">
+      <UiButton v-if="[30, 5].includes(order.status)" theme="secondary" @click="handleRepeat">
         Повторить заказ
       </UiButton>
     </div>
@@ -67,20 +63,23 @@
 import { PropType } from 'vue'
 import { IOrder } from '~/interface/Order'
 import { formatPrice, dateToTimestamp, Plurize } from '#imports'
-import { useProfileStore, useCartStore } from '~/store'
-
-const profileStore = useProfileStore()
-const cartStore = useCartStore()
 
 const { $env, $log } = useNuxtApp()
-const router = useRouter()
 
 const props = defineProps({
   order: {
     type: Object as PropType<IOrder>,
     default: () => {},
   },
-  actions: Boolean,
+  actions: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = useOrder({
+  orderID: props.order.id,
+  cart: props.order.cart,
 })
 
 const verboseStatus = computed(() => {
@@ -185,44 +184,6 @@ const orders = computed(() => {
     stats,
   }
 })
-
-const handleOrderDelivery = () => {}
-
-const handleOrderCancel = async () => {
-  await useApi('profile/cancel-order', {
-    method: 'POST',
-    headers: useHeaders(),
-    body: {
-      ids: [props.order.id],
-    },
-  }).catch((err) => useCatchError(err, 'Ошибка. Обратитесь к администратору'))
-
-  await profileStore.getOrders()
-}
-
-const handleOrderPay = async () => {
-  const paymentData = await useApi('order/get-payment-data', {
-    method: 'POST',
-    headers: useHeaders(),
-    params: {
-      id: props.order.id,
-    },
-  }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору'))
-}
-
-const handleOrderRate = (id) => {
-  useCatchError(null, 'Не подключено')
-}
-
-const handleOrderRepeat = () => {
-  cartStore.resetCart()
-
-  props.order.cart.forEach((x) => {
-    cartStore.addToCart(x.catalog_item, x.cartItem.count, [])
-  })
-
-  router.push('/order')
-}
 </script>
 
 <stlye lang="scss" scoped>

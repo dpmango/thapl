@@ -36,3 +36,11 @@ export interface ICartItem {
   updated_at: Date
   tech_data: null
 }
+
+export interface IPaymentDataDto {
+  success: boolean
+  type: null
+  link: string | null
+  receipt: null
+  payment_sum: null
+}

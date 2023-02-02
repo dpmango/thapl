@@ -15,7 +15,7 @@
               @on-change="(v) => setFieldValue('name', v)"
             />
           </div>
-          <div class="profile__info-col col col-6 col-sm-12">
+          <!-- <div class="profile__info-col col col-6 col-sm-12">
             <UiInput
               name="surname"
               label="Фамилия"
@@ -24,13 +24,14 @@
               :error="errors.surname"
               @on-change="(v) => setFieldValue('surname', v)"
             />
-          </div>
+          </div> -->
           <div class="profile__info-col col col-6 col-sm-12">
             <UiInput
               name="phone"
               label="Номер телефона"
               placeholder="+7"
               mask="+7 (###) ###-##-##"
+              :disabled="true"
               :value="phone"
               :error="errors.phone"
               @on-change="(v) => setFieldValue('phone', v)"

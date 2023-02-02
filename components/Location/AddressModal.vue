@@ -249,11 +249,6 @@ onMounted(async () => {
   &__delivery {
     margin-top: 28px;
   }
-  &._type-2 {
-    :deep(ymaps) {
-      display: none !important;
-    }
-  }
 }
 
 @include r($md) {
