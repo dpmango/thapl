@@ -66,6 +66,7 @@ import { useCartStore, useUiStore } from '~/store'
 const cartStore = useCartStore()
 const ui = useUiStore()
 const { productQuantityInCart } = storeToRefs(cartStore)
+const { products } = storeToRefs(cartStore)
 
 const props = defineProps({
   product: {
@@ -87,35 +88,42 @@ const props = defineProps({
   },
 })
 
+const renderProduct = computed(() => {
+  if (props.cartItem) {
+    return products.value.find((x) => x.id === props.cartItem.id) || {}
+  }
+  return renderProduct.value
+})
+
 const isAddProduct = computed(() => {
   return typeof props.additiveCount === 'number'
 })
 
 const handleReturn = () => {
-  cartStore.changeQuantity({ id: props.product.id, quantity: 1 })
+  cartStore.changeQuantity({ id: renderProduct.value.id, quantity: 1 })
 }
 
 const handleRemove = () => {
-  cartStore.removeFromCart(props.product.id)
+  cartStore.removeFromCart(renderProduct.value.id)
 }
 
 const handleQuantityChange = (n: number, isAddProduct) => {
   // Don't remove, instead show return to cart (with quantity = 0)
   if (isAddProduct) {
     // сперва добавить в корзину
-    if (productQuantityInCart.value(props.product.id) === null) {
-      cartStore.addToCart(props.product, 1, [])
+    if (productQuantityInCart.value(renderProduct.value.id) === null) {
+      cartStore.addToCart(renderProduct.value, 1, [])
     }
   }
 
-  cartStore.changeQuantity({ id: props.product.id, quantity: n })
+  cartStore.changeQuantity({ id: renderProduct.value.id, quantity: n })
 }
 
 const handleProductClick = () => {
   ui.setModal({
     name: 'product',
     keepPrevious: true,
-    params: { id: props.product.id, critical: props.product },
+    params: { id: renderProduct.value.id, critical: renderProduct.value },
   })
 }
 

@@ -39,42 +39,36 @@ export const useDeliveryStore = defineStore('delivery', {
       return orderType
     },
     currentAddressType(state): string | null {
-      try {
-        return state.currentAddress.type
-      } catch {
-        return null
-      }
+      return state.currentAddress?.type || null
     },
     currentRegionName(state) {
       const region = state.regions.find((x) => x.id === state.region)
       if (region) {
-        return region.title
+        return region.title as string
       }
       return null
     },
     minOrderPrice(state) {
-      try {
-        return state.zone.min_order
-      } catch {
-        return null
-      }
+      return state.zone?.min_order || null
     },
-    workingTime(state) {
-      try {
-        const from = state.zone.time_from
-        const to = state.zone.time_to
+    workingTime:
+      (state) =>
+      (key = 'zone') => {
+        try {
+          const from = state[key].time_from
+          const to = state[key].time_to
 
-        if (state.zone.working_all_day) {
-          return 'Круглосуточно'
-        } else if (from && to) {
-          return `${from} : ${to}`
+          if (state[key].working_all_day) {
+            return 'Круглосуточно'
+          } else if (from && to) {
+            return `${from} : ${to}`
+          }
+
+          return ''
+        } catch {
+          return ''
         }
-
-        return ''
-      } catch {
-        return ''
-      }
-    },
+      },
   },
   actions: {
     clientInit() {

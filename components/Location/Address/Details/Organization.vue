@@ -11,27 +11,16 @@
       <p class="text-s c-gray">Время готовки</p>
       <h5 class="info__value h5-title h6-title-md">TODO</h5>
     </div>
-    <div class="info__col col col-md-4 col-sm-6">
-      <p class="text-s c-gray">Часы работы</p>
-      <h5 class="info__value h5-title h6-title-md">TODO</h5>
+    <div v-if="workingTime('takeawayOrganization')" class="info__col col col-md-4 col-sm-6">
+      <p class="text-s">Часы работы</p>
+      <h5 class="info__value h5-title">
+        {{ workingTime('takeawayOrganization') }}
+      </h5>
     </div>
     <div class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Заказ от</p>
       <h5 class="info__value h5-title h6-title-md">TODO</h5>
     </div>
-    <!-- <div class="info__col col col-md-4 col-sm-6">
-      <p class="text-s">Время доставки</p>
-      <h5 class="info__value h5-title">
-        <template v-if="organization.is_high_load_state">is_high_load_state - icon</template>
-        <template v-if="zone.max_time">{{ formatMinutes(zone.max_time) }}</template>
-      </h5>
-    </div> -->
-    <!-- <div v-if="workingTime" class="info__col col col-md-4 col-sm-6">
-      <p class="text-s">Часы работы</p>
-      <h5 class="info__value h5-title">
-        {{ workingTime }}
-      </h5>
-    </div> -->
   </div>
 
   <div class="location__cta" @click="handleToOrderClick">
@@ -43,13 +32,15 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
+import { IOrganizationTakeaway } from 'interface/Delivery'
 
 const props = defineProps({
   organization: {
-    type: Object,
+    type: Object as PropType<IOrganizationTakeaway>,
     default: () => {},
   },
 })
@@ -57,6 +48,7 @@ const props = defineProps({
 const deliveryStore = useDeliveryStore()
 const sessionStore = useSessionStore()
 const { isPreorderAvailable } = storeToRefs(sessionStore)
+const { workingTime } = storeToRefs(deliveryStore)
 
 const ui = useUiStore()
 
