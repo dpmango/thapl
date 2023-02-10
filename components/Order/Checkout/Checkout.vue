@@ -126,7 +126,7 @@
           </template>
 
           <!-- Дата и время -->
-          <template v-if="true || app_settings.order_to_time">
+          <template v-if="app_settings.order_to_time">
             <div class="checkout__row" data-name="section_datetime">
               <div class="ui-label">Дата доставки</div>
               <div class="checkout__toggle-grid">
@@ -861,6 +861,15 @@ watch(
   (newVal) => {
     if (newVal) fetchPromo()
   }
+)
+
+// проверка промо после смены адреса
+watch(
+  () => zoneData.value,
+  () => {
+    fetchPromo()
+  },
+  { deep: true }
 )
 
 // Комментарий
