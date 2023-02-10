@@ -71,7 +71,7 @@ const handleSelect = () => {
 
 const handleQuantityChange = (n: number) => {
   if (n === 0) {
-    cartStore.removeFromCart(props.product.id)
+    cartStore.removeFromCart(props.product.id, props.modifiers)
   } else {
     cartStore.changeQuantity({ id: props.product.id, quantity: n })
   }

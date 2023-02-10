@@ -918,8 +918,11 @@ const buildRequestObject = () => {
     orderObject.email = email.value
   }
 
+  if (promo.value.promo_id) {
+    orderObject.promo_id = promo.value.promo_id
+  }
+
   if (promocode.value) {
-    // "promo_id": 0,
     orderObject.promo_code = promocode.value
   }
   if (points.value) {

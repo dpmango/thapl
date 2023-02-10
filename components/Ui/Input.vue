@@ -236,7 +236,7 @@ const handleAutocompleate = (e) => {
 const iconsRef = ref(null)
 
 const setInputOffsets = () => {
-  if (props.iconPosition === 'left') return
+  // if (props.iconPosition === 'left') return
   try {
     const iconsWidth = iconsRef.value.offsetWidth + 15 + 10
     inputRef.value.style[`padding${capitalizeFirstLetter(props.iconPosition)}`] = `${iconsWidth}px`

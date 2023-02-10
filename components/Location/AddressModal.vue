@@ -223,7 +223,7 @@ onMounted(async () => {
   &__search {
     margin-top: 28px;
     :deep(.ymaps-2-1-79-search__suggest) {
-      top: 16px;
+      top: 22px;
       border: 0;
       border-radius: var(--input-border-radius);
       overflow: hidden;

@@ -14,6 +14,9 @@
     <div class="card__body">
       <div class="card__title h6-title">
         <UiAtomLongWords :text="product.title" />
+        <span v-for="(mod, idx) in productModifiers" :key="idx" class="text-xs c-gray">
+          {{ mod.label }}: {{ mod.value }}
+        </span>
       </div>
       <div
         v-if="product.packing_weights && !product.only_pre_order"
@@ -49,7 +52,7 @@
     </div>
     <div class="card__meta">
       <div class="card__price h6-title">
-        <template v-if="!isGift">{{ formatPrice(product.price) }}</template>
+        <template v-if="!isGift">{{ productPrice }}</template>
         <template v-else>Бесплатно</template>
       </div>
     </div>
@@ -88,11 +91,9 @@ const props = defineProps({
   },
 })
 
-const renderProduct = computed(() => {
-  if (props.cartItem) {
-    return products.value.find((x) => x.id === props.cartItem.id) || {}
-  }
-  return renderProduct.value
+const { renderProduct, productPrice, productModifiers } = useProduct({
+  cartItem: props.cartItem,
+  product: props.product,
 })
 
 const isAddProduct = computed(() => {
@@ -104,7 +105,7 @@ const handleReturn = () => {
 }
 
 const handleRemove = () => {
-  cartStore.removeFromCart(renderProduct.value.id)
+  cartStore.removeFromCart(renderProduct.value.id, props.cartItem?.modifiers)
 }
 
 const handleQuantityChange = (n: number, isAddProduct) => {
@@ -116,7 +117,12 @@ const handleQuantityChange = (n: number, isAddProduct) => {
     }
   }
 
-  cartStore.changeQuantity({ id: renderProduct.value.id, quantity: n })
+  // disables return/remove functionality
+  if (n === 0) {
+    handleRemove()
+  } else {
+    cartStore.changeQuantity({ id: renderProduct.value.id, quantity: n })
+  }
 }
 
 const handleProductClick = () => {
