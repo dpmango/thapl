@@ -15,7 +15,7 @@ module.exports = {
   ],
   rules: {
     quotes: ['error', 'single'],
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'vue/multi-word-component-names': 'off',
     'vue/prop-name-casing': 'off',
     'vue/require-default-prop': 'off',
