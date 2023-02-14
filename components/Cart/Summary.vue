@@ -21,7 +21,7 @@
 
     <div class="cart__scroller">
       <div class="cart__list">
-        <ProductCardCart v-for="(cartItem, idx) in cart" :key="idx" :cart-item="cartItem" />
+        <ProductCardCart v-for="cartItem in cart" :key="cartItem.id" :cart-item="cartItem" />
         <ProductCardCart
           v-for="additive in additivesNotInCart"
           :key="additive.catalog_item.id"
