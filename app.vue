@@ -29,14 +29,17 @@ nuxtApp.hook('page:finish', () => {
   loaded.value = true
 })
 
-// onMounted(() => {
-//   setAppVH()
-//   window.addEventListener('resize', setAppVH)
-// })
+onMounted(() => {
+  setAppVH()
+  window.addEventListener('resize', setAppVH)
+})
 
-// const setAppVH = () => {
-//   document.documentElement.style.setProperty('--app-vh', window.innerHeight * 0.01 + 'px')
-// }
+const setAppVH = () => {
+  const vw = document.documentElement.clientWidth * 0.01
+  const vh = window.innerHeight * 0.01
+  document.documentElement.style.setProperty('--vw', `${vw}px`)
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+}
 
 const productStore = useProductStore()
 const deliveryStore = useDeliveryStore()
