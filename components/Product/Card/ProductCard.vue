@@ -39,7 +39,7 @@
           @on-before-add="handleProductClick"
         >
           <span class="hidden-sm">Выбрать</span>
-          <span class="visible-sm">{{ product.price }}</span>
+          <span class="visible-sm">{{ formatPrice(product.price) }}</span>
         </ProductCardAddToCart>
       </div>
     </div>

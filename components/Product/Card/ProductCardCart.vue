@@ -8,23 +8,23 @@
   >
     <div class="card__media">
       <div class="card__image">
-        <UiAtomProductImage :src="product.image" :alt="product.title" />
+        <UiAtomProductImage :src="renderProduct.image" :alt="renderProduct.title" />
       </div>
     </div>
     <div class="card__body">
       <div class="card__title h6-title">
-        <UiAtomLongWords :text="product.title" />
+        <UiAtomLongWords :text="renderProduct.title" />
         <span v-for="(mod, idx) in productModifiers" :key="idx" class="text-xs c-gray">
           {{ mod.label }}: {{ mod.value }}
         </span>
       </div>
       <div
-        v-if="product.packing_weights && !product.only_pre_order"
+        v-if="renderProduct.packing_weights && !renderProduct.only_pre_order"
         class="card__description text-s c-gray"
       >
-        {{ product.packing_weights }}
+        {{ renderProduct.packing_weights }}
       </div>
-      <div v-else-if="product.only_pre_order" class="card__preorder text-s c-primary">
+      <div v-else-if="renderProduct.only_pre_order" class="card__preorder text-s c-primary">
         Этот товар доступен только по предзаказу
       </div>
       <div
@@ -35,12 +35,12 @@
         @mouseleave="setFocused(true)"
       >
         <UiPlusMinus
-          v-if="isAddProduct || productQuantityInCart(product.id) !== 0"
+          v-if="isAddProduct || productQuantityInCart(renderProduct.id) !== 0"
           size="small"
           :value="
             isAddProduct
-              ? productQuantityInCart(product.id) || additiveCount
-              : productQuantityInCart(product.id)
+              ? productQuantityInCart(renderProduct.id) || additiveCount
+              : productQuantityInCart(renderProduct.id)
           "
           @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
