@@ -7,7 +7,7 @@ export const useSessionStore = defineStore('session', {
     return {
       api_token: null as string | null,
       user_token: null as string | null,
-      user: {} as IUser,
+      user: {} as IUser | {},
       app_settings: {} as IAppSettings,
 
       phone: '' as string,
@@ -65,6 +65,13 @@ export const useSessionStore = defineStore('session', {
         ...this.user,
         ...payload,
       }
+    },
+    logout() {
+      this.user_token = null
+      this.user = {}
+
+      const userToken = useCookieState('x-thapl-authorization')
+      userToken.value = ''
     },
   },
 })

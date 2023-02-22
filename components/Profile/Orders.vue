@@ -3,7 +3,7 @@
     <div class="container _narrow">
       <ProfileNav class="profile__nav" />
 
-      <div v-if="orders" class="profile__orders">
+      <div v-if="orders.length" class="profile__orders">
         <OrderPreview
           v-for="order in orders"
           :key="order.id"
