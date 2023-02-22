@@ -3,7 +3,7 @@
     <div class="container _narrow">
       <ProfileNav class="profile__nav" />
 
-      <div v-if="addresses" class="profile__addresses">
+      <div v-if="addresses.length" class="profile__addresses">
         <ProfileAddress
           v-for="address in addresses"
           :key="address.id"

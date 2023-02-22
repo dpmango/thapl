@@ -126,7 +126,7 @@
           </template>
 
           <!-- Дата и время -->
-          <template v-if="true || app_settings.order_to_time">
+          <template v-if="app_settings.order_to_time">
             <div class="checkout__row" data-name="section_datetime">
               <div class="ui-label">Дата доставки</div>
               <div class="checkout__toggle-grid">
@@ -863,6 +863,15 @@ watch(
   }
 )
 
+// проверка промо после смены адреса
+watch(
+  () => zoneData.value,
+  () => {
+    fetchPromo()
+  },
+  { deep: true }
+)
+
 // Комментарий
 const { value: comment } = useField('comment', (v) => {
   return true
@@ -918,8 +927,11 @@ const buildRequestObject = () => {
     orderObject.email = email.value
   }
 
+  if (promo.value.promo_id) {
+    orderObject.promo_id = promo.value.promo_id
+  }
+
   if (promocode.value) {
-    // "promo_id": 0,
     orderObject.promo_code = promocode.value
   }
   if (points.value) {

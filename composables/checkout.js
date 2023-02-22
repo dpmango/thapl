@@ -28,9 +28,9 @@ export const useCheckout = () => {
 
   // калькуляции различных состояний цены (с доставкой, со скидками и т.д)
   const priceData = computed(() => {
-    const deliverySum = freeDeliveryData.value.match ? 0 : zone.value.delivery_price
+    const deliverySum = freeDeliveryData.value.match ? 0 : zone.value.delivery_price || 0
     const withDelivery = cartPrice.value + deliverySum
-    const promoSum = promo.value?.discount_sum
+    const promoSum = promo.value?.discount_sum || 0
     const pointsSum = 0
 
     // - сумма примененных бонусов

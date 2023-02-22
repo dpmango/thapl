@@ -87,8 +87,8 @@ const { data: lastOrder, error: lastOrderError } = await useAsyncData(
 $log.log('🧙‍♂️ ASYNC LAST ORDER', { lastOrder: lastOrder.value })
 
 const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = useOrder({
-  orderID: lastOrder.value.id,
-  cart: lastOrder.value.cart,
+  orderID: lastOrder.value?.id || null,
+  cart: lastOrder.value?.cart || [],
 })
 </script>
 

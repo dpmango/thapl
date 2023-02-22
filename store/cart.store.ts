@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier, ICardModifierInner } from '~/interface/Cart'
-import { IProduct, IAdditive } from '~/interface/Product'
+import { IProduct, IAdditive, IModifierItem } from '~/interface/Product'
 import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
 import { isArraysEqual } from '#imports'
@@ -128,11 +128,40 @@ export const useCartStore = defineStore('cart', {
         },
       })
     },
-    async removeFromCart(id: number) {
-      this.cart = this.cart.filter((x) => x.id !== id)
-      this.products = this.products.filter((x) => x.id !== id)
+    async removeFromCart(id: number, modifiers?: ICartModifier[]) {
+      this.cart = this.cart.filter((x) => {
+        // если переданы модификаторы, удаляются только совпадающие товары
+        if (modifiers?.length && x.id === id && x.modifiers) {
+          const productModifiers = x.modifiers.map((x) => x.id)
+          const incomingModifiers = modifiers.map((x) => x.id)
 
-      // находить по индексу с учетом модификаторов
+          return !isArraysEqual(productModifiers, incomingModifiers)
+        }
+
+        return x.id !== id
+      })
+      this.products = this.products.filter((x) => {
+        // товары храняться в едином экземпляре
+        // удялется только если нет других товаров с модификаторам
+        if (modifiers?.length && x.id === id && x.modifier_groups) {
+          const productModifiersFlat = x.modifier_groups.reduce((acc, mod) => {
+            if (mod.items?.length) {
+              mod.items.forEach((x) => {
+                acc = [...acc, x]
+              })
+            }
+            return acc
+          }, [] as IModifierItem[])
+
+          const productModifiersIds = productModifiersFlat.map((x) => x.id)
+          const incomingModifiers = modifiers.map((x) => x.id)
+
+          console.log({ productModifiersIds }, { incomingModifiers })
+
+          return false
+        }
+        return x.id !== id
+      })
 
       await this.sendCartAnalytics({
         action: 'remove',

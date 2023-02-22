@@ -61,7 +61,16 @@ export const useDeliveryStore = defineStore('delivery', {
           if (state[key].working_all_day) {
             return 'Круглосуточно'
           } else if (from && to) {
-            return `${from} : ${to}`
+            let fromFormated = from.split(':')
+            let toFormated = to.split(':')
+            if (fromFormated.length >= 3) {
+              fromFormated = fromFormated.slice(0, 2).join(':')
+            }
+            if (toFormated.length >= 3) {
+              toFormated = toFormated.slice(0, 2).join(':')
+            }
+
+            return `${fromFormated} : ${toFormated}`
           }
 
           return ''
