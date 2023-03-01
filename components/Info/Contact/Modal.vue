@@ -10,7 +10,7 @@
           <span class="text-m text-sm-s fw-500 c-gray">{{ contact.label }}</span>
           <a
             :href="contact.value"
-            :target="contact.text ? '_blank' : ''"
+            :target="contact.text ? '_blank' : '#'"
             class="h2-title h6-title-sm"
             :class="[contact.text && '_link']"
           >
@@ -22,32 +22,60 @@
   </UiModal>
 </template>
 
-<script setup>
-import { storeToRefs } from 'pinia'
-import { useSessionStore } from '~/store'
+<script setup lang="ts">
 import { clearSocialLink } from '#imports'
 
-const sessionStore = useSessionStore()
-const {
-  app_settings: { default_phone, tg, whatsapp, facebook, instagram },
-} = sessionStore
+const { $env, $log } = useNuxtApp()
+
+interface IContactsDto {
+  phone: string | null
+  email: boolean
+  facebook: string | null
+  instagram: string | null
+  telegram: string | null
+  vk: string | null
+  wu: boolean
+  restaurants_count: number
+}
+
+const { data, error } = await useAsyncData(
+  'page/get-contacts-data',
+  () =>
+    useApi('page/get-contacts-data', {
+      method: 'GET',
+      headers: useHeaders(),
+    }) as Promise<IContactsDto>
+)
+
+$log.log('🧙‍♂️ ASYNC CONTACTS', { data: data.value })
+
+// if (error && error.value) {
+//   setResponseStatus(404)
+// }
 
 const list = computed(() => {
-  const all = [
-    { label: 'Телефон', value: default_phone },
-    // { label: 'Электронная почта', value: default_phone },
-    { label: 'Телеграм', value: tg, text: clearSocialLink(tg) },
-    { label: 'WhatsApp', value: whatsapp, text: clearSocialLink(whatsapp) },
-    { label: 'Фейсбук', value: clearSocialLink(facebook) },
-    {
-      label: 'Инстаграм',
-      value: instagram,
-      text: clearSocialLink(instagram),
-    },
-    { label: 'Адрес', value: null },
-  ]
+  if (data.value) {
+    const { phone, telegram, facebook, instagram, vk, email, wu } = data.value
 
-  return all.filter((x) => x.value)
+    const all = [
+      { label: 'Телефон', value: phone },
+      { label: 'Электронная почта', value: email },
+      { label: 'Телеграм', value: telegram, text: clearSocialLink(telegram) },
+      { label: 'WhatsApp', value: wu, text: clearSocialLink(wu) },
+      { label: 'Фейсбук', value: clearSocialLink(facebook) },
+      { label: 'ВКонтакте', value: clearSocialLink(vk) },
+      {
+        label: 'Инстаграм',
+        value: instagram,
+        text: clearSocialLink(instagram),
+      },
+      // { label: 'Адрес', value: null },
+    ]
+
+    return all.filter((x) => x.value)
+  }
+
+  return []
 })
 </script>
 

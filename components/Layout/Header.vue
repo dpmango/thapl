@@ -99,7 +99,7 @@
               <div class="action__text">{{ session.userNameVerbose }}</div>
             </NuxtLink>
           </div>
-          <div class="col">
+          <div v-if="$env.useContacts" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'contacts' })">
               <div class="action__icon"><nuxt-icon name="dialog" /></div>
               <div class="action__text">Контакты</div>
