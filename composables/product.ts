@@ -1,7 +1,7 @@
 import { ComputedRef } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCartStore, useUiStore } from '~/store'
-import { IProduct } from '~/interface/Product'
+import { IProduct, IModifierItem } from '~/interface/Product'
 import { ICartInner } from '~/interface/Cart'
 import { formatPrice } from '#imports'
 
@@ -40,7 +40,22 @@ export const useProduct = ({
   const productModifiers = computed(() => {
     if (cartItem?.modifiers?.length) {
       const modifiers = renderProduct.value.modifier_groups
-      // TODO делать поиск по id, брать названия и id группы
+      if (modifiers) {
+        const flatModifiers = modifiers.reduce((acc, x) => {
+          acc = [...acc, ...x.items]
+
+          return acc
+        }, [] as IModifierItem[])
+
+        return cartItem?.modifiers.map((mod) => {
+          const productModifier = flatModifiers.find((x) => x.id === mod.id)
+
+          return {
+            label: productModifier?.title || 'неизвестно',
+            value: formatPrice(productModifier?.price),
+          }
+        })
+      }
 
       return [{ label: 'Модификаторов', value: cartItem?.modifiers?.length }]
     }

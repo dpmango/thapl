@@ -8,21 +8,20 @@
       <div v-if="opened" class="scope__content">
         <div class="scope__section">
           <div class="scope__products">
-            <div v-for="product in allProducts" class="scope__row">
-              <div class="scope__label text-m text-md-s">
-                {{ product.title }}
-                <span v-if="product.isGift" class="c-gray">Подарок </span>
-                <span v-else-if="productQuantityInCart(product.id) !== 1" class="c-gray">
-                  × {{ productQuantityInCart(product.id) }}
-                </span>
-              </div>
-              <div class="scope__value h6-title text-md-s c-primary">
-                <template v-if="product.isGift">
-                  <s>{{ formatPrice(product.price) }}</s>
-                </template>
-                <template v-else>{{ formatPrice(product.price) }}</template>
-              </div>
-            </div>
+            <ProductCardCheckout
+              v-for="cartItem in cart"
+              :key="cartItem.id"
+              :cart-item="cartItem"
+              class="scope__row"
+            />
+
+            <ProductCardCheckout
+              v-for="promoProduct in promo?.gifts"
+              :key="promoProduct.id"
+              :product="promo"
+              :is-gift="true"
+              class="scope__row"
+            />
           </div>
         </div>
         <div class="scope__section">
@@ -71,21 +70,8 @@ const cartStore = useCartStore()
 const { cart, products, promo, productQuantityInCart } = storeToRefs(cartStore)
 const { priceData, zoneData, promoData, freeDeliveryData } = useCheckout()
 
-const allProducts = computed(() => {
-  const gifts = promo.value?.gifts?.map((x) => ({
-    ...x,
-    isGift: true,
-  }))
-
-  if (gifts && gifts.length) {
-    return [...products.value, ...gifts]
-  }
-
-  return products.value
-})
-
 const verboseCartCount = computed(() => {
-  const count = allProducts.value.length
+  const count = cart.value.length + promo.value?.gifts.length || 0
   return `${count} ${Plurize(count, 'блюдо', 'блюда', 'блюд')}`
 })
 

@@ -14,10 +14,14 @@
     <div class="card__body">
       <div class="card__title h6-title">
         <UiAtomLongWords :text="renderProduct.title" />
-        <span v-for="(mod, idx) in productModifiers" :key="idx" class="text-xs c-gray">
-          {{ mod.label }}: {{ mod.value }}
-        </span>
       </div>
+      <span
+        v-for="(mod, idx) in productModifiers"
+        :key="idx"
+        class="card__modifiers text-xs c-gray"
+      >
+        {{ mod.label }}: {{ mod.value }}
+      </span>
       <div
         v-if="renderProduct.packing_weights && !renderProduct.only_pre_order"
         class="card__description text-s c-gray"
@@ -65,6 +69,7 @@ import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
 import { ICartInner } from '~/interface/Cart'
 import { useCartStore, useUiStore } from '~/store'
+import { useProduct } from '#imports'
 
 const cartStore = useCartStore()
 const ui = useUiStore()
@@ -101,7 +106,11 @@ const isAddProduct = computed(() => {
 })
 
 const handleReturn = () => {
-  cartStore.changeQuantity({ id: renderProduct.value.id, quantity: 1 })
+  cartStore.changeQuantity({
+    id: renderProduct.value.id,
+    quantity: 1,
+    modifiers: props.cartItem?.modifiers || [],
+  })
 }
 
 const handleRemove = () => {
@@ -121,7 +130,11 @@ const handleQuantityChange = (n: number, isAddProduct) => {
   if (n === 0) {
     handleRemove()
   } else {
-    cartStore.changeQuantity({ id: renderProduct.value.id, quantity: n })
+    cartStore.changeQuantity({
+      id: renderProduct.value.id,
+      quantity: n,
+      modifiers: props.cartItem?.modifiers || [],
+    })
   }
 }
 

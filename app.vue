@@ -9,7 +9,13 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore, useProductStore, useDeliveryStore, useUiStore } from '~/store'
+import {
+  useSessionStore,
+  useProductStore,
+  useDeliveryStore,
+  useUiStore,
+  useCartStore,
+} from '~/store'
 import { scrollPageToTop, createSeoTags, APP_VERSION } from '#imports'
 
 const nuxtApp = useNuxtApp()
@@ -43,6 +49,7 @@ const setAppVH = () => {
 
 const productStore = useProductStore()
 const deliveryStore = useDeliveryStore()
+const cartStore = useCartStore()
 const sessionStore = useSessionStore()
 const { region } = storeToRefs(deliveryStore)
 
@@ -95,6 +102,7 @@ if (initData.app_settings.takeaway_enabled || !$env.takeawayOnly) {
 
 onMounted(() => {
   deliveryStore.clientInit()
+  cartStore.fetchCartProducts()
 })
 </script>
 
