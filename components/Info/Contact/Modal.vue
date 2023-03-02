@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { clearSocialLink } from '#imports'
+import { clearSocialLink, buildLink } from '#imports'
 
 const { $env, $log } = useNuxtApp()
 
@@ -60,13 +60,13 @@ const list = computed(() => {
     const all = [
       { label: 'Телефон', value: phone },
       { label: 'Электронная почта', value: email },
-      { label: 'Телеграм', value: telegram, text: clearSocialLink(telegram) },
-      { label: 'WhatsApp', value: wu, text: clearSocialLink(wu) },
-      { label: 'Фейсбук', value: clearSocialLink(facebook) },
-      { label: 'ВКонтакте', value: clearSocialLink(vk) },
+      { label: 'Телеграм', value: buildLink(telegram), text: clearSocialLink(telegram) },
+      { label: 'WhatsApp', value: buildLink(wu), text: clearSocialLink(wu) },
+      { label: 'Фейсбук', value: buildLink(facebook), text: clearSocialLink(facebook) },
+      { label: 'ВКонтакте', value: buildLink(vk), text: clearSocialLink(vk) },
       {
         label: 'Инстаграм',
-        value: instagram,
+        value: buildLink(instagram),
         text: clearSocialLink(instagram),
       },
       // { label: 'Адрес', value: null },

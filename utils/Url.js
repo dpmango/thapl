@@ -16,6 +16,8 @@ export const clearSocialLink = (v) => {
     .replace('www.', '')
     .replace('t.me/', '@')
     .replace('instagram.com/', '@')
+    .replace('facebook.com/', '@')
+    .replace('vk.com/', '@')
     .replace('whatsapp://send?phone=', '')
     .replaceAll('/', '')
 
@@ -30,4 +32,20 @@ export const openExternalLink = (url) => {
   } else {
     window.open(url)
   }
+}
+
+export const buildLink = (v) => {
+  if (!v) return ''
+
+  if (v.includes('http:') || v.includes('https:')) {
+    return v
+  }
+
+  const [link, hasLinkLike] = v.split('//')
+
+  if (!hasLinkLike) {
+    return `https://${link}`
+  }
+
+  return v
 }
