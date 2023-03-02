@@ -5,6 +5,7 @@ import {
   IUserAddress,
   IOrganizationTakeaway,
   ICurrentAddress,
+  IRegion,
 } from 'interface/Delivery'
 import { localStorageKeepArray, localStorageGet } from '#imports'
 
@@ -12,7 +13,7 @@ export const useDeliveryStore = defineStore('delivery', {
   state: () => {
     return {
       region: null,
-      regions: [],
+      regions: [] as IRegion[],
 
       restaurants: [] as IOrganizationTakeaway[],
       userAddress: [] as IUserAddress[],

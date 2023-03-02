@@ -1,6 +1,6 @@
 <template>
-  <div class="stat">
-    <div class="stat-title">пищевая ценность:</div>
+  <div class="stat c-gray">
+    <div class="stat-title c-font">пищевая ценность:</div>
     <div class="stat-row">
       <label for="">Энерг. ценность:</label>
       <span>{{ product.energy_full_amount }}</span>
@@ -40,14 +40,13 @@ const props = defineProps({
   margin: 24px 0 12px;
   text-align: left;
   font-size: 14px;
-  color: #d5d5d5;
   display: flex;
   flex-direction: column;
   justify-content: center;
   &-title {
     text-align: center;
     margin-bottom: 8px;
-    color: white;
+
     text-transform: uppercase;
   }
   &-row {

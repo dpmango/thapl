@@ -1,9 +1,9 @@
 <template>
-  <li class="li" v-bind="$attrs">
-    <p class="li__title text-m">{{ title }}</p>
+  <li class="li" :class="[modifier && `_${modifier}`]" v-bind="$attrs">
+    <p class="li__title" :class="[modifier === 'large' ? 'h5-title' : 'text-m']">{{ title }}</p>
     <div v-if="description" class="li__content c-gray">
       <div v-for="desc in description" class="li__content-str">
-        <span v-if="desc" class="text-s">
+        <span v-if="desc" :class="[modifier === 'large' ? 'text-m' : 'text-s']">
           <UiAtomLongWords :text="desc" />
         </span>
       </div>
@@ -18,6 +18,7 @@ const props = defineProps({
     type: [String, Array],
     default: '',
   },
+  modifier: String,
 })
 </script>
 
@@ -26,6 +27,9 @@ const props = defineProps({
   padding: 15px 0;
   border-bottom: 1px solid var(--color-border);
   cursor: pointer;
+  &._large {
+    padding: 36px 0;
+  }
   &__title {
     transition: color 0.25s $ease;
   }

@@ -1,4 +1,10 @@
 /* eslint-disable no-use-before-define */
+
+export interface IRegion {
+  title: string
+  id: number
+  domain: string
+}
 export interface IZone {
   found: boolean
   is_open: boolean
@@ -85,4 +91,24 @@ export interface ICurrentAddress {
   org_id: number
   latitude?: number
   longitude?: number
+}
+
+export interface IRestaurant {
+  id: number
+  title: string
+  working_hours: string
+  lng: number
+  lat: number
+  address: string
+  phone: string
+  tags: IRestaurantTag[]
+}
+
+export interface IRestaurantTag {
+  id: number
+  sort: number
+  tag: string
+  bg_color: string
+  text_color: string
+  slug: string
 }
