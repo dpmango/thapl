@@ -1,4 +1,12 @@
 /* eslint-disable no-use-before-define */
+export interface IGeoDataRef {
+  requested: boolean
+  found: boolean | null
+  latitude: number | null
+  longitude: number | null
+  text: string
+}
+
 export interface YandexGeocoderResponce {
   response: Response
 }
