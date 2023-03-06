@@ -56,6 +56,11 @@
         Повторить заказ
       </UiButton>
     </div>
+
+    <OrderReviewModal
+      v-if="actions && $env.useTestimonials && order.user_can_send_review"
+      :id="order.id"
+    />
   </div>
 </template>
 

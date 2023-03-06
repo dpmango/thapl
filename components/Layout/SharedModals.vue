@@ -9,6 +9,7 @@
   <InfoContactModal />
   <ProductModal />
   <ProductSearchOverlay />
+  <OrderReviewModal />
 </template>
 
 <script setup>
