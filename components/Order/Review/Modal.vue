@@ -20,7 +20,7 @@ const { modalParams } = storeToRefs(ui)
 const questions = ref(null)
 
 const fetchQuestions = async () => {
-  if (!modalParams.value.id) return
+  if (!modalParams.value?.id) return
 
   const data = await useApi('order/get-order-questionnaire', {
     method: 'GET',
