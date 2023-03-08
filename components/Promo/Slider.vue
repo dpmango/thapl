@@ -4,30 +4,42 @@
       <UiLibSwiper class="promo__slider" :params="swiperParams">
         <SwiperSlide v-for="(slide, idx) in slides" :key="idx">
           <NuxtLink
-            :to="`/promo/${slide.slug}`"
+            :to="slide.view_type === 1 ? `/promo/${slide.slug}` : '#'"
             class="promo__slide"
             :class="[viewedPromos.includes(slide.slug) && '_viewed']"
+            @click="handleSlideClick(slide)"
           >
             <img class="promo__slide-bg" :src="slide.image" :alt="slide.title" />
           </NuxtLink>
         </SwiperSlide>
       </UiLibSwiper>
     </div>
+
+    <PromoStories
+      v-if="openedStories"
+      :stories="openedStories"
+      :visible="storiesVisible"
+      @on-close="() => (storiesVisible = false)"
+    />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
 import { SwiperSlide } from 'swiper/vue'
+import { useToast } from 'vue-toastification/dist/index.mjs'
 import { localStorageGet } from '#imports'
+import { IPromoListDto, IStoriesDto, IPromoPageDto } from '~/interface/Promo'
 
 const props = defineProps({
   slides: {
-    type: Array,
+    type: Array as PropType<IPromoListDto[]>,
     default: () => [],
   },
 })
 
 const { $env } = useNuxtApp()
+const toast = useToast()
 const listType = $env.promoListType
 const modifiers = computed(() => [listType === 1 && '_wide', listType === 2 && '_narrow'])
 
@@ -41,8 +53,29 @@ const swiperParams = {
   },
 }
 
-const viewedPromos = ref([])
+const viewedPromos = ref<string[]>([])
 
+const storiesVisible = ref(false)
+const openedStories = ref<IStoriesDto[]>([])
+
+const handleSlideClick = async (slide: IPromoListDto) => {
+  if (slide.view_type === 2) {
+    const data = (await useApi('promo/get-page-data', {
+      method: 'GET',
+      headers: useHeaders(),
+      params: {
+        slug: slide.slug,
+      },
+    })) as IPromoPageDto
+
+    if (data) {
+      openedStories.value = data.stories_data || []
+      storiesVisible.value = true
+    } else {
+      toast.error('Ошибка при открытии сторис. Попробуйте еще раз')
+    }
+  }
+}
 onMounted(() => {
   const stored = localStorageGet('viewedPromo') || []
   viewedPromos.value = [...stored]
