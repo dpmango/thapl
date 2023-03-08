@@ -5,6 +5,8 @@
     </div>
 
     <PromoPage v-if="data" :data="data" />
+
+    <PromoStories v-if="data?.stories_data" :stories="data?.stories_data" />
   </main>
 </template>
 

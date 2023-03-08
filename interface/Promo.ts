@@ -34,13 +34,13 @@ export interface IPromoPageDto {
   code: string | null
 
   gifts: IProduct[]
-  stories_data: null
+  stories_data: IStoriesDto[] | null
 }
 
 export interface IPromoActionData {
-  url: string
+  url?: string
   item_id: number
-  slug: string
+  slug?: string
   code?: string
 }
 
