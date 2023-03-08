@@ -31,6 +31,8 @@
               {{ product.description }}
             </div>
 
+            <ProductCardEnergyStats :product="product" class="card__stat" />
+
             <!-- <UiToggle
               class="product__options"
               :autosize="true"

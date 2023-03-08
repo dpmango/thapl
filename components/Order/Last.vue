@@ -56,6 +56,7 @@
             </div>
             <div class="action__title h6-title">Оценить <br />заказ</div>
           </div>
+
           <!-- repeat -->
           <div
             v-if="[30, 5].includes(lastOrder.status)"

@@ -8,7 +8,7 @@
           icon="search"
           icon-position="left"
           :value="search"
-          @on-change="(v) => (search = v)"
+          @on-change="setSearch"
         />
         <div class="search__close" @click="ui.setSearchActive(false)">
           <NuxtIcon name="close" />
@@ -26,7 +26,8 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import debounce from 'lodash/debounce'
 import { useProductStore, useUiStore } from '~/store'
 import {
   PerformanceLog,
@@ -36,14 +37,54 @@ import {
   lockBody,
   unlockBody,
 } from '#imports'
+import { IProduct } from '~/interface/Product'
 
 const ui = useUiStore()
 const productStore = useProductStore()
+const { $env } = useNuxtApp()
 
 const search = ref('')
+const resultsLoading = ref(false)
 
-const searchedProducts = computed(() => {
+const searchedProducts = ref<IProduct[]>([])
+
+const setSearch = (v) => {
+  search.value = v
+
+  if ($env.catalogType === 'singlepage') {
+    const searched = findInCatalog(v)
+    searchedProducts.value = searched
+  } else {
+    requestUpdates()
+  }
+}
+
+// backend-based search
+const requestUpdates = debounce(async () => {
   const searchStr = formatUGC(search.value.trim())
+
+  if (searchStr.length >= 2) {
+    resultsLoading.value = true
+
+    const result = (await useApi('catalog/search', {
+      method: 'GET',
+      headers: useHeaders(),
+      params: {
+        query: searchStr,
+      },
+    })) as IProduct[]
+
+    if (result) {
+      searchedProducts.value = result
+    }
+
+    resultsLoading.value = false
+  }
+}, 500)
+
+// frontend-based search
+const findInCatalog = (v) => {
+  const searchStr = formatUGC(v.trim())
 
   if (searchStr.length >= 2) {
     const DEV_perf = performance.now()
@@ -65,7 +106,7 @@ const searchedProducts = computed(() => {
   }
 
   return []
-})
+}
 
 watch(
   () => ui.searchActive,

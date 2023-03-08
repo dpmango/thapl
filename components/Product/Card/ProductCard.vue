@@ -31,7 +31,7 @@
         @mouseenter="setFocused(false)"
         @mouseleave="setFocused(true)"
       >
-        <div class="card__price text-l hidden-sm">{{ product.price }}</div>
+        <div class="card__price text-l hidden-sm">{{ formatPrice(product.price) }}</div>
 
         <ProductCardAddToCart
           :product="product"

@@ -15,11 +15,11 @@ $sizes: (
 
 @each $size, $px in $sizes {
   .visible-#{$size} {
-    display: none;
+    display: none !important;
   }
   @include r(#{$px}) {
     .visible-#{$size} {
-      display: flex;
+      display: flex !important;
     }
   }
 }

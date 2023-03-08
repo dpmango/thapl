@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { ICartInner, ICartModifier, ICardModifierInner } from '~/interface/Cart'
+import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct, IAdditive, IModifierItem } from '~/interface/Product'
 import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
@@ -7,7 +7,6 @@ import { isArraysEqual } from '#imports'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
 // products держит массив добавленных продуктов в исходном виде
-// TODO - продумать вариант с гидрацией когда сложно получить flatCatalog (категории, концепции)
 
 export const useCartStore = defineStore('cart', {
   state: () => {
@@ -32,7 +31,7 @@ export const useCartStore = defineStore('cart', {
     // считает с учетом выбранных модификаторов товара
     productQuantityInCart:
       (state) =>
-      (id: number, modifiers?: ICardModifierInner[]): number | null => {
+      (id: number, modifiers?: ICartModifier[]): number | null => {
         const matchingProducts = state.cart.filter((x) => x.id === id)
         if (matchingProducts.length) {
           // проверка на полное совпадение модификторов
@@ -86,10 +85,10 @@ export const useCartStore = defineStore('cart', {
   actions: {
     // TODO баг когда q = 0 (вернуть товар) и нажимаем добавить в коризну из продуктов
     // changeQuantity в коризне vs addToCart в списке
-    async addToCart(product: IProduct, quantity = 1, modifiers: ICardModifierInner[]) {
+    async addToCart(product: IProduct, quantity = 1, modifiers: ICartModifier[]) {
       const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
       if (modifiers?.length) {
-        cartObj.modifiers = modifiers.map((x: ICardModifierInner) => ({
+        cartObj.modifiers = modifiers.map((x: ICartModifier) => ({
           id: x.id,
           price: x.price,
           q: 1,
@@ -114,17 +113,41 @@ export const useCartStore = defineStore('cart', {
         },
       })
     },
-    async changeQuantity({ id, quantity }: { id: number; quantity: number }) {
-      this.cart = this.cart.map((x) => (x.id === id ? { ...x, id: x.id, q: quantity } : x))
+    async changeQuantity({
+      id,
+      quantity,
+      modifiers,
+    }: {
+      id: number
+      quantity: number
+      modifiers: ICartModifier[]
+    }) {
+      this.cart = this.cart.map((x) => {
+        let acceptQuantity = false
 
-      // находить по индексу с учетом модификаторов
+        if (x.id === id) {
+          // если переданы модификаторы, меняется только по
+          if (modifiers?.length && x.modifiers) {
+            const productModifiers = x.modifiers.map((x) => x.id)
+            const incomingModifiers = modifiers.map((x) => x.id)
+
+            if (isArraysEqual(productModifiers, incomingModifiers)) {
+              acceptQuantity = true
+            }
+          } else {
+            acceptQuantity = true
+          }
+        }
+
+        return acceptQuantity ? { ...x, q: quantity } : x
+      })
 
       await this.sendCartAnalytics({
         action: 'add',
         body: {
           catolog_item_id: id,
           count: quantity,
-          // modifiers: [],
+          modifiers,
         },
       })
     },
@@ -231,6 +254,40 @@ export const useCartStore = defineStore('cart', {
         headers: useHeaders(),
         body,
       }).catch((err) => useCatchError(err, '', true))
+    },
+
+    // начальное получение каталога (работает в щnMounted хуке)
+    async fetchCartProducts() {
+      if (this.cart.length === 0) return
+
+      const res = (await useApi('catalog/get-catalog-items-by-ids', {
+        method: 'POST',
+        headers: useHeaders(),
+        body: {
+          ids: this.cart.map((x) => x.id),
+        },
+      })) as IProduct[]
+
+      if (res) {
+        res.forEach((product) => {
+          this.hydrateProducts(product)
+        })
+
+        const getDifference = (a, b) => {
+          return a.filter((element) => {
+            return !b.includes(element)
+          })
+        }
+
+        const notFoundCartIds = getDifference(
+          this.cart.map((x) => x.id),
+          res.map((x) => x.id)
+        )
+
+        notFoundCartIds.forEach((id) => {
+          this.removeFromCart(id)
+        })
+      }
     },
 
     hydrateProducts(product: IProduct) {

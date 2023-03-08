@@ -35,7 +35,7 @@
         добавим в будущем в зону доставки.
       </template>
       <template #action>
-        <UiButton href="https://t.me/r" target="_blank">Написать в Телеграм</UiButton>
+        <UiButton :href="tg" target="_blank">Написать в Телеграм</UiButton>
       </template>
     </UiAtomErrorMessage>
   </div>
@@ -44,13 +44,18 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { YandexGeocoderResponce } from '~/interface/Geolocation'
-import { useDeliveryStore } from '~/store'
+import { IGeoDataRef, YandexGeocoderResponce } from '~/interface/Geolocation'
+import { useDeliveryStore, useSessionStore } from '~/store'
+// import { clearSocialLink } from '#imports'
 
 const toast = useToast()
 const { $env } = useNuxtApp()
 
 const deliveryStore = useDeliveryStore()
+const sessionStore = useSessionStore()
+const {
+  app_settings: { default_phone, tg },
+} = sessionStore
 const { zone, userAddress, currentAddress } = storeToRefs(deliveryStore)
 
 const emit = defineEmits(['setSearch'])
@@ -60,19 +65,12 @@ const props = defineProps({
 })
 
 // geolocation
-interface IGeoData {
-  requested: boolean
-  latitude: number | null
-  longitude: number | null
-  text: string
-}
-
 const geoData = ref({
   requested: false,
   latitude: null,
   longitude: null,
   text: '',
-} as IGeoData)
+} as IGeoDataRef)
 
 // Приходит от родительского компонента с поиском
 watch(
@@ -107,7 +105,6 @@ const setAddress = async (
   if (setInput) emit('setSearch', fullText)
 
   const zone = await deliveryStore.checkZone({ latitude, longitude })
-
   if (!zone.found) {
     geoData.value = {
       requested: true,

@@ -16,7 +16,7 @@
 import { PropType } from 'vue'
 import { storeToRefs } from 'pinia'
 import { IProduct } from '~/interface/Product'
-import { ICardModifierInner } from '~/interface/Cart'
+import { ICartModifier } from '~/interface/Cart'
 import { useCartStore, useDeliveryStore, useUiStore } from '~/store'
 
 const ui = useUiStore()
@@ -32,7 +32,7 @@ const props = defineProps({
     default: () => {},
   },
   modifiers: {
-    type: Array as PropType<ICardModifierInner[]>,
+    type: Array as PropType<ICartModifier[]>,
     default: () => [],
   },
   btnTheme: {
@@ -73,7 +73,7 @@ const handleQuantityChange = (n: number) => {
   if (n === 0) {
     cartStore.removeFromCart(props.product.id, props.modifiers)
   } else {
-    cartStore.changeQuantity({ id: props.product.id, quantity: n })
+    cartStore.changeQuantity({ id: props.product.id, quantity: n, modifiers: props.modifiers })
   }
 }
 </script>

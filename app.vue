@@ -9,14 +9,35 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useSessionStore, useProductStore, useDeliveryStore, useUiStore } from '~/store'
+// import { useToast } from 'vue-toastification/dist/index.mjs'
+import {
+  useSessionStore,
+  useProductStore,
+  useDeliveryStore,
+  useUiStore,
+  useCartStore,
+} from '~/store'
 import { scrollPageToTop, createSeoTags, APP_VERSION } from '#imports'
 
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
 const ui = useUiStore()
 
+// const toast = useToast()
+
 $log.log(`APP Version: ${APP_VERSION}`)
+
+// toast.info('Тост с уведомлением', {
+//   timeout: 60 * 1000,
+// })
+
+// toast.success('Тост с успехом', {
+//   timeout: 60 * 1000,
+// })
+
+// toast.error('Тост с ошибкой', {
+//   timeout: 60 * 1000,
+// })
 
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
@@ -43,6 +64,7 @@ const setAppVH = () => {
 
 const productStore = useProductStore()
 const deliveryStore = useDeliveryStore()
+const cartStore = useCartStore()
 const sessionStore = useSessionStore()
 const { region } = storeToRefs(deliveryStore)
 
@@ -95,6 +117,7 @@ if (initData.app_settings.takeaway_enabled || !$env.takeawayOnly) {
 
 onMounted(() => {
   deliveryStore.clientInit()
+  cartStore.fetchCartProducts()
 })
 </script>
 

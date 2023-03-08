@@ -5,6 +5,7 @@ import {
   IUserAddress,
   IOrganizationTakeaway,
   ICurrentAddress,
+  IRegion,
 } from 'interface/Delivery'
 import { localStorageKeepArray, localStorageGet } from '#imports'
 
@@ -12,7 +13,7 @@ export const useDeliveryStore = defineStore('delivery', {
   state: () => {
     return {
       region: null,
-      regions: [],
+      regions: [] as IRegion[],
 
       restaurants: [] as IOrganizationTakeaway[],
       userAddress: [] as IUserAddress[],
@@ -92,7 +93,15 @@ export const useDeliveryStore = defineStore('delivery', {
         this.currentAddress = null
       }
     },
-    async checkZone({ latitude, longitude }) {
+    async checkZone({
+      latitude,
+      longitude,
+      passive,
+    }: {
+      latitude: number
+      longitude: number
+      passive?: boolean
+    }) {
       const data = (await useApi('organization/check-zone', {
         method: 'POST',
         headers: useHeaders(),
@@ -102,7 +111,9 @@ export const useDeliveryStore = defineStore('delivery', {
         },
       })) as IZone
 
-      this.zone = { ...data }
+      if (!passive) {
+        this.zone = { ...data }
+      }
 
       return data
     },

@@ -1,11 +1,12 @@
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { IPaymentDataDto, IOrderCart } from '~/interface/Order'
 import { openExternalLink } from '#imports'
-import { useCartStore, useProfileStore } from '~/store'
+import { useCartStore, useProfileStore, useUiStore } from '~/store'
 
 export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[] }) => {
   const profileStore = useProfileStore()
   const cartStore = useCartStore()
+  const ui = useUiStore()
   const router = useRouter()
   const toast = useToast()
 
@@ -42,7 +43,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
   }
 
   const handleRate = (id) => {
-    useCatchError(null, 'Не подключено')
+    ui.setModal({ name: 'review', params: { id } })
   }
 
   const handleRepeat = () => {

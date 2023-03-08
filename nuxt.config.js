@@ -45,6 +45,7 @@ export default defineNuxtConfig({
       useRegions: false,
       useSearch: true,
       useTestimonials: false,
+      useContacts: true,
       takeawayOnly: false,
       footerNavTitle: 'Компания',
       // заказ

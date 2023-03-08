@@ -2,31 +2,43 @@
   <main class="page__content page">
     <div class="container _narrow">
       <UiCrumbs class="page__crumbs" :list="crumbs" />
-
-      <ContentUniversal />
-
-      <div class="page__copy">
-        <UiCopy text="HAPPY-2022" action-text="Скопировать промокод">
-          <div class="h2-title c-primary">HAPPY-2022</div>
-        </UiCopy>
-      </div>
-
-      <ContentUniversal />
     </div>
+
+    <PromoPage v-if="data" :data="data" />
+
+    <PromoStories v-if="data?.stories_data" :stories="data?.stories_data" />
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { localStorageKeepArray } from '#imports'
+import { IPromoPageDto } from '~/interface/Promo'
 
 const { $env, $log } = useNuxtApp()
 
-const crumbs = [{ href: '/', label: 'Заголовок' }]
-
 const route = useRoute()
 
+const { data, error } = await useAsyncData(
+  'promo/get-page-data',
+  () =>
+    useApi('promo/get-page-data', {
+      method: 'GET',
+      headers: useHeaders(),
+      params: {
+        slug: route.params.slug,
+      },
+    }) as Promise<IPromoPageDto>
+)
+
+$log.log('🧙‍♂️ ASYNC PROMO PAGE', { data: data.value })
+
+const crumbs = [
+  { href: '/promo', label: 'Акции' },
+  { href: `/promo/${data.value?.id}`, label: data.value?.title },
+]
+
 useHead({
-  title: `Акция - ${$env.projectName}`,
+  title: `${data.value?.title} - ${$env.projectName}`,
 })
 
 onMounted(() => {
@@ -38,9 +50,6 @@ onMounted(() => {
 .page {
   margin: 40px 0 120px;
   &__crumbs {
-    margin: 36px 0;
-  }
-  &__copy {
     margin: 36px 0;
   }
 }

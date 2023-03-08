@@ -16,7 +16,8 @@ export const scrollToElement = (id, headerTarget = true) => {
 
   const targetTop = element.getBoundingClientRect().top + window.pageYOffset - headerOffset
 
-  window.scrollTo({ top: targetTop, behavior: 'smooth' })
+  // window.scrollTo({ top: targetTop, behavior: 'smooth' })
+  scrollWithSpeed(targetTop, 300)
 }
 
 export const scrollPageToTop = () => {
