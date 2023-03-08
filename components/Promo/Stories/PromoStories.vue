@@ -1,12 +1,12 @@
 <template>
-  <div class="stories" :class="[opened && '_active']">
-    <div v-click-outside="() => (opened = false)" class="stories__wrapper">
+  <div class="stories" :class="[visible && '_active']">
+    <div v-click-outside="() => emit('on-close')" class="stories__wrapper">
       <div class="stories__header">
         <div class="js-pagination">
           <span v-for="(s, idx) in stories" :key="idx" :data-index="idx"></span>
         </div>
 
-        <div class="stories__close" @click="opened = false">
+        <div class="stories__close" @click="() => emit('on-close')">
           <span class="js-close-webview">
             <nuxt-icon name="close" />
           </span>
@@ -33,13 +33,10 @@ import { IStoriesDto } from '~/interface/Promo'
 
 const props = defineProps<{
   stories: IStoriesDto[]
+  visible: Boolean
 }>()
 
-const opened = ref(false)
-
-if (props.stories.length) {
-  opened.value = true
-}
+const emit = defineEmits(['on-close'])
 
 const swiperParams = {
   slidesPerView: 1,
@@ -154,7 +151,7 @@ onMounted(() => {})
     top: 0;
     left: 0;
     right: 0;
-    z-index: 2;
+    z-index: 5;
     padding: 12px 16px;
     user-select: none;
     background: linear-gradient(
@@ -254,8 +251,7 @@ onMounted(() => {})
   .stories {
     &__wrapper {
       max-width: 100%;
-      margin-left: 0;
-      margin-right: 0;
+      margin: 0;
     }
     &__slider {
       border-radius: 0;
