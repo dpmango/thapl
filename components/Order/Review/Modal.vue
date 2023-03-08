@@ -9,6 +9,7 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import { useUiStore } from '~/store'
 
 const { $env, $log } = useNuxtApp()
