@@ -10,8 +10,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
   const router = useRouter()
   const toast = useToast()
 
-  const handleDelivery = () => {}
-
+  // отменить заказ
   const handleCancel = async () => {
     await useApi('profile/cancel-order', {
       method: 'POST',
@@ -24,6 +23,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
     await profileStore.getOrders()
   }
 
+  // оплатить заказ
   const handlePay = async () => {
     const paymentData = (await useApi('order/get-payment-data', {
       method: 'POST',
@@ -42,10 +42,18 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
     }
   }
 
-  const handleRate = (id) => {
-    ui.setModal({ name: 'review', params: { id } })
+  // оценить заказ - модальное
+  const handleRate = () => {
+    ui.setModal({ name: 'review', params: { id: orderID } })
   }
 
+  // TODO показать курьера на карте
+  const handleDelivery = () => {
+    // console.log('TODO')
+  }
+
+  // повтор заказа - добавить к корзину
+  // TODO - проверить проверку на существующие товары и стоплисты
   const handleRepeat = () => {
     cartStore.resetCart()
 

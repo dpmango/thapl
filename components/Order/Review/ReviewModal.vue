@@ -1,6 +1,6 @@
 <template>
   <UiModal name="review">
-    <UiLoader v-if="!questions" />
+    <UiLoader v-if="!questions" position="overlay" />
 
     <template v-if="questions">
       <OrderReviewText />
@@ -15,12 +15,12 @@ import { useUiStore } from '~/store'
 const { $env, $log } = useNuxtApp()
 
 const ui = useUiStore()
-const { modalParams } = storeToRefs(ui)
+const { modalParams, modal } = storeToRefs(ui)
 
 const questions = ref(null)
 
 const fetchQuestions = async () => {
-  if (!modalParams.value?.id) return
+  if (!modalParams.value?.id && modal.value.includes('review')) return
 
   const data = await useApi('order/get-order-questionnaire', {
     method: 'GET',
@@ -71,5 +71,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .review {
+  position: relative;
+  min-height: 200px;
 }
 </style>

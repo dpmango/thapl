@@ -30,6 +30,17 @@
               {{ lastOrder.time_to_delivery }} минут
             </div>
           </div>
+          <!-- rate -->
+          <div
+            v-if="$env.useTestimonials && lastOrder.user_can_send_review"
+            class="last__action action _review"
+            @click="handleRate"
+          >
+            <div class="action__icon hidden-sm">
+              <nuxt-icon name="like" />
+            </div>
+            <div class="action__title h6-title">Оценить <br />заказ</div>
+          </div>
         </div>
 
         <!-- secondary actions -->
@@ -44,17 +55,6 @@
               <nuxt-icon name="close" />
             </div>
             <div class="action__title h6-title">Отменить <br />заказ</div>
-          </div>
-          <!-- rate -->
-          <div
-            v-if="$env.useTestimonials && lastOrder.user_can_send_review"
-            class="last__action action _review"
-            @click="handleRate"
-          >
-            <div class="action__icon hidden-sm">
-              <nuxt-icon name="like" />
-            </div>
-            <div class="action__title h6-title">Оценить <br />заказ</div>
           </div>
 
           <!-- repeat -->
@@ -77,7 +77,9 @@
 <script setup>
 const { $env, $log } = useNuxtApp()
 
-const { data: lastOrder, error: lastOrderError } = await useAsyncData(
+const lastOrder = ref(null)
+
+const { data: lastOrderData, error: lastOrderError } = await useAsyncData(
   'profile/get-last-order',
   () =>
     useApi('profile/get-last-order', {
@@ -85,11 +87,28 @@ const { data: lastOrder, error: lastOrderError } = await useAsyncData(
     })
 )
 
+lastOrder.value = lastOrderData.value
+
 $log.log('🧙‍♂️ ASYNC LAST ORDER', { lastOrder: lastOrder.value })
 
 const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = useOrder({
   orderID: lastOrder.value?.id || null,
   cart: lastOrder.value?.cart || [],
+})
+
+// Запрос обновлений каждую минуту
+const timerUpdate = ref(null)
+
+onMounted(() => {
+  timerUpdate.value = setInterval(() => {
+    lastOrder.value = useApi('profile/get-last-order', {
+      headers: useHeaders(),
+    })
+  }, 1 * 60 * 1000)
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(timerUpdate.value)
 })
 </script>
 

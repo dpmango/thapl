@@ -84,7 +84,7 @@
                     @click="changeModifier(option, idx, group.min_items > 0)"
                   >
                     <span class="mod-option__name">{{ option.title }}</span>
-                    <span v-if="formatPrice(option.price, 0, false)" class="mod-option__price">
+                    <span v-if="option.price" class="mod-option__price">
                       +{{ formatPrice(option.price, 0, false) }}
                     </span>
                     <UiCheckbox
@@ -131,6 +131,7 @@ const toast = useToast()
 const ui = useUiStore()
 const cartStore = useCartStore()
 const { cart, productsCountInCart } = storeToRefs(cartStore)
+const { modal } = storeToRefs(ui)
 
 const product = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
@@ -237,12 +238,14 @@ const countWithModifiersInCart = computed(() => {
 })
 
 const fetchProduct = async (id) => {
+  if (!modal.value.includes('product')) return
+
   loading.value = true
-  const data = await useApi('catalog/get-item-data', {
+  const data = (await useApi('catalog/get-item-data', {
     method: 'GET',
     headers: useHeaders(),
     params: { id },
-  }).catch(useCatchError)
+  }).catch(useCatchError)) as IProduct
 
   $log.log('opened product', { data })
 

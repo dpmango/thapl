@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSessionStore, useUiStore, useDeliveryStore } from '~/store'
 import { formatPrice } from '#imports'

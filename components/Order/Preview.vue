@@ -13,7 +13,9 @@
           <span v-if="product.amount > 1" class="c-gray">× {{ product.amount }}</span>
         </span>
         <i class="order__sep"></i>
-        <span class="order__value c-primary">{{ formatPrice(product.catalog_item.price) }}</span>
+        <span class="order__value c-primary">{{
+          formatPrice(product.catalog_item.price * product.amount)
+        }}</span>
       </div>
 
       <div v-if="orders.rest" class="order__row">
