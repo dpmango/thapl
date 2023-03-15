@@ -36,6 +36,7 @@
         <ProductCardAddToCart
           :product="product"
           btn-theme="secondary"
+          :should-emit="product.open_item_page_to_add"
           @on-before-add="handleProductClick"
         >
           <span class="hidden-sm">Выбрать</span>
