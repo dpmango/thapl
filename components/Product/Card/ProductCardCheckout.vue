@@ -14,7 +14,7 @@
       <template v-if="isGift">
         <s>{{ formatPrice(renderProduct.price) }}</s>
       </template>
-      <template v-else>{{ formatPrice(productPrice) }}</template>
+      <template v-else>{{ productPrice }}</template>
     </div>
   </div>
 </template>
