@@ -16,7 +16,7 @@
         <UiAtomLongWords :text="renderProduct.title" />
       </div>
       <span
-        v-for="(mod, idx) in productModifiers"
+        v-for="(mod, idx) in productModifiersVerbose"
         :key="idx"
         class="card__modifiers text-xs c-gray"
       >
@@ -39,12 +39,12 @@
         @mouseleave="setFocused(true)"
       >
         <UiPlusMinus
-          v-if="isAddProduct || productQuantityInCart(renderProduct.id) !== 0"
+          v-if="isAddProduct || productQuantityInCartWithModifiers !== 0"
           size="small"
           :value="
             isAddProduct
-              ? productQuantityInCart(renderProduct.id) || additiveCount
-              : productQuantityInCart(renderProduct.id)
+              ? productQuantityInCartWithModifiers || additiveCount
+              : productQuantityInCartWithModifiers
           "
           @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
@@ -64,7 +64,6 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
 import { ICartInner } from '~/interface/Cart'
@@ -73,8 +72,6 @@ import { useProduct } from '#imports'
 
 const cartStore = useCartStore()
 const ui = useUiStore()
-const { productQuantityInCart } = storeToRefs(cartStore)
-const { products } = storeToRefs(cartStore)
 
 const props = defineProps({
   product: {
@@ -96,10 +93,11 @@ const props = defineProps({
   },
 })
 
-const { renderProduct, productPrice, productModifiers } = useProduct({
-  cartItem: props.cartItem,
-  product: props.product,
-})
+const { renderProduct, productPrice, productModifiersVerbose, productQuantityInCartWithModifiers } =
+  useProduct({
+    cartItem: props.cartItem,
+    product: props.product,
+  })
 
 const isAddProduct = computed(() => {
   return typeof props.additiveCount === 'number'
@@ -121,7 +119,7 @@ const handleQuantityChange = (n: number, isAddProduct) => {
   // Don't remove, instead show return to cart (with quantity = 0)
   if (isAddProduct) {
     // сперва добавить в корзину
-    if (productQuantityInCart.value(renderProduct.value.id) === null) {
+    if (productQuantityInCartWithModifiers.value === null) {
       cartStore.addToCart(renderProduct.value, 1, [])
     }
   }

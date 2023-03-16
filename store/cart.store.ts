@@ -3,7 +3,7 @@ import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct, IAdditive, IModifierItem } from '~/interface/Product'
 import { IPromoDto } from '~/interface/Loyalty'
 import { useDeliveryStore } from '~/store'
-import { isArraysEqual } from '#imports'
+import { isArraysEqual, getArrayDifference } from '#imports'
 
 // cart держит массив id и quantity для работы с кукой и упрощает работу с данными
 // products держит массив добавленных продуктов в исходном виде
@@ -12,6 +12,7 @@ export const useCartStore = defineStore('cart', {
   state: () => {
     return {
       cart: [] as ICartInner[],
+      cartStoped: [] as number[],
       products: [] as IProduct[],
       additives: [] as IAdditive[],
       suggestions: [] as IProduct[],
@@ -197,6 +198,8 @@ export const useCartStore = defineStore('cart', {
       this.cart = []
       this.products = []
       this.additives = []
+      this.suggestions = []
+      this.promo = null
     },
     async getaAdditives() {
       const deliveryStore = useDeliveryStore()
@@ -256,7 +259,7 @@ export const useCartStore = defineStore('cart', {
       }).catch((err) => useCatchError(err, '', true))
     },
 
-    // начальное получение каталога (работает в щnMounted хуке)
+    // начальное получение каталога (работает в onMounted хуке)
     async fetchCartProducts() {
       if (this.cart.length === 0) return
 
@@ -273,13 +276,8 @@ export const useCartStore = defineStore('cart', {
           this.hydrateProducts(product)
         })
 
-        const getDifference = (a, b) => {
-          return a.filter((element) => {
-            return !b.includes(element)
-          })
-        }
-
-        const notFoundCartIds = getDifference(
+        // проверка стоплистов
+        const notFoundCartIds = getArrayDifference(
           this.cart.map((x) => x.id),
           res.map((x) => x.id)
         )
@@ -288,6 +286,35 @@ export const useCartStore = defineStore('cart', {
           this.removeFromCart(id)
         })
       }
+    },
+
+    // проверка на стоплисты
+    async checkStopList() {
+      if (this.cart.length === 0) return
+
+      const res = (await useApi('catalog/check-catalog-items-by-ids', {
+        method: 'POST',
+        headers: useHeaders(),
+        body: {
+          ids: this.cart.map((x) => x.id),
+        },
+      }).catch((err) => useCatchError(err, '', true))) as IProduct[] | null
+
+      if (res) {
+        // проверка стоплистов
+        const stoppedItems = getArrayDifference(
+          this.cart.map((x) => x.id),
+          res.map((x) => x.id)
+        )
+
+        this.cartStoped = stoppedItems
+
+        // stoppedItems.forEach((id) => {
+        //   this.removeFromCart(id)
+        // })
+      }
+
+      return res
     },
 
     hydrateProducts(product: IProduct) {

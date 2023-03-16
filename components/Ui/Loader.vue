@@ -9,17 +9,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   position: {
     type: String,
     default: 'inline',
-    validator: (v) => ['inline', 'block', 'overlay'].includes(v),
+    validator: (v: string) => ['inline', 'block', 'overlay'].includes(v),
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (v) => ['medium', 'small'].includes(v),
+    validator: (v: string) => ['medium', 'small'].includes(v),
   },
   loading: {
     type: Boolean,

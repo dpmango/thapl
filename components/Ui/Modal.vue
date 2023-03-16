@@ -1,7 +1,7 @@
 <template>
   <div class="modal" :class="modifiers" @click="closeModal">
     <div class="modal__wrapper" @click.prevent.stop>
-      <div class="modal__close" @click="closeModal">
+      <div v-if="modalParams?.closable" class="modal__close" @click="closeModal">
         <nuxt-icon name="close" />
       </div>
       <div class="modal__content">
@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useUiStore } from '~/store'
 import { lockBody, unlockBody } from '#imports'
@@ -27,17 +27,17 @@ const props = defineProps({
   position: {
     type: String,
     default: 'center',
-    validator: (v) => ['center', 'aside'].includes(v),
+    validator: (v: string) => ['center', 'aside'].includes(v),
   },
   height: {
     type: String,
     default: '',
-    validator: (v) => ['', 'fill'].includes(v),
+    validator: (v: string) => ['', 'fill'].includes(v),
   },
   size: {
     type: String,
     default: 'normal',
-    validator: (v) => ['normal', 'large', 'x-large'].includes(v),
+    validator: (v: string) => ['normal', 'large', 'x-large'].includes(v),
   },
   padding: {
     type: Boolean,
@@ -64,7 +64,7 @@ const isModalActive = computed(() => {
 })
 
 const closeModal = () => {
-  if (modalParams.value && modalParams.value.closable === false) {
+  if (modalParams.value?.closable === false) {
     return false
   }
 

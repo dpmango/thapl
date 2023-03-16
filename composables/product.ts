@@ -36,8 +36,13 @@ export const useProduct = ({
     return formatPrice(price)
   })
 
+  // количество товара в корзине
+  const productQuantityInCartWithModifiers = computed(() => {
+    return productQuantityInCart.value(renderProduct.value.id, cartItem?.modifiers)
+  })
+
   // список модификаторов по совпадю id корзины
-  const productModifiers = computed(() => {
+  const productModifiersVerbose = computed(() => {
     if (cartItem?.modifiers?.length) {
       const modifiers = renderProduct.value.modifier_groups
       if (modifiers) {
@@ -66,6 +71,7 @@ export const useProduct = ({
   return {
     renderProduct,
     productPrice,
-    productModifiers,
+    productModifiersVerbose,
+    productQuantityInCartWithModifiers,
   }
 }

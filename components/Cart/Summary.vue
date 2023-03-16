@@ -69,6 +69,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import debounce from 'lodash/debounce'
 import { useCartStore, useUiStore } from '~/store'
 import { formatPrice } from '#imports'
 
@@ -84,11 +85,16 @@ const additivesNotInCart = computed(() => {
   return additives.value.filter((x) => productQuantityInCart.value(x.catalog_item.id) === null)
 })
 
-const fetchCartData = () => {
-  cartStore.getaAdditives()
-  cartStore.getSuggestions()
-  cartStore.getPromo({})
-}
+const fetchCartData = debounce(
+  () => {
+    cartStore.checkStopList()
+    cartStore.getaAdditives()
+    cartStore.getSuggestions()
+    cartStore.getPromo({})
+  },
+  500,
+  { leading: true }
+)
 
 watch(
   () => activeModal.value,

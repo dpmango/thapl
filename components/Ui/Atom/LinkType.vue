@@ -27,8 +27,7 @@ const attributes = computed(() => {
       break
 
     case 20:
-      // TODO - target_id ?
-      to = props.link.target_slug
+      to = `/${props.link.target_slug}`
       break
 
     case 10:

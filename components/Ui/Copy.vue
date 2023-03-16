@@ -51,18 +51,28 @@ const handleCopyClick = async () => {
     border: 0;
     border-radius: var(--card-border-radius);
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    padding: 32px;
+    padding: 24px 32px;
     cursor: pointer;
   }
   &__content {
     flex: 1 1 auto;
+    padding-right: 16px;
     min-width: 1px;
     @include text-overflow;
   }
   &__action {
-    margin-left: 16px;
+    margin: 8px 0;
     flex: 0 0 auto;
+  }
+}
+
+@include r($sm) {
+  .copy {
+    &__box {
+      padding: 16px 24px;
+    }
   }
 }
 </style>

@@ -49,6 +49,7 @@ export default defineNuxtConfig({
       takeawayOnly: false,
       footerNavTitle: 'Компания',
       // заказ
+      orderAskAuth: true,
       orderUsePacking: true,
       orderPackingCompact: 'Компактная',
       orderPackingSeparate: 'Отдельная',

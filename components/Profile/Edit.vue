@@ -150,7 +150,7 @@ const saveProfile = async () => {
     body: requestObj,
   }).catch((err) => useCatchError(err, 'Ошибка, проверьте заполненные поля'))
 
-  if (response?.success) {
+  if (response) {
     toast.success('Профиль обновлен')
     sessionStore.updateUser(requestObj)
     router.push('/profile')
