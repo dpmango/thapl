@@ -2,7 +2,7 @@
   <div
     class="card"
     :data-id="product.id"
-    :class="[focused && '_focused']"
+    :class="[focused && '_focused', isGift && '_gift']"
     @click="handleProductClick"
     @mouseenter="setFocused(true)"
     @mouseleave="setFocused(false)"
@@ -26,6 +26,7 @@
         {{ product.description }}
       </div>
       <div
+        v-if="!isGift"
         class="card__actions"
         @click.stop
         @mouseenter="setFocused(false)"
@@ -59,9 +60,14 @@ const props = defineProps({
     type: Object as PropType<IProduct>,
     default: () => {},
   },
+  isGift: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const handleProductClick = () => {
+  if (props.isGift) return
   ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
 }
 
@@ -136,7 +142,7 @@ const setFocused = (v: boolean) => {
   &__add {
     font-size: 0;
   }
-  &._focused {
+  &._focused:not(._gift) {
     .card__image img {
       transform: scale(1.04);
     }
@@ -144,21 +150,23 @@ const setFocused = (v: boolean) => {
 }
 
 @include r($sm) {
-  .card {
+  .card:not(._gift) {
     flex-direction: row;
-    &__image-wrapper {
-      flex: 0 0 96px;
-    }
-    &__image {
-      border-radius: var(--card-border-radius-sm);
-    }
-    &__body {
-      flex: 0 1 auto;
-      margin-top: 0;
-      padding-left: 20px;
-    }
-    &__description {
-      margin-top: 8px;
+    .card {
+      &__image-wrapper {
+        flex: 0 0 96px;
+      }
+      &__image {
+        border-radius: var(--card-border-radius-sm);
+      }
+      &__body {
+        flex: 0 1 auto;
+        margin-top: 0;
+        padding-left: 20px;
+      }
+      &__description {
+        margin-top: 8px;
+      }
     }
   }
 }

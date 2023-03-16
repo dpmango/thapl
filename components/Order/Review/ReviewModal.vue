@@ -26,7 +26,7 @@ const fetchQuestions = async () => {
     method: 'GET',
     headers: useHeaders(),
     params: {
-      id: modalParams.value.id,
+      id: modalParams.value?.id,
     },
   })
 

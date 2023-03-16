@@ -124,7 +124,7 @@ const verboseStatus = computed(() => {
       break
     default:
       className = 'c-red'
-      text = props.order.status.toString()
+      text = props.order.status ? props.order.status.toString() : ''
 
       break
   }

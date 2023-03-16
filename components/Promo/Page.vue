@@ -72,7 +72,7 @@ const props = defineProps({
 
 .gifts {
   // &__title{}
-  &__grid {
+  .card {
     margin-top: 24px;
   }
 }

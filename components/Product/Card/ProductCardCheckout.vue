@@ -3,17 +3,22 @@
     <div class="scope__label text-m text-md-s">
       {{ renderProduct.title }}
       <span v-if="isGift" class="c-gray">Подарок </span>
-      <span v-else-if="productQuantityInCart(renderProduct.id) !== 1" class="c-gray">
-        × {{ productQuantityInCart(renderProduct.id) }}&nbsp;
+      <span v-else-if="productQuantityInCartWithModifiers !== 1" class="c-gray">
+        × {{ productQuantityInCartWithModifiers }}&nbsp;
       </span>
-      <div v-for="(mod, idx) in productModifiers" :key="idx" class="scope__modifier text-xs c-gray">
+      <div
+        v-for="(mod, idx) in productModifiersVerbose"
+        :key="idx"
+        class="scope__modifier text-xs c-gray"
+      >
         {{ mod.label }}
       </div>
     </div>
-    <div class="scope__value h6-title text-md-s c-primary">
+    <div class="scope__value h6-title text-md-s">
       <template v-if="isGift">
         <s>{{ formatPrice(renderProduct.price) }}</s>
       </template>
+
       <template v-else>{{ productPrice }}</template>
     </div>
   </div>
@@ -21,14 +26,9 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useCartStore } from '~/store'
 import { IProduct } from '~/interface/Product'
 import { ICartInner } from '~/interface/Cart'
 import { formatPrice, useProduct } from '#imports'
-
-const cartStore = useCartStore()
-const { productQuantityInCart } = storeToRefs(cartStore)
 
 const props = defineProps({
   product: {
@@ -45,10 +45,11 @@ const props = defineProps({
   },
 })
 
-const { renderProduct, productPrice, productModifiers } = useProduct({
-  cartItem: props.cartItem,
-  product: props.product,
-})
+const { renderProduct, productPrice, productModifiersVerbose, productQuantityInCartWithModifiers } =
+  useProduct({
+    cartItem: props.cartItem,
+    product: props.product,
+  })
 </script>
 
 <style lang="scss" scoped>

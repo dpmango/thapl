@@ -8,10 +8,8 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
-  width: Number,
-})
+<script setup lang="ts">
+const props = defineProps<{ width: number }>()
 
 const isCompleate = computed(() => {
   return props.width >= 100

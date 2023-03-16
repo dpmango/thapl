@@ -67,7 +67,7 @@ import { useCartStore } from '~/store'
 import { formatPrice, Plurize } from '#imports'
 
 const cartStore = useCartStore()
-const { cart, products, promo, productQuantityInCart } = storeToRefs(cartStore)
+const { cart, products, promo } = storeToRefs(cartStore)
 const { priceData, zoneData, promoData, freeDeliveryData } = useCheckout()
 
 const verboseCartCount = computed(() => {

@@ -198,6 +198,8 @@ export const useCartStore = defineStore('cart', {
       this.cart = []
       this.products = []
       this.additives = []
+      this.suggestions = []
+      this.promo = null
     },
     async getaAdditives() {
       const deliveryStore = useDeliveryStore()
