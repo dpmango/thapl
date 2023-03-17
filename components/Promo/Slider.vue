@@ -16,7 +16,6 @@
     </div>
 
     <PromoStories
-      v-if="openedStories"
       :stories="openedStories"
       :visible="storiesVisible"
       @on-close="() => (storiesVisible = false)"
