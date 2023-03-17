@@ -12,9 +12,7 @@
       </div>
     </div>
     <div class="card__body">
-      <div class="card__title h6-title">
-        <UiAtomLongWords :text="renderProduct.title" />
-      </div>
+      <div class="card__title h6-title"><UiAtomLongWords :text="renderProduct.title" /></div>
       <span
         v-for="(mod, idx) in productModifiersVerbose"
         :key="idx"

@@ -1,21 +1,21 @@
 <template>
-  <div class="stat c-gray">
-    <div class="stat-title c-font">пищевая ценность:</div>
+  <div class="stat">
+    <div class="stat-title">пищевая ценность:</div>
     <div class="stat-row">
       <label for="">Энерг. ценность:</label>
-      <span>{{ product.energy_full_amount }}</span>
+      <span>{{ toNum(product.energy_full_amount, 'Ккал') }}</span>
     </div>
     <div class="stat-row">
       <label for="">Белки:</label>
-      <span>{{ product.fiber_full_amount }}</span>
+      <span>{{ toNum(product.fiber_full_amount) }}</span>
     </div>
     <div class="stat-row">
       <label for="">Жиры:</label>
-      <span>{{ product.energy_full_amount }}</span>
+      <span>{{ toNum(product.energy_full_amount) }}</span>
     </div>
     <div class="stat-row">
       <label for="">Углеводы:</label>
-      <span>{{ product.carbohydrate_full_amount }}</span>
+      <span>{{ toNum(product.carbohydrate_full_amount) }}</span>
     </div>
   </div>
 </template>
@@ -33,6 +33,15 @@ const props = defineProps({
     default: () => {},
   },
 })
+
+const toNum = (x: any, add = '') => {
+  let returnable = ''
+  if (!x) return returnable
+  if (typeof x === 'number') returnable = x.toFixed(0)
+  if (typeof x === 'string') returnable = parseInt(x).toFixed(0)
+
+  return add ? `${returnable} ${add}` : returnable
+}
 </script>
 
 <style lang="scss" scoped>
