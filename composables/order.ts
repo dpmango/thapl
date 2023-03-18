@@ -58,7 +58,15 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
     cartStore.resetCart()
 
     cart.forEach((x) => {
-      cartStore.addToCart(x.catalog_item, x.cartItem.count, [])
+      cartStore.addToCart(
+        x.catalog_item,
+        x.cartItem.count,
+        x.modifiers.map((mod) => ({
+          id: mod.modifier_item.id,
+          price: mod.modifier_item.price,
+          q: mod.amount,
+        })) || []
+      )
     })
 
     router.push('/order')

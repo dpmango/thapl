@@ -37,7 +37,15 @@
       <div class="order__row fw-500">
         <span class="order__label">Итого</span>
         <i class="order__sep"></i>
-        <span class="order__value">{{ formatPrice(order.order_sum) }}</span>
+        <span class="order__value">
+          <template v-if="order.order_sum !== order.payment_sum">
+            <span class="order__value-old">{{ formatPrice(order.order_sum) }}</span>
+            {{ formatPrice(order.payment_sum) }} (-{{
+              formatPrice(order.order_sum - order.payment_sum)
+            }})
+          </template>
+          <template v-else>{{ formatPrice(order.order_sum) }}</template>
+        </span>
       </div>
     </div>
 
@@ -237,6 +245,9 @@ const orders = computed(() => {
   }
   &__value {
     flex: 0 0 auto;
+  }
+  &__value-old {
+    text-decoration: line-through;
   }
   &__sep {
     display: inline-block;

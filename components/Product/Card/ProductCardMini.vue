@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @click="handleProductClick">
     <div class="card__media">
       <div class="card__image">
         <UiAtomProductImage :src="product.image" :alt="product.title" />
@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
+import { useUiStore } from '~/store'
 import { formatPrice } from '#imports'
 
 const props = defineProps({
@@ -30,6 +31,12 @@ const props = defineProps({
     default: () => {},
   },
 })
+
+const ui = useUiStore()
+
+const handleProductClick = () => {
+  ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -41,6 +48,7 @@ const props = defineProps({
   background: var(--product-background);
   box-shadow: var(--box-shadow-large);
   border-radius: var(--card-border-radius);
+  cursor: pointer;
   &__media {
     flex: 0 0 120px;
   }
@@ -89,6 +97,11 @@ const props = defineProps({
   }
   &__price {
     color: var(--color-primary);
+  }
+  &:hover {
+    .card__image img {
+      transform: scale(1.04);
+    }
   }
 }
 </style>

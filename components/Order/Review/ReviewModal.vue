@@ -20,7 +20,7 @@ const { modalParams, modal } = storeToRefs(ui)
 const questions = ref(null)
 
 const fetchQuestions = async () => {
-  if (!modalParams.value?.id && modal.value.includes('review')) return
+  if (!modalParams.value?.id && !modal.value.includes('review')) return
 
   const data = await useApi('order/get-order-questionnaire', {
     method: 'GET',

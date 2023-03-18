@@ -859,7 +859,10 @@ watch(
 watch(
   () => user.value.username,
   (newVal) => {
-    if (newVal) fetchPromo()
+    if (newVal) {
+      setFieldValue('phone', newVal)
+      fetchPromo()
+    }
   }
 )
 

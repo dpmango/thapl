@@ -23,7 +23,7 @@ export interface IOrder {
 export interface IOrderCart {
   catalog_item: IProduct
   amount: number
-  modifiers: any[]
+  modifiers: IOrderCartModifier[]
   cartItem: ICartItem
 }
 
@@ -35,6 +35,24 @@ export interface ICartItem {
   created_at: Date
   updated_at: Date
   tech_data: null
+}
+
+export interface IOrderCartModifier {
+  modifier_item: {
+    id: number
+    title: string
+    price: number
+  }
+  amount: number
+  cartItemModifier: IOrderCartItemModifier
+}
+
+export interface IOrderCartItemModifier {
+  cart_item_id: number
+  modificator_id: number
+  count: number
+  created_at: Date
+  updated_at: Date
 }
 
 export interface IPaymentDataDto {
