@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // Категории навигации для singlepage представления
 // используется на мобльном
 // для десктоп - смотреть в папке Layout/Nav/NavScroller

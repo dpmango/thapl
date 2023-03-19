@@ -6,7 +6,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { createSeoTags } from '#imports'
 
 const { $env, $log } = useNuxtApp()

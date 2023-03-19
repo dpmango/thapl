@@ -26,7 +26,7 @@
   </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
 import { useDeliveryStore } from '~/store'
 
@@ -40,7 +40,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { search: '' },
 })
 
-const { value: search } = useField('search')
+const { value: search } = useField<string>('search')
 
 const handleRegionSelect = (region, e) => {
   e.preventDefault()

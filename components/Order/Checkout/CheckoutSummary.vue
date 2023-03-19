@@ -60,7 +60,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import _ from 'lodash'
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '~/store'

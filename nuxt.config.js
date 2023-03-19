@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     'nuxt-proxy',
     '@nuxtjs/google-fonts',
     'nuxt-icons',
+    '@nuxt/image-edge',
   ],
 
   piniaPersistedstate: {

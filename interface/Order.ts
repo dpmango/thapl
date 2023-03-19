@@ -54,11 +54,3 @@ export interface IOrderCartItemModifier {
   created_at: Date
   updated_at: Date
 }
-
-export interface IPaymentDataDto {
-  success: boolean
-  type: null
-  link: string | null
-  receipt: null
-  payment_sum: null
-}

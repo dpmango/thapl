@@ -72,7 +72,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useToast } from 'vue-toastification/dist/index.mjs'
@@ -95,23 +95,23 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   },
 })
 
-const { value: name, meta: nameMeta } = useField('name', (v) => {
+const { value: name, meta: nameMeta } = useField<string>('name', (v) => {
   if (!clearString(v)) return true
   return clearString(v).length >= 2 ? true : 'Введите имя'
 })
 
-const { value: surname, meta: surnameMeta } = useField('surname', (v) => {
+const { value: surname, meta: surnameMeta } = useField<string>('surname', (v) => {
   if (!clearString(v)) return true
   return clearString(v).length >= 2 ? true : 'Введите фамилию'
 })
 
-const { value: phone, meta: phoneMeta } = useField('phone', (v) => {
+const { value: phone, meta: phoneMeta } = useField<string>('phone', (v) => {
   if (!clearString(v)) return true
   const { valid, phone_error_text } = validPhone(v)
   return valid || phone_error_text
 })
 
-const { value: email, meta: emailMeta } = useField('email', (v) => {
+const { value: email, meta: emailMeta } = useField<string>('email', (v) => {
   if (!clearString(v)) return true
   return validEmail(v) ? true : 'Проверьте адрес электронной почты'
 })
@@ -119,7 +119,7 @@ const { value: email, meta: emailMeta } = useField('email', (v) => {
 const tDate = new Date()
 tDate.setFullYear(tDate.getFullYear() - 18)
 
-const { value: birthday, meta: birthdayMeta } = useField('birthday', (v) => {
+const { value: birthday, meta: birthdayMeta } = useField<string>('birthday', (v) => {
   if (!clearString(v)) return true
   return validDate(v, tDate) ? true : 'Неверная дата рождения'
 })

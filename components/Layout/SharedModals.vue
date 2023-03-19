@@ -12,6 +12,6 @@
   <OrderReviewModal />
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { $env } = useNuxtApp()
 </script>

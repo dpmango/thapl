@@ -5,7 +5,7 @@
       <div v-if="product" class="product__wrapper">
         <div class="product__media hidden-md">
           <div class="product__image">
-            <UiAtomProductImage :src="product.image" :alt="product.title" />
+            <UiImage :src="product.image" :alt="product.title" />
           </div>
         </div>
         <div class="product__body">
@@ -23,7 +23,7 @@
 
             <div class="product__media visible-md">
               <div class="product__image">
-                <UiAtomProductImage :src="product.image" :alt="product.title" />
+                <UiImage :src="product.image" :alt="product.title" />
               </div>
             </div>
 

@@ -30,6 +30,7 @@
     "*.**": "prettier --check --ignore-unknown"
   },
   "dependencies": {
+    "@nuxt/image-edge": "^1.0.0-27968280.9739e4d",
     "@nuxtjs/google-fonts": "^3.0.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
     "@pinia/nuxt": "^0.4.7",

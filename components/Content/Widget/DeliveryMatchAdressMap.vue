@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
 import { useDeliveryStore } from '~/store'
 
@@ -49,7 +49,7 @@ const { errors, setErrors, setFieldValue } = useForm({
   initialValues: { search: '' },
 })
 
-const { value: search } = useField('search')
+const { value: search } = useField<string>('search')
 
 const handleSearchChange = (v) => {
   setFieldValue('search', v)

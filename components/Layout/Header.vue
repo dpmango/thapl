@@ -129,7 +129,7 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import _ from 'lodash'
 import { useSessionStore, useUiStore, useCartStore, useDeliveryStore } from '~/store'

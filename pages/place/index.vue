@@ -4,7 +4,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { localStorageKeepArray } from '#imports'
 
 const { $env, $log } = useNuxtApp()

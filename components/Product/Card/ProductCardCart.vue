@@ -8,7 +8,7 @@
   >
     <div class="card__media">
       <div class="card__image">
-        <UiAtomProductImage :src="renderProduct.image" :alt="renderProduct.title" />
+        <UiImage :src="renderProduct.image" :alt="renderProduct.title" />
       </div>
     </div>
     <div class="card__body">

@@ -21,7 +21,7 @@
   </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSessionStore, useUiStore } from '~/store'
 

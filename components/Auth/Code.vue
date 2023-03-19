@@ -30,7 +30,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useSessionStore, useUiStore } from '~/store'
@@ -40,7 +40,7 @@ const session = useSessionStore()
 const ui = useUiStore()
 const { phone } = storeToRefs(session)
 
-const apiError = ref(null)
+const apiError = ref<boolean | null>(null)
 const loading = ref(false)
 
 const emit = defineEmits(['change-view'])
@@ -53,7 +53,7 @@ const {
   value: code,
   meta,
   resetField,
-} = useField('code', (v) => {
+} = useField<string>('code', (v) => {
   return v.length === 4
 })
 

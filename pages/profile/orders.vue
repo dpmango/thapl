@@ -4,7 +4,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useProfileStore } from '~/store'
 
 const { $env, $log } = useNuxtApp()

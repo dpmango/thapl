@@ -3,7 +3,7 @@ import { defineNuxtPlugin } from '#app'
 const useRuntime = true
 
 export default defineNuxtPlugin((nuxtApp) => {
-  let env
+  let env: { [key: string]: string }
 
   if (useRuntime) {
     const config = useRuntimeConfig()

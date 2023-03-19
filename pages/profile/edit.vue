@@ -4,7 +4,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { $env, $log } = useNuxtApp()
 
 useHead({

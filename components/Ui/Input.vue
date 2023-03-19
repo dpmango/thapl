@@ -57,7 +57,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import _ from 'lodash'
 import { nanoid } from 'nanoid'
 import { capitalizeFirstLetter } from '#imports'
@@ -144,7 +144,7 @@ const props = defineProps({
   },
   // https://github.com/beholdr/maska
   mask: {
-    type: String,
+    type: [Object, String],
     default: '',
   },
   suggestions: {

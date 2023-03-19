@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
 import { formatMinutes, formatPrice } from '#imports'

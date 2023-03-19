@@ -29,7 +29,7 @@
   </label>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // dump component to prevent errors
 // @checked is controlled by parent state
 import { nanoid } from 'nanoid'

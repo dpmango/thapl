@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { SwiperSlide } from 'swiper/vue'
 
 const props = defineProps({

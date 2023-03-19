@@ -8,7 +8,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useProductStore } from '~/store'
 const { $env, $log } = useNuxtApp()
 

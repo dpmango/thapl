@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 // import { useToast } from 'vue-toastification/dist/index.mjs'
 import {

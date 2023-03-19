@@ -24,19 +24,9 @@
 
 <script setup lang="ts">
 import { clearSocialLink, buildLink } from '#imports'
+import { IPageContactsDto } from '~/interface/Dto/Page.dto'
 
 const { $env, $log } = useNuxtApp()
-
-interface IContactsDto {
-  phone: string | null
-  email: boolean
-  facebook: string | null
-  instagram: string | null
-  telegram: string | null
-  vk: string | null
-  wu: boolean
-  restaurants_count: number
-}
 
 const { data, error } = await useAsyncData(
   'page/get-contacts-data',
@@ -44,7 +34,7 @@ const { data, error } = await useAsyncData(
     useApi('page/get-contacts-data', {
       method: 'GET',
       headers: useHeaders(),
-    }) as Promise<IContactsDto>
+    }) as Promise<IPageContactsDto>
 )
 
 $log.log('🧙‍♂️ ASYNC CONTACTS', { data: data.value })

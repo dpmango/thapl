@@ -367,12 +367,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import dayjs from 'dayjs'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useDeliveryStore, useCartStore, useSessionStore, useUiStore } from '~/store'
+import { IOrderRequestDto } from '~/interface/RequestDto/Order.request'
+import {
+  IOrderCreateDto,
+  IOrderPaymentDataDto,
+  ICartGetPackingDto,
+} from '~/interface/Dto/Order.dto'
+
 import {
   scrollPageToTop,
   scrollToElement,
@@ -435,11 +442,11 @@ const checkoutDisabled = computed(() => {
 })
 
 // контакты
-const { value: name, meta: nameMeta } = useField('name', (v) => {
+const { value: name, meta: nameMeta } = useField<string>('name', (v) => {
   return clearString(v).length >= 2 ? true : 'Введите имя'
 })
 
-const { value: phone, meta: phoneMeta } = useField('phone', (v) => {
+const { value: phone, meta: phoneMeta } = useField<string>('phone', (v) => {
   const { valid, phone_error_text } = validPhone(v)
   return valid || phone_error_text
 })
@@ -459,28 +466,28 @@ watch(
 )
 
 // адрес и время
-const { value: address, meta: addressMeta } = useField('address', (v) => {
+const { value: address, meta: addressMeta } = useField<string>('address', (v) => {
   return clearString(v).length >= 2 ? true : 'Введите адрес'
 })
 
-const { value: entrance, meta: entranceMeta } = useField('entrance', (v) => {
+const { value: entrance, meta: entranceMeta } = useField<string>('entrance', (v) => {
   if (zoneData.value.isTakeaway) return true
   return true
 })
-const { value: floor, meta: floorMeta } = useField('floor', (v) => {
+const { value: floor, meta: floorMeta } = useField<string>('floor', (v) => {
   if (zoneData.value.isTakeaway) return true
   return true
 })
-const { value: apt, meta: aptMeta } = useField('apt', (v) => {
+const { value: apt, meta: aptMeta } = useField<string>('apt', (v) => {
   if (zoneData.value.isTakeaway) return true
   return true
 })
-const { value: intercom, meta: intercomMeta } = useField('intercom', (v) => {
+const { value: intercom, meta: intercomMeta } = useField<string>('intercom', (v) => {
   if (zoneData.value.isTakeaway) return true
   return true
 })
 
-const { value: deliveryDate } = useField(
+const { value: deliveryDate } = useField<string>(
   'deliveryDate',
   (v) => {
     if (zoneData.value.isTakeaway) return true
@@ -534,7 +541,7 @@ const deliveryDateOptions = computed(() => {
   return dayOptions
 })
 
-const { value: deliveryTime } = useField(
+const { value: deliveryTime } = useField<string>(
   'deliveryTime',
   (v) => {
     if (zoneData.value.isTakeaway) return true
@@ -597,7 +604,7 @@ watch(
 )
 
 // ползунок время доставки
-const { value: deliveryRange } = useField('deliveryRange', (v) => {
+const { value: deliveryRange } = useField<string>('deliveryRange', (v) => {
   return true
 })
 
@@ -612,10 +619,10 @@ const deliveryRangeOptions = computed(() => {
 // TODO если нет доступных слотов, ставить следующий день
 
 // упаковка
-const { value: pack, meta: packMeta } = useField(
+const { value: pack, meta: packMeta } = useField<string>(
   'pack',
   (v) => {
-    if (!packingOptions.length) return true
+    if (!packingOptions.value.length) return true
     return v && v.length ? true : 'Выберите вариант упаковки'
   },
   {
@@ -623,13 +630,14 @@ const { value: pack, meta: packMeta } = useField(
   }
 )
 
-const packingData = ref(null)
+const packingData = ref<ICartGetPackingDto | null>(null)
 const packingOptions = computed(() => {
   if (!packingData.value) return []
 
-  const options = []
+  const options = [] as { id: string; label: string; price: number }[]
 
   Object.keys(packingData.value).forEach((key) => {
+    // @ts-ignore
     const priceVal = packingData.value[key]
 
     if (priceVal !== -1) {
@@ -650,7 +658,7 @@ const packingOptions = computed(() => {
 const fetchPackingOptions = async () => {
   if (!$env.orderUsePacking) return null
 
-  const data = await useApi('cart/get-packing', {
+  const data = (await useApi('cart/get-packing', {
     method: 'POST',
     headers: useHeaders(),
     body: {
@@ -658,7 +666,7 @@ const fetchPackingOptions = async () => {
     },
   }).catch((err) =>
     useCatchError(err, 'Ошибка при получении вариантов упаковки. Обратитесь в поддержку')
-  )
+  )) as ICartGetPackingDto
 
   if (data) {
     packingData.value = data
@@ -666,23 +674,23 @@ const fetchPackingOptions = async () => {
 }
 
 // Количество приборов
-const { value: personsCount, meta: personsCountMeta } = useField('personsCount', (v) => {
+const { value: personsCount, meta: personsCountMeta } = useField<string>('personsCount', (v) => {
   if (!app_settings.value.show_persons) return true
   return v
 })
 
 // Дополнительные поля (связь)
-const { value: not_call, meta: contactMeta } = useField('not_call', (v) => true, {
+const { value: not_call, meta: contactMeta } = useField<boolean>('not_call', (v) => true, {
   type: 'checkbox',
 })
 
 // Дополнительные поля (подгорев блюд)
-const { value: not_heat, meta: heatMeta } = useField('not_heat', (v) => true, {
+const { value: not_heat, meta: heatMeta } = useField<boolean>('not_heat', (v) => true, {
   type: 'checkbox',
 })
 
 // Оплата
-const { value: payment } = useField(
+const { value: payment } = useField<number>(
   'payment',
   (v) => {
     return v ? true : 'Выберите способ оплаты'
@@ -728,14 +736,14 @@ const paymentOptions = computed(() => {
 })
 
 // Доп. поля оплаты (почта, сдача)
-const { value: change, meta: changeMeta } = useField('change', (v) => {
+const { value: change, meta: changeMeta } = useField<string>('change', (v) => {
   if (!v || payment.value !== 1) return true
 
   if (!isValidNumber(v)) {
     return 'Введите сумму (числом)'
   }
 
-  if (v <= priceData.value.totalToPay) {
+  if (+v <= priceData.value.totalToPay) {
     return 'Сумма должна быть больше стоимости заказа'
   }
 
@@ -747,13 +755,13 @@ const requireEmail = computed(() => {
   return zoneData.value.organization?.payment_data?.need_email
 })
 
-const { value: email } = useField('email', (v) => {
+const { value: email } = useField<string>('email', (v) => {
   if (!requireEmail.value) return true
   return validEmail(v) ? true : 'Введите email'
 })
 
 // Бонусная программа
-const { value: bonusType } = useField('bonusType', (v) => {
+const { value: bonusType } = useField<number>('bonusType', (v) => {
   return true
 })
 
@@ -783,7 +791,7 @@ const showBonus = computed(() => {
 })
 
 // Бонусная программа (промокод)
-const { value: promocode, meta: promocodeMeta } = useField('promocode', (v) => {
+const { value: promocode, meta: promocodeMeta } = useField<string>('promocode', (v) => {
   return true
 })
 
@@ -801,14 +809,14 @@ const handlePromocodeClick = async () => {
 }
 
 // Бонусная программа (боунсы)
-const { value: points, meta: pointsMeta } = useField('points', (v) => {
+const { value: points, meta: pointsMeta } = useField<string>('points', (v) => {
   if (!v || bonusType.value !== 2) return true
 
   if (!isValidNumber(v)) {
     return 'Введите сумму (числом)'
   }
 
-  if (v > promo.value?.available_points) {
+  if (+v > promo.value?.available_points) {
     return 'Количество бонусов превышает доступный лимит'
   }
 
@@ -876,7 +884,7 @@ watch(
 )
 
 // Комментарий
-const { value: comment } = useField('comment', (v) => {
+const { value: comment } = useField<string>('comment', (v) => {
   return true
 })
 
@@ -896,7 +904,7 @@ const buildRequestObject = () => {
     cart: cartStore.cartToApi,
     comment:
       process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : comment.value,
-  }
+  } as IOrderRequestDto
 
   if (zoneData.value.isDelivery) {
     orderObject.date = `${deliveryDate.value} ${deliveryTime.value}` // DD.MM.YYYY HH:mm
@@ -1013,11 +1021,13 @@ const requestCheckout = async () => {
 
   loading.value = true
 
-  const response = await useApi('order/create', {
+  const response = (await useApi('order/create', {
     method: 'POST',
     headers: useHeaders(),
     body: buildRequestObject(),
-  }).catch((err) => useCatchError(err, 'Что-то пошло не так. Обратитесь в поддержку'))
+  }).catch((err) =>
+    useCatchError(err, 'Что-то пошло не так. Обратитесь в поддержку')
+  )) as IOrderCreateDto
 
   const handleSuccess = () => {
     toast.success(`Заказ ${response.order_id} Оформлен`)
@@ -1027,13 +1037,15 @@ const requestCheckout = async () => {
 
   if (response && response.suceess && response.order_id) {
     if (payment.value === 1030) {
-      const paymentData = await useApi('order/get-payment-data', {
+      const paymentData = (await useApi('order/get-payment-data', {
         method: 'POST',
         headers: useHeaders(),
         params: {
           id: response.order_id,
         },
-      }).catch((err) => useCatchError(err, 'Ошибка платежного шлюза. Обратитесь в поддержку'))
+      }).catch((err) =>
+        useCatchError(err, 'Ошибка платежного шлюза. Обратитесь в поддержку')
+      )) as IOrderPaymentDataDto
 
       if (paymentData.link) {
         openExternalLink(paymentData.link)

@@ -144,7 +144,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // definePageMeta({ layout: 'default', header: 'page' })
 
 const checkbox = ref(false)

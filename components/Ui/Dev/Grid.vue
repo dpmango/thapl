@@ -14,7 +14,7 @@
   <div class="to-top" @click="scrollToElement('promo')">🔝</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { scrollToElement } from '#imports'
 
 const show = ref(false)

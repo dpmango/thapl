@@ -30,7 +30,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore } from '~/store'
 
@@ -44,7 +44,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits('dispatchUpdate')
+const emit = defineEmits(['dispatchUpdate'])
 </script>
 
 <style lang="scss" scoped>

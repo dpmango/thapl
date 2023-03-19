@@ -18,7 +18,7 @@
   </swiper>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Swiper } from 'swiper/vue'
 import { Navigation, Pagination, Scrollbar, FreeMode, Mousewheel, Autoplay } from 'swiper'
 import 'swiper/css'

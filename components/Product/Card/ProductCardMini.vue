@@ -2,7 +2,7 @@
   <div class="card" @click="handleProductClick">
     <div class="card__media">
       <div class="card__image">
-        <UiAtomProductImage :src="product.image" :alt="product.title" />
+        <UiImage :src="product.image" :alt="product.title" />
       </div>
     </div>
     <div class="card__body">

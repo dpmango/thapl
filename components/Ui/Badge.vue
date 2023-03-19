@@ -9,36 +9,33 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    theme: {
-      type: String,
-      default: '',
-      validator: (x) => ['primary', 'danger', 'success', 'green', 'blue'].includes(x),
-    },
-    size: {
-      type: String,
-      default: 'medium',
-      validator: (x) => ['medium', 'small'].includes(x),
-    },
-    icon: {
-      type: String,
-      default: '',
-    },
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  theme: {
+    type: String,
+    default: '',
+    validator: (x) => ['primary', 'danger', 'success', 'green', 'blue'].includes(x),
   },
-  computed: {
-    mods() {
-      return {
-        _clickable: this.clickable,
-      }
-    },
+  size: {
+    type: String,
+    default: 'medium',
+    validator: (x) => ['medium', 'small'].includes(x),
   },
-}
+  icon: {
+    type: String,
+    default: '',
+  },
+  clickable: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const mods = computed(() => {
+  return {
+    _clickable: props.clickable,
+  }
+})
 </script>
 
 <style lang="scss" scoped>

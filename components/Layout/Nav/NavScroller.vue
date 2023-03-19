@@ -24,7 +24,7 @@
   </nav>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import _ from 'lodash'
 import { useProductStore } from '~/store'
 import { createScrollableAnchors } from '~~/utils/Elements'

@@ -10,17 +10,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { SwiperSlide } from 'swiper/vue'
+import { IProduct } from '~/interface/Product'
 
-const { $env, $log } = useNuxtApp()
-
-const props = defineProps({
-  list: {
-    type: Array,
-    default: () => [],
-  },
-})
+const props = defineProps<{ list: IProduct[] }>()
 
 const swiperParams = {
   slidesPerView: 'auto',

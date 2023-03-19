@@ -74,17 +74,19 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { IOrder } from '~/interface/Order'
+
 const { $env, $log } = useNuxtApp()
 
-const lastOrder = ref(null)
+const lastOrder = ref<IOrder | null>(null)
 
 const { data: lastOrderData, error: lastOrderError } = await useAsyncData(
   'profile/get-last-order',
   () =>
     useApi('profile/get-last-order', {
       headers: useHeaders(),
-    })
+    }) as Promise<IOrder>
 )
 
 lastOrder.value = lastOrderData.value
@@ -97,18 +99,18 @@ const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = us
 })
 
 // Запрос обновлений каждую минуту
-const timerUpdate = ref(null)
+const timerUpdate = ref<NodeJS.Timeout | null>(null)
 
 onMounted(() => {
-  timerUpdate.value = setInterval(() => {
-    lastOrder.value = useApi('profile/get-last-order', {
+  timerUpdate.value = setInterval(async () => {
+    lastOrder.value = (await useApi('profile/get-last-order', {
       headers: useHeaders(),
-    })
+    })) as IOrder
   }, 1 * 60 * 1000)
 })
 
 onBeforeUnmount(() => {
-  clearTimeout(timerUpdate.value)
+  timerUpdate.value && clearTimeout(timerUpdate.value)
 })
 </script>
 
