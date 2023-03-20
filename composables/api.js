@@ -19,10 +19,13 @@ export const useApi = (url, options = {}, settings = {}) => {
     fetchUrl = url
   }
 
+  const DEV_perf_start = performance.now()
   return $fetch(fetchUrl, options)
     .then((res) => {
       // $log.log(`${url}`, logResponce(res))
-      $log.logServer(`👌 +FETCH ${url}`)
+      const DEV_perf_end = performance.now()
+
+      $log.logServer(`👌 +FETCH ${url} in ${(DEV_perf_end - DEV_perf_start).toFixed(2)} ms`)
       return res
     })
     .catch((err) => {

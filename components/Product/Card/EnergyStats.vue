@@ -11,7 +11,7 @@
     </div>
     <div class="stat-row">
       <label for="">Жиры:</label>
-      <span>{{ toNum(product.energy_full_amount) }}</span>
+      <span>{{ toNum(product.fat_full_amount) }}</span>
     </div>
     <div class="stat-row">
       <label for="">Углеводы:</label>
