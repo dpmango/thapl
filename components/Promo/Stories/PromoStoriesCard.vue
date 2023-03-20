@@ -120,6 +120,8 @@ const handleCopyClick = async (text: string) => {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  padding-bottom: var(--promo-stories-ar);
   &__bg {
     position: absolute;
     z-index: 1;
@@ -139,7 +141,12 @@ const handleCopyClick = async (text: string) => {
   }
   &__content {
     flex: 1 0 auto;
-    position: relative;
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     flex-direction: column;
     z-index: 2;

@@ -139,13 +139,14 @@ watch(
   }
   &__wrapper {
     position: relative;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
+    width: 100%;
     max-width: 456px;
     margin-left: auto;
     margin-right: auto;
-    margin: 40px auto;
+    margin: auto auto;
   }
   &__slider {
     position: relative;
@@ -156,7 +157,7 @@ watch(
     border-radius: 12px;
     :deep(.swiper-slide) {
       width: 100% !important;
-      height: 100% !important;
+      // height: 100% !important;
     }
   }
   &__header {
