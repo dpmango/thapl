@@ -39,7 +39,7 @@ const props = defineProps({
 
 const { $env } = useNuxtApp()
 const toast = useToast()
-const listType = $env.promoListType
+const listType = +$env.promoListType
 const modifiers = computed(() => [listType === 1 && '_wide', listType === 2 && '_narrow'])
 
 const swiperParams = {

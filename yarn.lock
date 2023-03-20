@@ -568,7 +568,7 @@
   resolved "https://registry.yarnpkg.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-2.0.1.tgz#ff02629c7c95d1f4f8ea84d5ef1173461610535e"
   integrity sha512-B9/8PmOtU6nBiibJg0glnNktQDZ3rZnGn/7UmDfrm2vMtrdlXO3p7ErE95N0up80IRk9YEtB5jyj/TmQ1WH3dw==
 
-"@csstools/css-tokenizer@^2.0.1":
+"@csstools/css-tokenizer@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@csstools/css-tokenizer/-/css-tokenizer-2.1.0.tgz#fee4de3d444db3ce9007f3af6474af8ba3e4b930"
   integrity sha512-dtqFyoJBHUxGi9zPZdpCKP1xk8tq6KPHJ/NY4qWXiYo6IcSGwzk3L8x2XzZbbyOyBs9xQARoGveU2AsgLj6D2A==
@@ -1226,13 +1226,14 @@
   resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.4.0.tgz#2c91791a9ba6ca0a0f4aaac5e45d58df13639ac8"
   integrity sha512-IgMK9i3sFGNUqPMbjABm0G26g0QCKCUBfglhQ7rQq6WcxbKfEHRcmwsoER4hZcuYqJgkYn2OeuoJIv7Jsftp7g==
 
-"@pinia-plugin-persistedstate/nuxt@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@pinia-plugin-persistedstate/nuxt/-/nuxt-1.0.0.tgz"
-  integrity sha512-oBLnkFXy0mcP9wCR0NQj1SguhgalEoubDF302gpRr1lh0V34vSL2Nlw8XDwRrULq5v3eHt4da632YSjNny1+BA==
+"@pinia-plugin-persistedstate/nuxt@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@pinia-plugin-persistedstate/nuxt/-/nuxt-1.1.1.tgz#53d1f26fa405aa20803da6d710c6777ab50445f2"
+  integrity sha512-b6ZNP3Re8COmfZEpj4KQmbp2TuDKrLggDFLZa8FiJF68xE/oCsPXIuXUvAt8E4ht/5sq4Z/grlA+iGXaI2aeKQ==
   dependencies:
-    "@nuxt/kit" "^3.0.0"
-    pinia-plugin-persistedstate ">=3.0.0"
+    "@nuxt/kit" "^3.2.3"
+    defu "^6.1.2"
+    pinia-plugin-persistedstate ">=3.1.0"
 
 "@pinia/nuxt@^0.4.7":
   version "0.4.7"
@@ -2465,10 +2466,10 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-cosmiconfig@^8.0.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.1.0.tgz#947e174c796483ccf0a48476c24e4fefb7e1aea8"
-  integrity sha512-0tLZ9URlPGU7JsKq0DQOQ3FoRsYX8xDZ7xMiATQfaiGMz7EHowNkbU9u1coAOmnh9p/1ySpm0RB3JNWRXM5GCg==
+cosmiconfig@^8.1.0:
+  version "8.1.3"
+  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.1.3.tgz#0e614a118fcc2d9e5afc2f87d53cd09931015689"
+  integrity sha512-/UkO2JKI18b5jVMJUp0lvKFMpa/Gye+ZgZjKD+DGEN9y7NRcf/nK1A0sp67ONmKtnDCNMS44E6jrk0Yc3bDuUw==
   dependencies:
     import-fresh "^3.2.1"
     js-yaml "^4.1.0"
@@ -4658,10 +4659,10 @@ knitwork@^1.0.0:
   resolved "https://registry.npmjs.org/knitwork/-/knitwork-1.0.0.tgz"
   integrity sha512-dWl0Dbjm6Xm+kDxhPQJsCBTxrJzuGl0aP9rhr+TG8D3l+GL90N8O8lYUi7dTSAN2uuDqCtNgb6aEuQH5wsiV8Q==
 
-known-css-properties@^0.26.0:
-  version "0.26.0"
-  resolved "https://registry.npmjs.org/known-css-properties/-/known-css-properties-0.26.0.tgz"
-  integrity sha512-5FZRzrZzNTBruuurWpvZnvP9pum+fe0HcK8z/ooo+U+Hmp4vtbyp1/QDsqmufirXy4egGzbaH/y2uCZf+6W5Kg==
+known-css-properties@^0.27.0:
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.27.0.tgz#82a9358dda5fe7f7bd12b5e7142c0a205393c0c5"
+  integrity sha512-uMCj6+hZYDoffuvAJjFAPz56E9uoowFHmTkqRtRq5WyC5Q6Cu/fTZKNQpX/RbzChBYLLl3lo8CjFZBAZXq9qFg==
 
 lazystream@^1.0.0:
   version "1.0.1"
@@ -5770,10 +5771,10 @@ pify@^2.3.0:
   resolved "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz"
   integrity sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==
 
-pinia-plugin-persistedstate@>=3.0.0:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/pinia-plugin-persistedstate/-/pinia-plugin-persistedstate-3.0.2.tgz"
-  integrity sha512-84vPyUhPA/8Pr+1mT1ioNb2d8z4tvdgYRqMQf8xyauOVBKjo0ZcRBwPQBV7ZAJG43Kwar43nXG2jU+ZMvAFFRQ==
+pinia-plugin-persistedstate@>=3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/pinia-plugin-persistedstate/-/pinia-plugin-persistedstate-3.1.0.tgz#eada2b61ecd478fce88e490a685210415cd7a1b4"
+  integrity sha512-8UN+vYMEPBdgNLwceY08mi5olI0wkYaEb8b6hD6xW7SnBRuPydWHlEhZvUWgNb/ibuf4PvufpvtS+dmhYjJQOw==
 
 pinia@>=2.0.31:
   version "2.0.32"
@@ -6120,10 +6121,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.8.4:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.4.tgz#34dd2595629bfbb79d344ac4a91ff948694463c3"
-  integrity sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==
+prettier@^2.8.5:
+  version "2.8.5"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.5.tgz#3dd8ae1ebddc4f6aa419c9b64d8c8319a7e0d982"
+  integrity sha512-3gzuxrHbKUePRBB4ZeU08VNkUcqEHaUaouNt0m7LGP4Hti/NuB07C7PPTM/LkWqXoJYJn2McEo5+kxPNrtQkLQ==
 
 pretty-bytes@^6.1.0:
   version "6.1.0"
@@ -6946,30 +6947,30 @@ stylelint-config-recommended@>=6.0.0:
   resolved "https://registry.npmjs.org/stylelint-config-recommended/-/stylelint-config-recommended-9.0.0.tgz"
   integrity sha512-9YQSrJq4NvvRuTbzDsWX3rrFOzOlYBmZP+o513BJN/yfEmGSr0AxdvrWs0P/ilSpVV/wisamAHu5XSk8Rcf4CQ==
 
-stylelint-config-recommended@^10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/stylelint-config-recommended/-/stylelint-config-recommended-10.0.1.tgz#25a8828acf6cde87dac6db2950c8c4ed82a69ae1"
-  integrity sha512-TQ4xQ48tW4QSlODcti7pgSRqBZcUaBzuh0jPpfiMhwJKBPkqzTIAU+IrSWL/7BgXlOM90DjB7YaNgFpx8QWhuA==
+stylelint-config-recommended@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/stylelint-config-recommended/-/stylelint-config-recommended-11.0.0.tgz#b1cb7d71bd92f9b8593f93c2ca6df16ed7d61522"
+  integrity sha512-SoGIHNI748OCZn6BxFYT83ytWoYETCINVHV3LKScVAWQQauWdvmdDqJC5YXWjpBbxg2E761Tg5aUGKLFOVhEkA==
 
-stylelint-config-standard@^30.0.1:
-  version "30.0.1"
-  resolved "https://registry.yarnpkg.com/stylelint-config-standard/-/stylelint-config-standard-30.0.1.tgz#a84d57c240c37f7db47023ab9d2e64c49090e1eb"
-  integrity sha512-NbeHOmpRQhjZh5XB1B/S4MLRWvz4xxAxeDBjzl0tY2xEcayNhLbaRGF0ZQzq+DQZLCcPpOHeS2Ru1ydbkhkmLg==
+stylelint-config-standard@^31.0.0:
+  version "31.0.0"
+  resolved "https://registry.yarnpkg.com/stylelint-config-standard/-/stylelint-config-standard-31.0.0.tgz#90d94e1b43df798412e129b4b1cb4c4e56ffe64f"
+  integrity sha512-CUGAmtROCvX0YgMY2+6P9tqSkHj5z/75XxrQ8bGxvkCa1xYdGDx4poM0pa7cXc3s74/PZLJH/okxZZouRfOSGw==
   dependencies:
-    stylelint-config-recommended "^10.0.1"
+    stylelint-config-recommended "^11.0.0"
 
-stylelint@^15.2.0:
-  version "15.2.0"
-  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-15.2.0.tgz#e906eb59df83bde075d148623216f298f9ceb03a"
-  integrity sha512-wjg5OLn8zQwjlj5cYUgyQpMWKzct42AG5dYlqkHRJQJqsystFFn3onqEc263KH4xfEI0W3lZCnlIhFfS64uwSA==
+stylelint@^15.3.0:
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-15.3.0.tgz#5f0f3264abeb29c54f571ea3f3934eba2c2be96d"
+  integrity sha512-9UYBYk7K9rtlKcTUDZrtntE840sZM00qyYBQHHe7tjwMNUsPsGvR6Fd43IxHEAhRrDLzpy3TVaHb6CReBB3eFg==
   dependencies:
     "@csstools/css-parser-algorithms" "^2.0.1"
-    "@csstools/css-tokenizer" "^2.0.1"
+    "@csstools/css-tokenizer" "^2.1.0"
     "@csstools/media-query-list-parser" "^2.0.1"
     "@csstools/selector-specificity" "^2.1.1"
     balanced-match "^2.0.0"
     colord "^2.9.3"
-    cosmiconfig "^8.0.0"
+    cosmiconfig "^8.1.0"
     css-functions-list "^3.1.0"
     css-tree "^2.3.1"
     debug "^4.3.4"
@@ -6984,7 +6985,7 @@ stylelint@^15.2.0:
     import-lazy "^4.0.0"
     imurmurhash "^0.1.4"
     is-plain-object "^5.0.0"
-    known-css-properties "^0.26.0"
+    known-css-properties "^0.27.0"
     mathml-tag-names "^2.1.3"
     meow "^9.0.0"
     micromatch "^4.0.5"
@@ -7000,7 +7001,7 @@ stylelint@^15.2.0:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
     style-search "^0.1.0"
-    supports-hyperlinks "^2.3.0"
+    supports-hyperlinks "^3.0.0"
     svg-tags "^1.0.0"
     table "^6.8.1"
     v8-compile-cache "^2.3.0"
@@ -7020,10 +7021,10 @@ supports-color@^7.0.0, supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-supports-hyperlinks@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/supports-hyperlinks/-/supports-hyperlinks-2.3.0.tgz"
-  integrity sha512-RpsAZlpWcDwOPQA22aCH4J0t7L8JmAvsCxfOSEwm7cQs3LshN36QaTkwd70DnBOXDWGssw2eUoc8CaRWT0XunA==
+supports-hyperlinks@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/supports-hyperlinks/-/supports-hyperlinks-3.0.0.tgz#c711352a5c89070779b4dad54c05a2f14b15c94b"
+  integrity sha512-QBDPHyPQDRTy9ku4URNGY5Lah8PAaXs6tAAwp55sL5WCsSW7GIfdf6W5ixfziW+t7wh3GVvHyHHyQ1ESsoRvaA==
   dependencies:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
@@ -7051,10 +7052,10 @@ svgo@^2.7.0:
     picocolors "^1.0.0"
     stable "^0.1.8"
 
-swiper@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/swiper/-/swiper-9.1.0.tgz#1a804254aa5b52724038ea1b4007193742a6bbf3"
-  integrity sha512-Ck8CywwfUghkbUAHbxTAWyeUAcNrIDNJ6EnKFBGGcHDjeqbh0Jq08RbmD5fMu1a0oOv1eIkUGVkqNJy/asm+yA==
+swiper@^9.1.1:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-9.1.1.tgz#8e8d49a3667d9ef8997cddb023d913c422e72142"
+  integrity sha512-D1zArOwI6XCXCYBULPA4jTxpqp5SQtvntjinbXNZwXzj6P3KS51zSWuMarCLXq5oRISay4nX+TuShpxz8qhtbw==
   dependencies:
     ssr-window "^4.0.2"
 
@@ -7283,10 +7284,10 @@ type-fest@^3.0.0:
   resolved "https://registry.npmjs.org/type-fest/-/type-fest-3.2.0.tgz"
   integrity sha512-Il3wdLRzWvbAEtocgxGQA9YOoRVeVUGOMBtel5LdEpNeEAol6GJTLw8GbX6Z8EIMfvfhoOXs2bwOijtAZdK5og==
 
-typescript@^4.9.5:
-  version "4.9.5"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz"
-  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+typescript@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.2.tgz#891e1a90c5189d8506af64b9ef929fca99ba1ee5"
+  integrity sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==
 
 ufo@^1.0.0, ufo@^1.0.1:
   version "1.0.1"
