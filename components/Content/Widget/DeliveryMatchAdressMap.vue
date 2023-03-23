@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
 import { useDeliveryStore } from '~/store'
+import { IGeoDataRef } from '~/interface/Geolocation'
 
 const deliveryStore = useDeliveryStore()
 
@@ -68,11 +69,11 @@ const geoData = ref({
   longitude: null,
   found: null,
   text: '',
-})
+} as IGeoDataRef)
 
 watch(
   () => geocoderSuggestionObj.value,
-  async (newVal) => {
+  async (newVal: any) => {
     const coords = newVal?.geometry._coordinates
     const data = newVal?.properties._data
 
@@ -93,7 +94,7 @@ watch(
 )
 
 // Карта
-const mapInstance = ref(null)
+const mapInstance = ref<any>(null)
 const mapPolygonCollection = () => {
   if (!window.ymaps || !mapInstance.value) return
 

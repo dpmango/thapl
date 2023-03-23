@@ -6,7 +6,6 @@ export interface IUser {
   user_code: string
   name: string | null
   email: string | null
-  birth: string | null
   birthday: string | null
   is_promo_agreement: boolean
   promo_confirmed: boolean

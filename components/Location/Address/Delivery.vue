@@ -35,7 +35,9 @@
         добавим в будущем в зону доставки.
       </template>
       <template #action>
-        <UiButton :href="tg" target="_blank">Написать в Телеграм</UiButton>
+        <UiButton v-if="tg" :href="`https://t.me/${tg}`" target="_blank">
+          Написать в Телеграм
+        </UiButton>
       </template>
     </UiAtomErrorMessage>
   </div>

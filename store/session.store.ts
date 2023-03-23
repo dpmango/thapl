@@ -17,6 +17,9 @@ export const useSessionStore = defineStore('session', {
     paths: ['user'],
   },
   getters: {
+    isAuthenticated(state) {
+      return !!Object.keys(state.user).length
+    },
     userNameVerbose(state) {
       if (state.user) {
         const { name, username, user_code } = state.user

@@ -10,4 +10,10 @@ declare module '#app' {
   }
 }
 
+declare global {
+  namespace ymaps {
+    export function Polygon(...x: any): void
+  }
+}
+
 export {}

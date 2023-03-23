@@ -49,6 +49,7 @@ export default defineNuxtConfig({
       useContacts: true,
       takeawayOnly: false,
       footerNavTitle: 'Компания',
+      loyaltyTitle: 'Бонусы',
       // заказ
       orderAskAuth: true,
       orderUsePacking: true,
