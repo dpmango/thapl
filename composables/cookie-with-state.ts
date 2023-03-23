@@ -1,4 +1,4 @@
-export const useCookieState = (name, maxAge) => {
+export const useCookieState = (name: string, maxAge?) => {
   const cookie = useCookie(name, { maxAge: maxAge || 60 * 60 * 24 * 30 * 6 })
   const state = useState(name, () => cookie.value)
 

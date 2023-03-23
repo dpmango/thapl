@@ -4,12 +4,14 @@
       <UiCrumbs class="page__crumbs" :show-home="false" :list="crumbs" />
     </div>
 
-    <ProductCategory :show-title="false" :category="categoryData" />
+    <ProductCategory v-if="categoryData" :show-title="false" :category="categoryData" />
   </main>
 </template>
 
 <script setup lang="ts">
 import { useProductStore } from '~/store'
+import { ICategoryFull } from '~/interface'
+
 const { $env, $log } = useNuxtApp()
 
 const { params } = useRoute()
@@ -22,32 +24,55 @@ if (!DangerAsyncCategoryInStore) {
   throw createError({ statusCode: 404, fatal: true })
 }
 
-const { data: categoryData, error: categoriesError } = await useAsyncData(
-  `catalog-${params.slug}`,
-  () =>
-    useApi('catalog/get-catalog-data', {
-      method: 'GET',
-      headers: useHeaders(),
-      params: {
-        id: DangerAsyncCategoryInStore.id,
-        // slug: params.slug
-      },
-    })
-)
+const categoryData = ref<ICategoryFull>()
 
-useHead({
-  title: `${categoryData.value.title} - ${$env.projectName}`,
+const fetchCatalog = async () => {
+  const data = (await useApi('catalog/get-catalog-data', {
+    method: 'GET',
+    headers: useHeaders(),
+    params: {
+      id: DangerAsyncCategoryInStore.id,
+      // slug: params.slug
+    },
+  })) as ICategoryFull
+
+  if (data) {
+    categoryData.value = data
+  } else {
+    throw createError({ statusCode: 404, fatal: true })
+  }
+}
+
+onMounted(() => {
+  fetchCatalog()
 })
 
-$log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
+// const { data: categoryData, error: categoriesError } = await useAsyncData(
+//   `catalog-${params.slug}`,
+//   () =>
+//     useApi('catalog/get-catalog-data', {
+//       method: 'GET',
+//       headers: useHeaders(),
+//       params: {
+//         id: DangerAsyncCategoryInStore.id,
+//         // slug: params.slug
+//       },
+//     })
+// )
 
-if (!categoryData.value) {
-  throw createError({ statusCode: 404, fatal: true })
-}
+useHead({
+  title: `${categoryData.value?.title} - ${$env.projectName}`,
+})
+
+// $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
+
+// if (!categoryData.value) {
+//   throw createError({ statusCode: 404, fatal: true })
+// }
 
 const crumbs = ref([
   { href: '/', label: 'Каталог' },
-  { href: `/category/${params.slug}`, label: categoryData.value.title },
+  { href: `/category/${params.slug}`, label: categoryData.value?.title },
 ])
 </script>
 

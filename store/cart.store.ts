@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct, IAdditive, IModifierItem } from '~/interface/Product'
-import { IPromoDto } from '~/interface/Loyalty'
+import { IPromoDto, IPromoRequestDto } from '~/interface'
 import { useDeliveryStore } from '~/store'
 import { isArraysEqual, getArrayDifference } from '#imports'
 
@@ -232,7 +232,7 @@ export const useCartStore = defineStore('cart', {
 
       return res
     },
-    async getPromo({ code, time_to_delivery }: { code?: string; time_to_delivery?: string }) {
+    async getPromo({ code, time_to_delivery }: IPromoRequestDto) {
       const deliveryStore = useDeliveryStore()
 
       const res = (await useApi('cart/check-promo', {

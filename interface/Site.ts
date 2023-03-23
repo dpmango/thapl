@@ -1,12 +1,6 @@
 import { ILoyalty } from './Loyalty'
 import { IUser } from './User'
-
-export interface IPage {
-  seo_title: null
-  seo_description: null
-  title: null
-  content_data: null
-}
+import { IPageUniversalDto } from '~/interface/Dto/Page.dto'
 
 export interface ISiteMenu {
   id: number
@@ -19,10 +13,10 @@ export interface ISiteMenu {
 
 export interface ISiteSettings {
   main_logo: string
-  additional_logo: null
+  // additional_logo: string | null
   region_id: number
   default_work_time: string
-  page: IPage
+  page: IPageUniversalDto
 }
 
 export interface IAppSettings {
@@ -30,19 +24,21 @@ export interface IAppSettings {
   app_store_id: string
   app_store_link: string
   play_store_link: string
-  whatsapp: string
-  tg: string
-  instagram: string
-  facebook: null
+  whatsapp: string | null
+  tg: string | null
+  instagram: string | null
+  facebook: string | null
   show_persons: boolean
   default_persons_count: string
   takeaway_enabled: boolean
   order_to_time: boolean
   disable_order: boolean
   default_phone: string
-  privacy_link: null
+  privacy_link: string | null
   site_footer_menu: ISiteMenu[]
   site_mobile_menu: ISiteMenu[]
+  order_disable_cache: boolean
+  order_cart_to_courier: boolean
   loyalty: ILoyalty
   site_settings: ISiteSettings
 }

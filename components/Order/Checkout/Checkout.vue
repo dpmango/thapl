@@ -153,7 +153,7 @@
               </div>
             </div>
 
-            <div v-if="deliveryTime === 2" class="checkout__row">
+            <div v-if="deliveryTime === '2'" class="checkout__row">
               <UiRangeSlider
                 :min="deliveryRangeOptions.min"
                 :max="deliveryRangeOptions.max"
@@ -184,12 +184,12 @@
               </UiCheckbox>
               <UiCheckbox
                 v-for="opt in packingOptions"
-                :key="opt.value"
+                :key="opt.price"
                 name="packing"
                 type="radio"
                 :error="errors.pack"
-                :checked="pack === opt.value"
-                @change="() => setFieldValue('pack', opt.value)"
+                :checked="pack === opt.id"
+                @change="() => setFieldValue('pack', opt.id)"
               >
                 {{ opt.label }}
                 <span v-if="opt.price" class="c-gray">+{{ formatPrice(opt.price) }}</span>
@@ -373,12 +373,15 @@ import { useField, useForm } from 'vee-validate'
 import dayjs from 'dayjs'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useDeliveryStore, useCartStore, useSessionStore, useUiStore } from '~/store'
-import { IOrderRequestDto } from '~/interface/RequestDto/Order.request'
+
 import {
+  IOrderRequestDto,
+  IPromoRequestDto,
   IOrderCreateDto,
   IOrderPaymentDataDto,
   ICartGetPackingDto,
-} from '~/interface/Dto/Order.dto'
+  IToggleOption,
+} from '~/interface'
 
 import {
   scrollPageToTop,
@@ -531,7 +534,7 @@ const deliveryDateOptions = computed(() => {
     ]
   }
 
-  const dayOptions = [{ id: 0, label: 'В другой день' }]
+  const dayOptions = [{ id: 0, label: 'В другой день' }] as IToggleOption[]
 
   // + добавить есть доступные на сегодня слоты
   if (showASAPTime.value) {
@@ -702,9 +705,7 @@ const { value: payment } = useField<number>(
 
 // 1050 - картой через SDK, 1040 - pay сервисами через SDK
 const paymentOptions = computed(() => {
-  const envOptions = $env.orderPaymentOptions.split(',')
-
-  const optionsList = []
+  const optionsList = [] as { id: number; label: string }[]
 
   if (
     zoneData.value.organization?.payment_data ||
@@ -730,9 +731,11 @@ const paymentOptions = computed(() => {
     })
   }
 
+  const envOptions = $env.orderPaymentOptions.split(',')
+
   return envOptions
     .map((key) => ({ ...optionsList.find((x) => x.id === +key) }))
-    .filter((x) => x.id)
+    .filter((x) => x.id) as IToggleOption[]
 })
 
 // Доп. поля оплаты (почта, сдача)
@@ -780,13 +783,13 @@ const showBonus = computed(() => {
   if (!combinedPromo.value) {
     return {
       promocode: bonusType.value === 1,
-      points: bonusType.value === 2 && promo.value?.available_points > 0,
+      points: bonusType.value === 2 && (promo.value?.available_points || 0) > 0,
     }
   }
 
   return {
     promocode: true,
-    points: promo.value?.available_points > 0,
+    points: (promo.value?.available_points || 0) > 0,
   }
 })
 
@@ -816,7 +819,7 @@ const { value: points, meta: pointsMeta } = useField<string>('points', (v) => {
     return 'Введите сумму (числом)'
   }
 
-  if (+v > promo.value?.available_points) {
+  if (+v > (promo.value?.available_points || 0)) {
     return 'Количество бонусов превышает доступный лимит'
   }
 
@@ -825,7 +828,7 @@ const { value: points, meta: pointsMeta } = useField<string>('points', (v) => {
 
 // Бонусная программа (запросы, связанная логика)
 const fetchPromo = async () => {
-  const requestObj = {}
+  const requestObj = {} as IPromoRequestDto
 
   if (promocode.value) {
     requestObj.code = promocode.value
@@ -857,7 +860,7 @@ watch(
     if (newVal === 1) {
       setFieldValue('points', '')
     } else if (newVal === 2) {
-      setFieldValue('bonus', '')
+      setFieldValue('promocode', '')
       promocodeApplied.value = false
     }
   }
@@ -895,12 +898,11 @@ const buildRequestObject = () => {
   const orderObject = {
     name: name.value,
     phone: phone.value,
-    order_type: zoneData.value.orderType,
+    order_type: zoneData.value?.orderType || 0,
     address: address.value,
-    lat: currentAddress.value.latitude,
-    lng: currentAddress.value.longitude,
+    lat: currentAddress.value?.latitude,
+    lng: currentAddress.value?.longitude,
     payment_method: payment.value,
-
     cart: cartStore.cartToApi,
     comment:
       process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : comment.value,
@@ -938,8 +940,8 @@ const buildRequestObject = () => {
     orderObject.email = email.value
   }
 
-  if (promo.value.promo_id) {
-    orderObject.promo_id = promo.value.promo_id
+  if (promo.value?.promo_id) {
+    orderObject.promo_id = promo.value?.promo_id
   }
 
   if (promocode.value) {

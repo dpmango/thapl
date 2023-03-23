@@ -1,4 +1,4 @@
-export const removeUrlParameter = (value, key) => {
+export const removeUrlParameter = (value: string, key: string) => {
   const regParameter = new RegExp('[?|&]' + key + '=([^&]+)')
   if (regParameter.test(value)) {
     value = value.replace(regParameter, '')
@@ -7,7 +7,7 @@ export const removeUrlParameter = (value, key) => {
   return value
 }
 
-export const clearSocialLink = (v) => {
+export const clearSocialLink = (v: string | null) => {
   if (!v) return ''
 
   let result = v
@@ -26,7 +26,7 @@ export const clearSocialLink = (v) => {
   return result
 }
 
-export const openExternalLink = (url) => {
+export const openExternalLink = (url: string) => {
   if (window.opener == null) {
     window.location.href = url
   } else {
@@ -34,7 +34,7 @@ export const openExternalLink = (url) => {
   }
 }
 
-export const buildLink = (v) => {
+export const buildLink = (v: string | null) => {
   if (!v) return ''
 
   if (v.includes('http:') || v.includes('https:')) {

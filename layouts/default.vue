@@ -5,7 +5,6 @@
     <LayoutFooter />
     <LayoutMobileMenu />
     <LayoutSharedModals />
-    <UiDevGrid />
   </div>
 </template>
 

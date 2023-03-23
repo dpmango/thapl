@@ -2,7 +2,7 @@ const lastTime = new Date().getTime()
 
 export const APP_VERSION = '2.0.7'
 
-export const PerformanceLog = (DEV_perf, name, fromStart) => {
+export const PerformanceLog = (DEV_perf: number, name: string, fromStart?) => {
   const DEV_perf_end = performance.now()
 
   const fromStartTag = fromStart

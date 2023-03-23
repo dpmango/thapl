@@ -12,7 +12,7 @@ export interface IOrder {
   status: number
   created_at: Date
   payment_sum: number
-  delivery_sum: null
+  delivery_sum: number | null
   discount_sum: number
   packing_sum: number
   order_sum: number
@@ -34,7 +34,7 @@ export interface ICartItem {
   count: number
   created_at: Date
   updated_at: Date
-  tech_data: null
+  tech_data: any | null
 }
 
 export interface IOrderCartModifier {

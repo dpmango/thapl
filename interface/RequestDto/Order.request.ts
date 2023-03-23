@@ -1,11 +1,11 @@
 export interface IOrderRequestDto {
   name: string
   phone: string
-  order_type: string
+  order_type: number
   address: string
   lat: number
   lng: number
-  payment_method: string
+  payment_method: number
   comment: string
 
   cart: {
@@ -15,7 +15,7 @@ export interface IOrderRequestDto {
       catolog_item_modifier_id: number
       count: number
     }[]
-  }
+  }[]
 
   date?: string
   entrance?: string
@@ -24,8 +24,8 @@ export interface IOrderRequestDto {
   intercom?: string
   pack?: string
   persons_count?: string
-  not_call?: string
-  not_heat?: string
+  not_call?: boolean
+  not_heat?: boolean
   change?: string
   email?: string
   promo_id?: number

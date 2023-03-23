@@ -13,13 +13,13 @@
       </template>
     </h1>
 
-    <div v-if="list.length" class="tags">
+    <div v-if="list?.length" class="tags">
       <UiButton v-for="tag in allTags" :key="tag.slug" size="small">{{ tag.slug }}</UiButton>
     </div>
   </div>
 
   <div class="container">
-    <div v-if="list.length" class="map">
+    <div v-if="list?.length" class="map">
       <ClientOnly>
         <YandexMap
           :coordinates="centerCooridinates"
@@ -34,7 +34,7 @@
             :coordinates="[marker.lat, marker.lng]"
           >
             <template #component>
-              <div class="text-m">{{ marker.title }}</div>
+              <div class="text-m">{{ marker }}</div>
             </template>
           </YandexMarker>
         </YandexMap>
@@ -71,21 +71,17 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { PropType } from 'vue'
-import { IRestaurant, IRestaurantTag } from '~/interface/Delivery'
-import { formatPrice } from '#imports'
+import { IRestaurantDto, IRestaurantTag } from '~/interface/Dto/Restaurant.dto'
 import { useDeliveryStore } from '~~/store'
 
 const { $env } = useNuxtApp()
+const router = useRouter()
 
 const deliveryStore = useDeliveryStore()
 const { regions } = storeToRefs(deliveryStore)
 
-const props = defineProps({
-  list: {
-    type: Array as PropType<IRestaurant[]>,
-    default: () => [],
-  },
+const props = withDefaults(defineProps<{ list: IRestaurantDto[] | null }>(), {
+  list: () => [],
 })
 
 // display
@@ -93,7 +89,7 @@ const props = defineProps({
 const allTags = computed(() => {
   let tags = [] as IRestaurantTag[]
 
-  props.list.forEach((x) => {
+  props.list?.forEach((x) => {
     tags = [...tags, ...x.tags]
   })
 
@@ -139,7 +135,7 @@ const restaurantsSearched = computed(() => {
   const searchStr = search.value.trim().toLowerCase()
 
   if (searchStr.length >= 2) {
-    return props.list.filter((x) => {
+    return props.list?.filter((x) => {
       return (
         x.title.toLowerCase().includes(searchStr) || x.address.toLowerCase().includes(searchStr)
       )
@@ -150,7 +146,7 @@ const restaurantsSearched = computed(() => {
 })
 
 const selectRestaurant = (e) => {
-  console.log(e)
+  router.push(`/restaurants/${e.id}`)
 }
 
 // region
@@ -158,7 +154,9 @@ const firstRegion = computed(() => {
   return regions.value[0]
 })
 
-const region = ref(firstRegion && { label: firstRegion.value.title, value: firstRegion.value.id })
+const region = ref(
+  firstRegion.value && { label: firstRegion.value.title, value: firstRegion.value.id }
+)
 
 const regionOptions = computed(() => {
   return regions.value.map((x) => ({ label: x.title, value: x.id }))

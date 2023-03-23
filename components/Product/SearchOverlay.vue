@@ -120,7 +120,7 @@ watch(
 )
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .search {
   position: fixed;
   z-index: 20;

@@ -41,7 +41,7 @@ import { IOrganizationTakeaway } from 'interface/Delivery'
 const props = defineProps({
   organization: {
     type: Object as PropType<IOrganizationTakeaway>,
-    default: () => {},
+    default: () => ({}),
   },
 })
 

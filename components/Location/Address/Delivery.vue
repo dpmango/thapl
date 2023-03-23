@@ -218,7 +218,7 @@ const geolocationFailure = (positionError: any) => {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .delivery {
   &__list {
     margin-top: 12px;

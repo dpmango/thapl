@@ -62,7 +62,7 @@ const list = computed(() => {
       // { label: 'Адрес', value: null },
     ]
 
-    return all.filter((x) => x.value)
+    return all.filter((x) => x.value) as { label: string; value: string; text?: string }[]
   }
 
   return []

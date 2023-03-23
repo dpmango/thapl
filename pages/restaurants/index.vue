@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { localStorageKeepArray } from '#imports'
+import { IRestaurantDto } from '~/interface/Dto/Restaurant.dto'
 
 const { $env, $log } = useNuxtApp()
 
@@ -15,11 +15,13 @@ useHead({
   title: `Рестораны - ${$env.projectName}`,
 })
 
-const { data, error } = await useAsyncData('organization/get-list', () =>
-  useApi('organization/get-list', {
-    method: 'GET',
-    headers: useHeaders(),
-  })
+const { data, error } = await useAsyncData(
+  'organization/get-list',
+  () =>
+    useApi('organization/get-list', {
+      method: 'GET',
+      headers: useHeaders(),
+    }) as Promise<IRestaurantDto[]>
 )
 
 $log.log('🧙‍♂️ ASYNC RESTAURANTS', { data: data.value })

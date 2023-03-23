@@ -35,7 +35,7 @@ const cartStore = useCartStore()
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
-    default: () => {},
+    default: () => ({}),
   },
   stoplisted: {
     type: Boolean,

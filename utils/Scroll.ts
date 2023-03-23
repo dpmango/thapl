@@ -1,14 +1,27 @@
-export const scrollToElement = (id, headerTarget = true) => {
-  const element = document.getElementById(id)
+export const scrollToElement = (
+  selector: HTMLElement | Element | string,
+  headerTarget: any = true
+) => {
+  if (!selector) return
+
+  let element
+  if (typeof selector === 'string') {
+    element = document.getElementById(selector)
+  } else if (typeof selector === 'object') {
+    element = selector
+  }
+
   if (!element) return
 
   let headerOffset = 0
   if (headerTarget === true) {
     // применяется для десктопа (прокрутка относительно sticky меню)
-    headerOffset = document.querySelector('.header__bottom').offsetHeight + 24
+    const headerDom = document.querySelector('.header__bottom') as HTMLElement
+    headerOffset = (headerDom?.offsetHeight || 0) + 24
   } else if (typeof headerTarget === 'string') {
     // применяется с указанием селектора элемента шапки (или люббого другого элемента)
-    headerOffset = document.querySelector(headerTarget).offsetHeight + 24
+    const elementDom = document.querySelector(headerTarget) as HTMLElement
+    headerOffset = elementDom.offsetHeight + 24
   } else if (typeof headerTarget === 'number') {
     // либо указать оффсет числом
     headerOffset = headerTarget
@@ -24,7 +37,7 @@ export const scrollPageToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-export const scrollWithSpeed = (to, duration = 500, el) => {
+export const scrollWithSpeed = (to: number, duration = 500, el?: any) => {
   const element = el || document.documentElement
   const start = element.scrollTop
   const change = to - start
@@ -53,7 +66,7 @@ export const scrollWithSpeed = (to, duration = 500, el) => {
 }
 
 export const lockBody = () => {
-  document.querySelector('body').classList.add('js-locked')
+  document.querySelector('body')?.classList.add('js-locked')
 
   const div = document.createElement('div')
   div.style.overflowY = 'scroll'
@@ -65,10 +78,11 @@ export const lockBody = () => {
 
   div.remove()
 
-  document.querySelector('body').style.marginRight = scrollWidth + 'px'
+  const body = document.querySelector('body') as HTMLElement
+  body.style.marginRight = scrollWidth + 'px'
 }
 
 export const unlockBody = () => {
-  document.querySelector('body').classList.remove('js-locked')
-  document.querySelector('body').removeAttribute('style')
+  document.querySelector('body')?.classList.remove('js-locked')
+  document.querySelector('body')?.removeAttribute('style')
 }

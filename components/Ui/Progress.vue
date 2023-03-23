@@ -16,7 +16,7 @@ const isCompleate = computed(() => {
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .progress {
   position: relative;
   background: var(--progress-background-color);

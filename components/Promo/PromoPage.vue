@@ -23,7 +23,7 @@
 
     <div class="page__content">
       <p v-if="data.description" class="text-l">{{ data.description }}</p>
-      <ContentUniversal v-if="data.content_data" :blocks="data.content_data" />
+      <ContentUniversal v-if="data.content_data?.blocks" :blocks="data.content_data?.blocks" />
     </div>
 
     <div v-if="data.gifts?.length" class="page__gifts gifts">
@@ -44,7 +44,7 @@ import { IPromoPageDto } from '~/interface/Promo'
 const props = defineProps({
   data: {
     type: Object as PropType<IPromoPageDto>,
-    default: () => {},
+    default: () => ({}),
   },
 })
 </script>

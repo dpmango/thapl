@@ -1,9 +1,9 @@
 export interface IOrderCreateDto {
   order_id: number
-  error_reason: null
+  error_reason: number | null
   suceess: boolean
-  error_text: null
-  error_field: null
+  error_text: string | null
+  error_field: string | null
   stoped_items: any[]
   stoped_modifiers: any[]
   analytics_events: any[]
@@ -11,10 +11,10 @@ export interface IOrderCreateDto {
 
 export interface IOrderPaymentDataDto {
   success: boolean
-  type: null
+  type: any | null
   link: string | null
-  receipt: null
-  payment_sum: null
+  receipt: string | null
+  payment_sum: number | null
 }
 
 export interface ICartGetPackingDto {

@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { IProduct } from '~/interface/Product'
+import { IContentDataDto } from '~/interface/Dto/Page.dto'
 
 export interface IPromoListDto {
   id: number
@@ -19,7 +20,7 @@ export interface IPromoPageDto {
   title: string
   description: string | null
   image: string | null
-  content_data: Array<any> | null
+  content_data: IContentDataDto | null
   action:
     | 'open_link'
     | 'open_category'

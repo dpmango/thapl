@@ -21,11 +21,11 @@ export const pad = (v, size = 2) => {
   return s
 }
 
-export const dateToTimestamp = (v) => {
+export const dateToTimestamp = (v: Date | string) => {
   return dayjs(v, 'YYYY-MM-DD HH:mm:ss', true).format('DD MMMM YYYY, HH:mm')
 }
 
-export const formatMinutes = (v) => {
+export const formatMinutes = (v: string) => {
   const min = +v
 
   const hours = Math.floor(min / 60)
@@ -35,7 +35,7 @@ export const formatMinutes = (v) => {
   return `${hh}${mm}`
 }
 
-export const timestampToMinutes = (str) => {
+export const timestampToMinutes = (str: string | null) => {
   const [hh, mm, ss] = (str || '00:00:00').split(':')
 
   return +hh * 60 + +mm
@@ -49,7 +49,7 @@ export const minutesToTimestamp = (min = 0) => {
   return `${pad(hh)}:${pad(mm)}`
 }
 
-export const secondsToStamp = (sec) => {
+export const secondsToStamp = (sec: number) => {
   const minutes = pad(Math.floor(sec / 60))
   const seconds = pad(sec % 60)
 
@@ -67,7 +67,7 @@ export const generateDaysFrom = (from, number) => {
 }
 
 export const generateTimeSlots = (start, end, interval, now) => {
-  const timeSlots = []
+  const timeSlots = [] as { disabled: boolean; id: string; label: string }[]
 
   while (start <= end) {
     const endLabel = start.add(interval, 'hour')

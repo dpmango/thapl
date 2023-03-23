@@ -1,6 +1,6 @@
 export const createScrollableAnchors = (smoothLinks) => {
-  const sections = []
-  const links = []
+  const sections = [] as HTMLElement[]
+  const links = [] as { name: string; dom: HTMLElement }[]
 
   for (let i = 0; i < smoothLinks.length; i++) {
     const link = smoothLinks[i]

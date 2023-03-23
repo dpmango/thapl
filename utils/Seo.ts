@@ -1,10 +1,18 @@
-export const createSeoTags = ({ title, description, keywords, ogImage, ogUrl }) => {
+interface ICreateSeoTags {
+  title?: string | null
+  description?: string | null
+  keywords?: any
+  ogImage?: any
+  ogUrl?: any
+}
+
+export const createSeoTags = ({ title, description, keywords, ogImage, ogUrl }: ICreateSeoTags) => {
   const returnable = {
     title: '',
-    meta: [],
+    meta: [] as any[],
   }
 
-  const metaArr = []
+  const metaArr = [] as any[]
 
   if (title) {
     returnable.title = title

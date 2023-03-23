@@ -16,10 +16,10 @@ export interface IProduct {
   energy_full_amount: string
   only_pre_order: boolean
   preorder_delay: number
-  min_weight: null
-  max_weight: null
-  weight_step: null
-  old_price: null | string
+  min_weight: string | null
+  max_weight: string | null
+  weight_step: string | null
+  old_price: string | null
   price: number
   description: string
   can_be_payed_by_bonus_fully: boolean
@@ -30,7 +30,7 @@ export interface IProduct {
   tags: any[]
   open_item_page_to_add: boolean
   modifier_groups: IModifierGroup[] | null
-  image: null | string
+  image: string | null
 }
 
 export interface IModifierGroup {
@@ -54,12 +54,12 @@ export interface IAdditive {
 export interface ICategory {
   id: number
   title: string
-  image: null
+  image: string | null
   slug: string
 }
 
 export interface ICategoryFull extends ICategory {
   catalog_items: IProduct[]
-  seo_data: null
+  seo_data: any
   sub_categories: ICategoryFull[]
 }

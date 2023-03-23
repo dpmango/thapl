@@ -1,4 +1,4 @@
-export const localStorageKeepArray = (key, data, compareKey) => {
+export const localStorageKeepArray = (key, data, compareKey?) => {
   try {
     const curItem = localStorageGet(key) || []
 
@@ -16,9 +16,9 @@ export const localStorageKeepArray = (key, data, compareKey) => {
   } catch {}
 }
 
-export const localStorageGet = (key) => {
+export const localStorageGet = (key: string) => {
   try {
-    return JSON.parse(localStorage.getItem(key))
+    return JSON.parse(localStorage.getItem(key) || '')
   } catch (error) {
     return null
   }

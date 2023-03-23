@@ -12,7 +12,7 @@ import { localStorageKeepArray, localStorageGet } from '#imports'
 export const useDeliveryStore = defineStore('delivery', {
   state: () => {
     return {
-      region: null,
+      region: null as string | null,
       regions: [] as IRegion[],
 
       restaurants: [] as IOrganizationTakeaway[],
@@ -43,7 +43,7 @@ export const useDeliveryStore = defineStore('delivery', {
       return state.currentAddress?.type || null
     },
     currentRegionName(state) {
-      const region = state.regions.find((x) => x.id === state.region)
+      const region = state.regions.find((x) => x.id === +(state.region || 0))
       if (region) {
         return region.title as string
       }

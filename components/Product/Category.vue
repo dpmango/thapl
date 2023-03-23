@@ -25,7 +25,7 @@ import { ICategoryFull } from '~/interface/Product'
 const props = defineProps({
   category: {
     type: Object as PropType<ICategoryFull>,
-    default: () => {},
+    default: () => ({}),
   },
   showTitle: {
     type: Boolean,

@@ -28,7 +28,7 @@ const { data, error } = await useAsyncData(
       params: {
         list_type: 2 || $env.promoListType,
       },
-    }) as Promise<IPromoListDto>
+    }) as Promise<IPromoListDto[]>
 )
 
 $log.log('🧙‍♂️ ASYNC PROMO', { data: data.value })

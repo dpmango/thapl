@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { IToggleOption } from '~/interface/Ui'
+
 const emit = defineEmits(['onChange'])
 
 const props = defineProps({
@@ -26,7 +28,7 @@ const props = defineProps({
     required: true,
   },
   list: {
-    type: Array,
+    type: Array as PropType<IToggleOption[]>,
     default: () => [],
   },
   error: {
@@ -36,12 +38,12 @@ const props = defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: (v) => ['medium', 'small'].includes(v),
+    validator: (v: string) => ['medium', 'small'].includes(v),
   },
   theme: {
     type: String,
     default: 'default',
-    validator: (v) => ['default', 'spaced'].includes(v),
+    validator: (v: string) => ['default', 'spaced'].includes(v),
   },
   autosize: {
     type: Boolean,

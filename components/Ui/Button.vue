@@ -36,12 +36,12 @@ const props = defineProps({
   theme: {
     type: String,
     default: 'primary',
-    validator: (v) => ['primary', 'secondary', 'accent', 'link'].includes(v),
+    validator: (v: string) => ['primary', 'secondary', 'accent', 'link'].includes(v),
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (v) => ['large', 'medium', 'small'].includes(v),
+    validator: (v: string) => ['large', 'medium', 'small'].includes(v),
   },
   href: String,
   iconRight: String,

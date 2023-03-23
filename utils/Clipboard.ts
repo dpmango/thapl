@@ -1,4 +1,4 @@
-export const copyToClipboard = (textToCopy, focusRef) => {
+export const copyToClipboard = (textToCopy: string, focusRef?: HTMLElement) => {
   // fallback function
   function copyViaGhost() {
     // text area method
@@ -12,19 +12,21 @@ export const copyToClipboard = (textToCopy, focusRef) => {
     textArea.focus()
     textArea.select()
     return new Promise(function (resolve, reject) {
-      document.execCommand('copy') ? resolve() : reject(new Error('error'))
+      document.execCommand('copy') ? resolve(true) : reject(new Error('error'))
       if (focusRef) selectText(focusRef)
       textArea.remove()
     })
   }
 
   function selectText(node) {
+    // @ts-ignore
     if (document.body.createTextRange) {
+      // @ts-ignore
       const range = document.body.createTextRange()
       range.moveToElementText(node)
       range.select()
     } else if (window.getSelection) {
-      const selection = window.getSelection()
+      const selection = window.getSelection() as Selection
       const range = document.createRange()
       range.selectNodeContents(node)
       selection.removeAllRanges()

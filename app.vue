@@ -25,7 +25,7 @@ const ui = useUiStore()
 
 // const toast = useToast()
 
-$log.log(`APP Version: ${APP_VERSION}`)
+console.log(`APP Version: ${APP_VERSION}`)
 
 // toast.info('Тост с уведомлением', {
 //   timeout: 60 * 1000,
@@ -70,20 +70,18 @@ const { region } = storeToRefs(deliveryStore)
 
 const initData = await useInit()
 
-// TODO - установка куки в клиент от init (баг useCookieState)
+// установка куки в клиент от init (баг useCookieState)
 // не работает когда useCookieState работает в SSR контексте
 const apiCookieClient = useCookie('x-thapl-apitoken')
-apiCookieClient.value = initData.api_token
+apiCookieClient.value = initData?.api_token || null
 
 useHead({
-  title: $env.projectName,
   bodyAttrs: {
     class: `theme-${$env.theme}`,
   },
   ...createSeoTags({
-    title: initData.site_settings?.page?.seo_title,
-    description: initData.site_settings?.page?.seo_description,
-    content_data: initData.site_settings?.page?.content_data,
+    title: initData?.site_settings?.page?.seo_title || $env.projectName,
+    description: initData?.site_settings?.page?.seo_description,
   }),
 })
 
@@ -106,7 +104,7 @@ if ($env.useRegions) {
   $log.log('🧙‍♂️ ASYNC REGIONS', { regions: regions.value })
 }
 
-if (initData.app_settings.takeaway_enabled || !$env.takeawayOnly) {
+if (initData?.app_settings.takeaway_enabled || !$env.takeawayOnly) {
   const { data: restaurants, error: restaurantsError } = await useAsyncData(
     'organizations-for-takeaway',
     () => deliveryStore.getRestaurants()

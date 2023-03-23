@@ -16,6 +16,7 @@ const { app_settings } = storeToRefs(sessionStore)
 
 const content = computed(() => {
   try {
+    // @ts-ignore
     return app_settings.value.site_settings.page.content_data.blocks
   } catch {
     return null
@@ -23,11 +24,8 @@ const content = computed(() => {
 })
 </script>
 
-<style>
+<style lang="scss" scoped>
 .about {
   margin: 90px 0 120px;
-}
-.img-bottom {
-  margin-top: auto;
 }
 </style>

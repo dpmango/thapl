@@ -1,4 +1,5 @@
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
+import { IInit } from '~/interface/Site'
 
 export const useInit = async () => {
   const { $env, $log } = useNuxtApp()
@@ -25,30 +26,32 @@ export const useInit = async () => {
 
   $log.log('🧙‍♂️ USED init HEADERS', headers)
 
-  const { data, error } = await useAsyncData('init', () =>
-    useApi('api-client/init/', {
-      method: 'POST',
-      headers,
-      body: {
-        lang: 'ru',
-        device_type: -1,
-      },
-    })
+  const { data, error } = await useAsyncData(
+    'init',
+    () =>
+      useApi('api-client/init/', {
+        method: 'POST',
+        headers,
+        body: {
+          lang: 'ru',
+          device_type: -1,
+        },
+      }) as Promise<IInit>
   )
 
   $log.log('🧙‍♂️ ASYNC INIT', data.value)
 
-  if (data) {
+  if (data.value) {
     const { api_token, user_token, app_settings } = data.value
     const region_predefined = app_settings?.site_settings?.region_id
 
     // установка куки и стора
     session.setInit(data.value)
     apiCookie.value = api_token
-    userCookie.value = user_token
+    userCookie.value = user_token || null
 
     if (region_predefined) {
-      regionCookie.value = region_predefined
+      regionCookie.value = region_predefined.toString()
     }
 
     // запрашивать незакрываемое окно выбора региона

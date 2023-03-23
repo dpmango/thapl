@@ -28,7 +28,7 @@ import { formatPrice } from '#imports'
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
-    default: () => {},
+    default: () => ({}),
   },
 })
 

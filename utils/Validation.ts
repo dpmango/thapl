@@ -4,7 +4,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 // eslint-disable-next-line import/no-named-as-default-member
 dayjs.extend(customParseFormat)
 
-export const clearString = (v, removeSpaces) => {
+export const clearString = (v: any, removeSpaces?: boolean) => {
   let value = ''
   if (typeof v === 'string') {
     value = v.trim()
@@ -19,11 +19,11 @@ export const clearString = (v, removeSpaces) => {
   return value
 }
 
-export const isValidNumber = (v) => {
+export const isValidNumber = (v: any) => {
   return Number.isFinite(+v)
 }
 
-export const clearPhone = (str) => {
+export const clearPhone = (str: string) => {
   let num = str.replace(/\+7 \(/, '')
   num = num.replace(/\) /, '')
   num = num.replace(/-/, '')
@@ -32,10 +32,10 @@ export const clearPhone = (str) => {
   return num
 }
 
-export const validPhone = (value) => {
+export const validPhone = (value: string | null) => {
   value = value || ''
   let valid = true
-  const arr = []
+  const arr = [] as string[]
   const num = clearPhone(value)
 
   if (num.length !== 10) {
@@ -43,7 +43,7 @@ export const validPhone = (value) => {
     arr.push('Номер телефона должен состоять из 10 цифр.')
   }
 
-  if (![3, 4, 5, 6, 8, 9].includes(num[0] * 1)) {
+  if (![3, 4, 5, 6, 8, 9].includes(+num[0] * 1)) {
     valid = false
     arr.push('Проверьте код оператора или региона.')
   }
@@ -54,7 +54,7 @@ export const validPhone = (value) => {
   }
 }
 
-export const validEmail = (v) => {
+export const validEmail = (v: string | null) => {
   const value = clearString(v)
 
   const reg =
@@ -63,13 +63,13 @@ export const validEmail = (v) => {
   return reg.test(value)
 }
 
-export const validAdress = (v) => {
+export const validAdress = (v: string | null) => {
   const value = clearString(v)
 
   return value.split(' ').length >= 2 && /\d+/.test(value)
 }
 
-export function validDate(value, dateNow) {
+export function validDate(value: string | null, dateNow?: string) {
   value = value || ''
   const djsObj = dayjs(value, 'DD/MM/YYYY', true)
 

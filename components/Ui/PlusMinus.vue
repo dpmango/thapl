@@ -33,7 +33,7 @@ const props = defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: (v) => ['medium', 'small'].includes(v),
+    validator: (v: string) => ['medium', 'small'].includes(v),
   },
   asInput: {
     type: Boolean,

@@ -33,7 +33,7 @@ import { formatPrice, useProduct } from '#imports'
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
-    default: () => {},
+    default: () => ({}),
   },
   cartItem: {
     type: Object as PropType<ICartInner>,

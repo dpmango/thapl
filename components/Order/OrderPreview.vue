@@ -84,7 +84,7 @@ const { $env, $log } = useNuxtApp()
 const props = defineProps({
   order: {
     type: Object as PropType<IOrder>,
-    default: () => {},
+    default: () => ({}),
   },
   actions: {
     type: Boolean,

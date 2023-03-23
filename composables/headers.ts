@@ -5,8 +5,8 @@ export const useHeaders = () => {
   const sessionStore = useSessionStore()
   const deliveryStore = useDeliveryStore()
 
-  const { api_token, user_token, region } = sessionStore
-  const { zone, takeawayOrganization } = storeToRefs(deliveryStore)
+  const { api_token, user_token } = sessionStore
+  const { region, zone, takeawayOrganization } = storeToRefs(deliveryStore)
 
   const headers = {}
   if (api_token) {
@@ -15,13 +15,13 @@ export const useHeaders = () => {
   if (user_token) {
     headers['x-thapl-authorization'] = user_token
   }
-  if (user_token) {
+  if (region) {
     headers['x-thapl-region-id'] = region
   }
 
   const orgDeliveryID = zone.value?.organization?.id
   const orgTakeawayID = takeawayOrganization.value?.id
-  let targetOrganization = null
+  let targetOrganization
 
   if (deliveryStore.currentAddressType === 'delivery') {
     targetOrganization = orgDeliveryID
