@@ -291,6 +291,7 @@ watch(
   }
   &__image {
     position: relative;
+    z-index: 1;
     width: 100%;
     border-radius: var(--card-border-radius);
     font-size: 0;

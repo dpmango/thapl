@@ -93,6 +93,7 @@ onMounted(() => {
   }
   &__slide {
     position: relative;
+    z-index: 1;
     height: var(--promo-height);
     border-radius: var(--card-border-radius);
     overflow: hidden;

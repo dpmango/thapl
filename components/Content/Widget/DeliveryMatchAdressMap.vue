@@ -270,7 +270,6 @@ watch(
       font-family: var(--font-base);
       font-size: 16px;
       line-height: 26px;
-      color: var(--color-font-invert);
       border-bottom: 1px solid var(--color-border);
     }
     :deep(.ymaps-2-1-79-search__suggest-item) {
