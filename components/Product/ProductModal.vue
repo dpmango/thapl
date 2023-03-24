@@ -283,10 +283,16 @@ watch(
 .product {
   position: relative;
   &__wrapper {
+    flex: 1 0 auto;
     display: flex;
+    min-height: 1px;
+    height: 100%;
   }
   &__media {
     flex: 0 0 62.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 48px;
   }
   &__image {
@@ -318,8 +324,8 @@ watch(
   &__scroller {
     flex: 1 0 auto;
     padding: 32px 32px 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
   }
   &__title {
     word-break: break-word;
@@ -428,6 +434,7 @@ watch(
     }
     &__media {
       margin: 20px auto;
+      flex: 0 0 auto;
       padding: 0;
       max-width: 240px;
     }

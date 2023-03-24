@@ -57,7 +57,7 @@ export const useProduct = ({
 
           return {
             label: productModifier?.title || 'неизвестно',
-            value: formatPrice(productModifier?.price),
+            value: formatPrice(productModifier?.price, 0, false),
           }
         })
       }

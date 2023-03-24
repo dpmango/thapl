@@ -145,6 +145,7 @@ onMounted(() => {
         width: calc(100% - 12px);
         height: calc(100% - 12px);
         border-radius: var(--card-border-radius);
+        object-position: center center;
       }
     }
   }

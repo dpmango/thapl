@@ -399,7 +399,7 @@ onBeforeUnmount(() => {
     resize: vertical;
     overflow: hidden;
     box-shadow: none;
-    transition-property: border, color, background, outline;
+    transition-property: border, color, background, box-shadow;
     transition-duration: 0.25s;
     transition-timing-function: $ease;
     &::placeholder {
@@ -408,7 +408,8 @@ onBeforeUnmount(() => {
     &:focus,
     &:active {
       border-color: var(--color-font);
-      outline: 4px solid rgba(0, 97, 174, 0.3);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 97, 174, 0.3);
     }
     &:hover {
       border-color: var(--color-font);
