@@ -83,16 +83,15 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useField, useForm } from 'vee-validate'
+import { IProfileAddressesDto, IProfileAddressDeleteDto } from '~/interface/Dto/Profile.dto'
 
 const { $env, $log } = useNuxtApp()
 const toast = useToast()
 
-const props = defineProps({
-  address: Object,
-})
+const props = defineProps<{ address: IProfileAddressesDto }>()
 
 const emit = defineEmits('dispatchUpdate')
 
@@ -107,19 +106,19 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   },
 })
 
-const { value: apt } = useField('apt', (v) => {
+const { value: apt } = useField<string>('apt', (v) => {
   return true
 })
-const { value: entrance } = useField('entrance', (v) => {
+const { value: entrance } = useField<string>('entrance', (v) => {
   return true
 })
-const { value: floor } = useField('floor', (v) => {
+const { value: floor } = useField<string>('floor', (v) => {
   return true
 })
-const { value: door_code } = useField('door_code', (v) => {
+const { value: door_code } = useField<string>('door_code', (v) => {
   return true
 })
-const { value: user_comment } = useField('user_comment', (v) => {
+const { value: user_comment } = useField<string>('user_comment', (v) => {
   return true
 })
 
@@ -156,13 +155,13 @@ const handleSave = async () => {
 }
 
 const handleRemoveClick = async () => {
-  const res = await useApi('profile/dell-address', {
+  const res = (await useApi('profile/dell-address', {
     method: 'POST',
     headers: useHeaders(),
     body: {
       id: props.address.id,
     },
-  }).catch(useCatchError)
+  }).catch(useCatchError)) as IProfileAddressDeleteDto
 
   if (res && res.success) {
     toast.success('Удалено')

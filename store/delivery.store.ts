@@ -12,7 +12,7 @@ import { localStorageKeepArray, localStorageGet } from '#imports'
 export const useDeliveryStore = defineStore('delivery', {
   state: () => {
     return {
-      region: null,
+      region: null as string | null,
       regions: [] as IRegion[],
 
       restaurants: [] as IOrganizationTakeaway[],
@@ -43,7 +43,7 @@ export const useDeliveryStore = defineStore('delivery', {
       return state.currentAddress?.type || null
     },
     currentRegionName(state) {
-      const region = state.regions.find((x) => x.id === state.region)
+      const region = state.regions.find((x) => x.id === +(state.region || 0))
       if (region) {
         return region.title as string
       }
@@ -117,11 +117,11 @@ export const useDeliveryStore = defineStore('delivery', {
 
       return data
     },
-    async getRegions(region) {
-      const data = await useApi('organization/get-regions', {
+    async getRegions() {
+      const data = (await useApi('organization/get-regions', {
         method: 'GET',
         headers: useHeaders(),
-      }).catch(useCatchError)
+      }).catch(useCatchError)) as IRegion[]
 
       this.regions = [...data]
 
@@ -164,7 +164,9 @@ export const useDeliveryStore = defineStore('delivery', {
     async hydrateZone() {
       if (this.currentAddress?.type === 'delivery') {
         const { latitude, longitude } = this.currentAddress
-        await this.checkZone({ latitude, longitude })
+        if (latitude && longitude) {
+          await this.checkZone({ latitude, longitude })
+        }
       } else if (this.currentAddress?.type === 'takeaway') {
         await this.setTakeawayOrganization({ id: this.currentAddress?.org_id })
       }

@@ -5,7 +5,7 @@
       <div v-if="product" class="product__wrapper">
         <div class="product__media hidden-md">
           <div class="product__image">
-            <UiAtomProductImage :src="product.image" :alt="product.title" />
+            <UiImage :src="product.image" :alt="product.title" />
           </div>
         </div>
         <div class="product__body">
@@ -23,7 +23,7 @@
 
             <div class="product__media visible-md">
               <div class="product__image">
-                <UiAtomProductImage :src="product.image" :alt="product.title" />
+                <UiImage :src="product.image" :alt="product.title" />
               </div>
             </div>
 
@@ -283,14 +283,21 @@ watch(
 .product {
   position: relative;
   &__wrapper {
+    flex: 1 0 auto;
     display: flex;
+    min-height: 1px;
+    height: 100%;
   }
   &__media {
     flex: 0 0 62.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 48px;
   }
   &__image {
     position: relative;
+    z-index: 1;
     width: 100%;
     border-radius: var(--card-border-radius);
     font-size: 0;
@@ -317,8 +324,8 @@ watch(
   &__scroller {
     flex: 1 0 auto;
     padding: 32px 32px 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
   }
   &__title {
     word-break: break-word;
@@ -427,6 +434,7 @@ watch(
     }
     &__media {
       margin: 20px auto;
+      flex: 0 0 auto;
       padding: 0;
       max-width: 240px;
     }

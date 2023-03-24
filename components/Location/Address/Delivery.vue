@@ -35,7 +35,9 @@
         добавим в будущем в зону доставки.
       </template>
       <template #action>
-        <UiButton :href="tg" target="_blank">Написать в Телеграм</UiButton>
+        <UiButton v-if="tg" :href="`https://t.me/${tg}`" target="_blank">
+          Написать в Телеграм
+        </UiButton>
       </template>
     </UiAtomErrorMessage>
   </div>
@@ -218,7 +220,7 @@ const geolocationFailure = (positionError: any) => {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .delivery {
   &__list {
     margin-top: 12px;

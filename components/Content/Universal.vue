@@ -59,12 +59,10 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
-  blocks: {
-    type: Array,
-    default: () => [],
-  },
+<script setup lang="ts">
+import { IContentBlockDto } from '~/interface/Dto/Page.dto'
+const props = withDefaults(defineProps<{ blocks: IContentBlockDto[] }>(), {
+  blocks: () => [],
 })
 </script>
 

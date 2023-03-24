@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { clearPhone, validPhone } from '#imports'
@@ -48,7 +48,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { phone: '' },
 })
 
-const { value: phone, meta } = useField('phone', (v) => {
+const { value: phone, meta } = useField<string>('phone', (v) => {
   const { valid, phone_error_text } = validPhone(v)
   return valid || phone_error_text
 })

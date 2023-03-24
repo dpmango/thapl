@@ -9,7 +9,7 @@
   >
     <div class="card__image-wrapper">
       <div class="card__image">
-        <UiAtomProductImage :src="product.image" :alt="product.title" />
+        <UiImage :src="product.image" :alt="product.title" />
         <div class="card__badges">
           <UiBadge v-for="tag in product.tags" :key="tag.id" theme="green" size="small">
             {{ tag.tag }}
@@ -58,7 +58,7 @@ const ui = useUiStore()
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
-    default: () => {},
+    default: () => ({}),
   },
   isGift: {
     type: Boolean,

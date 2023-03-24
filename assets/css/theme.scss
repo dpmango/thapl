@@ -19,6 +19,7 @@
   --promo-height: 353px;
   --promo-height-md: 260px;
   --promo-height-sm: 144px;
+  --promo-stories-ar: 177.77%;
 
   // products
   --product-card-ar: 100%;
@@ -33,27 +34,6 @@
   --input-border-radius: 12px;
   --map-border-radius: 12px;
   --card-border-radius-sm: 12px;
-}
-
-.theme-orange {
-  // scheme
-  --color-background: #fff;
-  --color-font: #000;
-  --color-font-rgb: #{HexToRGB(#000000)};
-  --color-font-invert: #fff;
-  --color-gray: #909090;
-  --color-disabled: #8996a4;
-  --color-bg: #f5f5f5;
-  --color-bg-darken: #eaeaea;
-  --color-border: #dddddd;
-  --color-separator: #e5e5e5;
-
-  // brand colors
-  --color-primary: #ec5c2a;
-  --color-primary-rgb: #{HexToRGB(#ec5c2a)};
-  --color-green: #75da52;
-  --color-red: #ea3e3e;
-  --color-yellow: #f2c94c;
 
   // components
   --header-background: #fff;
@@ -82,6 +62,69 @@
   --badge-green-background: #cffec4;
   --badge-blue-color: #1888ac;
   --badge-blue-background: #c9f0fc;
+}
+
+.theme-orange {
+  // scheme
+  --color-background: #fff;
+  --color-font: #000;
+  --color-font-rgb: #{HexToRGB(#000000)};
+  --color-font-invert: #fff;
+  --color-gray: #909090;
+  --color-disabled: #8996a4;
+  --color-bg: #f5f5f5;
+  --color-bg-darken: #eaeaea;
+  --color-border: #dddddd;
+  --color-separator: #e5e5e5;
+
+  // brand colors
+  --color-primary: #ec5c2a;
+  --color-primary-rgb: #{HexToRGB(#ec5c2a)};
+  --color-green: #75da52;
+  --color-red: #ea3e3e;
+  --color-yellow: #f2c94c;
+}
+
+.theme-yellow {
+  // scheme
+  --color-background: #fff;
+  --color-font: #000;
+  --color-font-rgb: #{HexToRGB(#000000)};
+  --color-font-invert: #000;
+  --color-gray: #909090;
+  --color-disabled: #8996a4;
+  --color-bg: #f5f5f5;
+  --color-bg-darken: #eaeaea;
+  --color-border: #dddddd;
+  --color-separator: #e5e5e5;
+
+  // brand colors
+  --color-primary: #ffcc01;
+  --color-primary-rgb: #{HexToRGB(#ffcc01)};
+  --color-green: #75da52;
+  --color-red: #ea3e3e;
+  --color-yellow: #f2c94c;
+}
+
+.theme-green {
+  // scheme
+  --color-background: #fff;
+  --color-font: #000;
+  --color-font-rgb: #{HexToRGB(#000000)};
+  --color-font-invert: #fff;
+  --color-gray: #909090;
+  --color-disabled: #8996a4;
+  --color-bg: #f5f5f5;
+  --color-bg-darken: #eaeaea;
+  --color-border: #dddddd;
+  --color-separator: #e5e5e5;
+
+  // brand colors
+  --color-primary: #6cad46;
+  --color-primary-rgb: #{HexToRGB(#6cad46)};
+  --color-green: #75da52;
+  --color-red: #ea3e3e;
+  --color-yellow: #f2c94c;
 }
 
 .theme-dark {

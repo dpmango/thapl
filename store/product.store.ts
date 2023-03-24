@@ -75,7 +75,7 @@ export const useProductStore = defineStore('product', {
     // возвращает все товары одним массивом
     // поиском по всем категориям и вложенным категориям
     flatCatalog(state): IProduct[] {
-      const DEV_perf = performance.now()
+      // const DEV_perf = performance.now()
 
       const { $env } = useNuxtApp()
       // TODO - tmp
@@ -92,7 +92,7 @@ export const useProductStore = defineStore('product', {
         return acc
       }, [])
 
-      PerformanceLog(DEV_perf, 'flatCatalog')
+      // PerformanceLog(DEV_perf, 'flatCatalog')
 
       return flatCatalog || []
     },

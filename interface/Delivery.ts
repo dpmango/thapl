@@ -9,7 +9,6 @@ export interface IZone {
   found: boolean
   is_open: boolean
   working_all_day: boolean
-  organization: IOrganization
   disable_cash_payment: boolean
   disable_courier_card_payment: boolean
   disable_online_payment: boolean
@@ -18,9 +17,11 @@ export interface IZone {
   delivery_price: number
   max_time: string
   base_max_time: string
-  time_from: null
-  time_to: null
-  working_time_text: null
+  time_from: string | null
+  time_to: string | null
+  working_time_text: string | null
+
+  organization: IOrganization
 }
 
 export interface IOrganizationBase {
@@ -35,6 +36,10 @@ export interface IOrganizationBase {
 
   cart_to_courier_settings: number
   stoped_temporary: boolean
+
+  disable_online_payment: boolean
+  disable_cash_payment: boolean
+  disable_courier_card_payment: boolean
 }
 
 export interface IOrganizationShared {
@@ -91,24 +96,4 @@ export interface ICurrentAddress {
   org_id: number
   latitude?: number
   longitude?: number
-}
-
-export interface IRestaurant {
-  id: number
-  title: string
-  working_hours: string
-  lng: number
-  lat: number
-  address: string
-  phone: string
-  tags: IRestaurantTag[]
-}
-
-export interface IRestaurantTag {
-  id: number
-  sort: number
-  tag: string
-  bg_color: string
-  text_color: string
-  slug: string
 }

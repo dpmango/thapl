@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+import { IPromoListDto } from '~/interface/Promo'
 const { $env, $log } = useNuxtApp()
 
 const route = useRoute()
@@ -18,14 +19,16 @@ useHead({
 })
 
 // TODO - будет другой запрос
-const { data, error } = await useAsyncData('promo/get-page-data', () =>
-  useApi('promo/get-for-main-page', {
-    method: 'GET',
-    headers: useHeaders(),
-    params: {
-      list_type: 2 || $env.promoListType,
-    },
-  })
+const { data, error } = await useAsyncData(
+  'promo/get-page-data',
+  () =>
+    useApi('promo/get-for-main-page', {
+      method: 'GET',
+      headers: useHeaders(),
+      params: {
+        list_type: 2 || $env.promoListType,
+      },
+    }) as Promise<IPromoListDto[]>
 )
 
 $log.log('🧙‍♂️ ASYNC PROMO', { data: data.value })

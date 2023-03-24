@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     'nuxt-proxy',
     '@nuxtjs/google-fonts',
     'nuxt-icons',
+    '@nuxt/image-edge',
   ],
 
   piniaPersistedstate: {
@@ -48,6 +49,7 @@ export default defineNuxtConfig({
       useContacts: true,
       takeawayOnly: false,
       footerNavTitle: 'Компания',
+      loyaltyTitle: 'Бонусы',
       // заказ
       orderAskAuth: true,
       orderUsePacking: true,

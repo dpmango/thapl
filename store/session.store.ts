@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { IInit, IAppSettings, ISiteSettings } from '~/interface/Site'
+import { IInit, IAppSettings } from '~/interface/Site'
 import { IUser } from '~/interface/User'
 
 export const useSessionStore = defineStore('session', {
@@ -7,7 +7,7 @@ export const useSessionStore = defineStore('session', {
     return {
       api_token: null as string | null,
       user_token: null as string | null,
-      user: {} as IUser | {},
+      user: {} as IUser,
       app_settings: {} as IAppSettings,
 
       phone: '' as string,
@@ -17,6 +17,9 @@ export const useSessionStore = defineStore('session', {
     paths: ['user'],
   },
   getters: {
+    isAuthenticated(state) {
+      return !!Object.keys(state.user).length
+    },
     userNameVerbose(state) {
       if (state.user) {
         const { name, username, user_code } = state.user
@@ -44,7 +47,7 @@ export const useSessionStore = defineStore('session', {
 
       this.api_token = api_token || null
       this.user_token = user_token || null
-      this.user = user || {}
+      this.user = user || ({} as IUser)
       this.app_settings = app_settings
     },
     setPhone(phone: string) {
@@ -68,7 +71,7 @@ export const useSessionStore = defineStore('session', {
     },
     logout() {
       this.user_token = null
-      this.user = {}
+      this.user = {} as IUser
 
       const userToken = useCookieState('x-thapl-authorization')
       userToken.value = ''

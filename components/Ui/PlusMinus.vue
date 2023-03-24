@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   value: {
     type: [Number, null],
@@ -33,7 +33,7 @@ const props = defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: (v) => ['medium', 'small'].includes(v),
+    validator: (v: string) => ['medium', 'small'].includes(v),
   },
   asInput: {
     type: Boolean,

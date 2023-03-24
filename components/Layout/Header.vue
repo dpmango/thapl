@@ -78,12 +78,14 @@
             <NuxtLink v-if="session.app_settings.loyalty?.enabled" to="/ui" class="action">
               <div class="action__icon">
                 <nuxt-icon name="heart" />
-                <div class="action__counter _top">223</div>
+                <div v-if="isAuthenticated && user.balance" class="action__counter _top">
+                  {{ user.balance }}
+                </div>
               </div>
-              <div class="action__text">Бонусы</div>
+              <div class="action__text">{{ $env.loyaltyTitle }}</div>
             </NuxtLink>
           </div>
-          <div v-if="!Object.keys(session.user).length" class="col">
+          <div v-if="!isAuthenticated" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'auth' })">
               <div class="action__icon">
                 <nuxt-icon name="login" />
@@ -129,7 +131,7 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import _ from 'lodash'
 import { useSessionStore, useUiStore, useCartStore, useDeliveryStore } from '~/store'
@@ -141,7 +143,9 @@ const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
 const {
+  user,
   app_settings: { site_settings },
+  isAuthenticated,
 } = session
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
 

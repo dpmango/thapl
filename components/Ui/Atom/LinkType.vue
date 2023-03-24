@@ -11,7 +11,7 @@ import { ISiteMenu } from '~/interface/Site'
 const props = defineProps({
   link: {
     type: Object as PropType<ISiteMenu>,
-    default: () => {},
+    default: () => ({}),
   },
 })
 

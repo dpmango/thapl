@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct, IAdditive, IModifierItem } from '~/interface/Product'
-import { IPromoDto } from '~/interface/Loyalty'
+import { IPromoDto, IPromoRequestDto } from '~/interface'
 import { useDeliveryStore } from '~/store'
 import { isArraysEqual, getArrayDifference } from '#imports'
 
@@ -158,6 +158,7 @@ export const useCartStore = defineStore('cart', {
         if (modifiers?.length && x.id === id && x.modifiers) {
           const productModifiers = x.modifiers.map((x) => x.id)
           const incomingModifiers = modifiers.map((x) => x.id)
+          console.log(productModifiers, incomingModifiers)
 
           return !isArraysEqual(productModifiers, incomingModifiers)
         }
@@ -180,9 +181,7 @@ export const useCartStore = defineStore('cart', {
           const productModifiersIds = productModifiersFlat.map((x) => x.id)
           const incomingModifiers = modifiers.map((x) => x.id)
 
-          console.log({ productModifiersIds }, { incomingModifiers })
-
-          return false
+          return !isArraysEqual(productModifiersIds, incomingModifiers)
         }
         return x.id !== id
       })
@@ -233,7 +232,7 @@ export const useCartStore = defineStore('cart', {
 
       return res
     },
-    async getPromo({ code, time_to_delivery }: { code?: string; time_to_delivery?: string }) {
+    async getPromo({ code, time_to_delivery }: IPromoRequestDto) {
       const deliveryStore = useDeliveryStore()
 
       const res = (await useApi('cart/check-promo', {
@@ -300,7 +299,7 @@ export const useCartStore = defineStore('cart', {
         },
       }).catch((err) => useCatchError(err, '', true))) as IProduct[] | null
 
-      if (res) {
+      if (res && res.length) {
         // проверка стоплистов
         const stoppedItems = getArrayDifference(
           this.cart.map((x) => x.id),

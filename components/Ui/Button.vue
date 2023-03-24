@@ -29,19 +29,19 @@
   </component>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const NuxtLink = resolveComponent('NuxtLink')
 
 const props = defineProps({
   theme: {
     type: String,
     default: 'primary',
-    validator: (v) => ['primary', 'secondary', 'accent', 'link'].includes(v),
+    validator: (v: string) => ['primary', 'secondary', 'accent', 'link'].includes(v),
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (v) => ['large', 'medium', 'small'].includes(v),
+    validator: (v: string) => ['large', 'medium', 'small'].includes(v),
   },
   href: String,
   iconRight: String,
@@ -73,7 +73,7 @@ const isEmpty = computed(() => {
 })
 
 const showLoader = ref(false)
-let timer = null
+let timer: NodeJS.Timeout | null = null
 
 watch(
   () => props.loading,
@@ -84,7 +84,7 @@ watch(
       }, 200)
     } else if (newVal === false) {
       showLoader.value = false
-      clearTimeout(timer)
+      timer && clearTimeout(timer)
     }
   }
 )

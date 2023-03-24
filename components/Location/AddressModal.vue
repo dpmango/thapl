@@ -46,7 +46,7 @@
   </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useDeliveryStore, useSessionStore } from '~/store'
@@ -82,7 +82,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { search: '' },
 })
 
-const { value: search } = useField('search')
+const { value: search } = useField<string>('search')
 
 const placeholderText = computed(() => {
   if (deliveryType.value === 1) {

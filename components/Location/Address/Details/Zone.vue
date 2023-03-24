@@ -41,11 +41,11 @@
     <UiButton v-else-if="isPreorderAvailable">Сделать предзаказ</UiButton>
     <UiButton v-else>Посмотреть меню</UiButton>
 
-    <UiButton theme="outline" @click.stop="handleReturn">Выбрать другой адрес</UiButton>
+    <UiButton theme="secondary" @click.stop="handleReturn">Выбрать другой адрес</UiButton>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
 import { formatMinutes, formatPrice } from '#imports'

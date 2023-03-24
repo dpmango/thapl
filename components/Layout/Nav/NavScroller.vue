@@ -14,8 +14,8 @@
 
         <template #popper>
           <ul class="nav__dropdown">
-            <li v-for="link in menuHidden" :key="link.id">
-              <LayoutNavLink :link="link" :active="activeAnchor === idx" />
+            <li v-for="(link, idx) in menuHidden" :key="link.id">
+              <LayoutNavLink :link="link" :active="activeAnchor === idx + menuVisible.length - 1" />
             </li>
           </ul>
         </template>
@@ -24,12 +24,12 @@
   </nav>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import _ from 'lodash'
 import { useProductStore } from '~/store'
 import { createScrollableAnchors } from '~~/utils/Elements'
 
-const navlist = ref(null)
+const navlist = ref<HTMLElement | null>(null)
 const hideFromIdx = ref(99)
 
 const { $env } = useNuxtApp()
@@ -47,12 +47,12 @@ const menuHidden = computed(() => {
 const hiddenStartsFromIdx = () => {
   hideFromIdx.value = 99
   nextTick(() => {
-    const containerWidth = navlist.value.offsetWidth
-    const navChilds = navlist.value.children
+    const containerWidth = navlist.value?.offsetWidth || 0
+    const navChilds = navlist.value?.children || []
 
     let lastWidth = 0
     for (let i = 0; i < navChilds.length; i++) {
-      const navLink = navChilds[i]
+      const navLink = navChilds[i] as HTMLElement
       const navLinkWidth = navLink.offsetWidth + 8
 
       lastWidth += navLinkWidth
@@ -66,7 +66,7 @@ const hiddenStartsFromIdx = () => {
 }
 
 // aniamate anchors on scroll
-const activeAnchor = ref(null)
+const activeAnchor = ref<number | null>(null)
 
 const handleLinksScroll = () => {
   // TODO - refactor to refs
@@ -74,7 +74,8 @@ const handleLinksScroll = () => {
   const smoothLinks = document.querySelectorAll('.js-nav .nav__link')
   const { sections, links } = createScrollableAnchors(smoothLinks)
 
-  const headerOffset = document.querySelector('.header__bottom').offsetHeight + 24
+  const header = document.querySelector('.header__bottom') as HTMLElement
+  const headerOffset = (header?.offsetHeight || 0) + 24
 
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i]

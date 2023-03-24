@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { nanoid } from 'nanoid'
 import { minutesToTimestamp } from '#imports'
 

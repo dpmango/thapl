@@ -5,11 +5,10 @@
     <LayoutFooter />
     <LayoutMobileMenu />
     <LayoutSharedModals />
-    <UiDevGrid />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // const api = useApi
 </script>
 

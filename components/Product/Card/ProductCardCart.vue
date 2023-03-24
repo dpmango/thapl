@@ -8,13 +8,11 @@
   >
     <div class="card__media">
       <div class="card__image">
-        <UiAtomProductImage :src="renderProduct.image" :alt="renderProduct.title" />
+        <UiImage :src="renderProduct.image" :alt="renderProduct.title" />
       </div>
     </div>
     <div class="card__body">
-      <div class="card__title h6-title">
-        <UiAtomLongWords :text="renderProduct.title" />
-      </div>
+      <div class="card__title h6-title"><UiAtomLongWords :text="renderProduct.title" /></div>
       <span
         v-for="(mod, idx) in productModifiersVerbose"
         :key="idx"
@@ -76,7 +74,7 @@ const ui = useUiStore()
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
-    default: () => {},
+    default: () => ({}),
   },
   cartItem: {
     type: Object as PropType<ICartInner>,

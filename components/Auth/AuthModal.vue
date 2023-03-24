@@ -7,7 +7,7 @@
   </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const view = ref('phone')
 </script>
 

@@ -1,5 +1,4 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { IInit, IAppSettings, ISiteSettings } from '~/interface/Site'
 import { IOrder } from '~/interface/Order'
 
 export const useProfileStore = defineStore('profile', {

@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // Отображение зависит от полученного prop organization
 // (откуда получены данные, разные ключи и параметры)
 import { storeToRefs } from 'pinia'
@@ -53,6 +53,7 @@ const { zone } = storeToRefs(deliveryStore)
 .location {
   &__map {
     position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     border-radius: var(--map-border-radius);

@@ -11,7 +11,7 @@
   </li>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSessionStore } from '~/store'
 

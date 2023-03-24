@@ -28,7 +28,7 @@
     <UiButton v-else-if="isPreorderAvailable">Сделать предзаказ</UiButton>
     <UiButton v-else>Посмотреть меню</UiButton>
 
-    <UiButton theme="outline" @click.stop="handleReturn">Выбрать другой адрес</UiButton>
+    <UiButton theme="secondary" @click.stop="handleReturn">Выбрать другой адрес</UiButton>
   </div>
 </template>
 
@@ -41,7 +41,7 @@ import { IOrganizationTakeaway } from 'interface/Delivery'
 const props = defineProps({
   organization: {
     type: Object as PropType<IOrganizationTakeaway>,
-    default: () => {},
+    default: () => ({}),
   },
 })
 

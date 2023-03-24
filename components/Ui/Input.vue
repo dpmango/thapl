@@ -57,7 +57,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import _ from 'lodash'
 import { nanoid } from 'nanoid'
 import { capitalizeFirstLetter } from '#imports'
@@ -144,7 +144,7 @@ const props = defineProps({
   },
   // https://github.com/beholdr/maska
   mask: {
-    type: String,
+    type: [Object, String],
     default: '',
   },
   suggestions: {
@@ -399,7 +399,7 @@ onBeforeUnmount(() => {
     resize: vertical;
     overflow: hidden;
     box-shadow: none;
-    transition-property: border, color, background, outline;
+    transition-property: border, color, background, box-shadow;
     transition-duration: 0.25s;
     transition-timing-function: $ease;
     &::placeholder {
@@ -408,7 +408,8 @@ onBeforeUnmount(() => {
     &:focus,
     &:active {
       border-color: var(--color-font);
-      outline: 4px solid rgba(0, 97, 174, 0.3);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 97, 174, 0.3);
     }
     &:hover {
       border-color: var(--color-font);

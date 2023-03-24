@@ -29,7 +29,7 @@ const { currentAddress } = storeToRefs(deliveryStore)
 const props = defineProps({
   product: {
     type: Object as PropType<IProduct>,
-    default: () => {},
+    default: () => ({}),
   },
   modifiers: {
     type: Array as PropType<ICartModifier[]>,

@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { copyToClipboard } from '#imports'
 
 const props = defineProps({

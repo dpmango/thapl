@@ -1,9 +1,10 @@
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { IPaymentDataDto, IOrderCart } from '~/interface/Order'
+import { IOrderCart } from '~/interface/Order'
+import { IOrderPaymentDataDto } from '~/interface/Dto/Order.dto'
 import { openExternalLink } from '#imports'
 import { useCartStore, useProfileStore, useUiStore } from '~/store'
 
-export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[] }) => {
+export const useOrder = ({ orderID, cart }: { orderID: number | null; cart: IOrderCart[] }) => {
   const profileStore = useProfileStore()
   const cartStore = useCartStore()
   const ui = useUiStore()
@@ -33,7 +34,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
       },
     }).catch((err) =>
       useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору')
-    )) as IPaymentDataDto
+    )) as IOrderPaymentDataDto
 
     if (paymentData.link) {
       openExternalLink(paymentData.link)
@@ -58,7 +59,15 @@ export const useOrder = ({ orderID, cart }: { orderID: number; cart: IOrderCart[
     cartStore.resetCart()
 
     cart.forEach((x) => {
-      cartStore.addToCart(x.catalog_item, x.cartItem.count, [])
+      cartStore.addToCart(
+        x.catalog_item,
+        x.cartItem.count,
+        x.modifiers.map((mod) => ({
+          id: mod.modifier_item.id,
+          price: mod.modifier_item.price,
+          q: mod.amount,
+        })) || []
+      )
     })
 
     router.push('/order')

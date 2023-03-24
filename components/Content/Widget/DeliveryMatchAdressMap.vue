@@ -37,9 +37,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
 import { useDeliveryStore } from '~/store'
+import { IGeoDataRef } from '~/interface/Geolocation'
 
 const deliveryStore = useDeliveryStore()
 
@@ -49,7 +50,7 @@ const { errors, setErrors, setFieldValue } = useForm({
   initialValues: { search: '' },
 })
 
-const { value: search } = useField('search')
+const { value: search } = useField<string>('search')
 
 const handleSearchChange = (v) => {
   setFieldValue('search', v)
@@ -68,11 +69,11 @@ const geoData = ref({
   longitude: null,
   found: null,
   text: '',
-})
+} as IGeoDataRef)
 
 watch(
   () => geocoderSuggestionObj.value,
-  async (newVal) => {
+  async (newVal: any) => {
     const coords = newVal?.geometry._coordinates
     const data = newVal?.properties._data
 
@@ -93,7 +94,7 @@ watch(
 )
 
 // Карта
-const mapInstance = ref(null)
+const mapInstance = ref<any>(null)
 const mapPolygonCollection = () => {
   if (!window.ymaps || !mapInstance.value) return
 
@@ -270,7 +271,6 @@ watch(
       font-family: var(--font-base);
       font-size: 16px;
       line-height: 26px;
-      color: var(--color-font-invert);
       border-bottom: 1px solid var(--color-border);
     }
     :deep(.ymaps-2-1-79-search__suggest-item) {

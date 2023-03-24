@@ -3,7 +3,12 @@
     <div v-click-outside="() => emit('on-close')" class="stories__wrapper">
       <div class="stories__header">
         <div class="js-pagination">
-          <span v-for="(s, idx) in stories" :key="idx" :data-index="idx"></span>
+          <span
+            v-for="(s, idx) in stories"
+            ref="paginationRefSpans"
+            :key="idx"
+            :data-index="idx"
+          ></span>
         </div>
 
         <div class="stories__close" @click="() => emit('on-close')">
@@ -18,7 +23,7 @@
         <div class="js-swipe-next" @click="slideNext"></div>
       </div>
 
-      <UiLibSwiper class="stories__slider" :params="swiperParams" @swiper="onSwiper">
+      <UiLibSwiper v-if="visible" class="stories__slider" :params="swiperParams" @swiper="onSwiper">
         <SwiperSlide v-for="(story, idx) in stories" :key="idx">
           <PromoStoriesCard :story="story" />
         </SwiperSlide>
@@ -59,10 +64,11 @@ const swiperParams = {
 }
 
 const swiperInstance = ref<typeof Swiper | null>(null)
-const paginationIndex = ref(0)
+const paginationRefSpans = ref<HTMLElement[] | []>([])
 
 const onSwiper = (swiper) => {
   swiperInstance.value = swiper
+  console.log('swiper init')
   updatePaginationByIndex(0)
 }
 
@@ -71,7 +77,6 @@ watch(
   (newInst) => {
     if (newInst) {
       newInst.on('slideChange', (instance) => {
-        const curSlide = instance.realIndex + 1
         updatePaginationByIndex(instance.realIndex)
       })
     }
@@ -86,9 +91,12 @@ const slidePrev = () => {
 }
 
 const updatePaginationByIndex = (activeIndex) => {
-  const targetSpan = document.querySelectorAll('.js-pagination span')
+  paginationRefSpans.value.forEach((span, idx) => {
+    span.classList.remove('_active')
+    span.classList.remove('_prev')
+  })
 
-  targetSpan.forEach((span, idx) => {
+  paginationRefSpans.value.forEach((span, idx) => {
     const spanIndex = span.getAttribute('data-index') || ''
     const action = +spanIndex === activeIndex ? 'add' : 'remove'
     const actionHistory = +spanIndex < activeIndex ? 'add' : 'remove'
@@ -98,7 +106,12 @@ const updatePaginationByIndex = (activeIndex) => {
   })
 }
 
-onMounted(() => {})
+watch(
+  () => props.stories,
+  () => {
+    updatePaginationByIndex(0)
+  }
+)
 </script>
 
 <style lang="scss" scoped>
@@ -126,13 +139,14 @@ onMounted(() => {})
   }
   &__wrapper {
     position: relative;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
+    width: 100%;
     max-width: 456px;
     margin-left: auto;
     margin-right: auto;
-    margin: 40px auto;
+    margin: auto auto;
   }
   &__slider {
     position: relative;
@@ -143,7 +157,7 @@ onMounted(() => {})
     border-radius: 12px;
     :deep(.swiper-slide) {
       width: 100% !important;
-      height: 100% !important;
+      // height: 100% !important;
     }
   }
   &__header {

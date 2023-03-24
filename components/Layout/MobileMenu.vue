@@ -61,7 +61,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useUiStore, useSessionStore, useProductStore } from '~/store'
 import { lockBody, unlockBody } from '#imports'

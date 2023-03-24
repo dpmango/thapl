@@ -12,7 +12,7 @@ export interface IOrder {
   status: number
   created_at: Date
   payment_sum: number
-  delivery_sum: null
+  delivery_sum: number | null
   discount_sum: number
   packing_sum: number
   order_sum: number
@@ -23,7 +23,7 @@ export interface IOrder {
 export interface IOrderCart {
   catalog_item: IProduct
   amount: number
-  modifiers: any[]
+  modifiers: IOrderCartModifier[]
   cartItem: ICartItem
 }
 
@@ -34,13 +34,23 @@ export interface ICartItem {
   count: number
   created_at: Date
   updated_at: Date
-  tech_data: null
+  tech_data: any | null
 }
 
-export interface IPaymentDataDto {
-  success: boolean
-  type: null
-  link: string | null
-  receipt: null
-  payment_sum: null
+export interface IOrderCartModifier {
+  modifier_item: {
+    id: number
+    title: string
+    price: number
+  }
+  amount: number
+  cartItemModifier: IOrderCartItemModifier
+}
+
+export interface IOrderCartItemModifier {
+  cart_item_id: number
+  modificator_id: number
+  count: number
+  created_at: Date
+  updated_at: Date
 }

@@ -76,7 +76,7 @@ watch(
 )
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .takeaway {
   &__list {
     margin-top: 12px;

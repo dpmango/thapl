@@ -1,13 +1,14 @@
 <template>
   <main class="page__content page">
     <div class="container _narrow">
-      <ContentUniversal :blocks="content" />
+      <ContentUniversal :blocks="data?.content_data?.blocks" />
     </div>
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { createSeoTags } from '#imports'
+import { IPageUniversalDto } from '~/interface'
 
 const { $env, $log } = useNuxtApp()
 
@@ -15,14 +16,16 @@ const crumbs = [{ href: '/', label: 'Заголовок' }]
 
 const route = useRoute()
 
-const { data, error } = await useAsyncData('page/get-data', () =>
-  useApi('page/get-data', {
-    method: 'GET',
-    headers: useHeaders(),
-    params: {
-      slug: route.params.slug,
-    },
-  })
+const { data, error } = await useAsyncData(
+  'page/get-data',
+  () =>
+    useApi('page/get-data', {
+      method: 'GET',
+      headers: useHeaders(),
+      params: {
+        slug: route.params.slug,
+      },
+    }) as Promise<IPageUniversalDto>
 )
 
 $log.log('🧙‍♂️ ASYNC PAGE', { data: data.value })
@@ -32,20 +35,10 @@ if (error && error.value) {
 }
 
 useHead({
-  title: `Страница - ${$env.projectName}`,
   ...createSeoTags({
-    title: data?.value?.seo_title,
-    description: data?.value?.seo_description,
-    content_data: data?.value?.content_data,
+    title: `${data.value?.title} - ${$env.projectName}`,
+    description: data.value?.seo_description,
   }),
-})
-
-const content = computed(() => {
-  try {
-    return data.value.content_data.blocks
-  } catch {
-    return null
-  }
 })
 </script>
 

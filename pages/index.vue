@@ -35,10 +35,12 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { IPopularItemsDto } from '~/interface/Dto/Catalog.dto'
+import { IPromoListDto } from '~/interface/Promo'
+
 import { useProductStore } from '~/store'
 
-// definePageMeta({ layout: 'default' })
 const productStore = useProductStore()
 const { $env, $log } = useNuxtApp()
 
@@ -46,23 +48,27 @@ useHead({
   title: `Главная - ${$env.projectName}`,
 })
 
-const { data: promoData, error: promoError } = await useAsyncData('promo', () =>
-  useApi('promo/get-for-main-page', {
-    method: 'GET',
-    headers: useHeaders(),
-    params: {
-      list_type: $env.promoListType,
-    },
-  })
+const { data: promoData, error: promoError } = await useAsyncData(
+  'promo',
+  () =>
+    useApi('promo/get-for-main-page', {
+      method: 'GET',
+      headers: useHeaders(),
+      params: {
+        list_type: $env.promoListType,
+      },
+    }) as Promise<IPromoListDto[]>
 )
 
 $log.log('🧙‍♂️ ASYNC PROMO', { promoData: promoData.value })
 
-const { data: popular, error: popularError } = await useAsyncData('popular', () =>
-  useApi('catalog/get-popular-items', {
-    method: 'GET',
-    headers: useHeaders(),
-  })
+const { data: popular, error: popularError } = await useAsyncData(
+  'popular',
+  () =>
+    useApi('catalog/get-popular-items', {
+      method: 'GET',
+      headers: useHeaders(),
+    }) as Promise<IPopularItemsDto[]>
 )
 
 $log.log('🧙‍♂️ ASYNC POPULAR', { popular: popular.value })

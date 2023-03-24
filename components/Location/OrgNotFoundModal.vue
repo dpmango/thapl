@@ -10,7 +10,7 @@
   </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useUiStore } from '~/store'
 
 const { $env } = useNuxtApp()
