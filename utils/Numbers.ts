@@ -16,7 +16,7 @@ export const formatPrice = (num: any, trailingZeros = 0, showFree = true) => {
     if (showFree) {
       return 'Бесплатно'
     } else {
-      return '0 ₽'
+      return ''
     }
   }
 

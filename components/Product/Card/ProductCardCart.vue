@@ -18,7 +18,7 @@
         :key="idx"
         class="card__modifiers text-xs c-gray"
       >
-        {{ mod.label }}: {{ mod.value }}
+        {{ mod.label }}<template v-if="mod.value">: {{ mod.value }}</template>
       </span>
       <div
         v-if="renderProduct.packing_weights && !renderProduct.only_pre_order"
@@ -53,8 +53,8 @@
       </div>
     </div>
     <div class="card__meta">
-      <div class="card__price h6-title">
-        <template v-if="!isGift">{{ productPrice }}</template>
+      <div class="card__price h5-title">
+        <template v-if="!isGift"> {{ formatPrice(productPrice.raw * cartItem.q) }}</template>
         <template v-else>Бесплатно</template>
       </div>
     </div>
