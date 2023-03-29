@@ -33,6 +33,9 @@
         </figure>
       </template>
 
+      <template v-else-if="block.type === 'carousel'">
+        <ContentMediaSlider class="content__slider" :slides="block.data" />
+      </template>
       <template v-else-if="block.type === 'image'">
         <ContentMediaSlider class="content__slider" :slides="[block.data.file]" />
       </template>
