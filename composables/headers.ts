@@ -15,8 +15,8 @@ export const useHeaders = () => {
   if (user_token) {
     headers['x-thapl-authorization'] = user_token
   }
-  if (region) {
-    headers['x-thapl-region-id'] = region
+  if (region.value) {
+    headers['x-thapl-region-id'] = region.value
   }
 
   const orgDeliveryID = zone.value?.organization?.id
