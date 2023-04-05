@@ -18,7 +18,6 @@ useHead({
   title: `Промо - ${$env.projectName}`,
 })
 
-// TODO - будет другой запрос
 const { data, error } = await useAsyncData(
   'promo/get-page-data',
   () =>
@@ -26,7 +25,7 @@ const { data, error } = await useAsyncData(
       method: 'GET',
       headers: useHeaders(),
       params: {
-        list_type: 2 || $env.promoListType,
+        list_type: 3,
       },
     }) as Promise<IPromoListDto[]>
 )
