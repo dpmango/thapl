@@ -21,7 +21,7 @@ useHead({
 const { data, error } = await useAsyncData(
   'promo/get-page-data',
   () =>
-    useApi('promo/get-for-main-page', {
+    useApi('promo/get-for-list-page', {
       method: 'GET',
       headers: useHeaders(),
       params: {

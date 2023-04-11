@@ -10,7 +10,7 @@
           <div class="scope__products">
             <ProductCardCheckout
               v-for="cartItem in cart"
-              :key="cartItem.id"
+              :key="`${cartItem.id}_${cartItem.modifiers?.map((x) => x.id).join(',')}`"
               :cart-item="cartItem"
               class="scope__row"
             />
