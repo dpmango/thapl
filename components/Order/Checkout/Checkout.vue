@@ -1044,6 +1044,20 @@ const requestCheckout = async () => {
   )) as IOrderCreateDto
 
   const handleSuccess = () => {
+    if (window && window.dataLayer) {
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB',
+          purchase: {
+            products: cartStore.cartToApi.map((x) => ({
+              id: x.catalog_item_id,
+              quantity: x.count,
+            })),
+          },
+        },
+      })
+    }
+
     toast.success(`Заказ ${response.order_id} Оформлен`)
     cartStore.resetCart()
     router.push('/')

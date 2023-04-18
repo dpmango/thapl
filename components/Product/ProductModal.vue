@@ -255,6 +255,20 @@ const fetchProduct = async (id) => {
 
   if (data) {
     product.value = { ...data }
+    if (window && window.dataLayer) {
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB',
+          detail: {
+            products: [
+              {
+                id: data.id,
+              },
+            ],
+          },
+        },
+      })
+    }
   }
 
   loading.value = false

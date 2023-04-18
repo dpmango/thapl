@@ -251,6 +251,22 @@ export const useCartStore = defineStore('cart', {
       return res
     },
     async sendCartAnalytics({ action, body }: { action: 'add' | 'remove'; body: any }) {
+      if (window && window.dataLayer) {
+        window.dataLayer.push({
+          ecommerce: {
+            currencyCode: 'RUB',
+            [action]: {
+              products: [
+                {
+                  id: body.catalog_item_id,
+                  quantity: body.count,
+                },
+              ],
+            },
+          },
+        })
+      }
+
       await useApi(`cart/${action}`, {
         method: 'POST',
         headers: useHeaders(),

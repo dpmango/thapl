@@ -42,7 +42,7 @@ watch(
   }
 )
 
-ui.setModal({ name: 'review', params: { id: 8 } })
+ui.setModal({ name: 'review', params: { id: 10 } })
 
 onMounted(() => {
   fetchQuestions()
