@@ -37,6 +37,7 @@ export default defineNuxtPlugin(() => {
         accurateTrackBounce: true,
         webvisor: true,
         triggerEvent: true,
+        ecommerce: true,
       })
     }
 

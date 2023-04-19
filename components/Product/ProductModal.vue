@@ -240,6 +240,10 @@ const countWithModifiersInCart = computed(() => {
 const fetchProduct = async (id) => {
   if (!modal.value.includes('product')) return
 
+  modifierGroups.value = []
+  modifierErrors.value = []
+  modifierShowErorrs.value = false
+
   loading.value = true
   const data = (await useApi('catalog/get-item-data', {
     method: 'GET',
@@ -251,6 +255,20 @@ const fetchProduct = async (id) => {
 
   if (data) {
     product.value = { ...data }
+    if (window && window.dataLayer) {
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB',
+          detail: {
+            products: [
+              {
+                id: data.id,
+              },
+            ],
+          },
+        },
+      })
+    }
   }
 
   loading.value = false

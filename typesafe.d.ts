@@ -14,6 +14,9 @@ declare global {
   namespace ymaps {
     export function Polygon(...x: any): void
   }
+  namespace dataLayer {
+    export function push(...x: any): boid
+  }
 }
 
 export {}

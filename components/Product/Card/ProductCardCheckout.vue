@@ -11,7 +11,7 @@
         :key="idx"
         class="scope__modifier text-xs c-gray"
       >
-        {{ mod.label }}
+        {{ mod.label }}<template v-if="mod.value">: {{ mod.value }}</template>
       </div>
     </div>
     <div class="scope__value h6-title text-md-s">
@@ -19,7 +19,7 @@
         <s>{{ formatPrice(renderProduct.price) }}</s>
       </template>
 
-      <template v-else>{{ productPrice }}</template>
+      <template v-else>{{ formatPrice(productPrice.raw * cartItem.q) }}</template>
     </div>
   </div>
 </template>

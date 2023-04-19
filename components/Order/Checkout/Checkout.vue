@@ -273,7 +273,7 @@
             </div>
           </div>
 
-          <div v-if="requireEmail" class="checkout__row row">
+          <div v-if="requireEmail && !user.email" class="checkout__row row">
             <div class="col col-6 col-sm-12">
               <UiInput
                 name="email"
@@ -428,7 +428,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     not_heat: false,
     payment: '',
     change: '',
-    email: '',
+    email: user.value.email || '',
     bonusType: 1,
     promocode: '',
     points: '',
@@ -463,7 +463,7 @@ const phoneExists = computed(() => {
 watch(
   () => currentAddress.value,
   (newVal) => {
-    setFieldValue('address', newVal?.name)
+    setFieldValue('address', newVal?.name || '')
   },
   { deep: true }
 )
@@ -877,6 +877,18 @@ watch(
   }
 )
 
+watch(
+  () => user.value.email,
+  (newVal) => {
+    if (newVal) {
+      setFieldValue('email', newVal)
+    }
+  },
+  {
+    immediate: true,
+  }
+)
+
 // проверка промо после смены адреса
 watch(
   () => zoneData.value,
@@ -1032,6 +1044,20 @@ const requestCheckout = async () => {
   )) as IOrderCreateDto
 
   const handleSuccess = () => {
+    if (window && window.dataLayer) {
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB',
+          purchase: {
+            products: cartStore.cartToApi.map((x) => ({
+              id: x.catalog_item_id,
+              quantity: x.count,
+            })),
+          },
+        },
+      })
+    }
+
     toast.success(`Заказ ${response.order_id} Оформлен`)
     cartStore.resetCart()
     router.push('/')

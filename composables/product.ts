@@ -33,7 +33,10 @@ export const useProduct = ({
       })
     }
 
-    return formatPrice(price)
+    return {
+      raw: price,
+      formated: formatPrice(price),
+    }
   })
 
   // количество товара в корзине

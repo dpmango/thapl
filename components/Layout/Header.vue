@@ -22,7 +22,7 @@
         </div>
 
         <div class="col header__logo">
-          <NuxtLink v-if="site_settings && site_settings.main_logo" to="/">
+          <NuxtLink v-if="site_settings && site_settings.main_logo" to="/" @click="handleLogoClick">
             <img :src="site_settings.main_logo" alt="logo" />
           </NuxtLink>
         </div>
@@ -142,6 +142,7 @@ const cartStore = useCartStore()
 const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
+const route = useRoute()
 const {
   user,
   app_settings: { site_settings },
@@ -172,6 +173,12 @@ const handleCartOpen = () => {
     ui.setModal({ name: 'cart' })
   } else {
     ui.setModal({ name: 'address' })
+  }
+}
+
+const handleLogoClick = () => {
+  if (route.path === '/') {
+    scrollWithSpeed(0, 500)
   }
 }
 
