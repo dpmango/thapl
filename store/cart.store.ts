@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ICartInner, ICartModifier } from '~/interface/Cart'
 import { IProduct, IAdditive, IModifierItem } from '~/interface/Product'
-import { IPromoDto, IPromoRequestDto } from '~/interface'
+import { IPromoDto, IPromoRequestDto, ICheckStopListDto } from '~/interface'
 import { useDeliveryStore } from '~/store'
 import { isArraysEqual, getArrayDifference } from '#imports'
 
@@ -313,16 +313,13 @@ export const useCartStore = defineStore('cart', {
         body: {
           ids: this.cart.map((x) => x.id),
         },
-      }).catch((err) => useCatchError(err, '', true))) as IProduct[] | null
+      }).catch((err) => useCatchError(err, '', true))) as ICheckStopListDto | null
 
-      if (res && res.length) {
+      if (res?.stopped_items && res.stopped_items.length) {
         // проверка стоплистов
-        const stoppedItems = getArrayDifference(
-          this.cart.map((x) => x.id),
-          res.map((x) => x.id)
-        )
+        const stoppedItems = this.cart.filter((x) => res.stopped_items.includes(x.id))
 
-        this.cartStoped = stoppedItems
+        this.cartStoped = stoppedItems.map((x) => x.id)
 
         // stoppedItems.forEach((id) => {
         //   this.removeFromCart(id)

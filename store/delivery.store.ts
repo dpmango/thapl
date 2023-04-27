@@ -125,7 +125,7 @@ export const useDeliveryStore = defineStore('delivery', {
 
       this.regions = [...data]
 
-      return []
+      return data
     },
     async getRestaurants() {
       const data = (await useApi('organization/get-organizations-for-takeaway', {

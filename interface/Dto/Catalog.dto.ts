@@ -6,3 +6,10 @@ export interface IPopularItemsDto {
   show_after_category_id: number | null
   catalog_items: IProduct[]
 }
+
+// stoplists
+export interface ICheckStopListDto {
+  items: IProduct[]
+  modifiers_stop_list: any[]
+  stopped_items: number[]
+}
