@@ -20,14 +20,12 @@
       >
         {{ mod.label }}<template v-if="mod.value">: {{ mod.value }}</template>
       </span>
-      <div
-        v-if="renderProduct.packing_weights && !renderProduct.only_pre_order"
-        class="card__description text-s c-gray"
-      >
+      <div v-if="renderProduct.packing_weights" class="card__description text-s c-gray">
         {{ renderProduct.packing_weights }}
       </div>
       <div v-if="isPreorder" class="card__preorder text-s c-primary">
-        Этот товар доступен только по предзаказу
+        <template v-if="+$env.stopListType === 1">Эта позиция не доступна</template>
+        <template v-else> Этот товар доступен только по предзаказу</template>
       </div>
       <div
         v-if="!isGift"
@@ -37,7 +35,7 @@
         @mouseleave="setFocused(true)"
       >
         <UiPlusMinus
-          v-if="isAddProduct || productQuantityInCartWithModifiers !== 0"
+          v-if="!isProductHardStopped && (isAddProduct || productQuantityInCartWithModifiers !== 0)"
           size="small"
           :value="
             isAddProduct
@@ -46,7 +44,7 @@
           "
           @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
-        <template v-else>
+        <template v-else-if="!isProductHardStopped">
           <UiButton theme="secondary" @click="handleReturn"> Вернуть </UiButton>
           <UiButton theme="secondary" @click="handleRemove"> Удалить </UiButton>
         </template>
@@ -70,6 +68,7 @@ import { ICartInner } from '~/interface/Cart'
 import { useCartStore, useUiStore } from '~/store'
 import { useProduct } from '#imports'
 
+const { $env } = useNuxtApp()
 const cartStore = useCartStore()
 const { cartStoped } = storeToRefs(cartStore)
 const ui = useUiStore()
@@ -105,7 +104,14 @@ const isAddProduct = computed(() => {
 })
 
 const isPreorder = computed(() => {
-  return cartStoped.value.includes(renderProduct.value.id)
+  return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
+})
+
+const isProductHardStopped = computed(() => {
+  if (isPreorder.value) {
+    return +$env.stopListType === 1
+  }
+  return false
 })
 
 const handleReturn = () => {

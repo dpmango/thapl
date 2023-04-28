@@ -3,11 +3,13 @@ import { useCartStore, useDeliveryStore } from '~/store'
 import { timestampToMinutes, Plurize } from '#imports'
 
 export const useCheckout = () => {
+  const { $env, $log } = useNuxtApp()
+
   const deliveryStore = useDeliveryStore()
   const cartStore = useCartStore()
   const { currentOrderType, currentAddressType, zone, takeawayOrganization, minOrderPrice } =
     storeToRefs(deliveryStore)
-  const { cartPrice, cart, promo } = storeToRefs(cartStore)
+  const { cartPrice, cart, cartStoped, promo, products } = storeToRefs(cartStore)
 
   // хелперы по методу доставки / самовывоз
   const zoneData = computed(() => {
@@ -111,13 +113,18 @@ export const useCheckout = () => {
   const stopListData = computed(() => {
     const orgStopList = zoneData.value.organization?.stop_list || []
     const cartIds = cart.value.map((x) => x.id)
-
     const stopped = cartIds.filter((x) => orgStopList.includes(x))
+
+    const hasCheckStops =
+      cartStoped.value.length > 0 || products.value.some((x) => x.only_pre_order)
+    const cartBlocked = hasCheckStops && +$env.stopListType === 1
 
     return {
       all: orgStopList,
       hasStops: stopped.length,
       stopped,
+      hasCheckStops,
+      cartBlocked,
     }
   })
 

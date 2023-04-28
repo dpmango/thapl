@@ -173,7 +173,7 @@
           >
             <div class="ui-label">Упаковка</div>
             <div class="checkout__radio-grid">
-              <UiCheckbox
+              <!-- <UiCheckbox
                 name="packing"
                 type="radio"
                 :error="errors.pack"
@@ -181,7 +181,7 @@
                 @change="() => setFieldValue('pack', 'no')"
               >
                 Не важно
-              </UiCheckbox>
+              </UiCheckbox> -->
               <UiCheckbox
                 v-for="opt in packingOptions"
                 :key="opt.price"

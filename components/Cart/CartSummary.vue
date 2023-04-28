@@ -60,11 +60,15 @@
       <CartAddons v-if="suggestions?.length" class="cart__addons" :list="suggestions" />
     </div>
 
-    <div class="cart__cta">
+    <div class="cart__cta" @click="handlePopupMessage">
       <p v-if="!minOrderData.match" class="cart__cta-note text-m c-gray">
         До минимального заказа {{ formatPrice(minOrderData.remained) }}
       </p>
-      <UiButton to="/order" :block="true" :disabled="!minOrderData.match">
+      <UiButton
+        to="/order"
+        :block="true"
+        :disabled="!minOrderData.match || stopListData.cartBlocked"
+      >
         Оформить заказ &bull; {{ formatPrice(priceData.withDelivery) }}
       </UiButton>
     </div>
@@ -72,10 +76,13 @@
 </template>
 
 <script setup lang="ts">
+import { useToast } from 'vue-toastification/dist/index.mjs'
 import { storeToRefs } from 'pinia'
 import debounce from 'lodash/debounce'
 import { useCartStore, useUiStore } from '~/store'
 import { formatPrice } from '#imports'
+
+const toast = useToast()
 
 const ui = useUiStore()
 const cartStore = useCartStore()
@@ -83,11 +90,18 @@ const { cart, products, additives, suggestions, promo, productQuantityInCart } =
   storeToRefs(cartStore)
 const { modal: activeModal } = storeToRefs(ui)
 
-const { priceData, zoneData, minOrderData, freeDeliveryData, promoData } = useCheckout()
+const { priceData, zoneData, minOrderData, freeDeliveryData, promoData, stopListData } =
+  useCheckout()
 
 const additivesNotInCart = computed(() => {
   return additives.value.filter((x) => productQuantityInCart.value(x.catalog_item.id) === null)
 })
+
+const handlePopupMessage = () => {
+  if (stopListData.value.cartBlocked) {
+    toast.error('В корзине есть недоступные к заказу позиции')
+  }
+}
 
 const fetchCartData = debounce(
   () => {

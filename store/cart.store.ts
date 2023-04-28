@@ -186,6 +186,8 @@ export const useCartStore = defineStore('cart', {
         return x.id !== id
       })
 
+      this.cartStoped = this.cartStoped.filter((x) => x !== id)
+
       await this.sendCartAnalytics({
         action: 'remove',
         body: {
@@ -325,14 +327,14 @@ export const useCartStore = defineStore('cart', {
 
         if (stopType === 1) {
           stoppedItems.forEach((x) => {
-            this.removeFromCart(x.id)
+            // this.removeFromCart(x.id)
           })
         } else if (stopType === 2) {
           // возможен предзаказ того чего нет
           stoppedItems.forEach((x) => {
             const product = this.products.find((y) => x.id === y.id)
             if (product && !product?.preorder_delay) {
-              this.removeFromCart(x.id)
+              // this.removeFromCart(x.id)
             }
           })
         } else if (stopType === 3) {

@@ -93,7 +93,7 @@ const toast = useToast()
 
 const props = defineProps<{ address: IProfileAddressesDto }>()
 
-const emit = defineEmits('dispatchUpdate')
+const emit = defineEmits(['dispatchUpdate'])
 
 const editable = ref(false)
 const { errors, setErrors, setFieldValue, validate } = useForm({
