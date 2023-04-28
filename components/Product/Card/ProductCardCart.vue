@@ -26,7 +26,7 @@
       >
         {{ renderProduct.packing_weights }}
       </div>
-      <div v-else-if="renderProduct.only_pre_order" class="card__preorder text-s c-primary">
+      <div v-if="isPreorder" class="card__preorder text-s c-primary">
         Этот товар доступен только по предзаказу
       </div>
       <div
@@ -50,11 +50,12 @@
           <UiButton theme="secondary" @click="handleReturn"> Вернуть </UiButton>
           <UiButton theme="secondary" @click="handleRemove"> Удалить </UiButton>
         </template>
+        <UiButton v-if="isPreorder" theme="secondary" @click="handleRemove"> Удалить </UiButton>
       </div>
     </div>
     <div class="card__meta">
       <div class="card__price h5-title">
-        <template v-if="!isGift"> {{ formatPrice(productPrice.raw * cartItem.q) }}</template>
+        <template v-if="!isGift"> {{ formatPrice(productPrice.raw * cartItem?.q || 1) }}</template>
         <template v-else>Бесплатно</template>
       </div>
     </div>
@@ -63,12 +64,14 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
+import { storeToRefs } from 'pinia'
 import { IProduct } from '~/interface/Product'
 import { ICartInner } from '~/interface/Cart'
 import { useCartStore, useUiStore } from '~/store'
 import { useProduct } from '#imports'
 
 const cartStore = useCartStore()
+const { cartStoped } = storeToRefs(cartStore)
 const ui = useUiStore()
 
 const props = defineProps({
@@ -99,6 +102,10 @@ const { renderProduct, productPrice, productModifiersVerbose, productQuantityInC
 
 const isAddProduct = computed(() => {
   return typeof props.additiveCount === 'number'
+})
+
+const isPreorder = computed(() => {
+  return cartStoped.value.includes(renderProduct.value.id)
 })
 
 const handleReturn = () => {
@@ -209,6 +216,9 @@ const setFocused = (v) => {
     align-items: center;
     margin-top: 12px;
     cursor: default;
+    .plusminus {
+      margin-right: 12px;
+    }
   }
   &__meta {
     flex: 0 0 auto;

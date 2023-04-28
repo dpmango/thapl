@@ -306,6 +306,8 @@ export const useCartStore = defineStore('cart', {
     // проверка на стоплисты
     async checkStopList() {
       if (this.cart.length === 0) return
+      const { $env } = useNuxtApp()
+      const stopType = +$env.stopListType
 
       const res = (await useApi('catalog/check-catalog-items-by-ids', {
         method: 'POST',
@@ -321,9 +323,21 @@ export const useCartStore = defineStore('cart', {
 
         this.cartStoped = stoppedItems.map((x) => x.id)
 
-        // stoppedItems.forEach((id) => {
-        //   this.removeFromCart(id)
-        // })
+        if (stopType === 1) {
+          stoppedItems.forEach((x) => {
+            this.removeFromCart(x.id)
+          })
+        } else if (stopType === 2) {
+          // возможен предзаказ того чего нет
+          stoppedItems.forEach((x) => {
+            const product = this.products.find((y) => x.id === y.id)
+            if (product && !product?.preorder_delay) {
+              this.removeFromCart(x.id)
+            }
+          })
+        } else if (stopType === 3) {
+          // полный предзаказ
+        }
       }
 
       return res

@@ -85,33 +85,69 @@ useHead({
   }),
 })
 
-const { data: catalog, error: categoriesError } = await useAsyncData('catalog', () =>
-  productStore.getCatalog()
-)
+await useAsyncData('startup', async () => {
+  const promisesToBeFetched = [
+    {
+      id: 'catalog',
+      resolver: productStore.getCatalog(),
+    },
+    {
+      id: 'zone',
+      resolver: deliveryStore.hydrateZone(),
+    },
+  ] as { id: string; resolver: Promise<any> }[]
 
-$log.log('🧙‍♂️ ASYNC CATALOG', { catalog: catalog.value })
+  if ($env.useRegions) {
+    promisesToBeFetched.push({
+      id: 'regions',
+      resolver: deliveryStore.getRegions(),
+    })
+  }
 
-if ($env.useRegions) {
-  const { data: regions, error: regionsError } = await useAsyncData('regions', () =>
-    deliveryStore.getRegions()
-  )
+  if (initData?.app_settings.takeaway_enabled || !$env.takeawayOnly) {
+    promisesToBeFetched.push({
+      id: 'restaurants',
+      resolver: deliveryStore.getRestaurants(),
+    })
+  }
+
+  const allSettled = (await Promise.allSettled(
+    promisesToBeFetched.map((x) => x.resolver)
+  )) as PromiseSettledResult<any>[]
 
   const regionCookie = useCookieState('x-thapl-region-id')
-  // const regionCookieClient = useCookie('x-thapl-region-id')
-  region.value = regionCookie.value
-  // regionCookieClient.value = regionCookie.value
+  allSettled.forEach((result, idx) => {
+    const { id } = promisesToBeFetched[idx]
 
-  $log.log('🧙‍♂️ ASYNC REGIONS', { regions: regions.value })
-}
+    // console.log(name, { result })
+    // if (result.status === 'rejected') errHandler()
+    if (result.status === 'fulfilled' && result.value) {
+      const { data, error } = result.value
 
-if (initData?.app_settings.takeaway_enabled || !$env.takeawayOnly) {
-  const { data: restaurants, error: restaurantsError } = await useAsyncData(
-    'organizations-for-takeaway',
-    () => deliveryStore.getRestaurants()
-  )
+      switch (id) {
+        case 'catalog':
+          $log.log('🧙‍♂️ ASYNC CATALOG', { catalog: result.value })
+          break
+        case 'regions':
+          // const regionCookieClient = useCookie('x-thapl-region-id')
+          region.value = regionCookie.value
+          // regionCookieClient.value = regionCookie.value
 
-  $log.log('🧙‍♂️ ASYNC ORGANIZATIONS', { restaurants: restaurants.value })
-}
+          $log.log('🧙‍♂️ ASYNC REGIONS', { regions: result.value })
+
+          break
+        case 'restaurants':
+          $log.log('🧙‍♂️ ASYNC ORGANIZATIONS', { restaurants: result.value })
+
+          break
+        default:
+          break
+      }
+    }
+  })
+
+  return true
+})
 
 onMounted(() => {
   deliveryStore.clientInit()

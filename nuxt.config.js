@@ -76,7 +76,12 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.scss'],
 
   googleFonts: {
-    families: {},
+    families: {
+      Inter: {
+        wght: [400, 500, 600, 700],
+        ital: [],
+      },
+    },
   },
 
   vite: {
