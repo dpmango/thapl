@@ -95,7 +95,8 @@ export const useCheckout = () => {
     const hasPromo = promo.value?.has_promo
 
     const verboseGifts = computed(() => {
-      const count = promo.value?.gifts?.length
+      // todo в будующем возможнен выбор нескольких подарков
+      const count = 1 || promo.value?.gifts?.length
       return `${count} ${Plurize(count, 'подарок', 'подарка', 'подарков')}`
     })
 

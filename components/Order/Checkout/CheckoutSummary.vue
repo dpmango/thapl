@@ -16,9 +16,9 @@
             />
 
             <ProductCardCheckout
-              v-for="promoProduct in promo?.gifts"
+              v-for="promoProduct in promo?.gifts.filter((x) => x.id === promoGiftId)"
               :key="promoProduct.id"
-              :product="promo"
+              :product="promoProduct"
               :is-gift="true"
               class="scope__row"
             />
@@ -67,11 +67,11 @@ import { useCartStore } from '~/store'
 import { formatPrice, Plurize } from '#imports'
 
 const cartStore = useCartStore()
-const { cart, products, promo } = storeToRefs(cartStore)
+const { cart, products, promo, promoGiftId } = storeToRefs(cartStore)
 const { priceData, zoneData, promoData, freeDeliveryData } = useCheckout()
 
 const verboseCartCount = computed(() => {
-  const count = cart.value.length + promo.value?.gifts.length || 0
+  const count = cart.value.length + (promo.value?.gifts.length || 0)
   return `${count} ${Plurize(count, 'блюдо', 'блюда', 'блюд')}`
 })
 

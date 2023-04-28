@@ -402,7 +402,7 @@ const cartStore = useCartStore()
 const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
 const { app_settings, user } = storeToRefs(sessionStore)
-const { promo } = storeToRefs(cartStore)
+const { promo, promoGiftId } = storeToRefs(cartStore)
 
 const { $env, $log } = useNuxtApp()
 const toast = useToast()
@@ -851,6 +851,10 @@ const fetchPromo = async () => {
     toast.error(res.error_text)
   }
 
+  if (res.gifts?.length > 1 && !promoGiftId.value) {
+    ui.setModal({ name: 'gift' })
+  }
+
   return res
 }
 
@@ -962,9 +966,11 @@ const buildRequestObject = () => {
   if (points.value) {
     orderObject.points = points.value
   }
+  if (promoGiftId.value) {
+    orderObject.gift_id = promoGiftId.value
+  }
 
   // "time_to_delivery": "string",
-  // "gift_id": 0,
 
   return orderObject
 }

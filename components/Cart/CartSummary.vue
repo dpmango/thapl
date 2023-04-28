@@ -32,7 +32,12 @@
           :additive-count="additive.count"
           :product="additive.catalog_item"
         />
-        <ProductCardCart v-if="promoData.giftCount" :is-gift="true" :product="promoData.gifts[0]" />
+        <ProductCardCart
+          v-for="(gift, idx) in promoData.gifts"
+          :key="idx"
+          :is-gift="true"
+          :product="gift"
+        />
       </div>
 
       <div v-if="zoneData.isDelivery" class="cart__meta">

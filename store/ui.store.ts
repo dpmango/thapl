@@ -46,8 +46,10 @@ export const useUiStore = defineStore('ui', {
       this.modalParams = null
     },
     closeAllModals() {
-      this.modal = []
-      this.modalParams = null
+      if (!this.modal.includes('auth')) {
+        this.modal = []
+        this.modalParams = null
+      }
     },
     setSearchActive(v) {
       this.searchActive = v

@@ -17,6 +17,7 @@ export const useCartStore = defineStore('cart', {
       additives: [] as IAdditive[],
       suggestions: [] as IProduct[],
       promo: null as IPromoDto | null,
+      promoGiftId: null as number | null,
     }
   },
   persist: {

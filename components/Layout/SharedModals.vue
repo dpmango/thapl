@@ -2,6 +2,7 @@
   <AuthModal />
   <CartModal />
   <CartStopList />
+  <CartSelectGift />
   <LocationRegionModal v-if="$env.useRegions" />
   <LocationAddressModal />
   <LocationClosedModal />

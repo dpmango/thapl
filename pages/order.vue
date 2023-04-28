@@ -22,7 +22,7 @@ useHead({
 
 onMounted(() => {
   if ($env.orderAskAuth && !userNameVerbose.value) {
-    ui.setModal({ name: 'auth', params: { closable: false } })
+    // ui.setModal({ name: 'auth', params: { closable: false } })
   }
 })
 </script>

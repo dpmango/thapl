@@ -2,7 +2,12 @@
   <a
     href="#"
     class="card"
-    :class="[isProductInCart && '_incart', stoplisted && '_stoplisted']"
+    :class="[
+      isProductInCart && '_incart',
+      stoplisted && '_stoplisted',
+      gift && '_gift',
+      giftCurrent && '_gift-active',
+    ]"
     @click="handleProductClick"
   >
     <div class="card__media">
@@ -41,6 +46,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  gift: {
+    type: Boolean,
+    default: false,
+  },
+  giftCurrent: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const isProductInCart = computed(() => {
@@ -48,6 +61,7 @@ const isProductInCart = computed(() => {
 })
 
 const handleProductClick = () => {
+  if (props.gift) return
   if (!isProductInCart.value) {
     cartStore.addToCart(props.product, 1, [])
   }
@@ -70,12 +84,22 @@ const handleProductClick = () => {
   }
   &._stoplisted {
     outline: none;
+    pointer-events: none;
     .card__image {
       filter: grayscale(1);
     }
     .card__price {
       display: none;
     }
+  }
+  &._gift {
+    .card__price {
+      display: none;
+    }
+  }
+  &._gift-active {
+    cursor: default;
+    outline: 2px solid var(--color-primary);
   }
   &__media {
     flex: 0 0 48px;

@@ -130,6 +130,11 @@ const setFocused = (v: boolean) => {
   // }
   &__description {
     margin-top: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
   &__actions {
     padding-top: 16px;
