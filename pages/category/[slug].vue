@@ -17,21 +17,19 @@ const { $env, $log } = useNuxtApp()
 const { params } = useRoute()
 const productStore = useProductStore()
 
-// TODO - watch the order of async requests (catalog req goes from app.vue - it's ok for now)
-const DangerAsyncCategoryInStore = productStore.categoryBySlug(params.slug)
-
-if (!DangerAsyncCategoryInStore) {
+const categoryInStore = productStore.categoryBySlug(params.slug)
+if (!categoryInStore) {
   throw createError({ statusCode: 404, fatal: true })
 }
 
-const categoryData = ref<ICategoryFull>()
+const categoryData = ref<ICategoryFull | null>(null)
 
 const fetchCatalog = async () => {
   const data = (await useApi('catalog/get-catalog-data', {
     method: 'GET',
     headers: useHeaders(),
     params: {
-      id: DangerAsyncCategoryInStore.id,
+      id: categoryInStore.id,
       // slug: params.slug
     },
   })) as ICategoryFull
@@ -41,27 +39,23 @@ const fetchCatalog = async () => {
   } else {
     throw createError({ statusCode: 404, fatal: true })
   }
+
+  return data
 }
 
-onMounted(() => {
-  fetchCatalog()
-})
+const { data: categoryDataAsync, error: categoriesError } = await useAsyncData(
+  `catalog-${params.slug}`,
+  () => fetchCatalog()
+)
 
-// const { data: categoryData, error: categoriesError } = await useAsyncData(
-//   `catalog-${params.slug}`,
-//   () =>
-//     useApi('catalog/get-catalog-data', {
-//       method: 'GET',
-//       headers: useHeaders(),
-//       params: {
-//         id: DangerAsyncCategoryInStore.id,
-//         // slug: params.slug
-//       },
-//     })
-// )
+categoryData.value = categoryDataAsync.value
 
 useHead({
   title: `${categoryData.value?.title} - ${$env.projectName}`,
+})
+
+onMounted(() => {
+  if (!categoryData.value) fetchCatalog()
 })
 
 // $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
