@@ -1,37 +1,45 @@
 <template>
   <main class="page__content page">
-    <div class="container _narrow"></div>
+    <PromoLoyaltyPage v-if="data" :data="data" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { IPromoListDto } from '~/interface/Promo'
+import { ILoyaltyPageDto } from '~/interface'
 const { $env, $log } = useNuxtApp()
 
 const route = useRoute()
 
-useHead({
-  title: `Бонусы - ${$env.projectName}`,
-})
+useApi('loyalty/get-conditions', {
+  method: 'GET',
+  headers: useHeaders(),
+  params: {
+    list_type: 3,
+  },
+}) as Promise<ILoyaltyPageDto>
 
 const { data, error } = await useAsyncData(
-  'page/get-conditions',
+  'loyalty/get-conditions',
   () =>
-    useApi('page/get-conditions', {
+    useApi('loyalty/get-conditions', {
       method: 'GET',
       headers: useHeaders(),
       params: {
         list_type: 3,
       },
-    }) as Promise<IPromoListDto[]>
+    }) as Promise<ILoyaltyPageDto>
 )
 
 $log.log('🧙‍♂️ ASYNC LOYALTY', { data: data.value })
+
+useHead({
+  title: `${data.value?.title} - ${$env.projectName}`,
+})
 </script>
 
 <style lang="scss" scoped>
 .page {
-  margin: 40px 0 120px;
+  margin: 80px 0 120px;
   &__crumbs {
     margin: 36px 0;
   }
