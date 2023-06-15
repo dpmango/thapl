@@ -41,6 +41,7 @@ export default defineNuxtConfig({
       apiBase: '',
       theme: 'orange',
       catalogType: 'singlepage',
+      showCategoryName: true,
       promoListType: 1,
       stopListType: 1,
       useRegions: false,
