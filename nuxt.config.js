@@ -59,6 +59,8 @@ export default defineNuxtConfig({
       orderNotCall: 'Не звонить',
       orderUseNotHeat: false,
       orderPaymentOptions: '1030,3,1',
+      // product
+      isDisplayProductDesc: false,
       // вендоры
       yandexMetrikaID: '',
       yandexMapsKey: '',
