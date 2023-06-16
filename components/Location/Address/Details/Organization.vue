@@ -9,7 +9,9 @@
     </div>
     <div class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Время готовки</p>
-      <h5 class="info__value h5-title h6-title-md">TODO</h5>
+      <h5 class="info__value h5-title h6-title-md">
+        {{ formatMinutes(organization.min_takeaway_gap.toString()) }}
+      </h5>
     </div>
     <div v-if="workingTime('takeawayOrganization')" class="info__col col col-md-4 col-sm-6">
       <p class="text-s">Часы работы</p>
@@ -17,10 +19,10 @@
         {{ workingTime('takeawayOrganization') }}
       </h5>
     </div>
-    <div class="info__col col col-md-4 col-sm-6">
+    <!-- <div class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Заказ от</p>
       <h5 class="info__value h5-title h6-title-md">TODO</h5>
-    </div>
+    </div> -->
   </div>
 
   <div class="location__cta" @click="handleToOrderClick">
@@ -37,6 +39,7 @@ import { PropType } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
 import { IOrganizationTakeaway } from 'interface/Delivery'
+import { formatMinutes } from '#imports'
 
 const props = defineProps({
   organization: {
