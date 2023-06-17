@@ -6,9 +6,11 @@
       <p v-if="contentRaw" class="text-l" v-html="contentRaw" />
       <ContentUniversal v-if="data.rules_conditions" :blocks="data.rules_conditions.blocks" />
 
+      <PromoLoyaltyTransactions v-if="data.transactions" :transactions="data.transactions" />
+
       <template v-if="data.ref_program_enabled">
         <div v-if="data.user_code" class="page__copy">
-          <UiCopy :text="data.user_code" :action-text="data.user_code || 'скопировать промокод'">
+          <UiCopy :text="data.user_code" :action-text="'скопировать промокод'">
             <div class="h2-title c-primary">
               {{ data.ref_program_message?.replace('[CODE]', data.user_code) }}
             </div>
@@ -24,11 +26,7 @@
       </template>
 
       <template v-if="data.ref_program_text">
-        <p
-          class="text-l"
-          data-source="data.referral_condiref_program_texttions"
-          v-html="data.ref_program_text"
-        />
+        <p class="text-l" data-source="data.ref_program_text" v-html="data.ref_program_text" />
       </template>
     </div>
   </div>

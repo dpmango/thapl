@@ -1,6 +1,11 @@
 <template>
   <main class="page__content page">
-    <PromoLoyaltyPage v-if="data" :data="data" />
+    <PromoLoyaltyPage
+      v-if="data"
+      :data="{
+        ...data,
+      }"
+    />
   </main>
 </template>
 

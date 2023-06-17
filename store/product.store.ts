@@ -49,6 +49,7 @@ export const useProductStore = defineStore('product', {
     // выводит каталог с учетом стоплиста товаров и категорий
     catalogWithStoplistAndFilter(state) {
       const deliveryStore = useDeliveryStore()
+      const { $env } = useNuxtApp()
       const { currentAddressType, zone, takeawayOrganization } = storeToRefs(deliveryStore)
 
       const organizationData =
@@ -59,7 +60,14 @@ export const useProductStore = defineStore('product', {
       const DEV_perf = performance.now()
 
       const productFilteringFunc = (p: IProduct) => {
-        const isStoplisted = organizationData?.stop_list?.includes(p.id)
+        let isStoplisted = organizationData?.stop_list?.includes(p.id)
+
+        if (isStoplisted && +$env.stopListType === 2) {
+          isStoplisted = !p.preorder_delay
+        } else if (isStoplisted && +$env.stopListType === 3) {
+          isStoplisted = false
+        }
+
         if (state.activeFilterKey && state.activeFilterKey !== 'all') {
           return p[state.activeFilterKey] && !isStoplisted
         }
@@ -67,16 +75,23 @@ export const useProductStore = defineStore('product', {
         return !isStoplisted
       }
 
-      const filteredCatalog = state.catalog.map((cat) => {
-        return {
-          ...cat,
-          catalog_items: cat.catalog_items.filter(productFilteringFunc),
-          sub_categories: cat.sub_categories.map((subcat) => ({
-            ...subcat,
-            catalog_items: subcat.catalog_items.filter(productFilteringFunc),
-          })),
-        }
-      })
+      const filteredCatalog = state.catalog
+        .map((cat) => {
+          return {
+            ...cat,
+            catalog_items: cat.catalog_items.filter(productFilteringFunc),
+            sub_categories: cat.sub_categories
+              .map(
+                (subcat) =>
+                  ({
+                    ...subcat,
+                    catalog_items: subcat.catalog_items.filter(productFilteringFunc),
+                  } as ICategory[])
+              )
+              .filter((subcat) => !organizationData?.stop_categories?.includes(subcat.id)),
+          }
+        })
+        .filter((x) => !organizationData?.stop_categories?.includes(x.id))
 
       PerformanceLog(DEV_perf, 'catalogWithStoplistAndFilter')
 
