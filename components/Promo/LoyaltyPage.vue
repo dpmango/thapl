@@ -2,24 +2,34 @@
   <div class="container _narrow">
     <h1 class="h2-title">{{ data.title }}</h1>
 
-    <!-- <template v-if="data.action">
-      <div
-        v-if="data.action === 'copy_promo_code' && data.action_data?.code"
-        class="page__copy"
-        :style="data.action_button_color ? { backgroundColor: data.action_button_color } : {}"
-      >
-        <UiCopy
-          :text="data.action_data.code"
-          :action-text="data.action_title || 'скопировать промокод'"
-        >
-          <div class="h2-title c-primary">{{ data.action_data.code }}</div>
-        </UiCopy>
-      </div>
-    </template> -->
-
     <div class="page__content">
       <p v-if="contentRaw" class="text-l" v-html="contentRaw" />
       <ContentUniversal v-if="data.rules_conditions" :blocks="data.rules_conditions.blocks" />
+
+      <template v-if="data.ref_program_enabled">
+        <div v-if="data.user_code" class="page__copy">
+          <UiCopy :text="data.user_code" :action-text="data.user_code || 'скопировать промокод'">
+            <div class="h2-title c-primary">
+              {{ data.ref_program_message?.replace('[CODE]', data.user_code) }}
+            </div>
+          </UiCopy>
+        </div>
+      </template>
+
+      <template v-if="data.referral_conditions">
+        <ContentUniversal
+          v-if="data.referral_conditions"
+          :blocks="data.referral_conditions.blocks"
+        />
+      </template>
+
+      <template v-if="data.ref_program_text">
+        <p
+          class="text-l"
+          data-source="data.referral_condiref_program_texttions"
+          v-html="data.ref_program_text"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -50,6 +60,9 @@ const contentRaw = computed(() => {
   }
   &__content {
     margin-top: 36px;
+    p + p {
+      margin-top: 1em;
+    }
   }
 }
 </style>

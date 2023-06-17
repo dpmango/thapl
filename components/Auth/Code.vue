@@ -60,6 +60,7 @@ const {
 const handleCodeChange = (v) => {
   setFieldValue('code', v)
   apiError.value = null
+  validate()
 }
 
 // таймер 2 минуты перед повторной отправкой
