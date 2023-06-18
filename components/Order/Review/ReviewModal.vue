@@ -19,18 +19,18 @@ const { modalParams, modal } = storeToRefs(ui)
 
 const questions = ref(null)
 
-const fetchQuestions = () => {
-  // if (!modalParams.value?.id && !modal.value.includes('review')) return
-  // const data = await useApi('order/get-order-questionnaire', {
-  //   method: 'GET',
-  //   headers: useHeaders(),
-  //   params: {
-  //     id: modalParams.value?.id,
-  //   },
-  // })
-  // if (data) {
-  //   questions.value = data
-  // }
+const fetchQuestions = async () => {
+  if (!modalParams.value?.id && !modal.value.includes('review')) return
+  const data = await useApi('order/get-order-questionnaire', {
+    method: 'GET',
+    headers: useHeaders(),
+    params: {
+      id: modalParams.value?.id,
+    },
+  })
+  if (data) {
+    questions.value = data
+  }
 }
 
 watch(
@@ -40,7 +40,7 @@ watch(
   }
 )
 
-// ui.setModal({ name: 'review', params: { id: 10 } })
+ui.setModal({ name: 'review', params: { id: 10 } })
 
 onMounted(() => {
   fetchQuestions()

@@ -79,16 +79,18 @@ export const useProductStore = defineStore('product', {
         .map((cat) => {
           return {
             ...cat,
-            catalog_items: cat.catalog_items.filter(productFilteringFunc),
+            catalog_items: cat.catalog_items ? cat.catalog_items.filter(productFilteringFunc) : [],
             sub_categories: cat.sub_categories
-              .map(
-                (subcat) =>
-                  ({
-                    ...subcat,
-                    catalog_items: subcat.catalog_items.filter(productFilteringFunc),
-                  } as ICategory[])
-              )
-              .filter((subcat) => !organizationData?.stop_categories?.includes(subcat.id)),
+              ? cat.sub_categories
+                  .map(
+                    (subcat) =>
+                      ({
+                        ...subcat,
+                        catalog_items: subcat.catalog_items.filter(productFilteringFunc),
+                      } as ICategory[])
+                  )
+                  .filter((subcat) => !organizationData?.stop_categories?.includes(subcat.id))
+              : [],
           }
         })
         .filter((x) => !organizationData?.stop_categories?.includes(x.id))
@@ -175,6 +177,7 @@ export const useProductStore = defineStore('product', {
         })) as ICategory[]
       }
 
+      console.log({ dataConeptions: data })
       $log.log(`🧙‍♂️ ++ Catalog (type ${$env.catalogType}) set with ${data.length} categories ++ 🧙‍♂️`)
 
       this.catalog = [...data]
