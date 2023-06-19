@@ -1,11 +1,12 @@
 /* eslint-disable no-use-before-define */
 import { IOrder } from '~/interface/Order'
+import { IProduct } from '~/interface/Product'
 
 export interface IReviewQuestionnaire {
-  order: IOrder
-  default_question: IQuestion
-  items_questionary: IQuestion[]
   additional_questions: IQuestion[]
+  default_question: IQuestion
+  order: IOrder
+  items_questionary: IQuestion[]
 }
 
 export interface IQuestion {
@@ -15,6 +16,7 @@ export interface IQuestion {
   max_answers: boolean | number | null
   answers: IAnswer[]
   cart_id: string | null
+  catalog_item?: IProduct
 }
 
 export interface IAnswer {

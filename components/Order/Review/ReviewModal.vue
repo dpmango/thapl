@@ -1,23 +1,27 @@
 <template>
   <UiModal name="review">
-    <UiLoader v-if="!quiz" position="overlay" />
+    <div class="review">
+      <template v-if="quizQuestions.length">
+        <!-- секции -->
+        <div v-if="!quizEnded" class="review__wrapper-questions">
+          <template v-for="(question, idx) in quizQuestions" :key="question.id">
+            <OrderReviewGroup
+              v-if="idx === activeQuizIdx"
+              :question="question"
+              @on-next="handleNextQuestion"
+            />
+          </template>
+        </div>
 
-    <template v-if="quiz">
-      <div v-if="!quizEnded" class="review__wrapper-questions">
-        <template v-for="question in quizQuestions" :key="question.id">
-          <OrderReviewGroup
-            v-if="question.id === activeQuizId"
-            :question="question"
-            @on-next="handleNextQuestion"
-          />
+        <!-- финальный вопрос -->
+        <template v-else>
+          <OrderReviewGroup :question="lastQuestion" :last="true" @on-next="postReview" />
+          <UiLoader v-if="quizLoading" position="overlay" />
         </template>
-      </div>
-
-      <template v-else>
-        <OrderReviewGroup :question="lastQuestion" :last="true" @on-next="postReview" />
-        <UiLoader v-if="quizLoading" position="overlay" />
       </template>
-    </template>
+
+      <UiLoader v-if="quizQuestions.length === 0" position="overlay" :loading="true" />
+    </div>
   </UiModal>
 </template>
 
@@ -38,9 +42,8 @@ const toast = useToast()
 const ui = useUiStore()
 const { modalParams, modal } = storeToRefs(ui)
 
-const quiz = ref<IReviewQuestionnaire | null>(null)
 const quizQuestions = ref<IQuestion[]>([])
-const activeQuizId = ref<number | null>(null)
+const activeQuizIdx = ref<number>(0)
 const quizAnswers = ref<ISendReviewAnswer[]>([])
 const quizEnded = ref(false)
 const quizLoading = ref(false)
@@ -56,14 +59,12 @@ const lastQuestion = computed(() => ({
 
 const handleNextQuestion = (answer: ISendReviewAnswer) => {
   if (quizQuestions.value.length === 0) return
-
-  const curIndex = quizQuestions.value.findIndex((x) => x.id === activeQuizId.value)
-  const nextQuestion = quizQuestions.value.find((_, idx) => idx > curIndex)
+  const nextQuestionIndex = quizQuestions.value.findIndex((_, idx) => idx > activeQuizIdx.value)
 
   quizAnswers.value.push(answer)
 
-  if (nextQuestion) {
-    activeQuizId.value = nextQuestion.id
+  if (nextQuestionIndex !== -1) {
+    activeQuizIdx.value = nextQuestionIndex
   } else {
     quizEnded.value = true
   }
@@ -84,9 +85,17 @@ const fetchQuestions = async () => {
     return
   }
 
-  quiz.value = data
-  activeQuizId.value = data.additional_questions[0]?.id || null
-  quizQuestions.value = [...data.additional_questions]
+  const quizProducts = data.order.cart.map((x) => ({
+    ...data.default_question,
+    cart_id: x.catalog_item.id,
+    catalog_item: x.catalog_item,
+  }))
+
+  const quizCombined = [...quizProducts, ...data.additional_questions] as IQuestion[]
+  $log.log({ quizCombined })
+
+  quizQuestions.value = quizCombined
+  activeQuizIdx.value = 0
   quizEnded.value = false
 }
 
@@ -135,13 +144,13 @@ onMounted(() => {
 <style lang="scss" scoped>
 .review {
   position: relative;
-  min-height: 200px;
+  min-height: 300px;
   &__cta {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     max-width: 304px;
-    margin: 16px auto 0;
+    margin: 24px auto 0;
     .button {
       width: 100%;
       &:not(:last-child) {

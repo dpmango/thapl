@@ -57,8 +57,6 @@ export const useProductStore = defineStore('product', {
           ? zone.value?.organization
           : takeawayOrganization.value
 
-      const DEV_perf = performance.now()
-
       const productFilteringFunc = (p: IProduct) => {
         let isStoplisted = organizationData?.stop_list?.includes(p.id)
 
@@ -94,8 +92,6 @@ export const useProductStore = defineStore('product', {
           }
         })
         .filter((x) => !organizationData?.stop_categories?.includes(x.id))
-
-      PerformanceLog(DEV_perf, 'catalogWithStoplistAndFilter')
 
       return filteredCatalog
     },

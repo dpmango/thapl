@@ -3,18 +3,20 @@
     <OrderReviewHead title="Отзыв о заказе" :description="question.question" />
 
     <div class="review__body">
-      <template v-if="question.has_comment && commentShown">
-        <UiInput
-          type="textarea"
-          rows="3"
-          :value="comment"
-          :clearable="false"
-          :error="errors.comment"
-          @on-change="(v) => setFieldValue('comment', v)"
-        />
-      </template>
+      <!-- product -->
+      <div v-if="productReview" class="review__product">
+        <div class="review__product-image-box">
+          <div class="review__product-image">
+            <UiImage :src="productReview.image" :alt="productReview.title" />
+          </div>
+        </div>
+        <div class="review__product-title h6-title">
+          <UiAtomLongWords :text="productReview.title" />
+        </div>
+      </div>
 
-      <div v-if="question.answers" class="review__answers">
+      <!-- answers -->
+      <div v-if="answersShown" class="review__answers">
         <div v-for="answer in question.answers" :key="answer.id" class="review__option">
           <UiCheckbox
             :checked="checkedAnswersId.includes(answer.id)"
@@ -25,8 +27,23 @@
         </div>
       </div>
 
-      <template v-if="likeMode">
-        <div class="review__accent">
+      <!-- comment -->
+      <template v-if="question.has_comment && commentShown">
+        <div class="review__comment">
+          <UiInput
+            type="textarea"
+            rows="3"
+            :value="comment"
+            :clearable="false"
+            :error="errors.comment"
+            @on-change="(v) => setFieldValue('comment', v)"
+          />
+        </div>
+      </template>
+
+      <!-- like / dislike -->
+      <template v-if="reactionsShown">
+        <div v-if="!productReview" class="review__accent">
           <span class="text-m">{{ question.question }}</span>
         </div>
 
@@ -39,13 +56,19 @@
       </template>
     </div>
 
-    <div v-if="!likeMode" class="review__cta">
+    <!-- actions -->
+    <div v-if="!reactionMode || (reaction === 'dislike' && answersShown)" class="review__cta">
       <UiButton v-if="!last" @click="handleNext">Продолжить</UiButton>
-      <UiButton v-if="question.has_comment" theme="secondary" @click="handleCommentVisibility">
+      <UiButton v-if="last" @click="handleNext">Оставить отзыв</UiButton>
+
+      <UiButton
+        v-if="question.has_comment && !isDislikeQuestions"
+        theme="secondary"
+        @click="handleCommentVisibility"
+      >
         <template v-if="!commentShown">Добавить комментарий</template>
         <template v-else>Скрыть комментарий</template>
       </UiButton>
-      <UiButton v-if="last" @click="handleNext">Оставить отзыв</UiButton>
     </div>
   </div>
 </template>
@@ -59,6 +82,10 @@ const props = defineProps<{
   last?: boolean
 }>()
 
+const productReview = computed(() => {
+  return props.question.catalog_item
+})
+
 const emit = defineEmits(['onNext'])
 
 const { errors, setErrors, setFieldValue, validate } = useForm({
@@ -66,17 +93,31 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
 })
 
 // реакции
-const likeMode = computed(() => {
-  return props.question.answers.length === 0 && !props.question.has_comment
+const isDislikeQuestions = computed(
+  () => props.question.answers.length === 0 && !props.question.has_comment
+)
+
+const reactionMode = computed(() => {
+  return isDislikeQuestions.value || productReview.value
 })
+
+const reactionsShown = ref(!!reactionMode.value)
 
 const reaction = ref('')
 
 watch(
   () => reaction.value,
   (newVal) => {
-    if (newVal) {
+    if (newVal === 'like') {
       handleNext()
+    } else if (newVal === 'dislike') {
+      if (productReview.value) {
+        answersShown.value = true
+        commentShown.value = true
+        reactionsShown.value = false
+      } else {
+        handleNext()
+      }
     }
   }
 )
@@ -89,11 +130,12 @@ const handleCommentVisibility = () => {
 }
 
 const { value: comment } = useField<string>('comment', (v) => {
-  if (!commentShown.value || likeMode.value || props.last) return true
+  if (!commentShown.value || reactionMode.value || props.last) return true
   return clearString(v).length >= 2 ? true : 'Введите комментарий'
 })
 
 // вопросы
+const answersShown = ref(!productReview.value)
 const checkedAnswersId = ref<number[]>([])
 
 const handleCheckboxToggle = ({ id, label }: IAnswer) => {
@@ -123,12 +165,12 @@ const handleNext = async () => {
   const emittedAnswer = {
     question_id: props.question.id,
     user_comment: comment.value,
-    // cart_item_id?: number
+    is_like: reaction.value ? reaction.value === 'like' : true,
     // photo_id?: number
   } as ISendReviewAnswer
 
-  if (likeMode.value) {
-    emittedAnswer.is_like = reaction.value === 'like'
+  if (productReview.value) {
+    emittedAnswer.cart_item_id = productReview.value.id
   }
   if (checkedAnswersId.value.length > 0) {
     emittedAnswer.answers = checkedAnswersId.value
@@ -145,6 +187,10 @@ const handleNext = async () => {
     margin: 24px auto 0;
   }
   &__answers {
+    margin-top: 16px;
+  }
+  &__comment {
+    margin-top: 16px;
   }
   &__option {
     &:not(:last-child) {
@@ -168,7 +214,7 @@ const handleNext = async () => {
     flex-wrap: wrap;
     justify-content: center;
     max-width: 304px;
-    margin: 16px auto 0;
+    margin: 24px auto 0;
     .button {
       width: 100%;
       &:not(:last-child) {
@@ -189,6 +235,36 @@ const handleNext = async () => {
         margin-right: 16px;
       }
     }
+  }
+
+  &__product {
+    margin: 16px 0;
+  }
+  &__product-image-box {
+    max-width: 190px;
+    margin: 0 auto;
+  }
+  &__product-image {
+    position: relative;
+    z-index: 1;
+    border-radius: 8px;
+    font-size: 0;
+    padding-bottom: var(--product-card-mini-ar);
+    background: var(--color-bg);
+    overflow: hidden;
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease-out;
+    }
+  }
+  &__product-title {
+    margin-top: 16px;
+    text-align: center;
   }
 }
 </style>
