@@ -19,7 +19,7 @@ const props = defineProps({
   &__head {
     text-align: center;
     p {
-      margin-top: 20px;
+      margin-top: 16px;
     }
   }
 }

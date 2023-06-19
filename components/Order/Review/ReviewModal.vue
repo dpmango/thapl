@@ -1,42 +1,127 @@
 <template>
   <UiModal name="review">
-    <UiLoader v-if="!questions" position="overlay" />
+    <UiLoader v-if="!quiz" position="overlay" />
 
-    <template v-if="questions">
-      <OrderReviewText />
+    <template v-if="quiz">
+      <div v-if="!quizEnded" class="review__wrapper-questions">
+        <template v-for="question in quizQuestions" :key="question.id">
+          <OrderReviewGroup
+            v-if="question.id === activeQuizId"
+            :question="question"
+            @on-next="handleNextQuestion"
+          />
+        </template>
+      </div>
+
+      <template v-else>
+        <OrderReviewGroup :question="lastQuestion" :last="true" @on-next="postReview" />
+        <UiLoader v-if="quizLoading" position="overlay" />
+      </template>
     </template>
   </UiModal>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useUiStore } from '~/store'
+import type {
+  IReviewQuestionnaire,
+  IQuestion,
+  ISendReviewDto,
+  ISendReviewAnswer,
+} from '~/interface'
 
-const { $env, $log } = useNuxtApp()
+const { $log } = useNuxtApp()
+const toast = useToast()
 
 const ui = useUiStore()
 const { modalParams, modal } = storeToRefs(ui)
 
-const questions = ref(null)
+const quiz = ref<IReviewQuestionnaire | null>(null)
+const quizQuestions = ref<IQuestion[]>([])
+const activeQuizId = ref<number | null>(null)
+const quizAnswers = ref<ISendReviewAnswer[]>([])
+const quizEnded = ref(false)
+const quizLoading = ref(false)
+
+const lastQuestion = computed(() => ({
+  id: 999,
+  question: 'Мы обрабатываем все отзывы, чтобы постоянно улучшать качество работы',
+  has_comment: true,
+  max_answers: null,
+  answers: [],
+  cart_id: null,
+}))
+
+const handleNextQuestion = (answer: ISendReviewAnswer) => {
+  if (quizQuestions.value.length === 0) return
+
+  const curIndex = quizQuestions.value.findIndex((x) => x.id === activeQuizId.value)
+  const nextQuestion = quizQuestions.value.find((_, idx) => idx > curIndex)
+
+  quizAnswers.value.push(answer)
+
+  if (nextQuestion) {
+    activeQuizId.value = nextQuestion.id
+  } else {
+    quizEnded.value = true
+  }
+}
 
 const fetchQuestions = async () => {
   if (!modalParams.value?.id && !modal.value.includes('review')) return
-  const data = await useApi('order/get-order-questionnaire', {
+  const data = (await useApi('order/get-order-questionnaire', {
     method: 'GET',
     headers: useHeaders(),
     params: {
       id: modalParams.value?.id,
     },
-  })
+  })) as IReviewQuestionnaire
+
+  if (!data) {
+    toast.error('Ошибка, обратитесь к администратору')
+    return
+  }
+
+  quiz.value = data
+  activeQuizId.value = data.additional_questions[0]?.id || null
+  quizQuestions.value = [...data.additional_questions]
+  quizEnded.value = false
+}
+
+const postReview = async (lastAnswer: ISendReviewAnswer) => {
+  if (!modalParams.value?.id && !modal.value.includes('review')) return
+
+  quizLoading.value = true
+
+  const reviewPostBody = {
+    order_id: modalParams.value?.id,
+    common_comment: lastAnswer.user_comment,
+    answers: quizAnswers.value,
+  } as ISendReviewDto
+
+  const data = (await useApi('order/send-questionnaire', {
+    method: 'POST',
+    headers: useHeaders(),
+    body: reviewPostBody,
+  }).catch((err) => useCatchError(err, 'Ошибка, обратитесь к администратору'))) as any
+
+  quizLoading.value = false
+
+  $log.log({ postReviewResponce: data })
+
   if (data) {
-    questions.value = data
+    ui.closeAllModals()
   }
 }
 
 watch(
   () => modalParams.value?.id,
   (newid) => {
-    fetchQuestions()
+    if (modal.value.includes('review') && newid) {
+      fetchQuestions()
+    }
   }
 )
 
@@ -45,33 +130,24 @@ ui.setModal({ name: 'review', params: { id: 10 } })
 onMounted(() => {
   fetchQuestions()
 })
-
-// Вначале показываем вопросы из массива additional_questions
-// в виде https://www.figma.com/file/KqA5lKZ9AQdH2VTSjyJ2Fi/thapl-(31.05.2022)?node-id=453%3A2895&t=7SZHOg9jELabrEi9-4
-
-// Потом для каждого элемента корзины смотрим есть ли в массиве вопросов items_questionary вопрос с cart_id соттветсвующим вопросу, если нет показываем default_question
-
-// Правила отображения
-
-// additional_questions показываем в виде https://www.figma.com/file/KqA5lKZ9AQdH2VTSjyJ2Fi/thapl-(31.05.2022)?node-id=453%3A2895&t=7SZHOg9jELabrEi9-4
-
-// вопросы к блюдам https://www.figma.com/file/KqA5lKZ9AQdH2VTSjyJ2Fi/thapl-(31.05.2022)?node-id=453%3A2914&t=7SZHOg9jELabrEi9-4
-
-// если отвечаем да - переходим к следующему вопросу
-// если нет проверяем есть ли answers или has_comment
-// если есть answers показываем https://www.figma.com/file/KqA5lKZ9AQdH2VTSjyJ2Fi/thapl-(31.05.2022)?node-id=453%3A2950&t=7SZHOg9jELabrEi9-4
-
-// если max_answers - 0 можно выбрать любое количество ответов
-// если 1 то надо переключаться между ответами
-// если has_comment - то показываем кнопку добавить коментарий
-// если answers пустой но has_comment - true сразу показываем https://www.figma.com/file/KqA5lKZ9AQdH2VTSjyJ2Fi/thapl-(31.05.2022)?node-id=453%3A2977&t=7SZHOg9jELabrEi9-4 можно прикрепить не более 1й фото
-
-// После ответа на вопросы выводим https://www.figma.com/file/KqA5lKZ9AQdH2VTSjyJ2Fi/thapl-(31.05.2022)?node-id=453%3A2977&t=7SZHOg9jELabrEi9-4 можно прикрепить на более 4х фото
 </script>
 
 <style lang="scss" scoped>
 .review {
   position: relative;
   min-height: 200px;
+  &__cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 304px;
+    margin: 16px auto 0;
+    .button {
+      width: 100%;
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
+    }
+  }
 }
 </style>

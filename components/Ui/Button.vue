@@ -36,7 +36,7 @@ const props = defineProps({
   theme: {
     type: String,
     default: 'primary',
-    validator: (v: string) => ['primary', 'secondary', 'accent', 'link'].includes(v),
+    validator: (v: string) => ['primary', 'secondary', 'accent', 'muted', 'link'].includes(v),
   },
   size: {
     type: String,
@@ -202,6 +202,21 @@ watch(
     }
     &:active {
       background: #0fbf6b;
+    }
+  }
+
+  &.muted {
+    background: var(--color-bg);
+    color: var(--color-font);
+    &:focus {
+      outline: 4px solid rgba(0, 97, 174, 0.3);
+    }
+    &:hover {
+      color: var(--color-primary);
+      box-shadow: 0px 13px 30px -10px #e6e6e6;
+    }
+    &:active {
+      color: darken(#ec5c2a, 10%);
     }
   }
 

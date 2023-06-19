@@ -48,7 +48,6 @@ import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { IGeoDataRef, YandexGeocoderResponce } from '~/interface/Geolocation'
 import { useDeliveryStore, useSessionStore } from '~/store'
-// import { clearSocialLink } from '#imports'
 
 const toast = useToast()
 const { $env } = useNuxtApp()
