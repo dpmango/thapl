@@ -71,7 +71,7 @@ export const useDeliveryStore = defineStore('delivery', {
               toFormated = toFormated.slice(0, 2).join(':')
             }
 
-            return `${fromFormated} : ${toFormated}`
+            return `с ${fromFormated} по ${toFormated}`
           }
 
           return ''
