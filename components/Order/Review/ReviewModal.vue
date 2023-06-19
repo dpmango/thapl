@@ -134,8 +134,6 @@ watch(
   }
 )
 
-ui.setModal({ name: 'review', params: { id: 10 } })
-
 onMounted(() => {
   fetchQuestions()
 })

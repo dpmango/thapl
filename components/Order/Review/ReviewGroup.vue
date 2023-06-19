@@ -62,7 +62,7 @@
       <UiButton v-if="last" @click="handleNext">Оставить отзыв</UiButton>
 
       <UiButton
-        v-if="question.has_comment && !isDislikeQuestions"
+        v-if="question.has_comment && !isDislikeQuestions && !last"
         theme="secondary"
         @click="handleCommentVisibility"
       >
