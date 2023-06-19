@@ -66,7 +66,7 @@ export const useCheckout = () => {
     }
   })
 
-  // логика бесплатная доставка
+  // логика бесплатная доставка, следующее промо
   const freeDeliveryData = computed(() => {
     if (zoneData.value.isDelivery && zoneData.value.hasZone) {
       const leftToFreeDelivery = zone.value.free_delivery_min_price - cartPrice.value
@@ -74,11 +74,28 @@ export const useCheckout = () => {
         (cartPrice.value / zone.value.free_delivery_min_price) * 100
       )
 
+      let nextPromo = null as { progress: number; remained: number } | null
+      if (promo.value?.next_promo_sum) {
+        const nextPromoRemained = promo.value.next_promo_sum - cartPrice.value
+
+        const nextPromoProgress = Math.round(
+          ((cartPrice.value - zone.value.free_delivery_min_price) /
+            (promo.value.next_promo_sum - zone.value.free_delivery_min_price)) *
+            100
+        )
+
+        nextPromo = {
+          remained: nextPromoRemained,
+          progress: nextPromoProgress,
+        }
+      }
+
       return {
         remained: leftToFreeDelivery,
         progress: freeDeliveryProgress,
         show: zone.value.free_delivery_min_price > 0,
         match: leftToFreeDelivery <= 0,
+        nextPromo,
       }
     }
 
