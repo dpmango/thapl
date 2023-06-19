@@ -1,8 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 
-// TODO
-// modalParams не работает в режиме наложения (несколько модальных)
-
 export const useUiStore = defineStore('ui', {
   state: () => {
     return {

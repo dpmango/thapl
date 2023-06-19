@@ -127,17 +127,6 @@ watch(
     }
   }
 )
-
-// todo следить в debounce режиме
-// watch(
-//   () => cart.value,
-//   (newCart) => {
-//     if (newCart.length) {
-//       // fetchCartData()
-//     }
-//   },
-//   { deep: true }
-// )
 </script>
 
 <style lang="scss" scoped>

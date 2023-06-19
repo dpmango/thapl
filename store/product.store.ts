@@ -1,14 +1,14 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import { defineStore, storeToRefs, acceptHMRUpdate } from 'pinia'
 import { PerformanceLog } from '#imports'
 import { quickFilterKeys } from '~/store/product/helpers'
 import { ICategory, ICategoryFull, IProduct } from '~/interface/Product'
+import { useDeliveryStore } from '~/store'
 
 export const useProductStore = defineStore('product', {
   state: () => {
     return {
       catalog: [] as ICategory[] | ICategoryFull[],
       activeFilterKey: 'all',
-      // categories: [],
     }
   },
   getters: {
@@ -21,12 +21,8 @@ export const useProductStore = defineStore('product', {
     },
 
     // находит категории первого уровня для использования в навигации
-    navCategories(state) {
+    navCategories(state): { id: string; title: string; slug }[] {
       const { $env } = useNuxtApp()
-
-      if ($env.catalogType !== 'singlepage') {
-        return state.catalog
-      }
 
       const categoryProps = (x) => ({
         id: x.id,
@@ -34,7 +30,11 @@ export const useProductStore = defineStore('product', {
         slug: x.slug,
       })
 
-      return state.catalog.reduce((acc, category) => {
+      if ($env.catalogType !== 'singlepage') {
+        return this.catalogWithStoplistAndFilter.map(categoryProps)
+      }
+
+      return this.catalogWithStoplistAndFilter.reduce((acc, category) => {
         acc.push(categoryProps(category))
 
         // if (category.sub_categories) {
@@ -46,39 +46,66 @@ export const useProductStore = defineStore('product', {
         return acc
       }, [])
     },
-    // выводит каталог с учетом действующего фильтра
-    // пустые категории отфильтровываются на уровне шаблона
-    catalogWithFilter(state) {
-      if (!state.activeFilterKey || state.activeFilterKey === 'all') {
-        return state.catalog
-      }
+    // выводит каталог с учетом стоплиста товаров и категорий
+    catalogWithStoplistAndFilter(state) {
+      const deliveryStore = useDeliveryStore()
+      const { $env } = useNuxtApp()
+      const { currentAddressType, zone, takeawayOrganization } = storeToRefs(deliveryStore)
+
+      const organizationData =
+        currentAddressType?.value === 'delivery'
+          ? zone.value?.organization
+          : takeawayOrganization.value
 
       const DEV_perf = performance.now()
 
-      const productFilteringFunc = (p) => p[state.activeFilterKey]
+      const productFilteringFunc = (p: IProduct) => {
+        let isStoplisted = organizationData?.stop_list?.includes(p.id)
 
-      const filteredCatalog = state.catalog.map((cat) => {
-        return {
-          ...cat,
-          catalog_items: cat.catalog_items.filter(productFilteringFunc),
-          sub_categories: cat.sub_categories.map((subcat) => ({
-            ...subcat,
-            catalog_items: subcat.catalog_items.filter(productFilteringFunc),
-          })),
+        if (isStoplisted && +$env.stopListType === 2) {
+          isStoplisted = !p.preorder_delay
+        } else if (isStoplisted && +$env.stopListType === 3) {
+          isStoplisted = false
         }
-      })
 
-      PerformanceLog(DEV_perf, 'catalogWithFilter')
+        if (state.activeFilterKey && state.activeFilterKey !== 'all') {
+          return p[state.activeFilterKey] && !isStoplisted
+        }
+
+        return !isStoplisted
+      }
+
+      const filteredCatalog = state.catalog
+        .map((cat) => {
+          return {
+            ...cat,
+            catalog_items: cat.catalog_items ? cat.catalog_items.filter(productFilteringFunc) : [],
+            sub_categories: cat.sub_categories
+              ? cat.sub_categories
+                  .map(
+                    (subcat) =>
+                      ({
+                        ...subcat,
+                        catalog_items: subcat.catalog_items.filter(productFilteringFunc),
+                      } as ICategory[])
+                  )
+                  .filter((subcat) => !organizationData?.stop_categories?.includes(subcat.id))
+              : [],
+          }
+        })
+        .filter((x) => !organizationData?.stop_categories?.includes(x.id))
+
+      PerformanceLog(DEV_perf, 'catalogWithStoplistAndFilter')
 
       return filteredCatalog
     },
+
     // возвращает все товары одним массивом
     // поиском по всем категориям и вложенным категориям
     flatCatalog(state): IProduct[] {
       // const DEV_perf = performance.now()
 
       const { $env } = useNuxtApp()
-      // TODO - tmp
       if ($env.catalogType !== 'singlepage') {
         return []
       }
@@ -150,6 +177,7 @@ export const useProductStore = defineStore('product', {
         })) as ICategory[]
       }
 
+      console.log({ dataConeptions: data })
       $log.log(`🧙‍♂️ ++ Catalog (type ${$env.catalogType}) set with ${data.length} categories ++ 🧙‍♂️`)
 
       this.catalog = [...data]

@@ -1,13 +1,13 @@
 <template>
   <main class="page__content">
-    <PromoSlider :slides="promoData" />
+    <PromoSlider v-if="promoData" :slides="promoData" />
     <OrderLast />
 
     <ProductPopular v-for="item in popularList.defaults" :key="item.id" :data="item" />
 
     <template v-if="$env.catalogType === 'singlepage'">
       <ProductCategoriesNav />
-      <template v-for="category in productStore.catalogWithFilter" :key="category.id">
+      <template v-for="category in productStore.catalogWithStoplistAndFilter" :key="category.id">
         <LazyProductCategory :category="category" />
         <ProductPopular
           v-if="findPopularForCategory(category.id)"
@@ -20,16 +20,13 @@
 
     <ProductCategories
       v-else-if="$env.catalogType === 'categories'"
-      :categories="productStore.catalog"
+      :categories="productStore.catalogWithStoplistAndFilter"
     />
 
-    <!-- <ProductConceptions
+    <ProductConceptions
       v-else-if="$env.catalogType === 'conceptions'"
-      :categories="productStore.catalog"
-    /> -->
-    <template v-else-if="$env.catalogType === 'conceptions'">
-      <h2 class="h2-title">TODO {{ productStore.catalog }}</h2>
-    </template>
+      :categories="productStore.catalogWithStoplistAndFilter"
+    />
 
     <InfoAbout />
   </main>

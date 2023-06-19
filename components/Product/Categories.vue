@@ -24,9 +24,7 @@ import { ICategory } from '~/interface/Product'
 const props = defineProps({
   categories: Array as PropType<ICategory[]>,
 })
-
 const { $env } = useNuxtApp()
-// TODO - col size control (by index or backend-defined)
 </script>
 
 <style lang="scss" scoped>
