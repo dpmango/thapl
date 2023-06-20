@@ -1,8 +1,10 @@
+import { IUpload } from '../Ui'
+
 /* eslint-disable no-use-before-define */
 export interface ISendReviewDto {
   order_id: number
   common_comment: string
-  answers: ISendReviewAnswer[]
+  answers: ISendReviewAnswerUpload[]
 }
 
 export interface ISendReviewAnswer {
@@ -12,4 +14,8 @@ export interface ISendReviewAnswer {
   answers: number[]
   cart_item_id?: number
   photo_id?: number
+}
+
+export interface ISendReviewAnswerUpload extends ISendReviewAnswer {
+  uploads: IUpload[] | null
 }

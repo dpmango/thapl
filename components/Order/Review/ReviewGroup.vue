@@ -41,7 +41,7 @@
           />
         </div>
 
-        <UiUploader v-if="uploaderShown" @on-change="(f: IUpload | null) => (upload = f)" />
+        <UiUploader :max-files="uploadMaxFiles" @on-change="(f: IUpload[]) => (upload = f)" />
       </template>
 
       <!-- like / dislike -->
@@ -52,9 +52,11 @@
 
         <div class="review__reaction">
           <UiButton icon-left="dislike" theme="muted" @click="() => (reaction = 'dislike')">
-            Нет
+            {{ productReview ? 'Плохо' : 'Нет' }}
           </UiButton>
-          <UiButton icon-left="like" @click="() => (reaction = 'like')">Да</UiButton>
+          <UiButton icon-left="like" @click="() => (reaction = 'like')">
+            {{ productReview ? 'Вкусно' : 'Да' }}
+          </UiButton>
         </div>
       </template>
     </div>
@@ -78,7 +80,7 @@
 
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
-import { IQuestion, IAnswer, ISendReviewAnswer, IUpload } from '~/interface'
+import { IQuestion, IAnswer, ISendReviewAnswerUpload, IUpload } from '~/interface'
 
 const props = defineProps<{
   question: IQuestion
@@ -88,6 +90,9 @@ const props = defineProps<{
 const productReview = computed(() => {
   return props.question.catalog_item
 })
+const isCommentOnly = computed(
+  () => !!(props.question.has_comment && props.question.answers.length === 0)
+)
 
 const emit = defineEmits(['onNext'])
 
@@ -97,7 +102,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
 
 // реакции
 const isDislikeQuestions = computed(
-  () => props.question.answers.length === 0 && !props.question.has_comment
+  () => !props.question.has_comment && props.question.answers.length === 0
 )
 
 const reactionMode = computed(() => {
@@ -126,14 +131,13 @@ watch(
 )
 
 // загрузка фото
-const uploaderShown = ref(
-  props.last || !!(props.question.has_comment && props.question.answers.length === 0)
-)
+const uploaderShown = ref(props.last || isCommentOnly.value)
 
-const upload = ref<IUpload | null>(null)
+const upload = ref<IUpload[]>([])
+const uploadMaxFiles = ref(props.last ? 4 : 1)
 
 // комментарий
-const commentShown = ref(!!(props.question.has_comment && props.question.answers.length === 0))
+const commentShown = ref(isCommentOnly.value)
 
 const handleCommentVisibility = () => {
   commentShown.value = !commentShown.value
@@ -176,14 +180,16 @@ const handleNext = async () => {
     question_id: props.question.id,
     user_comment: comment.value,
     is_like: reaction.value ? reaction.value === 'like' : true,
-    // photo_id?: number
-  } as ISendReviewAnswer
+  } as ISendReviewAnswerUpload
 
   if (productReview.value) {
     emittedAnswer.cart_item_id = productReview.value.id
   }
   if (checkedAnswersId.value.length > 0) {
     emittedAnswer.answers = checkedAnswersId.value
+  }
+  if (upload.value.length > 0) {
+    emittedAnswer.uploads = upload.value
   }
 
   emit('onNext', emittedAnswer)

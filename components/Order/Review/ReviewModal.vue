@@ -38,6 +38,8 @@ import type {
   IQuestion,
   ISendReviewDto,
   ISendReviewAnswer,
+  ISendReviewAnswerUpload,
+  IUpload,
 } from '~/interface'
 
 const { $log } = useNuxtApp()
@@ -48,7 +50,7 @@ const { modalParams, modal } = storeToRefs(ui)
 
 const quizQuestions = ref<IQuestion[]>([])
 const activeQuizIdx = ref<number>(0)
-const quizAnswers = ref<ISendReviewAnswer[]>([])
+const quizAnswers = ref<ISendReviewAnswerUpload[]>([])
 const quizEnded = ref(false)
 const quizLoading = ref(false)
 
@@ -61,7 +63,7 @@ const lastQuestion = computed(() => ({
   cart_id: null,
 }))
 
-const handleNextQuestion = (answer: ISendReviewAnswer) => {
+const handleNextQuestion = (answer: ISendReviewAnswerUpload) => {
   if (quizQuestions.value.length === 0) return
   const nextQuestionIndex = quizQuestions.value.findIndex((_, idx) => idx > activeQuizIdx.value)
 
@@ -103,7 +105,7 @@ const fetchQuestions = async () => {
   quizEnded.value = false
 }
 
-const postReview = async (lastAnswer: ISendReviewAnswer) => {
+const postReview = async (lastAnswer: ISendReviewAnswerUpload) => {
   if (!modalParams.value?.id && !modal.value.includes('review')) return
 
   quizLoading.value = true
@@ -114,10 +116,32 @@ const postReview = async (lastAnswer: ISendReviewAnswer) => {
     answers: quizAnswers.value,
   } as ISendReviewDto
 
+  const formData = new FormData()
+  let useFormData = false
+
+  if (reviewPostBody.answers.some((a) => a.uploads?.length)) {
+    let toBeUploaded = [] as IUpload[]
+
+    reviewPostBody.answers.forEach((answer) => {
+      if (answer.uploads?.length) {
+        toBeUploaded = [...toBeUploaded, ...answer.uploads]
+        console.log('answer should upload', { up: answer.uploads })
+      }
+    })
+
+    toBeUploaded.forEach((upload, idx) => {
+      if (upload.file) {
+        formData.append(`common_photo_${idx}`, upload.file)
+      }
+    })
+
+    useFormData = true
+  }
+
   const data = (await useApi('order/send-questionnaire', {
     method: 'POST',
     headers: useHeaders(),
-    body: reviewPostBody,
+    body: useFormData ? formData : reviewPostBody,
   }).catch((err) => useCatchError(err, 'Ошибка, обратитесь к администратору'))) as any
 
   quizLoading.value = false

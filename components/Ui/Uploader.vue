@@ -1,38 +1,37 @@
 <template>
   <div class="uploader">
-    <Teleport to="body">
-      <input
-        :id="`uploaderInputDom${id}`"
-        ref="uploaderInputDom"
-        class="hidden-input"
-        type="file"
-        @change="handleFileSelect"
-      />
-    </Teleport>
+    <div v-if="uploads.length > 0" class="uploader__list">
+      <div v-for="(upload, idx) in uploads" :key="idx" class="preview">
+        <div v-if="upload.error" className="preview__error">{{ upload.error }}</div>
 
-    <label
-      v-if="!upload"
-      class="uploader__box"
-      :for="`uploaderInputDom${id}`"
-      @click="() => uploaderInputDom?.click()"
-    >
+        <div class="preview__remove" @click="removeAttachment(upload.id)">
+          <nuxt-icon name="close"></nuxt-icon>
+        </div>
+        <div v-if="upload.encodedImage" class="preview__image">
+          <img :src="upload.encodedImage" :alt="upload.name || ''" />
+        </div>
+        <div class="preview__title">{{ upload.name }}</div>
+      </div>
+    </div>
+
+    <label v-else class="uploader__box" :for="`uploaderInputDom${id}`" @click="triggerUploader">
       <div class="uploader__icon">
         <nuxt-icon name="upload" />
       </div>
       <div class="uploader__label text-m">Прикрепить файл</div>
     </label>
 
-    <div v-else class="preview">
-      <div v-if="upload.error" className="preview__error">{{ upload.error }}</div>
-
-      <div class="preview__remove" @click="removeAttachment">
-        <nuxt-icon name="close"></nuxt-icon>
-      </div>
-      <div v-if="upload.encodedImage" class="preview__image">
-        <img :src="upload.encodedImage" :alt="upload.name || ''" />
-      </div>
-      <div class="preview__title">{{ upload.name }}</div>
-    </div>
+    <Teleport to="body">
+      <input
+        :id="`uploaderInputDom${id}`"
+        ref="uploaderInputDom"
+        class="hidden-input"
+        type="file"
+        :multiple="maxFiles > 1"
+        :maxlength="maxFiles"
+        @change="handleFileSelect"
+      />
+    </Teleport>
   </div>
 </template>
 
@@ -43,53 +42,81 @@ import { bytesToMegaBytes } from '#imports'
 
 const id = nanoid(10)
 
+const props = defineProps<{ maxFiles: number }>()
+
 const emit = defineEmits(['onchange'])
 
-const upload = ref<IUpload | null>(null)
+const uploads = ref<IUpload[]>([])
 const uploaderInputDom = ref<HTMLInputElement | null>(null)
 
 const FILE_ALLOWED_MIME = ['image']
 const FILE_MAX_MB = 5
 
-const handleFileSelect = async (e: any) => {
-  const file = e.target.files[0] as File
-
-  const resultFile = {
-    file,
-    name: file.name,
-    encodedImage: null,
-    error: null,
-  } as IUpload
-
-  // limits
-  const mimeType = file.type.split('/')[0]
-  const sizeInMb = bytesToMegaBytes(file.size)
-
-  if (mimeType && !FILE_ALLOWED_MIME.includes(mimeType)) {
-    resultFile.error = 'Неверный формат файла'
+const triggerUploader = () => {
+  if (uploaderInputDom.value) {
+    uploaderInputDom.value.value = ''
+    uploaderInputDom.value.click()
   }
-
-  if (sizeInMb && sizeInMb > FILE_MAX_MB) {
-    resultFile.error = `Размер изображения превышает ${FILE_MAX_MB}Мб`
-  }
-
-  if (!resultFile.error) {
-    const resData = await blobToData(file)
-
-    resultFile.encodedImage = resData as string
-  }
-
-  upload.value = { ...resultFile }
 }
 
-const removeAttachment = () => {
-  upload.value = null
+const handleFileSelect = async (e: any) => {
+  const files = e.target.files as File[]
+
+  const newFiles = [] as IUpload[]
+
+  const awaitsReader = Array.from(files).map((file) => {
+    const fileId = nanoid(10)
+
+    const resultFile = {
+      id: fileId,
+      file,
+      name: file.name,
+      encodedImage: null,
+      error: null,
+    } as IUpload
+
+    // limits
+    const mimeType = file.type.split('/')[0]
+    const sizeInMb = bytesToMegaBytes(file.size)
+
+    if (mimeType && !FILE_ALLOWED_MIME.includes(mimeType)) {
+      resultFile.error = 'Неверный формат файла'
+    }
+
+    if (sizeInMb && sizeInMb > FILE_MAX_MB) {
+      resultFile.error = `Размер изображения превышает ${FILE_MAX_MB}Мб`
+    }
+
+    if (!resultFile.error) {
+      if (newFiles.length >= props.maxFiles) {
+        resultFile.error = `Можно выбрать максимум ${props.maxFiles} файлов`
+      }
+    }
+
+    newFiles.push(resultFile)
+    return blobToData(file)
+  })
+
+  await Promise.all(awaitsReader).then((res) => {
+    res.forEach((readerData, idx) => {
+      newFiles[idx].encodedImage = readerData as string
+    })
+  })
+
+  uploads.value = newFiles
+}
+
+const removeAttachment = (id: string) => {
+  uploads.value = uploads.value.filter((x) => x.id !== id)
 }
 
 watch(
-  () => upload.value,
+  () => uploads.value,
   (newVal) => {
-    emit('onchange', newVal)
+    emit(
+      'onchange',
+      newVal.filter((x) => !x.error)
+    )
   }
 )
 </script>
@@ -125,7 +152,9 @@ watch(
   &__label {
   }
 
-  &__result {
+  &__list {
+    border: 1px solid var(--color-border);
+    border-radius: 0 0 12px 12px;
   }
 }
 
@@ -146,11 +175,8 @@ watch(
   align-items: center;
   flex-wrap: wrap;
   padding: 12px 14px 12px 56px;
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 12px 12px;
-
   &:not(:last-child) {
-    margin-right: 8px;
+    border-bottom: 1px solid var(--color-border);
   }
 
   &__remove {
