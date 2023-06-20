@@ -22,8 +22,12 @@
         </div>
 
         <div class="col header__logo">
-          <NuxtLink v-if="site_settings && site_settings.main_logo" to="/" @click="handleLogoClick">
-            <img :src="site_settings.main_logo" alt="logo" />
+          <NuxtLink
+            v-if="app_settings?.site_settings && app_settings?.site_settings.main_logo"
+            to="/"
+            @click="handleLogoClick"
+          >
+            <img :src="app_settings?.site_settings.main_logo" alt="logo" />
           </NuxtLink>
         </div>
 
@@ -143,28 +147,24 @@ const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
 const route = useRoute()
-const {
-  user,
-  app_settings: { site_settings },
-  isAuthenticated,
-} = session
+const { user, app_settings, isAuthenticated } = storeToRefs(session)
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
 
 defineProps({
   variant: {
     type: String,
     default: 'main',
-    validator: (x) => ['main'].includes(x),
+    validator: (x: string) => ['main'].includes(x),
   },
 })
 
 const scrolled = ref(false)
 const topHeight = ref(0)
-const headerRef = ref(null)
-const topRef = ref(null)
+const headerRef = ref<HTMLElement | null>(null)
+const topRef = ref<HTMLElement | null>(null)
 
 const toggleMobile = () => {
-  const headerHeight = headerRef.value.offsetHeight
+  const headerHeight = headerRef.value?.offsetHeight
   ui.setMobileMenu({ active: !ui.mobileMenuActive, offset: headerHeight })
 }
 

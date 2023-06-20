@@ -66,12 +66,13 @@ const props = defineProps({
 })
 
 // geolocation
-const geoData = ref({
+const geoData = ref<IGeoDataRef>({
   requested: false,
+  found: false,
   latitude: null,
   longitude: null,
   text: '',
-} as IGeoDataRef)
+})
 
 // Приходит от родительского компонента с поиском
 watch(
@@ -109,6 +110,7 @@ const setAddress = async (
   if (!zone.found) {
     geoData.value = {
       requested: true,
+      found: true,
       latitude: null,
       longitude: null,
       text: '',
@@ -128,6 +130,7 @@ const setAddress = async (
   // display component
   geoData.value = {
     requested: true,
+    found: true,
     latitude,
     longitude,
     text: fullText,
@@ -149,6 +152,7 @@ watch(
     if (!newVal) {
       geoData.value = {
         requested: false,
+        found: false,
         latitude: null,
         longitude: null,
         text: '',

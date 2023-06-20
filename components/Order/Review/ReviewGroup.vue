@@ -28,8 +28,9 @@
       </div>
 
       <!-- comment -->
+
       <template v-if="question.has_comment && commentShown">
-        <div class="review__comment">
+        <div class="review__comment" :class="[uploaderShown && '_has-uploader']">
           <UiInput
             type="textarea"
             rows="3"
@@ -39,6 +40,8 @@
             @on-change="(v) => setFieldValue('comment', v)"
           />
         </div>
+
+        <UiUploader v-if="uploaderShown" @on-change="(f: IUpload | null) => (upload = f)" />
       </template>
 
       <!-- like / dislike -->
@@ -75,7 +78,7 @@
 
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
-import { IQuestion, IAnswer, ISendReviewAnswer } from '~/interface'
+import { IQuestion, IAnswer, ISendReviewAnswer, IUpload } from '~/interface'
 
 const props = defineProps<{
   question: IQuestion
@@ -122,6 +125,13 @@ watch(
   }
 )
 
+// загрузка фото
+const uploaderShown = ref(
+  props.last || !!(props.question.has_comment && props.question.answers.length === 0)
+)
+
+const upload = ref<IUpload | null>(null)
+
 // комментарий
 const commentShown = ref(!!(props.question.has_comment && props.question.answers.length === 0))
 
@@ -138,7 +148,7 @@ const { value: comment } = useField<string>('comment', (v) => {
 const answersShown = ref(!productReview.value)
 const checkedAnswersId = ref<number[]>([])
 
-const handleCheckboxToggle = ({ id, label }: IAnswer) => {
+const handleCheckboxToggle = ({ id }: IAnswer) => {
   const hasMaxAnswer = props.question.max_answers === 1
 
   if (checkedAnswersId.value.includes(id)) {
@@ -191,6 +201,12 @@ const handleNext = async () => {
   }
   &__comment {
     margin-top: 16px;
+    &._has-uploader {
+      :deep(textarea) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
   }
   &__option {
     &:not(:last-child) {

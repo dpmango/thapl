@@ -20,7 +20,11 @@
         </template>
       </template>
 
-      <UiLoader v-if="quizQuestions.length === 0" position="overlay" :loading="true" />
+      <UiLoader
+        v-if="modal.includes('review') && quizQuestions.length === 0"
+        position="overlay"
+        :loading="true"
+      />
     </div>
   </UiModal>
 </template>
@@ -134,6 +138,7 @@ watch(
   }
 )
 
+ui.setModal({ name: 'review', params: { id: 10 } })
 onMounted(() => {
   fetchQuestions()
 })
