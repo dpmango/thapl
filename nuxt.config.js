@@ -70,7 +70,7 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['swiper', 'vee-validate', 'maska'],
+    transpile: ['swiper', 'vee-validate', 'maska', '@vuepic/vue-datepicker'],
   },
 
   css: ['~/assets/css/app.scss'],

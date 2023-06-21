@@ -77,9 +77,7 @@ const modifiers = computed(() => [
 ])
 
 const setValue = (e) => {
-  const val = e.target.value
-
-  emit('onChange', val)
+  emit('onChange', e.target.value)
 }
 
 // display

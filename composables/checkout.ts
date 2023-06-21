@@ -16,15 +16,22 @@ export const useCheckout = () => {
     const isDelivery = currentAddressType?.value === 'delivery'
     const isTakeaway = currentAddressType?.value === 'takeaway'
 
+    console.log(zone.value)
+
     return {
       isDelivery,
       isTakeaway,
       hasZone: !!Object.keys(zone.value).length,
-      isOpen: zone.value?.is_open,
+      isOpen: isDelivery ? zone.value?.is_open : takeawayOrganization.value?.is_open,
+      maxTime: isDelivery ? zone.value?.max_time : '30',
       orderType: currentOrderType.value,
       organization: isDelivery ? zone.value?.organization : takeawayOrganization.value,
-      timeFrom: timestampToMinutes(zone.value?.time_from),
-      timeTo: timestampToMinutes(zone.value?.time_to),
+      timeFrom: isDelivery
+        ? timestampToMinutes(zone.value?.time_from)
+        : timestampToMinutes(takeawayOrganization.value?.time_from),
+      timeTo: isDelivery
+        ? timestampToMinutes(zone.value?.time_to)
+        : timestampToMinutes(takeawayOrganization.value?.time_to),
     }
   })
 
@@ -144,7 +151,7 @@ export const useCheckout = () => {
     const restrictions = organization[restrictionsKey] || []
 
     return {
-      hasSlots: !!organization[slotKey],
+      hasSlots: !!organization[slotKey].length,
       slots,
       restrictions,
     }

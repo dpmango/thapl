@@ -27,6 +27,8 @@ export interface IZone {
 export interface IOrganizationBase {
   id: number
   timezone: string
+  time_to: string | null
+  time_from: string | null
   organization_is_open: boolean
   is_open: boolean
 
