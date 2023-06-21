@@ -44,7 +44,7 @@ const id = nanoid(10)
 
 const props = defineProps<{ maxFiles: number }>()
 
-const emit = defineEmits(['onchange'])
+const emit = defineEmits(['onChange'])
 
 const uploads = ref<IUpload[]>([])
 const uploaderInputDom = ref<HTMLInputElement | null>(null)
@@ -114,7 +114,7 @@ watch(
   () => uploads.value,
   (newVal) => {
     emit(
-      'onchange',
+      'onChange',
       newVal.filter((x) => !x.error)
     )
   }

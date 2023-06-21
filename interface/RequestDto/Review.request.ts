@@ -13,7 +13,7 @@ export interface ISendReviewAnswer {
   is_like: boolean
   answers: number[]
   cart_item_id?: number
-  photo_id?: number
+  photo_id?: number | string
 }
 
 export interface ISendReviewAnswerUpload extends ISendReviewAnswer {

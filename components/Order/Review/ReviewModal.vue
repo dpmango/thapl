@@ -119,20 +119,35 @@ const postReview = async (lastAnswer: ISendReviewAnswerUpload) => {
   const formData = new FormData()
   let useFormData = false
 
-  if (reviewPostBody.answers.some((a) => a.uploads?.length)) {
-    let toBeUploaded = [] as IUpload[]
+  $log.log({ postData: reviewPostBody })
 
-    reviewPostBody.answers.forEach((answer) => {
+  // переключатель на formData если исползуются изображения
+  if (reviewPostBody.answers.some((a) => a.uploads?.length || lastAnswer.uploads?.length)) {
+    const toBeUploaded = reviewPostBody.answers.reduce((acc, answer) => {
       if (answer.uploads?.length) {
-        toBeUploaded = [...toBeUploaded, ...answer.uploads]
-        console.log('answer should upload', { up: answer.uploads })
+        acc = [...acc, ...answer.uploads]
+      }
+      return acc
+    }, [] as IUpload[])
+
+    let processFiles = [...toBeUploaded]
+    if (lastAnswer.uploads) {
+      processFiles = [...processFiles, ...lastAnswer.uploads]
+    }
+
+    processFiles.forEach((upload, idx) => {
+      if (upload.file) {
+        formData.append(`common_photo_${idx + 1}`, upload.file)
       }
     })
 
-    toBeUploaded.forEach((upload, idx) => {
-      if (upload.file) {
-        formData.append(`common_photo_${idx}`, upload.file)
+    Object.keys(reviewPostBody).forEach((key) => {
+      let data = JSON.stringify(reviewPostBody[key])
+      if (key === 'answers') {
+        data = JSON.stringify(reviewPostBody[key].map((x) => ({ ...x, uploads: null })))
       }
+
+      formData.append(key, data)
     })
 
     useFormData = true
@@ -162,7 +177,7 @@ watch(
   }
 )
 
-ui.setModal({ name: 'review', params: { id: 10 } })
+// ui.setModal({ name: 'review', params: { id: 10 } })
 onMounted(() => {
   fetchQuestions()
 })

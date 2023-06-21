@@ -1,6 +1,9 @@
 <template>
   <div class="review">
-    <OrderReviewHead title="Отзыв о заказе" :description="question.question" />
+    <OrderReviewHead
+      title="Отзыв о заказе"
+      :description="!isDislikeQuestions ? question.question : ''"
+    />
 
     <div class="review__body">
       <!-- product -->
@@ -87,14 +90,16 @@ const props = defineProps<{
   last?: boolean
 }>()
 
+const emit = defineEmits(['onNext'])
+
+const { $log } = useNuxtApp()
+
 const productReview = computed(() => {
   return props.question.catalog_item
 })
 const isCommentOnly = computed(
   () => !!(props.question.has_comment && props.question.answers.length === 0)
 )
-
-const emit = defineEmits(['onNext'])
 
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: { comment: '' },
@@ -188,9 +193,18 @@ const handleNext = async () => {
   if (checkedAnswersId.value.length > 0) {
     emittedAnswer.answers = checkedAnswersId.value
   }
+
   if (upload.value.length > 0) {
-    emittedAnswer.uploads = upload.value
+    emittedAnswer.uploads = upload.value.map((x) => ({
+      ...x,
+      encodedImage: x.encodedImage ? 'protected' : null,
+    }))
+
+    const photoId = upload.value[0].id
+    if (photoId) emittedAnswer.photo_id = photoId
   }
+
+  $log.log({ emittedAnswer })
 
   emit('onNext', emittedAnswer)
 }
