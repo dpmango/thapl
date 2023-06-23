@@ -605,7 +605,7 @@ const deliveryTimeOptions = computed(() => {
 
   const timeOptions = [{ id: '2', label: 'Ко времени' }]
 
-  if (showASAPTime.value) {
+  if (showASAPTime.value && deliveryDate.value !== '0') {
     timeOptions.unshift({ id: '1', label: 'Как можно скорее' })
   }
 
@@ -626,10 +626,12 @@ const { value: deliveryRange } = useField<string>('deliveryRange', (v) => {
 })
 
 const deliveryRangeOptions = computed(() => {
+  const minutes = dayjs().hour() * 60 + dayjs().minute()
+
   return {
     min: zoneData.value.isDelivery
       ? zoneData.value.timeFrom + +zoneData.value.maxTime
-      : zoneData.value.timeFrom + +zoneData.value.organization.min_takeaway_gap,
+      : minutes + +zoneData.value.organization.min_takeaway_gap,
     max: zoneData.value.isDelivery
       ? zoneData.value.timeTo + +zoneData.value.maxTime
       : zoneData.value.timeTo - +zoneData.value.maxTime,

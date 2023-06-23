@@ -9,6 +9,6 @@
     "yarn.lock": true,
     "package-lock.json": true
   },
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "vetur.validation.template": false
 }

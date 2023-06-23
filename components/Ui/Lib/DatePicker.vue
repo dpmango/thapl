@@ -1,16 +1,29 @@
 <template>
   <div class="date-picker">
     <VueDatePicker
-      :model-value="props.modelValue"
       format="dd.MM.yyyy"
+      auto-apply
+      placeholder="Выберите дату"
+      :day-names="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']"
+      :months="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']"
+      :model-value="props.modelValue"
+      :enable-time-picker="false"
       @update:modelValue="emit('update:modelValue', $event)"
-    />
+    >
+      <template #month-overlay-value="{ value }">
+        {{ months[value] }}
+      </template>
+      <template #month="{ value }">
+        {{ months[value] }}
+      </template>
+    </VueDatePicker>
   </div>
 </template>
 
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
+import '@/assets/css/elements/_date-picker.scss'
 
 const props = defineProps({
   modelValue: {
@@ -20,13 +33,28 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const months: any = [
+  'Янв',
+  'Фев',
+  'Мар',
+  'Апр',
+  'Май',
+  'Июн',
+  'Июл',
+  'Авг',
+  'Сен',
+  'Окт',
+  'Ноя',
+  'Дек',
+]
 </script>
 
 <style lang="scss">
 .date-picker {
   .dp {
     &__main {
-      max-width: 175px;
+      max-width: 180px;
       @include r($sm) {
         max-width: 100%;
       }
