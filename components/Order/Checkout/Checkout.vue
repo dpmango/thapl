@@ -142,6 +142,9 @@
                 <UiLibDatePicker
                   v-if="deliveryDate === '0'"
                   v-model="deliveryDateVal"
+                  :min-date="zoneData.minDate"
+                  :max-date="zoneData.maxDate"
+                  :error="errors.deliveryDateVal"
                   class="date-picker"
                 />
               </div>
@@ -164,7 +167,7 @@
                 :min="deliveryRangeOptions.min"
                 :max="deliveryRangeOptions.max"
                 :step="deliveryRangeOptions.step"
-                :value="deliveryRange"
+                :value="+deliveryRange"
                 :minutes="true"
                 @on-change="(v) => setFieldValue('deliveryRange', +v)"
               />
@@ -514,8 +517,10 @@ const { value: deliveryDate } = useField<string>(
   }
 )
 
-const { value: deliveryDateVal } = useField<string>('deliveryDateVal')
-
+const { value: deliveryDateVal } = useField<string>('deliveryDateVal', (v) => {
+  if (deliveryDate.value !== '0') return true
+  return v ? true : 'Выберите дату'
+})
 // текущее время пользователя либо следующий день (логика только для выбора опций)
 // const noTimeOptionsAvailable = ref(false)
 const orderDay = computed(() => {
@@ -539,15 +544,6 @@ const orderDay = computed(() => {
 // выбор даты доставки с возможностью указать N дней вперед
 const deliveryDateOptions = computed(() => {
   const startLabel = orderDay.value.isToday ? 'Сегодня' : 'Завтра'
-  const subtractDays = orderDay.value.isToday ? 0 : 1
-
-  // if (slotsData.value.hasSlots) {
-  //   return [
-  //     { id: orderDay.value.day.format('DD.MM.YYYY'), label: startLabel },
-  //     ...generateDaysFrom(orderDay.value.day, 3 - subtractDays),
-  //   ]
-  // }
-
   const dayOptions = [{ id: '0', label: 'В другой день' }] as IToggleOption[]
 
   // + добавить есть доступные на сегодня слоты
@@ -950,7 +946,7 @@ const buildRequestObject = () => {
 
   if (zoneData.value.isDelivery) {
     orderObject.time_to_delivery = `${
-      deliveryDate.value === '0' ? dayjs().format('DD.MM.YYYY') : deliveryDateVal.value
+      deliveryDate.value === '0' ? deliveryDateVal.value : dayjs().format('DD.MM.YYYY')
     } ${deliveryTime.value}` // DD.MM.YYYY HH:mm
     orderObject.entrance = entrance.value
     orderObject.floor = floor.value

@@ -67,7 +67,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits('onChange')
+const emit = defineEmits(['onChange'])
 
 const modifiers = computed(() => [
   props.error && '_error',

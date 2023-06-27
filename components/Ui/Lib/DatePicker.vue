@@ -4,11 +4,14 @@
       format="dd.MM.yyyy"
       auto-apply
       placeholder="Выберите дату"
-      :day-names="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']"
-      :months="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']"
+      hide-offset-dates
+      :min-date="props.minDate"
+      :max-date="props.maxDate"
+      :day-names="days"
       :model-value="props.modelValue"
       :enable-time-picker="false"
-      @update:modelValue="emit('update:modelValue', $event)"
+      :state="!props.error"
+      @update:model-value="emit('update:modelValue', $event)"
     >
       <template #month-overlay-value="{ value }">
         {{ months[value] }}
@@ -30,11 +33,24 @@ const props = defineProps({
     type: [String, Date],
     default: null,
   },
+  minDate: {
+    type: [String, Date],
+    default: null,
+  },
+  maxDate: {
+    type: [String, Date],
+    default: null,
+  },
+  error: {
+    type: String,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-const months: any = [
+const days: string[] = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+const months: string[] = [
   'Янв',
   'Фев',
   'Мар',
@@ -54,15 +70,31 @@ const months: any = [
 .date-picker {
   .dp {
     &__main {
-      max-width: 180px;
+      max-width: 185px;
       @include r($sm) {
         max-width: 100%;
       }
     }
+
     &__input {
       padding-top: 11px;
       padding-bottom: 11px;
-      border-radius: var(--input-border-radius);
+      border-radius: 23px;
+    }
+
+    &__overlay {
+      border-radius: 23px;
+    }
+
+    &__input_invalid {
+      box-shadow: none;
+      border-width: 2px;
+      border-color: var(--color-red);
+    }
+
+    &__input_valid {
+      box-shadow: none;
+      border-color: var(--dp-border-color);
     }
   }
 }

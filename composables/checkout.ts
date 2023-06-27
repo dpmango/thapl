@@ -1,9 +1,10 @@
+import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useCartStore, useDeliveryStore } from '~/store'
 import { timestampToMinutes, Plurize } from '#imports'
 
 export const useCheckout = () => {
-  const { $env, $log } = useNuxtApp()
+  const { $env } = useNuxtApp()
 
   const deliveryStore = useDeliveryStore()
   const cartStore = useCartStore()
@@ -16,14 +17,18 @@ export const useCheckout = () => {
     const isDelivery = currentAddressType?.value === 'delivery'
     const isTakeaway = currentAddressType?.value === 'takeaway'
 
-    console.log(zone.value)
-
     return {
       isDelivery,
       isTakeaway,
       hasZone: !!Object.keys(zone.value).length,
       isOpen: isDelivery ? zone.value?.is_open : takeawayOrganization.value?.is_open,
       maxTime: isDelivery ? zone.value?.max_time : '30',
+      minDate: isDelivery
+        ? dayjs().add(zone.value?.organization.min_preorder_days, 'day').format()
+        : dayjs().add(takeawayOrganization.value?.min_preorder_days, 'day').format(),
+      maxDate: isDelivery
+        ? dayjs().add(zone.value?.organization.max_preorder_days, 'day').format()
+        : dayjs().add(takeawayOrganization.value?.max_preorder_days, 'day').format(),
       orderType: currentOrderType.value,
       organization: isDelivery ? zone.value?.organization : takeawayOrganization.value,
       timeFrom: isDelivery
