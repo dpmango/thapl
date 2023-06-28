@@ -38,7 +38,7 @@ const { data, error } = await useAsyncData(
 $log.log('🧙‍♂️ ASYNC LOYALTY', { data: data.value })
 
 useHead({
-  title: `${data.value?.title} - ${$env.projectName}`,
+  title: () => `${data.value?.title} - ${$env.projectName}`,
 })
 </script>
 

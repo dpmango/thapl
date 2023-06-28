@@ -43,28 +43,28 @@ const fetchCatalog = async () => {
   return data
 }
 
-const { data: categoryDataAsync, error: categoriesError } = await useAsyncData(
+const { data: categoryDataAsync, error: categoriesError } = await useLazyAsyncData(
   `catalog-${params.slug}`,
   () => fetchCatalog()
 )
 
 categoryData.value = categoryDataAsync.value
 
+watch(categoryDataAsync, (newData) => {
+  categoryData.value = newData
+
+  $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
+})
+
 useHead({
-  title: `${categoryData.value?.title} - ${$env.projectName}`,
+  title: () => `${categoryData.value?.title || 'Загрузка...'} - ${$env.projectName}`,
 })
 
-onMounted(() => {
-  if (!categoryData.value) fetchCatalog()
-})
+if (categoryData.value) {
+  $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
+}
 
-// $log.log(`🧙‍♂️ ASYNC catalog-id ${params.slug}`, { category: categoryData.value })
-
-// if (!categoryData.value) {
-//   throw createError({ statusCode: 404, fatal: true })
-// }
-
-const crumbs = ref([
+const crumbs = computed(() => [
   { href: '/', label: 'Каталог' },
   { href: `/category/${params.slug}`, label: categoryData.value?.title },
 ])

@@ -173,7 +173,6 @@ export const useProductStore = defineStore('product', {
         })) as ICategory[]
       }
 
-      console.log({ dataConeptions: data })
       $log.log(`🧙‍♂️ ++ Catalog (type ${$env.catalogType}) set with ${data.length} categories ++ 🧙‍♂️`)
 
       this.catalog = [...data]
