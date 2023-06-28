@@ -940,14 +940,14 @@ const buildRequestObject = () => {
     lng: currentAddress.value?.longitude,
     payment_method: payment.value,
     cart: cartStore.cartToApi,
+    time_to_delivery: `${
+      deliveryDate.value === '0' ? deliveryDateVal.value : dayjs().format('DD.MM.YYYY')
+    } ${deliveryTime.value}`, // DD.MM.YYYY HH:mm
     comment:
       process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : comment.value,
   } as IOrderRequestDto
 
   if (zoneData.value.isDelivery) {
-    orderObject.time_to_delivery = `${
-      deliveryDate.value === '0' ? deliveryDateVal.value : dayjs().format('DD.MM.YYYY')
-    } ${deliveryTime.value}` // DD.MM.YYYY HH:mm
     orderObject.entrance = entrance.value
     orderObject.floor = floor.value
     orderObject.apt = apt.value
@@ -991,7 +991,7 @@ const buildRequestObject = () => {
   if (promoGiftId.value) {
     orderObject.gift_id = promoGiftId.value
   }
-
+  console.log('orderObjectorderObjectorderObject', orderObject)
   return orderObject
 }
 
