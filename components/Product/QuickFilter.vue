@@ -1,8 +1,8 @@
 <template>
-  <div v-if="quickFilter.categories" class="filter">
+  <div v-if="quickFilter" class="filter">
     <div class="filter__wrapper">
       <ul class="filter__categories">
-        <li v-for="category in quickFilter.categories">
+        <li v-for="category in quickFilter">
           <div
             class="filter__link text-m"
             :class="[activeFilterKey === category.product_key && '_active']"
@@ -21,13 +21,53 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store'
+import { ICategoryFull, IProduct } from '~/interface/Product'
+import { quickFilterKeys } from '~/store/product/helpers'
 
+const { $env } = useNuxtApp()
+
+const props = defineProps<{ categoryData?: ICategoryFull | null }>()
 const productStore = useProductStore()
-const { quickFilter, activeFilterKey } = storeToRefs(productStore)
+const { flatCatalog, activeFilterKey } = storeToRefs(productStore)
 
 const setFilter = (key) => {
   activeFilterKey.value = key
 }
+
+// Выводит доступные категории товаров по их параметрам
+// список и порядок определяется в хелпере
+const quickFilter = computed(() => {
+  const categories = [
+    {
+      product_key: 'all',
+      label: 'Все блюда',
+    },
+  ]
+
+  let source = flatCatalog.value
+  if (props.categoryData) {
+    source = props.categoryData.catalog_items
+
+    props.categoryData.sub_categories.forEach((sub) => {
+      source = [...source, ...sub.catalog_items]
+    })
+  }
+
+  quickFilterKeys.forEach((filter) => {
+    if (source.some((x) => x[filter.product_key])) {
+      categories.push({
+        product_key: filter.product_key,
+        label: filter.label,
+      })
+    }
+  })
+
+  if (categories.length === 1) {
+    return null
+  }
+
+  return categories
+})
 </script>
 
 <style lang="scss" scoped>

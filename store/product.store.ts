@@ -1,6 +1,4 @@
 import { defineStore, storeToRefs, acceptHMRUpdate } from 'pinia'
-import { PerformanceLog } from '#imports'
-import { quickFilterKeys } from '~/store/product/helpers'
 import { ICategory, ICategoryFull, IProduct } from '~/interface/Product'
 import { useDeliveryStore } from '~/store'
 
@@ -102,6 +100,7 @@ export const useProductStore = defineStore('product', {
       // const DEV_perf = performance.now()
 
       const { $env } = useNuxtApp()
+
       if ($env.catalogType !== 'singlepage') {
         return []
       }
@@ -115,38 +114,7 @@ export const useProductStore = defineStore('product', {
         return acc
       }, [])
 
-      // PerformanceLog(DEV_perf, 'flatCatalog')
-
       return flatCatalog || []
-    },
-    // Выводит доступные категории товаров по их параметрам
-    // список и порядок определяется в /product/helpers
-    quickFilter() {
-      const categories = [
-        {
-          product_key: 'all',
-          label: 'Все блюда',
-        },
-      ]
-
-      quickFilterKeys.forEach((filter) => {
-        if (this.flatCatalog.some((x) => x[filter.product_key])) {
-          categories.push({
-            product_key: filter.product_key,
-            label: filter.label,
-          })
-        }
-      })
-
-      if (categories.length === 1) {
-        return {
-          categories: null,
-        }
-      }
-
-      return {
-        categories,
-      }
     },
   },
   actions: {
