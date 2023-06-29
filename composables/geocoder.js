@@ -70,7 +70,7 @@ export const useGeocoder = ({ searchRef, setFieldValue, setErrors, onMounted: on
     let errorText = ''
     if (geoObject) {
       const precision = geoObject.properties.get('metaDataProperty.GeocoderMetaData.precision')
-      // console.log({ precision })
+
       switch (precision) {
         case 'exact':
           errorText = ''

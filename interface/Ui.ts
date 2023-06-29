@@ -8,3 +8,11 @@ export interface IToggleOption {
   label: string
   disabled?: boolean
 }
+
+export interface IUpload {
+  id?: string
+  file: File | null
+  encodedImage: string | null
+  name: string | null
+  error: string | null
+}
