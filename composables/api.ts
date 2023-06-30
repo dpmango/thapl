@@ -1,4 +1,4 @@
-export const useApi = (url, options = {}, settings = {}) => {
+export const useApi = (url, options = {}, settings = {} as { externalUrl?: boolean }) => {
   const { $env, $log, ssrContext } = useNuxtApp()
   const reqEvent = useRequestEvent()
 

@@ -3,7 +3,7 @@ import { IContentDataDto } from '~/interface/Dto/Page.dto'
 
 export interface IRestaurantDto {
   id: number
-  title: string
+  title: string | null
   working_hours: string
   lng: number
   lat: number

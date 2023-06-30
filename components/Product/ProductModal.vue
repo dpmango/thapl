@@ -132,12 +132,11 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref } from 'vue'
 import debounce from 'lodash/debounce'
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useCartStore, useUiStore } from '~/store'
-import { IProduct, IModifierItem } from 'interface/Product'
+import { IProduct, ICartModifier } from '~/interface'
 import { formatPrice, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
@@ -167,11 +166,11 @@ const optionsModList = ref([
 const optionsMod = ref(null)
 
 // модификаторы товара
-interface IModifierGroup extends IModifierItem {
+interface IModifierItemGrouped extends ICartModifier {
   groupID: number
 }
 
-const modifierGroups = ref([]) as Ref<IModifierGroup[]>
+const modifierGroups = ref([]) as Ref<IModifierItemGrouped[]>
 const modifierErrors = ref([]) as Ref<number[]>
 const modifierShowErorrs = ref(false)
 
@@ -192,6 +191,7 @@ const changeModifier = (opt, groupID, isRadio) => {
   const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)
   const hasGroup = modifierGroups.value.some((x) => x.groupID === groupID)
 
+  console.log({ modifierGroups: modifierGroups.value })
   // радиокнопки и группа
   if (isRadio && hasGroup) {
     modifierGroups.value = modifierGroups.value.map((x) => {
