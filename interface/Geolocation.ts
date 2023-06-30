@@ -1,4 +1,9 @@
 /* eslint-disable no-use-before-define */
+export interface IGeoCoords {
+  latitude: number
+  longitude: number
+}
+
 export interface IGeoDataRef {
   requested: boolean
   found: boolean | null
