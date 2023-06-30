@@ -3,37 +3,47 @@
     <div class="product">
       <UiLoader v-if="true" position="overlay" :loading="loading" />
       <div v-if="product" class="product__wrapper">
-        <div class="product__media hidden-md">
-          <div class="product__image">
+        <div
+          class="product__media hidden-md"
+          :style="imageWidth ? { flexBasis: `${imageWidth}px` } : {}"
+        >
+          <div ref="imageRef" class="product__image">
             <UiImage :src="product.image" :alt="product.title" />
           </div>
         </div>
-        <div class="product__body">
-          <div class="product__scroller">
-            <div class="product__title h4-title">
-              <UiAtomLongWords :text="product.title" />&nbsp;
-              <span v-if="product.is_hot">🌶</span>
-              <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
-                &nbsp;(В корзине уже {{ countWithModifiersInCart }})
-              </span>
-            </div>
-            <div class="product__weight text-s c-gray">
-              {{ product.packing_weights }}
-            </div>
-
-            <div class="product__media visible-md">
-              <div class="product__image">
-                <UiImage :src="product.image" :alt="product.title" />
+        <div
+          class="product__body"
+          :style="{
+            maxHeight: `${imageHeight}px`,
+            ...(imageWidth ? { flexBasis: `calc(100% - ${imageWidth}px)` } : {}),
+          }"
+        >
+          <div class="product__scrolling-wrap">
+            <div class="product__scrolling">
+              <div class="product__title h4-title">
+                <UiAtomLongWords :text="product.title" />&nbsp;
+                <span v-if="product.is_hot">🌶</span>
+                <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
+                  &nbsp;(В корзине уже {{ countWithModifiersInCart }})
+                </span>
               </div>
-            </div>
+              <div class="product__weight text-s c-gray">
+                {{ product.packing_weights }}
+              </div>
 
-            <div class="product__description text-s">
-              {{ product.description }}
-            </div>
+              <div class="product__media visible-md">
+                <div class="product__image">
+                  <UiImage :src="product.image" :alt="product.title" />
+                </div>
+              </div>
 
-            <ProductCardEnergyStats :product="product" class="card__stat" />
+              <div class="product__description text-s">
+                {{ product.description }}
+              </div>
 
-            <!-- <UiToggle
+              <ProductCardEnergyStats :product="product" class="card__stat" />
+
+              <!-- <UiToggle
               class="product__options"
               :autosize="true"
               size="small"
@@ -51,55 +61,59 @@
               @on-change="(v) => (optionsMod = v)"
             /> -->
 
-            <div v-if="product.modifier_groups?.length" class="product__modifiers">
               <div
-                v-for="(group, idx) in product.modifier_groups"
-                :key="idx"
-                class="product__modifier"
+                v-if="product.modifier_groups?.length"
+                ref="productModifiers"
+                class="product__modifiers"
               >
-                <div class="h6-title">{{ group.title }}</div>
-
                 <div
-                  class="product__modifier-note text-xs c-gray"
-                  :class="[modifierShowErorrs && modifierErrors.includes(idx) && 'c-red _error']"
+                  v-for="(group, idx) in product.modifier_groups"
+                  :key="idx"
+                  class="product__modifier"
                 >
-                  <template v-if="group.min_items === 0">
-                    Опционально, максимум {{ group.max_items }}
-                    {{ Plurize(group.max_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
-                  </template>
-                  <template v-else-if="group.min_items === group.max_items">
-                    Нужно выбрать минимум {{ group.min_items }}
-                    {{ Plurize(group.min_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
-                  </template>
-                  <template v-else>
-                    Нужно выбрать от {{ group.min_items }} до
-                    {{ group.max_items }} ингредиентов</template
-                  >
-                </div>
-                <div class="product__modifier-list">
+                  <div class="h6-title">{{ group.title }}</div>
+
                   <div
-                    v-for="option in group.items"
-                    :key="option.id"
-                    class="product__modifier-option mod-option text-m"
-                    @click="changeModifier(option, idx, group.min_items > 0)"
+                    class="product__modifier-note text-xs c-gray"
+                    :class="[modifierShowErorrs && modifierErrors.includes(idx) && 'c-red _error']"
                   >
-                    <span class="mod-option__name">{{ option.title }}</span>
-                    <span v-if="option.price" class="mod-option__price">
-                      +{{ formatPrice(option.price, 0, false) }}
-                    </span>
-                    <UiCheckbox
-                      class="mod-option__radio"
-                      :name="`mod_radio_${idx}`"
-                      :error="modifierErrors.includes(idx)"
-                      :type="group.min_items > 0 ? 'radio' : 'checkbox'"
-                      :checked="modifierGroups.some((x) => x.id === option.id)"
-                    />
+                    <template v-if="group.min_items === 0">
+                      Опционально, максимум {{ group.max_items }}
+                      {{ Plurize(group.max_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
+                    </template>
+                    <template v-else-if="group.min_items === group.max_items">
+                      Нужно выбрать минимум {{ group.min_items }}
+                      {{ Plurize(group.min_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
+                    </template>
+                    <template v-else>
+                      Нужно выбрать от {{ group.min_items }} до
+                      {{ group.max_items }} ингредиентов</template
+                    >
+                  </div>
+                  <div class="product__modifier-list">
+                    <div
+                      v-for="option in group.items"
+                      :key="option.id"
+                      class="product__modifier-option mod-option text-m"
+                      @click="changeModifier(option, idx, group.min_items > 0)"
+                    >
+                      <span class="mod-option__name">{{ option.title }}</span>
+                      <span v-if="option.price" class="mod-option__price">
+                        +{{ formatPrice(option.price, 0, false) }}
+                      </span>
+                      <UiCheckbox
+                        class="mod-option__radio"
+                        :name="`mod_radio_${idx}`"
+                        :error="modifierErrors.includes(idx)"
+                        :type="group.min_items > 0 ? 'radio' : 'checkbox'"
+                        :checked="modifierGroups.some((x) => x.id === option.id)"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div class="product__cta">
             <ProductCardAddToCart
               :product="product"
@@ -119,6 +133,7 @@
 
 <script setup lang="ts">
 import { PropType, Ref } from 'vue'
+import debounce from 'lodash/debounce'
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useCartStore, useUiStore } from '~/store'
@@ -226,8 +241,25 @@ const hasUnselectedModifiers = computed(() => {
   return !!errors.length
 })
 
+const productModifiers = ref<HTMLElement | null>(null)
+
 const showModifiersToast = () => {
   modifierShowErorrs.value = true
+
+  let scrollerRef
+  if (window.innerWidth < 768) {
+    scrollerRef = document.querySelector('.modal._active .modal__content')
+  } else {
+    scrollerRef = document.querySelector('.modal._active .product__scrolling-wrap')
+  }
+
+  if (productModifiers.value && scrollerRef) {
+    const targetTop =
+      productModifiers.value.getBoundingClientRect().top - scrollerRef.getBoundingClientRect().top
+
+    scrollWithSpeed(targetTop, 300, scrollerRef)
+  }
+
   // toast.error('Выберите параметры блюда')
 }
 
@@ -255,6 +287,8 @@ const fetchProduct = async (id) => {
 
   if (data) {
     product.value = { ...data }
+    setScrollerHeight()
+
     if (window && window.dataLayer) {
       window.dataLayer.push({
         ecommerce: {
@@ -273,6 +307,44 @@ const fetchProduct = async (id) => {
 
   loading.value = false
 }
+
+// резайс по параметрам изобржения
+const imageRef = ref<HTMLElement | null>(null)
+const imageHeight = ref(500)
+const imageWidth = ref<number | null>(null)
+
+const setScrollerHeight = debounce(
+  () => {
+    if (imageRef.value) {
+      imageHeight.value = 500
+      imageWidth.value = null
+
+      nextTick(() => {
+        if (!imageRef.value) return
+        const imgHeight = imageRef.value.offsetHeight
+        const imgElement = imageRef.value.querySelector('img')
+
+        imageHeight.value = imgHeight ? imgHeight + 40 + 40 : 0
+
+        if (imgElement) {
+          const imgW = imgElement.offsetWidth + 40 * 2
+          imageWidth.value = imgW || null
+        }
+      })
+    }
+  },
+  100,
+  { leading: true }
+)
+
+onMounted(() => {
+  setScrollerHeight()
+  window.addEventListener('resize', setScrollerHeight, true)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', setScrollerHeight, true)
+})
 
 watch(
   () => ui.modalParams,
@@ -300,18 +372,24 @@ watch(
 <style lang="scss" scoped>
 .product {
   position: relative;
+  margin: auto 0;
+  min-height: 1px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
   &__wrapper {
     flex: 1 0 auto;
     display: flex;
     min-height: 1px;
-    height: 100%;
+    max-height: calc(100vh - 120px - 40px);
   }
   &__media {
     flex: 0 0 62.5%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 48px;
+    padding: 40px 40px 32px;
   }
   &__image {
     position: relative;
@@ -319,31 +397,40 @@ watch(
     width: 100%;
     border-radius: var(--card-border-radius);
     font-size: 0;
-    padding-bottom: var(--product-card-ar);
     background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-height: calc(100vh - 120px - 40px);
     overflow: hidden;
     img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      // max-width: auto;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
     }
   }
   &__body {
+    position: relative;
+    z-index: 1;
     flex: 0 0 37.5%;
     min-width: 1px;
+    min-height: 1px;
     display: flex;
     flex-direction: column;
     background: var(--color-bg);
   }
-  &__scroller {
-    flex: 1 0 auto;
+  &__scrolling {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 32px 32px 0;
-    // overflow-y: auto;
-    // -webkit-overflow-scrolling: touch;
+  }
+  &__scrolling-wrap {
+    flex: 0 1 auto;
+    overflow-y: auto;
+    height: 100%;
+    min-height: 1px;
+    -webkit-overflow-scrolling: touch;
   }
   &__title {
     word-break: break-word;
@@ -447,32 +534,40 @@ watch(
 
 @include r($md) {
   .product {
-    &__scroller {
-      padding: 24px;
+    position: static;
+    &__wrapper {
+      max-height: 100%;
+    }
+    &__image {
+      max-height: 100%;
+    }
+    &__scrolling {
+      padding: 24px 24px 124px;
     }
     &__media {
       margin: 20px auto;
       flex: 0 0 auto;
       padding: 0;
-      max-width: 240px;
     }
     &__body {
-      flex: 0 0 100%;
+      position: static;
+      flex: 0 0 100% !important;
+      max-height: 100% !important;
+      overflow: hidden;
       background: transparent;
     }
     &__cta {
+      z-index: 3;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       padding: 16px 24px;
       box-shadow: var(--box-shadow-extra-large);
       background: transaprent;
-    }
-  }
-}
-
-@include r($sm) {
-  .product {
-    height: 100%;
-    &__wrapper {
-      height: 100%;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform: translate3d(0, 0, 0.001);
     }
   }
 }
