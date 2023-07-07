@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <div class="col header__tile hidden-lg">
+        <div v-if="$env.useWorkTimes" class="col header__tile hidden-lg">
           <div class="tile">
             <span class="tile__label tile__overflow">Время работы</span>
             <div class="tile__value">
@@ -75,7 +75,11 @@
 
         <div class="col header__actions row">
           <div class="col">
-            <NuxtLink v-if="session.app_settings.loyalty?.enabled" to="/ui" class="action">
+            <NuxtLink
+              v-if="!$env.useHeaderMenu && session.app_settings.loyalty?.enabled"
+              to="/ui"
+              class="action"
+            >
               <div class="action__icon">
                 <nuxt-icon name="heart" />
                 <div v-if="isAuthenticated && user.balance" class="action__counter _top">
@@ -85,6 +89,13 @@
               <div class="action__text">{{ $env.loyaltyTitle }}</div>
             </NuxtLink>
           </div>
+
+          <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
+            <div v-for="item in app_settings?.site_header_menu" class="col">
+              {{ item }}
+            </div>
+          </template>
+
           <div v-if="!isAuthenticated" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'auth' })">
               <div class="action__icon">
@@ -93,6 +104,7 @@
               <div class="action__text">Войти</div>
             </div>
           </div>
+
           <div v-else class="col">
             <NuxtLink to="/profile" class="action">
               <div class="action__icon">
@@ -145,7 +157,7 @@ const { $env } = useNuxtApp()
 const route = useRoute()
 const {
   user,
-  app_settings: { site_settings },
+  app_settings: { site_settings, site_header_menu },
   isAuthenticated,
 } = session
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
