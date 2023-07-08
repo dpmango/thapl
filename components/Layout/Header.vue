@@ -167,7 +167,7 @@ const { $env } = useNuxtApp()
 const route = useRoute()
 const { user, app_settings, isAuthenticated } = storeToRefs(session)
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
-const useHeaderMenu = $env.useHeaderMenu.toString()
+const useHeaderMenu = $env.useHeaderMenu
 
 defineProps({
   variant: {
