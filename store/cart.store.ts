@@ -249,7 +249,9 @@ export const useCartStore = defineStore('cart', {
         },
       })) as IPromoDto
 
-      this.promo = { ...res }
+      this.promo = {
+        ...res,
+      }
 
       return res
     },

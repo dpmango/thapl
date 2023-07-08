@@ -35,10 +35,12 @@ if (error && error.value) {
 }
 
 useHead({
-  ...createSeoTags({
-    title: `${data.value?.title} - ${$env.projectName}`,
-    description: data.value?.seo_description,
-  }),
+  title: () => `${data.value?.title} - ${$env.projectName}`,
+  meta: [{ property: 'description', content: data.value?.seo_description || '' }],
+  // ...createSeoTags({
+  //   title: `${data.value?.title} - ${$env.projectName}`,
+  //   description: data.value?.seo_description,
+  // }),
 })
 </script>
 

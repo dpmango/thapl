@@ -7,7 +7,7 @@
             <div v-if="category.image" class="category__image">
               <img :src="category.image" :alt="category.title" />
             </div>
-            <div class="category__content">
+            <div v-if="$env.showCategoryName" class="category__content">
               <div class="category__title h2-title">{{ category.title }}</div>
             </div>
           </NuxtLink>
@@ -24,8 +24,7 @@ import { ICategory } from '~/interface/Product'
 const props = defineProps({
   categories: Array as PropType<ICategory[]>,
 })
-
-// TODO - col size control (by index or backend-defined)
+const { $env } = useNuxtApp()
 </script>
 
 <style lang="scss" scoped>

@@ -9,12 +9,24 @@
           <template v-if="freeDeliveryData.match">Бесплатная доставка</template>
           <template v-else>Доставка {{ formatPrice(priceData.delivery) }}</template>
         </div>
-        <UiProgress class="cart__delivery-progress" :width="freeDeliveryData.progress" />
+        <div class="cart__delivery-row">
+          <UiProgress class="cart__delivery-progress" :width="freeDeliveryData.progress" />
+          <div v-if="freeDeliveryData.nextPromo" class="cart__delivery-next">
+            <span :class="[freeDeliveryData.nextPromo.progress >= 15 && '_active']" />
+            <span :class="[freeDeliveryData.nextPromo.progress >= 30 && '_active']" />
+            <span :class="[freeDeliveryData.nextPromo.progress >= 45 && '_active']" />
+            <span :class="[freeDeliveryData.nextPromo.progress >= 60 && '_active']" />
+            <span :class="[freeDeliveryData.nextPromo.progress >= 75 && '_active']" />
+            <span :class="[freeDeliveryData.nextPromo.progress >= 99 && '_active']" />
+          </div>
+        </div>
+
         <div class="text-s c-gray">
           <!-- <template v-if="freeDeliveryData.match"> Приятно, не правда ли? </template> -->
           <template v-if="!freeDeliveryData.match">
             До бесплатной не хватает {{ formatPrice(freeDeliveryData.remained) }}
           </template>
+          <template v-else-if="promo?.next_promo_text">{{ promo.next_promo_text }}</template>
         </div>
       </div>
     </div>
@@ -127,17 +139,6 @@ watch(
     }
   }
 )
-
-// todo следить в debounce режиме
-// watch(
-//   () => cart.value,
-//   (newCart) => {
-//     if (newCart.length) {
-//       // fetchCartData()
-//     }
-//   },
-//   { deep: true }
-// )
 </script>
 
 <style lang="scss" scoped>
@@ -165,7 +166,34 @@ watch(
     border-radius: 12px;
     padding: 20px 24px;
   }
+  &__delivery-row {
+    display: flex;
+    align-items: center;
+  }
+  &__delivery-next {
+    flex: 0 1 auto;
+    display: flex;
+    margin-left: 16px;
+    span {
+      width: 6px;
+      height: 8px;
+      margin-right: 2px;
+      background: var(--progress-background-color);
+      &._active {
+        background: var(--color-green);
+      }
+      &:first-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      &:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+    }
+  }
   &__delivery-progress {
+    flex: 1 1 auto;
     margin: 12px 0;
   }
   &__meta {

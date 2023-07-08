@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-// import { useToast } from 'vue-toastification/dist/index.mjs'
 import {
   useSessionStore,
   useProductStore,
@@ -23,21 +22,7 @@ const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
 const ui = useUiStore()
 
-// const toast = useToast()
-
 console.log(`APP Version: ${APP_VERSION}`)
-
-// toast.info('Тост с уведомлением', {
-//   timeout: 60 * 1000,
-// })
-
-// toast.success('Тост с успехом', {
-//   timeout: 60 * 1000,
-// })
-
-// toast.error('Тост с ошибкой', {
-//   timeout: 60 * 1000,
-// })
 
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {

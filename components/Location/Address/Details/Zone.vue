@@ -7,11 +7,11 @@
         <template v-else><strong>Завтра</strong></template>
       </h5>
     </div>
-    <div class="info__col col col-md-4 col-sm-6">
+    <div v-if="zone.max_time" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Время доставки</p>
       <h5 class="info__value h5-title h6-title-md">
         <NuxtIcon v-if="zone.organization.is_high_load_state" name="high-load" />
-        <template v-if="zone.max_time">{{ formatMinutes(zone.max_time) }}</template>
+        {{ formatMinutes(zone.max_time) }}
       </h5>
     </div>
     <div v-if="workingTime('zone')" class="info__col col col-md-4 col-sm-6">

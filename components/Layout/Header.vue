@@ -173,17 +173,17 @@ defineProps({
   variant: {
     type: String,
     default: 'main',
-    validator: (x) => ['main'].includes(x),
+    validator: (x: string) => ['main'].includes(x),
   },
 })
 
 const scrolled = ref(false)
 const topHeight = ref(0)
-const headerRef = ref(null)
-const topRef = ref(null)
+const headerRef = ref<HTMLElement | null>(null)
+const topRef = ref<HTMLElement | null>(null)
 
 const toggleMobile = () => {
-  const headerHeight = headerRef.value.offsetHeight
+  const headerHeight = headerRef.value?.offsetHeight
   ui.setMobileMenu({ active: !ui.mobileMenuActive, offset: headerHeight })
 }
 

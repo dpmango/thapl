@@ -26,8 +26,8 @@ export interface IPromoDto {
   error_type: number
   gifts: IProduct[]
   has_promo: boolean
-  // next_promo_sum: number | null
-  // next_promo_text: number | null
+  next_promo_sum: number | null
+  next_promo_text: string | null
   // not_affects_on_minimal_order: boolean
   // one_plus_one: any[]
   promo_coupon_id: number | null
