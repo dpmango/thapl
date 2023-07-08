@@ -10,7 +10,11 @@
           <div class="action__text">Бонусная программа</div>
         </NuxtLink>
 
-        <div v-if="!session.user" class="action" @click="() => ui.setModal({ name: 'auth' })">
+        <div
+          v-if="!Object.keys(session.user || {}).length"
+          class="action"
+          @click="() => ui.setModal({ name: 'auth' })"
+        >
           <div class="action__icon">
             <nuxt-icon name="login" />
           </div>

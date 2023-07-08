@@ -22,8 +22,12 @@
         </div>
 
         <div class="col header__logo">
-          <NuxtLink v-if="site_settings && site_settings.main_logo" to="/" @click="handleLogoClick">
-            <img :src="site_settings.main_logo" alt="logo" />
+          <NuxtLink
+            v-if="app_settings.site_settings && app_settings.site_settings.main_logo"
+            to="/"
+            @click="handleLogoClick"
+          >
+            <img :src="app_settings.site_settings.main_logo" alt="logo" />
           </NuxtLink>
         </div>
 
@@ -92,13 +96,17 @@
 
           <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
             <div v-for="item in app_settings?.site_header_menu" class="col">
-              {{ item }}
+              <div class="action">
+                <a class="action__text" :href="item.target_url">
+                  {{ item.title }}
+                </a>
+              </div>
             </div>
           </template>
 
           <div v-if="!isAuthenticated" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'auth' })">
-              <div class="action__icon">
+              <div v-if="!$env.useHeaderMenu" class="action__icon">
                 <nuxt-icon name="login" />
               </div>
               <div class="action__text">Войти</div>
@@ -107,7 +115,7 @@
 
           <div v-else class="col">
             <NuxtLink to="/profile" class="action">
-              <div class="action__icon">
+              <div v-if="!$env.useHeaderMenu" class="action__icon">
                 <nuxt-icon name="login" />
               </div>
               <div class="action__text">{{ session.userNameVerbose }}</div>
@@ -115,7 +123,9 @@
           </div>
           <div v-if="$env.useContacts" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'contacts' })">
-              <div class="action__icon"><nuxt-icon name="dialog" /></div>
+              <div v-if="!$env.useHeaderMenu" class="action__icon">
+                <nuxt-icon name="dialog" />
+              </div>
               <div class="action__text">Контакты</div>
             </div>
           </div>
@@ -155,12 +165,9 @@ const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
 const route = useRoute()
-const {
-  user,
-  app_settings: { site_settings, site_header_menu },
-  isAuthenticated,
-} = session
+const { user, app_settings, isAuthenticated } = storeToRefs(session)
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
+const useHeaderMenu = $env.useHeaderMenu.toString()
 
 defineProps({
   variant: {
@@ -212,8 +219,14 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', scrollSticky, false)
 })
 </script>
-
 <style lang="scss" scoped>
+$bool: v-bind(useHeaderMenu);
+$media: $md;
+
+@if $bool {
+  $media: $xl;
+}
+
 .header {
   z-index: 9;
   top: 0;
@@ -238,6 +251,7 @@ onBeforeUnmount(() => {
   &__actions {
     margin-left: auto;
     flex-direction: row;
+    align-items: center;
   }
 
   &__bottom {
@@ -299,7 +313,7 @@ onBeforeUnmount(() => {
   // }
 }
 
-@include r($lg) {
+@include r($media) {
   .header {
     &__top {
       padding: 24px 0 12px;
@@ -313,7 +327,7 @@ onBeforeUnmount(() => {
   }
 }
 
-@include r($md) {
+@include r($media) {
   .header {
     transform: none !important;
     transition: transform 0.25s $ease, box-shadow 0.25s $ease;
@@ -358,6 +372,10 @@ onBeforeUnmount(() => {
       display: none;
     }
   }
+}
+
+.col {
+  padding: 0 12px;
 }
 
 .tile {
