@@ -150,7 +150,6 @@ const productChildrenShown = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
 
 const dispayProduct = computed(() => {
-  console.log('displayPRoduct', { child: productChildrenShown.value })
   return productChildrenShown.value || product.value
 })
 
@@ -162,15 +161,18 @@ const selectVariant = (groupId, v) => {
   variantSwitchMode.value = true
   selectedVariants.value[groupId] = v
 
-  const computedVariantId = selectedVariants.value.filter((x) => x).join('_')
-  const targetId = product.value?.options?.find((x) => x.id === computedVariantId)?.id.toString()
-
-  console.log('now showing', { computedVariantId })
+  const computedVariantId = selectedVariants.value.filter((x) => x).join('.')
+  const targetId = product.value?.options
+    ?.find((x) => x.id === computedVariantId)
+    ?.catalog_item_id.toString()
   if (!targetId) return
   const childrenElement = product.value?.children?.find((x) => x.id.toString() === targetId)
 
   if (!childrenElement) return
   productChildrenShown.value = { ...childrenElement }
+  nextTick(() => {
+    setScrollerHeight()
+  })
 }
 
 // модификаторы товара
@@ -199,7 +201,6 @@ const changeModifier = (opt, groupID, isRadio) => {
   const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)
   const hasGroup = modifierGroups.value.some((x) => x.groupID === groupID)
 
-  console.log({ modifierGroups: modifierGroups.value })
   // радиокнопки и группа
   if (isRadio && hasGroup) {
     modifierGroups.value = modifierGroups.value.map((x) => {
@@ -265,10 +266,9 @@ const showModifiersToast = () => {
     const targetTop =
       productModifiers.value.getBoundingClientRect().top - scrollerRef.getBoundingClientRect().top
 
+    // toast.error('Выберите параметры блюда')
     scrollWithSpeed(targetTop, 300, scrollerRef)
   }
-
-  // toast.error('Выберите параметры блюда')
 }
 
 const countWithModifiersInCart = computed(() => {

@@ -37,8 +37,8 @@
 <script setup lang="ts">
 import { PropType } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
 import { IOrganizationTakeaway } from 'interface/Delivery'
+import { useDeliveryStore, useSessionStore, useUiStore } from '~/store'
 import { formatMinutes } from '#imports'
 
 const props = defineProps({
