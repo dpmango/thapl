@@ -9,5 +9,4 @@
     "yarn.lock": true,
     "package-lock.json": true
   },
-  "editor.formatOnSave": false
 }

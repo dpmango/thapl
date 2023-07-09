@@ -33,6 +33,26 @@ export interface IProduct {
   image: string | null
 }
 
+export interface IProductFullDto extends IProduct {
+  children: IProduct[] | null
+  variants: IProductVariant[] | null
+  options: IProductOption[] | null
+  tech_data: null
+}
+
+export interface IProductOption {
+  id: string
+  catalog_item_id: string
+}
+
+export interface IProductVariant {
+  title: string
+  variants: {
+    id: number
+    title: string
+  }[]
+}
+
 export interface IModifierGroup {
   title: string
   max_items: number

@@ -6,6 +6,8 @@
     <label
       v-for="(item, idx) in list"
       :key="item.id || idx"
+      :alt="label"
+      :title="label"
       class="toggle__item"
       :class="[value === (item.id || idx) && '_active', item.disabled && '_disabled']"
       @click.prevent="() => change(item.id || idx)"
@@ -26,6 +28,9 @@ const props = defineProps({
   value: {
     type: [String, Number],
     required: true,
+  },
+  label: {
+    type: String,
   },
   list: {
     type: Array as PropType<IToggleOption[]>,

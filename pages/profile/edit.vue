@@ -7,6 +7,10 @@
 <script setup lang="ts">
 const { $env, $log } = useNuxtApp()
 
+definePageMeta({
+  middleware: [useAuthGuard],
+})
+
 useHead({
   title: `Редактировать профиль - ${$env.projectName}`,
 })
