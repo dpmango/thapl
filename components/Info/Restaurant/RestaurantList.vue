@@ -52,6 +52,7 @@
           icon="search"
           icon-position="left"
           :value="search"
+          :clearable="false"
           @on-change="handleSearchChange"
         />
       </div>
@@ -135,11 +136,11 @@ const restaurantsSearched = computed(() => {
   const searchStr = search.value.trim().toLowerCase()
 
   if (searchStr.length >= 2) {
-    return props.list?.filter((x) => {
-      return (
-        x.title.toLowerCase().includes(searchStr) || x.address.toLowerCase().includes(searchStr)
-      )
-    })
+    return props.list?.filter(
+      (x) =>
+        (x.title || '').toLowerCase().includes(searchStr) ||
+        (x.address || '').toLowerCase().includes(searchStr)
+    )
   }
 
   return props.list

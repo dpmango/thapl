@@ -48,6 +48,8 @@ export default defineNuxtConfig({
       useSearch: true,
       useTestimonials: false,
       useContacts: true,
+      useWorkTimes: false,
+      useHeaderMenu: false,
       takeawayOnly: false,
       footerNavTitle: 'Компания',
       loyaltyTitle: 'Бонусы',

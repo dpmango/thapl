@@ -6,7 +6,7 @@
         theme="primary"
         size="small"
         :loading="geolocationLoading"
-        @click="findMyLocation"
+        @click="getUserLocation"
       >
         Найти меня
       </UiButton>
@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { IGeoDataRef, YandexGeocoderResponce } from '~/interface/Geolocation'
+import { IGeoCoords, IGeoDataRef, YandexGeocoderResponce } from '~/interface/Geolocation'
 import { useDeliveryStore, useSessionStore } from '~/store'
 
 const toast = useToast()
@@ -161,26 +161,8 @@ watch(
   }
 )
 
-const geolocationLoading = ref(false)
-
-const findMyLocation = () => {
-  if (navigator.geolocation) {
-    geolocationLoading.value = true
-    navigator.geolocation.getCurrentPosition(geolocationSuccess, geolocationFailure)
-  } else {
-    toast.error('Ваш браузер не поддерживает геолокацию')
-    geolocationLoading.value = false
-  }
-}
-
-const geolocationSuccess = async (position: any) => {
-  if (!position.coords.latitude || !position.coords.longitude) {
-    return null
-  }
-
-  geolocationLoading.value = true
-  const { latitude, longitude } = position.coords
-
+// Геолокация
+const onGeolocationSuccess = async ({ latitude, longitude }: IGeoCoords) => {
   const geocoderResponce = (await useApi(
     `https://geocode-maps.yandex.ru/1.x/?geocode=${longitude},${latitude}&apikey=${$env.yandexMapsKey}&lang=ru&format=json`,
     { method: 'GET' },
@@ -204,23 +186,11 @@ const geolocationSuccess = async (position: any) => {
     geolocationFailure({ code: 500 })
     geolocationLoading.value = false
   }
-
-  geolocationLoading.value = false
 }
 
-const geolocationFailure = (positionError: any) => {
-  try {
-    if (positionError.code === 1) {
-      toast.error('Разрешите геолокацию в браузере')
-    } else if (positionError.code === 500) {
-      toast.error('Ошибка, попробуйте еще раз')
-    } else {
-      throw new Error('unknown')
-    }
-  } catch {
-    toast.error('Ошибка в определении координаты')
-  }
-}
+const { geolocationLoading, getUserLocation, geolocationFailure } = useGeolocation({
+  onGeolocationSuccess,
+})
 </script>
 
 <style lang="scss" scoped>

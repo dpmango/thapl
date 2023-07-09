@@ -115,7 +115,7 @@ await useAsyncData('startup', async () => {
           break
         case 'regions':
           // const regionCookieClient = useCookie('x-thapl-region-id')
-          region.value = regionCookie.value
+          region.value = regionCookie.value || null
           // regionCookieClient.value = regionCookie.value
 
           $log.log('🧙‍♂️ ASYNC REGIONS', { regions: result.value })
