@@ -48,7 +48,7 @@
 
       <nav v-if="app_settings.site_mobile_menu" class="mobile-menu__nav">
         <ul class="nav _secondary">
-          <li v-for="link in app_settings.site_mobile_menu">
+          <li v-for="link in app_settings.site_mobile_menu" :key="link.id">
             <UiAtomLinkType class="nav__link" :link="link">
               {{ link.title }}
             </UiAtomLinkType>
@@ -71,6 +71,7 @@ import { useUiStore, useSessionStore, useProductStore } from '~/store'
 import { lockBody, unlockBody } from '#imports'
 
 const { $env } = useNuxtApp()
+const useHeaderMenu = $env.useHeaderMenu
 
 const ui = useUiStore()
 const session = useSessionStore()
@@ -108,6 +109,13 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+$bool: v-bind(useHeaderMenu);
+$media: $md;
+
+@if $bool {
+  $media: $xl;
+}
+
 .mobile-menu {
   position: fixed;
   z-index: 98;
@@ -118,7 +126,7 @@ watch(
   pointer-events: none;
 
   &._active {
-    @include r($md) {
+    @include r($media) {
       pointer-events: all;
       border-top: 1px solid var(--color-border);
       .mobile-menu {

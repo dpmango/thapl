@@ -42,6 +42,7 @@ export interface IAppSettings {
   disable_order: boolean
   default_phone: string
   privacy_link: string | null
+  site_header_menu: ISiteMenu[]
   site_footer_menu: ISiteMenu[]
   site_mobile_menu: ISiteMenu[]
   order_disable_cache: boolean

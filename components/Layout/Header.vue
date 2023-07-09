@@ -95,7 +95,7 @@
           </div>
 
           <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
-            <div v-for="item in app_settings?.site_header_menu" class="col">
+            <div v-for="item in app_settings?.site_header_menu" :key="item.id" class="col">
               <div class="action">
                 <a class="action__text" :href="item.target_url">
                   {{ item.title }}
@@ -219,6 +219,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', scrollSticky, false)
 })
 </script>
+
 <style lang="scss" scoped>
 $bool: v-bind(useHeaderMenu);
 $media: $md;
