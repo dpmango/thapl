@@ -2,13 +2,13 @@
   <UiModal name="product" size="x-large" :padding="false">
     <div class="product">
       <UiLoader v-if="true" position="overlay" :loading="loading" />
-      <div v-if="product" class="product__wrapper">
+      <div v-if="product && dispayProduct" class="product__wrapper">
         <div
           class="product__media hidden-md"
           :style="imageWidth ? { flexBasis: `${imageWidth}px` } : {}"
         >
           <div ref="imageRef" class="product__image">
-            <UiImage :src="product.image" :alt="product.title" />
+            <UiImage :src="dispayProduct.image" :alt="dispayProduct.title" />
           </div>
         </div>
         <div
@@ -21,53 +21,49 @@
           <div class="product__scrolling-wrap">
             <div class="product__scrolling">
               <div class="product__title h4-title">
-                <UiAtomLongWords :text="product.title" />&nbsp;
-                <span v-if="product.is_hot">🌶</span>
+                <UiAtomLongWords :text="dispayProduct.title" />&nbsp;
+                <span v-if="dispayProduct.is_hot">🌶</span>
                 <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
                   &nbsp;(В корзине уже {{ countWithModifiersInCart }})
                 </span>
               </div>
               <div class="product__weight text-s c-gray">
-                {{ product.packing_weights }}
+                {{ dispayProduct.packing_weights }}
               </div>
 
               <div class="product__media visible-md">
                 <div class="product__image">
-                  <UiImage :src="product.image" :alt="product.title" />
+                  <UiImage :src="dispayProduct.image" :alt="dispayProduct.title" />
                 </div>
               </div>
 
               <div class="product__description text-s">
-                {{ product.description }}
+                {{ dispayProduct.description }}
               </div>
 
-              <ProductCardEnergyStats :product="product" class="card__stat" />
+              <template v-if="product.variants?.length">
+                <UiToggle
+                  v-for="(variant, idx) in product.variants"
+                  :key="idx"
+                  class="product__options"
+                  :label="product.title"
+                  :autosize="true"
+                  size="small"
+                  :list="variant.variants.map((x) => ({ id: x.id, label: x.title }))"
+                  :value="selectedVariants[idx]"
+                  @on-change="(v) => selectVariant(idx, v)"
+                />
+              </template>
 
-              <!-- <UiToggle
-              class="product__options"
-              :autosize="true"
-              size="small"
-              :list="optionsSizeList"
-              :value="optionsSize"
-              @on-change="(v) => (optionsSize = v)"
-            />
-
-            <UiToggle
-              class="product__options"
-              :autosize="true"
-              size="small"
-              :list="optionsModList"
-              :value="optionsMod"
-              @on-change="(v) => (optionsMod = v)"
-            /> -->
+              <ProductCardEnergyStats :product="dispayProduct" class="card__stat" />
 
               <div
-                v-if="product.modifier_groups?.length"
+                v-if="dispayProduct.modifier_groups?.length"
                 ref="productModifiers"
                 class="product__modifiers"
               >
                 <div
-                  v-for="(group, idx) in product.modifier_groups"
+                  v-for="(group, idx) in dispayProduct.modifier_groups"
                   :key="idx"
                   class="product__modifier"
                 >
@@ -116,7 +112,7 @@
           </div>
           <div class="product__cta">
             <ProductCardAddToCart
-              :product="product"
+              :product="dispayProduct"
               :modifiers="modifierGroups"
               btn-theme="primary"
               :should-emit="hasUnselectedModifiers"
@@ -136,34 +132,46 @@ import debounce from 'lodash/debounce'
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { useCartStore, useUiStore } from '~/store'
-import { IProduct, ICartModifier } from '~/interface'
+import { IProduct, ICartModifier, IProductFullDto } from '~/interface'
 import { formatPrice, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
 const toast = useToast()
+const router = useRouter()
+const route = useRoute()
 
 const ui = useUiStore()
 const cartStore = useCartStore()
 const { cart, productsCountInCart } = storeToRefs(cartStore)
 const { modal } = storeToRefs(ui)
 
-const product = ref(null) as Ref<IProduct | null>
+const product = ref(null) as Ref<IProductFullDto | null>
+const productChildrenShown = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
 
-const optionsSizeList = ref([
-  { id: 1, label: 'Маленькая' },
-  { id: 2, label: 'Средняя' },
-  { id: 3, label: 'Большая' },
-])
+const dispayProduct = computed(() => {
+  console.log('displayPRoduct', { child: productChildrenShown.value })
+  return productChildrenShown.value || product.value
+})
 
-const optionsSize = ref(1)
+// работа с определением представления товара (variants / options)
+const selectedVariants = ref([0, 0, 0])
+const variantSwitchMode = ref(false)
 
-const optionsModList = ref([
-  { id: 1, label: 'Традиционное' },
-  { id: 2, label: 'Тонкое' },
-])
+const selectVariant = (groupId, v) => {
+  variantSwitchMode.value = true
+  selectedVariants.value[groupId] = v
 
-const optionsMod = ref(null)
+  const computedVariantId = selectedVariants.value.filter((x) => x).join('_')
+  const targetId = product.value?.options?.find((x) => x.id === computedVariantId)?.id.toString()
+
+  console.log('now showing', { computedVariantId })
+  if (!targetId) return
+  const childrenElement = product.value?.children?.find((x) => x.id.toString() === targetId)
+
+  if (!childrenElement) return
+  productChildrenShown.value = { ...childrenElement }
+}
 
 // модификаторы товара
 interface IModifierItemGrouped extends ICartModifier {
@@ -175,8 +183,8 @@ const modifierErrors = ref([]) as Ref<number[]>
 const modifierShowErorrs = ref(false)
 
 const priceWithModifiers = computed(() => {
-  if (!product.value) return 0
-  let price = product.value.price
+  if (!dispayProduct.value) return 0
+  let price = dispayProduct.value.price
 
   if (modifierGroups.value.length) {
     modifierGroups.value.forEach((x) => {
@@ -216,8 +224,8 @@ const changeModifier = (opt, groupID, isRadio) => {
 }
 const validateModifiers = () => {
   const errors = [] as number[]
-  if (product.value?.modifier_groups) {
-    product.value?.modifier_groups.forEach((group, idx) => {
+  if (dispayProduct.value?.modifier_groups) {
+    dispayProduct.value?.modifier_groups.forEach((group, idx) => {
       const itemsInGroup = modifierGroups.value.filter((x) => x.groupID === idx)
 
       if (itemsInGroup.length > group.max_items) {
@@ -264,9 +272,9 @@ const showModifiersToast = () => {
 }
 
 const countWithModifiersInCart = computed(() => {
-  if (!product.value?.id) return 0
+  if (!dispayProduct.value?.id) return 0
 
-  return productsCountInCart.value(product.value?.id)
+  return productsCountInCart.value(dispayProduct.value?.id)
 })
 
 const fetchProduct = async (id) => {
@@ -281,13 +289,18 @@ const fetchProduct = async (id) => {
     method: 'GET',
     headers: useHeaders(),
     params: { id },
-  }).catch(useCatchError)) as IProduct
+  }).catch(useCatchError)) as IProductFullDto
 
   $log.log('opened product', { data })
 
   if (data) {
     product.value = { ...data }
     setScrollerHeight()
+    router.push({ hash: `#${data.id.toString()}` })
+
+    if (data.variants?.length) {
+      selectedVariants.value = data.variants.map((x) => x.variants[0].id)
+    }
 
     if (window && window.dataLayer) {
       window.dataLayer.push({
@@ -303,6 +316,8 @@ const fetchProduct = async (id) => {
         },
       })
     }
+  } else {
+    ui.closeAllModals()
   }
 
   loading.value = false
@@ -338,6 +353,11 @@ const setScrollerHeight = debounce(
 )
 
 onMounted(() => {
+  const hashID = route.hash.slice(1, route.hash.length)
+  if (hashID && typeof parseInt(hashID) === 'number') {
+    ui.setModal({ name: 'product', params: { id: +hashID, critical: null } })
+  }
+
   setScrollerHeight()
   window.addEventListener('resize', setScrollerHeight, true)
 })
@@ -363,6 +383,10 @@ watch(
     } else {
       setTimeout(() => {
         product.value = null
+        // const oldScrollPosition =
+        //   window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+        // router.replace({ hash: '' })
+        // document.documentElement.scrollTop(0, oldScrollPosition)
       }, 250)
     }
   }

@@ -10,11 +10,7 @@
           <div class="action__text">Бонусная программа</div>
         </NuxtLink>
 
-        <div
-          v-if="!Object.keys(session.user || {}).length"
-          class="action"
-          @click="() => ui.setModal({ name: 'auth' })"
-        >
+        <div v-if="!isAuthenticated" class="action" @click="() => ui.setModal({ name: 'auth' })">
           <div class="action__icon">
             <nuxt-icon name="login" />
           </div>
@@ -76,7 +72,7 @@ const ui = useUiStore()
 const session = useSessionStore()
 const productStore = useProductStore()
 const { mobileMenuOffest } = storeToRefs(ui)
-const { app_settings, hasMarketingSection } = storeToRefs(session)
+const { app_settings, hasMarketingSection, isAuthenticated } = storeToRefs(session)
 
 const closeMobile = () => {
   ui.setMobileMenu(false)
