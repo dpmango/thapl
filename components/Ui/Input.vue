@@ -24,10 +24,10 @@
         <i v-if="loading" class="input__icon _loading">
           <nuxt-icon name="loading" />
         </i>
-        <i v-if="clearable" class="input__icon _clear" @click="clearInput">
+        <i v-if="value.length && clearable" class="input__icon _clear" @click="clearInput">
           <nuxt-icon name="close" />
         </i>
-        <i v-if="showError" class="input__icon _error" @click="clearInput">
+        <i v-if="showError && clearable" class="input__icon _error" @click="clearInput">
           <nuxt-icon name="close" />
         </i>
         <i v-if="icon" class="input__icon">
@@ -64,7 +64,7 @@ import { capitalizeFirstLetter } from '#imports'
 // const { $sanitize } = useNuxtApp()
 
 const id = nanoid()
-const inputRef = ref(null)
+const inputRef = ref<HTMLInputElement | null>(null)
 
 const emit = defineEmits(['onChange', 'onChangable'])
 
@@ -131,7 +131,7 @@ const props = defineProps({
   },
   clearable: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   // functional
   focusOnMount: {
@@ -181,15 +181,11 @@ const getElement = computed(() => {
 })
 
 const showError = computed(() => {
-  return props.error && !isFocused.value
+  return !!props.error && !isFocused.value
 })
 
 const setValue = (e) => {
-  let value = e.target.value
-
-  if (props.livePlaceholder) {
-    value = value.replace(/\s{2,}/g, ' ') // clears double spaces
-  }
+  const value = e.target.value
 
   emit('onChange', value)
 
@@ -225,7 +221,7 @@ const handleBlur = () => {
 }
 
 const handleAutocompleate = (e) => {
-  if (parseInt(e.target.getAttribute('id')) === id) {
+  if (e.target.getAttribute('id') === id) {
     if (e.target.hasAttribute('autocompleted')) {
       isFocused.value = true
     }
@@ -238,8 +234,12 @@ const iconsRef = ref(null)
 const setInputOffsets = () => {
   // if (props.iconPosition === 'left') return
   try {
-    const iconsWidth = iconsRef.value.offsetWidth + 15 + 10
-    inputRef.value.style[`padding${capitalizeFirstLetter(props.iconPosition)}`] = `${iconsWidth}px`
+    if (iconsRef.value && inputRef.value) {
+      const iconsWidth = iconsRef.value.offsetWidth + 15 + 10
+      inputRef.value.style[
+        `padding${capitalizeFirstLetter(props.iconPosition)}`
+      ] = `${iconsWidth}px`
+    }
   } catch {}
 }
 
@@ -274,7 +274,7 @@ const clearInput = () => {
 }
 
 // suggestions
-const suggestionsList = ref([])
+const suggestionsList = ref<any[]>([])
 const suggestionsVisible = ref(false)
 const loading = ref(false)
 
@@ -285,11 +285,11 @@ const showSuggestions = computed(() => {
 const handleSuggestion = async (text) => {
   loading.value = true
 
-  const suggestions = await useApi(props.suggestions, {
+  const suggestions = (await useApi(props.suggestions, {
     params: {
       text,
     },
-  })
+  })) as any[]
 
   let visible = false
   if (suggestions && suggestions.length) {
@@ -321,7 +321,7 @@ const selectSuggestion = (suggestion) => {
     handleSuggestion(suggestion)
   }
 
-  inputRef.value.focus()
+  inputRef.value?.focus()
 }
 
 // textarea autosize
@@ -329,12 +329,13 @@ const height = ref('')
 const resizeTextarea = () => {
   height.value = 'auto !important'
   nextTick(() => {
+    if (!inputRef.value) return
     const style = window.getComputedStyle(inputRef.value)
     const padding = parseInt(style.paddingTop) + parseInt(style.paddingBottom)
     const lineHeight = parseInt(style.lineHeight)
     const maxHeight = lineHeight * props.maxRows + padding + 2
 
-    let newHeight = inputRef.value.scrollHeight + 2
+    let newHeight = inputRef.value?.scrollHeight + 2
     if (newHeight >= maxHeight) newHeight = maxHeight
 
     height.value = `${newHeight}px`
@@ -352,7 +353,7 @@ const textareaStyle = computed(() => {
 // hooks
 onMounted(() => {
   if (props.focusOnMount) {
-    inputRef.value.focus()
+    inputRef.value?.focus()
   }
   if (isTextarea.value) resizeTextarea()
 

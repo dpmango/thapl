@@ -1,5 +1,5 @@
 <template>
-  <UiModal name="address" size="large" :padding="false">
+  <UiModal name="address" size="large">
     <div class="address" :class="[`_type-${deliveryType}`]">
       <div class="address__head">
         <div class="h2-title">

@@ -10,7 +10,11 @@
           <div class="action__text">Бонусная программа</div>
         </NuxtLink>
 
-        <div v-if="!session.user" class="action" @click="() => ui.setModal({ name: 'auth' })">
+        <div
+          v-if="!Object.keys(session.user || {}).length"
+          class="action"
+          @click="() => ui.setModal({ name: 'auth' })"
+        >
           <div class="action__icon">
             <nuxt-icon name="login" />
           </div>
@@ -33,7 +37,7 @@
       <!-- nav -->
       <nav class="mobile-menu__nav">
         <div v-if="$env.useSearch" class="mobile-menu__search" @click="openSearch">
-          <UiInput icon="search" icon-position="left" placeholder="Поиск блюд" />
+          <UiInput icon="search" value="" icon-position="left" placeholder="Поиск блюд" />
         </div>
         <ul class="nav">
           <li v-for="link in productStore.navCategories" :key="link.id">

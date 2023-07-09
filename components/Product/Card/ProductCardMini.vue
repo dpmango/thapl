@@ -9,7 +9,7 @@
       <div class="card__title h6-title">
         <UiAtomLongWords :text="product.title" />
       </div>
-      <div class="card__description text-s c-gray">
+      <div v-if="$env.isDisplayProductDesc" class="card__description text-s c-gray">
         {{ product.description }}
       </div>
       <div class="card__actions">
@@ -33,6 +33,7 @@ const props = defineProps({
 })
 
 const ui = useUiStore()
+const { $env } = useNuxtApp()
 
 const handleProductClick = () => {
   ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
@@ -83,8 +84,7 @@ const handleProductClick = () => {
   }
   &__description {
     margin-top: 8px;
-    display: inline;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;

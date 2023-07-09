@@ -68,7 +68,6 @@ const paginationRefSpans = ref<HTMLElement[] | []>([])
 
 const onSwiper = (swiper) => {
   swiperInstance.value = swiper
-  console.log('swiper init')
   updatePaginationByIndex(0)
 }
 

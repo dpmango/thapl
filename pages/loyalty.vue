@@ -1,6 +1,11 @@
 <template>
   <main class="page__content page">
-    <PromoLoyaltyPage v-if="data" :data="data" />
+    <PromoLoyaltyPage
+      v-if="data"
+      :data="{
+        ...data,
+      }"
+    />
   </main>
 </template>
 
@@ -33,7 +38,7 @@ const { data, error } = await useAsyncData(
 $log.log('🧙‍♂️ ASYNC LOYALTY', { data: data.value })
 
 useHead({
-  title: `${data.value?.title} - ${$env.projectName}`,
+  title: () => `${data.value?.title} - ${$env.projectName}`,
 })
 </script>
 

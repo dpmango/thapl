@@ -2,6 +2,13 @@ import { ILoyalty } from './Loyalty'
 import { IUser } from './User'
 import { IPageUniversalDto } from '~/interface/Dto/Page.dto'
 
+export interface ISeoData {
+  seo_title: string
+  seo_description: string
+  header: string
+  description_text: string
+}
+
 export interface ISiteMenu {
   id: number
   title: string

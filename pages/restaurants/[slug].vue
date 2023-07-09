@@ -35,7 +35,7 @@ const crumbs = [
 ]
 
 useHead({
-  title: `${data.value?.title} - ${$env.projectName}`,
+  title: () => `${data.value?.title || 'Ресторан'} - ${$env.projectName}`,
 })
 </script>
 

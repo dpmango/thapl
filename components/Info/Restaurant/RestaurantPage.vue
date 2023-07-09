@@ -10,10 +10,21 @@
           <component
             :is="contact.isPhone ? 'a' : 'div'"
             class="contact"
-            :href="contact.isPhone ? `tel:${contact.value}` : ''"
+            :href="
+              contact.isPhone ? `tel:${contact.value.replace(/\s/g, '').replaceAll('-', '')}` : ''
+            "
           >
             <div class="contact__label text-s c-gray">{{ contact.label }}</div>
             <div class="contact__value text-xl">{{ contact.value }}</div>
+
+            <UiButton
+              v-if="contact.isAddress"
+              theme="secondary"
+              :loading="geolocationLoading"
+              @click="getUserLocation"
+            >
+              Проложить маршрут
+            </UiButton>
           </component>
         </div>
       </div>
@@ -28,6 +39,7 @@
           :zoom="15"
           :controls="['zoomControl']"
           :scroll-zoom="false"
+          @created="onMapCreated"
         >
           <YandexMarker :marker-id="data.id" :coordinates="[data.lat, data.lng]">
             <template #component>
@@ -38,9 +50,9 @@
       </ClientOnly>
     </div>
 
-    <!-- <div v-if="data.image" class="page__image">
-      <img :src="data.image" :alt="data.title" />
-    </div> -->
+    <div v-if="data.image" class="page__image">
+      <img :src="data.image" :alt="data.title || ''" />
+    </div>
   </div>
 
   <div class="container _narrow">
@@ -51,14 +63,27 @@
 </template>
 
 <script setup lang="ts">
-import { IRestaurantPageDto } from '~/interface/Dto/Restaurant.dto'
+import { IRestaurantPageDto, IGeoCoords } from '~/interface'
 
 const props = withDefaults(defineProps<{ data: IRestaurantPageDto }>(), {
   data: () => ({} as IRestaurantPageDto),
 })
 
+// карта
+let mapInstance = null as any
+
+const onMapCreated = (e) => {
+  mapInstance = e
+}
+
+// списки
 const contactsList = computed(() => {
-  const contactsArr = [] as { label: string; value: string; isPhone?: boolean }[]
+  const contactsArr = [] as {
+    label: string
+    value: string
+    isPhone?: boolean
+    isAddress?: boolean
+  }[]
 
   const { phone, working_hours, address } = props.data
 
@@ -81,6 +106,7 @@ const contactsList = computed(() => {
     contactsArr.push({
       label: 'Адрес',
       value: address,
+      isAddress: true,
     })
   }
 
@@ -92,6 +118,38 @@ const contactsList = computed(() => {
   // }
 
   return contactsArr
+})
+
+// геолокация
+const onGeolocationSuccess = ({ latitude, longitude }: IGeoCoords) => {
+  if (!window.ymaps || !mapInstance) return
+
+  try {
+    // @ts-ignore
+    const route = new window.ymaps.multiRouter.MultiRoute(
+      {
+        referencePoints: [
+          [latitude, longitude],
+          [props.data.lat, props.data.lng],
+        ],
+        params: {
+          results: 2,
+        },
+      },
+      {
+        boundsAutoApply: true,
+      }
+    )
+
+    mapInstance.geoObjects.removeAll()
+    mapInstance.geoObjects.add(route)
+  } catch {
+    geolocationFailure({ code: 500 })
+  }
+}
+
+const { geolocationLoading, getUserLocation, geolocationFailure } = useGeolocation({
+  onGeolocationSuccess,
 })
 </script>
 
@@ -137,6 +195,9 @@ const contactsList = computed(() => {
   margin-bottom: 36px;
   &__value {
     margin-top: 8px;
+  }
+  button {
+    margin-top: 20px;
   }
 }
 

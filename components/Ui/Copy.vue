@@ -33,6 +33,7 @@ const textRef = ref(null)
 
 let timer
 const handleCopyClick = async () => {
+  if (!textRef.value) return
   await copyToClipboard(props.text, textRef.value).then(() => {
     showCopyTooltip.value = true
 
