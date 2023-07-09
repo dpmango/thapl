@@ -155,7 +155,7 @@
               <div class="checkout__toggle-grid">
                 <UiToggle
                   theme="spaced"
-                  :list="deliveryTimeOptions"
+                  :list="[...deliveryTimeOptions, ...deliveryTimeSlots]"
                   :value="deliveryTime"
                   :error="errors.deliveryTime"
                   @on-change="(v) => setFieldValue('deliveryTime', v)"
@@ -405,8 +405,6 @@ import {
   validPhone,
   validEmail,
   formatPrice,
-  generateDaysFrom,
-  generateTimeSlots,
   openExternalLink,
 } from '#imports'
 
@@ -579,8 +577,23 @@ const showASAPTime = computed(() => {
   return zoneData.value.isOpen && !stopListData.value.hasStops
 })
 
+const deliveryTimeSlots = computed(() => {
+  const timeSlots = slotsData.value.hasSlots
+    ? zoneData.value.isDelivery
+      ? zoneData.value?.organization?.default_delivery_time_slots ?? []
+      : zoneData.value?.organization?.default_takeaway_time_slots ?? []
+    : []
+
+  return timeSlots.map((item) => {
+    return {
+      id: item.start,
+      label: `${item.start} - ${item.end}`,
+    }
+  })
+})
+
 const deliveryTimeOptions = computed(() => {
-  const timeOptions = [{ id: '2', label: 'Ко времени' }]
+  const timeOptions = slotsData.value.hasSlots ? [] : [{ id: '2', label: 'Ко времени' }]
 
   if (!isOtherDay.value && showASAPTime.value && deliveryDate.value !== '0') {
     timeOptions.unshift({ id: '1', label: 'Как можно скорее' })
