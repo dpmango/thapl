@@ -12,7 +12,7 @@
             <NuxtIcon name="caret" />
           </div>
           <ul class="footer__section-list">
-            <li v-for="link in productStore.navCategories">
+            <li v-for="link in productStore.navCategories" :key="link.id">
               <NuxtLink :to="link.slug">{{ link.title }}</NuxtLink>
             </li>
           </ul>
@@ -28,7 +28,7 @@
             <NuxtIcon name="caret" />
           </div>
           <ul class="footer__section-list">
-            <li v-for="link in app_settings.site_footer_menu">
+            <li v-for="link in app_settings.site_footer_menu" :key="link.id">
               <UiAtomLinkType :link="link" />
             </li>
           </ul>
