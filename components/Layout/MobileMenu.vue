@@ -37,7 +37,7 @@
       <!-- nav -->
       <nav class="mobile-menu__nav">
         <div v-if="$env.useSearch" class="mobile-menu__search" @click="openSearch">
-          <UiInput icon="search" icon-position="left" placeholder="Поиск блюд" />
+          <UiInput icon="search" value="" icon-position="left" placeholder="Поиск блюд" />
         </div>
         <ul class="nav">
           <li v-for="link in productStore.navCategories" :key="link.id">

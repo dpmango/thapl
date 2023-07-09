@@ -105,6 +105,7 @@ export const useProductStore = defineStore('product', {
         return []
       }
 
+      // @ts-ignore
       const flatCatalog = state.catalog.reduce((acc, x) => {
         acc = [...acc, ...x.catalog_items]
         x.sub_categories.forEach((sub) => {

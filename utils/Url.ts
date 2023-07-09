@@ -47,5 +47,5 @@ export const buildLink = (v: string | null) => {
     return `https://${link}`
   }
 
-  return v
+  return ''
 }

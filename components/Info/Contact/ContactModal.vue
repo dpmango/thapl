@@ -5,7 +5,8 @@
         <div class="h4-title">Контакты</div>
       </div>
 
-      <div class="contact__list">
+      <!-- Контакты -->
+      <div class="contact__list" :class="[data?.restaurants_count && '_has-restaurants']">
         <li v-for="contact in list">
           <span class="text-m text-sm-s fw-500 c-gray">{{ contact.label }}</span>
           <a
@@ -14,9 +15,43 @@
             class="h2-title h6-title-sm"
             :class="[contact.text && '_link']"
           >
-            {{ contact.text || contact.value }}
+            {{ contact.text }}
           </a>
         </li>
+      </div>
+
+      <!-- Рестораны -->
+      <div
+        v-if="data?.restaurants_count && restarauntList?.length"
+        class="contact__restaurants restaurants"
+      >
+        <div v-if="$env.useRegions" class="restaurants__more">
+          <UiButton theme="secondary" to="/restaurants">Все рестораны на карте</UiButton>
+        </div>
+        <div v-else-if="data.restaurants_count === 1" class="restaurants__single">
+          <span class="text-m text-sm-s fw-500 c-gray">Адрес</span>
+          <NuxtLink :to="`/restaurants/${restarauntList[0].id}`" class="h2-title h6-title-sm">
+            {{ restarauntList[0].address }}
+          </NuxtLink>
+        </div>
+        <div v-else class="restaurants__all">
+          <span class="text-m text-sm-s fw-500 c-gray">Рестораны</span>
+          <ul class="restaurants__list">
+            <li v-for="restaurant in restarauntList">
+              <NuxtLink :to="`/restaurants/${restaurant.id}`" class="restaurants__box">
+                <span class="text-m text-sm-s fw-500">{{ restaurant.address }}</span>
+                <div class="restaurants__contact-row fw-500 c-gray">
+                  <span v-if="restaurant.phone" class="text-s">
+                    {{ restaurant.phone }}
+                  </span>
+                  <span v-if="restaurant.working_hours" class="text-s">
+                    {{ restaurant.working_hours }}
+                  </span>
+                </div>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </UiModal>
@@ -25,6 +60,7 @@
 <script setup lang="ts">
 import { clearSocialLink, buildLink } from '#imports'
 import { IPageContactsDto } from '~/interface/Dto/Page.dto'
+import { IRestaurantDto } from '~/interface/Dto/Restaurant.dto'
 
 const { $env, $log } = useNuxtApp()
 
@@ -37,19 +73,24 @@ const { data, error } = await useAsyncData(
     }) as Promise<IPageContactsDto>
 )
 
-$log.log('🧙‍♂️ ASYNC CONTACTS', { data: data.value })
+const { data: restarauntList } = await useAsyncData(
+  'organization/get-list/contact',
+  () =>
+    useApi('organization/get-list', {
+      method: 'GET',
+      headers: useHeaders(),
+    }) as Promise<IRestaurantDto[]>
+)
 
-// if (error && error.value) {
-//   setResponseStatus(404)
-// }
+$log.log('🧙‍♂️ ASYNC CONTACTS', { data: data.value })
 
 const list = computed(() => {
   if (data.value) {
     const { phone, telegram, facebook, instagram, vk, email, wu } = data.value
 
     const all = [
-      { label: 'Телефон', value: phone },
-      { label: 'Электронная почта', value: email },
+      { label: 'Телефон', value: `tel:${(phone || '').replace(/\s/g, '')}`, text: phone },
+      { label: 'Электронная почта', value: `mailto:${email}`, text: email },
       { label: 'Телеграм', value: buildLink(telegram), text: clearSocialLink(telegram) },
       { label: 'WhatsApp', value: buildLink(wu), text: clearSocialLink(wu) },
       { label: 'Фейсбук', value: buildLink(facebook), text: clearSocialLink(facebook) },
@@ -59,10 +100,13 @@ const list = computed(() => {
         value: buildLink(instagram),
         text: clearSocialLink(instagram),
       },
-      // { label: 'Адрес', value: null },
     ]
 
-    return all.filter((x) => x.value) as { label: string; value: string; text?: string }[]
+    return all.filter((x) => x.value && x.text) as {
+      label: string
+      value: string
+      text?: string
+    }[]
   }
 
   return []
@@ -98,6 +142,92 @@ const list = computed(() => {
         }
       }
     }
+
+    &._has-restaurants {
+      margin-bottom: 0;
+    }
+  }
+  &__restaurants {
+    margin-top: 28px;
+    margin-bottom: auto;
+  }
+}
+
+.restaurants {
+  &__more {
+    display: flex;
+    justify-content: center;
+  }
+  &__single {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 28px;
+    a {
+      display: inline-block;
+      margin-top: 8px;
+      transition: color 0.25s $ease;
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+  &__all {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  &__list {
+    list-style: none;
+    margin: 8px 0 0;
+    width: 100%;
+    li {
+      width: 100%;
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
+    }
+  }
+  &__box {
+    display: block;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: var(--box-shadow-large);
+    padding: 24px;
+    transition: box-shadow 0.25s $ease;
+    &:hover {
+      box-shadow: var(--box-shadow-extra-large);
+    }
+  }
+  &__contact-row {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    span {
+      position: relative;
+      padding-right: 36px;
+      &::after {
+        display: inline-block;
+        content: ' ';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 18px;
+        background: var(--color-border);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+      }
+      &:last-child {
+        padding-right: 0;
+        ::after {
+          display: none;
+        }
+      }
+    }
   }
 }
 
@@ -116,6 +246,25 @@ const list = computed(() => {
           margin-top: 4px;
         }
       }
+    }
+    &__restaurants {
+      margin-top: 20px;
+    }
+  }
+
+  .restaurants {
+    &__single {
+      align-items: flex-start;
+    }
+    &__all {
+      align-items: flex-start;
+    }
+    &__box {
+      text-align: left;
+      padding: 16px;
+    }
+    &__contact-row {
+      justify-content: flex-start;
     }
   }
 }
