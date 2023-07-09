@@ -11,6 +11,10 @@ const { $env, $log } = useNuxtApp()
 
 const profileStore = useProfileStore()
 
+definePageMeta({
+  middleware: [useAuthGuard],
+})
+
 useHead({
   title: `Личный кабинет - ${$env.projectName}`,
 })
