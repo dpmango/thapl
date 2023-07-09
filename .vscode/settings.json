@@ -9,6 +9,7 @@
     "yarn.lock": true,
     "package-lock.json": true
   },
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
+  "vue.codeActions.enabled": false,
   "vetur.validation.template": false
 }

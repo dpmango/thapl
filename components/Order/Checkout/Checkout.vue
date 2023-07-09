@@ -582,7 +582,7 @@ const showASAPTime = computed(() => {
 const deliveryTimeOptions = computed(() => {
   const timeOptions = [{ id: '2', label: 'Ко времени' }]
 
-  if (showASAPTime.value && deliveryDate.value !== '0') {
+  if (!isOtherDay.value && showASAPTime.value && deliveryDate.value !== '0') {
     timeOptions.unshift({ id: '1', label: 'Как можно скорее' })
   }
 
@@ -592,8 +592,8 @@ const deliveryTimeOptions = computed(() => {
 // при изменении даты сбрасывать время
 watch(
   () => deliveryDate.value,
-  (newVal) => {
-    setFieldValue('deliveryTime', '')
+  () => {
+    setFieldValue('deliveryTime', isOtherDay.value ? '2' : '')
   }
 )
 
