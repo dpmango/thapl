@@ -41,7 +41,9 @@
           @on-before-add="handleProductClick"
         >
           <span class="hidden-sm">Выбрать</span>
-          <span class="visible-sm">{{ formatPrice(product.price) }}</span>
+          <span class="visible-sm">
+            {{ product.open_item_page_to_add ? 'от ' : '' }}{{ formatPrice(product.price) }}
+          </span>
         </ProductCardAddToCart>
       </div>
     </div>
