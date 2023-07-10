@@ -39,7 +39,9 @@
           <ul class="restaurants__list">
             <li v-for="restaurant in restarauntList">
               <NuxtLink :to="`/restaurants/${restaurant.id}`" class="restaurants__box">
-                <span class="text-m text-sm-s fw-500">{{ restaurant.address }}</span>
+                <span class="text-m text-sm-s fw-500">{{
+                  restaurant.title || restaurant.address
+                }}</span>
                 <div class="restaurants__contact-row fw-500 c-gray">
                   <span v-if="restaurant.phone" class="text-s">
                     {{ restaurant.phone }}

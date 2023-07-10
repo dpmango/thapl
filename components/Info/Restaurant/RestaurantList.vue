@@ -61,7 +61,7 @@
           v-for="(restaurant, idx) in restaurantsSearched"
           :key="idx"
           modifier="large"
-          :title="restaurant.address"
+          :title="restaurant.title || restaurant.address"
           :description="[restaurant.phone, restaurant.working_hours]"
           @click="selectRestaurant(restaurant)"
         />
