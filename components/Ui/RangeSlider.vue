@@ -67,7 +67,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits('onChange')
+const emit = defineEmits(['onChange'])
 
 const modifiers = computed(() => [
   props.error && '_error',
@@ -77,9 +77,7 @@ const modifiers = computed(() => [
 ])
 
 const setValue = (e) => {
-  const val = e.target.value
-
-  emit('onChange', val)
+  emit('onChange', e.target.value)
 }
 
 // display

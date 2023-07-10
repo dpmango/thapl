@@ -22,7 +22,6 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { IOrganizationTakeaway } from '~/interface/Delivery'
 import { useDeliveryStore } from '~/store'
 
 const { $log } = useNuxtApp()
