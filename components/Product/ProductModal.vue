@@ -2,13 +2,13 @@
   <UiModal name="product" size="x-large" :padding="false">
     <div class="product">
       <UiLoader v-if="true" position="overlay" :loading="loading" />
-      <div v-if="product && dispayProduct" class="product__wrapper">
+      <div v-if="product && displayProduct" class="product__wrapper">
         <div
           class="product__media hidden-md"
           :style="imageWidth ? { flexBasis: `${imageWidth}px` } : {}"
         >
           <div ref="imageRef" class="product__image">
-            <UiImage :src="dispayProduct.image" :alt="dispayProduct.title" />
+            <UiImage :src="displayProduct.image" :alt="displayProduct.title" />
           </div>
         </div>
         <div
@@ -21,24 +21,24 @@
           <div class="product__scrolling-wrap">
             <div class="product__scrolling">
               <div class="product__title h4-title">
-                <UiAtomLongWords :text="dispayProduct.title" />&nbsp;
-                <span v-if="dispayProduct.is_hot">🌶</span>
+                <UiAtomLongWords :text="displayProduct.title" />&nbsp;
+                <span v-if="displayProduct.is_hot">🌶</span>
                 <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
                   &nbsp;(В корзине уже {{ countWithModifiersInCart }})
                 </span>
               </div>
               <div class="product__weight text-s c-gray">
-                {{ dispayProduct.packing_weights }}
+                {{ displayProduct.packing_weights }}
               </div>
 
               <div class="product__media visible-md">
                 <div class="product__image">
-                  <UiImage :src="dispayProduct.image" :alt="dispayProduct.title" />
+                  <UiImage :src="displayProduct.image" :alt="displayProduct.title" />
                 </div>
               </div>
 
               <div class="product__description text-s">
-                {{ dispayProduct.description }}
+                {{ displayProduct.description }}
               </div>
 
               <template v-if="product.variants?.length">
@@ -55,15 +55,15 @@
                 />
               </template>
 
-              <ProductCardEnergyStats :product="dispayProduct" class="card__stat" />
+              <ProductCardEnergyStats :product="displayProduct" class="card__stat" />
 
               <div
-                v-if="dispayProduct.modifier_groups?.length"
+                v-if="displayProduct.modifier_groups?.length"
                 ref="productModifiers"
                 class="product__modifiers"
               >
                 <div
-                  v-for="(group, idx) in dispayProduct.modifier_groups"
+                  v-for="(group, idx) in displayProduct.modifier_groups"
                   :key="idx"
                   class="product__modifier"
                 >
@@ -112,7 +112,7 @@
           </div>
           <div class="product__cta">
             <ProductCardAddToCart
-              :product="dispayProduct"
+              :product="displayProduct"
               :modifiers="modifierGroups"
               btn-theme="primary"
               :should-emit="hasUnselectedModifiers"
@@ -149,18 +149,14 @@ const product = ref(null) as Ref<IProductFullDto | null>
 const productChildrenShown = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
 
-const dispayProduct = computed(() => {
+const displayProduct = computed(() => {
   return productChildrenShown.value || product.value
 })
 
 // работа с определением представления товара (variants / options)
 const selectedVariants = ref([0, 0, 0])
-const variantSwitchMode = ref(false)
 
-const selectVariant = (groupId, v) => {
-  variantSwitchMode.value = true
-  selectedVariants.value[groupId] = v
-
+const computeChildrenElement = () => {
   const computedVariantId = selectedVariants.value.filter((x) => x).join('.')
   const targetId = product.value?.options
     ?.find((x) => x.id === computedVariantId)
@@ -175,6 +171,11 @@ const selectVariant = (groupId, v) => {
   })
 }
 
+const selectVariant = (groupId, v) => {
+  selectedVariants.value[groupId] = v
+  computeChildrenElement()
+}
+
 // модификаторы товара
 interface IModifierItemGrouped extends ICartModifier {
   groupID: number
@@ -185,8 +186,8 @@ const modifierErrors = ref([]) as Ref<number[]>
 const modifierShowErorrs = ref(false)
 
 const priceWithModifiers = computed(() => {
-  if (!dispayProduct.value) return 0
-  let price = dispayProduct.value.price
+  if (!displayProduct.value) return 0
+  let price = displayProduct.value.price
 
   if (modifierGroups.value.length) {
     modifierGroups.value.forEach((x) => {
@@ -225,8 +226,8 @@ const changeModifier = (opt, groupID, isRadio) => {
 }
 const validateModifiers = () => {
   const errors = [] as number[]
-  if (dispayProduct.value?.modifier_groups) {
-    dispayProduct.value?.modifier_groups.forEach((group, idx) => {
+  if (displayProduct.value?.modifier_groups) {
+    displayProduct.value?.modifier_groups.forEach((group, idx) => {
       const itemsInGroup = modifierGroups.value.filter((x) => x.groupID === idx)
 
       if (itemsInGroup.length > group.max_items) {
@@ -272,9 +273,9 @@ const showModifiersToast = () => {
 }
 
 const countWithModifiersInCart = computed(() => {
-  if (!dispayProduct.value?.id) return 0
+  if (!displayProduct.value?.id) return 0
 
-  return productsCountInCart.value(dispayProduct.value?.id)
+  return productsCountInCart.value(displayProduct.value?.id)
 })
 
 const fetchProduct = async (id) => {
@@ -300,6 +301,7 @@ const fetchProduct = async (id) => {
 
     if (data.variants?.length) {
       selectedVariants.value = data.variants.map((x) => x.variants[0].id)
+      computeChildrenElement()
     }
 
     if (window && window.dataLayer) {
@@ -354,7 +356,7 @@ const setScrollerHeight = debounce(
 
 onMounted(() => {
   const hashID = route.hash.slice(1, route.hash.length)
-  if (hashID && typeof parseInt(hashID) === 'number') {
+  if (hashID && isFinite(parseInt(hashID))) {
     ui.setModal({ name: 'product', params: { id: +hashID, critical: null } })
   }
 
@@ -376,6 +378,7 @@ watch(
         if (params.critical) {
           $log.log('Opened with params', params)
           product.value = { ...params.critical }
+          productChildrenShown.value = null
         }
 
         fetchProduct(params.id)
@@ -383,6 +386,7 @@ watch(
     } else {
       setTimeout(() => {
         product.value = null
+        productChildrenShown.value = null
         // const oldScrollPosition =
         //   window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
         // router.replace({ hash: '' })
