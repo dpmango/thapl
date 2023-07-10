@@ -7,7 +7,7 @@ export interface IOrderRequestDto {
   lng: number
   payment_method: number
   comment: string
-
+  time_to_delivery: string
   cart: {
     catalog_item_id: number
     count: number
@@ -17,7 +17,6 @@ export interface IOrderRequestDto {
     }[]
   }[]
 
-  date?: string
   entrance?: string
   floor?: string
   apt?: string

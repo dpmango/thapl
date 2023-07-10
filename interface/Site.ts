@@ -39,6 +39,7 @@ export interface IAppSettings {
   default_persons_count: string
   takeaway_enabled: boolean
   order_to_time: boolean
+  order_to_time_enabled: boolean
   disable_order: boolean
   default_phone: string
   privacy_link: string | null
