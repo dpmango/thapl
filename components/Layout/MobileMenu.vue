@@ -1,5 +1,13 @@
 <template>
-  <div class="mobile-menu" :style="style" :class="[ui.mobileMenuActive && '_active']">
+  <div
+    class="mobile-menu"
+    :style="style"
+    :class="[
+      ui.mobileMenuActive && '_active',
+      $env.useHeaderMenu && 'xl',
+      !$env.useHeaderMenu && 'md',
+    ]"
+  >
     <div class="mobile-menu__bg" @click="closeMobile"></div>
     <div class="mobile-menu__box">
       <div class="mobile-menu__actions">
@@ -105,13 +113,6 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-$bool: v-bind(useHeaderMenu);
-$media: $md;
-
-@if $bool {
-  $media: $xl;
-}
-
 .mobile-menu {
   position: fixed;
   z-index: 98;
@@ -122,15 +123,31 @@ $media: $md;
   pointer-events: none;
 
   &._active {
-    @include r($media) {
-      pointer-events: all;
-      border-top: 1px solid var(--color-border);
-      .mobile-menu {
-        &__bg {
-          opacity: 1;
+    &.xl {
+      @include r($xl) {
+        pointer-events: all;
+        border-top: 1px solid var(--color-border);
+        .mobile-menu {
+          &__bg {
+            opacity: 1;
+          }
+          &__box {
+            transform: translateX(0);
+          }
         }
-        &__box {
-          transform: translateX(0);
+      }
+    }
+    &.md {
+      @include r($md) {
+        pointer-events: all;
+        border-top: 1px solid var(--color-border);
+        .mobile-menu {
+          &__bg {
+            opacity: 1;
+          }
+          &__box {
+            transform: translateX(0);
+          }
         }
       }
     }
