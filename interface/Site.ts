@@ -13,6 +13,7 @@ export interface ISiteMenu {
   id: number
   title: string
   type: number
+  action_type: number
   target_url?: string
   target_id?: string
   target_slug?: string
