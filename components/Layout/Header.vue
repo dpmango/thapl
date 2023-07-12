@@ -99,7 +99,11 @@
           <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
             <div v-for="item in app_settings?.site_header_menu" :key="item.id" class="col">
               <div class="action">
-                <a class="action__text" :href="item.target_url">
+                <a
+                  class="action__text"
+                  :href="item.target_url"
+                  @click.prevent="handleClickMenuLink(item)"
+                >
                   {{ item.title }}
                 </a>
               </div>
@@ -159,6 +163,7 @@
 import { storeToRefs } from 'pinia'
 import _ from 'lodash'
 import { useSessionStore, useUiStore, useCartStore, useDeliveryStore } from '~/store'
+import { ISiteMenu } from '~/interface'
 
 const ui = useUiStore()
 const session = useSessionStore()
@@ -167,6 +172,7 @@ const deliveryStore = useDeliveryStore()
 
 const { $env } = useNuxtApp()
 const route = useRoute()
+const router = useRouter()
 const { user, app_settings, isAuthenticated } = storeToRefs(session)
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
 
@@ -199,6 +205,31 @@ const handleCartOpen = () => {
 const handleLogoClick = () => {
   if (route.path === '/') {
     scrollWithSpeed(0, 500)
+  }
+}
+
+const handleClickMenuLink = (item: ISiteMenu) => {
+  switch (item.action_type) {
+    case -10:
+      window.open(item.target_url)
+      break
+    case 10:
+      router.push('/promo')
+      break
+    case 20:
+      router.push(`${item.target_slug}`)
+      break
+    case 30:
+      router.push('/restaurants')
+      break
+    case 40:
+      // TODO
+      break
+    case 50:
+      router.push(`/category/${item.target_slug}`)
+      break
+    default:
+      break
   }
 }
 
