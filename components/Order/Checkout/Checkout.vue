@@ -163,7 +163,7 @@
               </div>
             </div>
 
-            <div v-if="deliveryTime === '2'" class="checkout__row">
+            <div v-if="deliveryTime === '2' && !slotsData.hasSlots" class="checkout__row">
               <UiRangeSlider
                 :min="deliveryRangeOptions.min"
                 :max="deliveryRangeOptions.max"
@@ -538,7 +538,9 @@ const orderDay = computed(() => {
 })
 
 const isOtherDay = computed(() => {
-  return deliveryDate.value && !dayjs(deliveryDate.value).isSame(dayjs(orderDay.value.day), 'day')
+  const d1 = dayjs(deliveryDate.value).tz(zoneData.value.organization?.timezone)
+  const d2 = dayjs(orderDay.value.day).tz(zoneData.value.organization?.timezone)
+  return deliveryDate.value && !d1.isSame(d2, 'day')
 })
 
 // выбор даты доставки с возможностью указать N дней вперед
@@ -546,7 +548,10 @@ const deliveryDateOptions = computed(() => {
   const isToday = orderDay.value.isToday
 
   const dayOptions = [
-    { id: orderDay.value.day.add(1, 'day').format('YYYY-MM-DD'), label: 'В другой день' },
+    {
+      id: orderDay.value.day.add(1, 'day').format('YYYY-MM-DD'),
+      label: 'В другой день',
+    },
   ] as IToggleOption[]
 
   // + добавить есть доступные на сегодня слоты
@@ -616,7 +621,9 @@ const { value: deliveryRange } = useField<string>('deliveryRange', (v) => {
 })
 
 const deliveryRangeOptions = computed(() => {
-  const minutes = dayjs().hour() * 60 + dayjs().minute()
+  const minutes =
+    dayjs().tz(zoneData.value.organization?.timezone).hour() * 60 +
+    dayjs().tz(zoneData.value.organization?.timezone).minute()
 
   const {
     timeFrom,
@@ -628,7 +635,9 @@ const deliveryRangeOptions = computed(() => {
 
   const min = isDelivery ? timeFrom + +maxTime : timeFrom + +min_takeaway_gap
   const max = isDelivery ? timeTo + +maxTime : timeTo - +maxTime
-  const isToday = deliveryDate.value !== '0' && dayjs(deliveryDate.value).isToday()
+  const isToday =
+    deliveryDate.value !== '0' &&
+    dayjs(deliveryDate.value).tz(zoneData.value.organization?.timezone).isToday()
 
   return {
     min: isToday ? (isDelivery ? timeFrom + +maxTime : minutes + +min_takeaway_gap) : min,
@@ -947,9 +956,9 @@ const buildRequestObject = () => {
     lng: currentAddress.value?.longitude,
     payment_method: payment.value,
     cart: cartStore.cartToApi,
-    time_to_delivery: `${dayjs(deliveryDate.value).format('DD.MM.YYYY')}${
-      deliveryTime.value === '1' ? '' : ' ' + deliveryTime.value
-    }`, // DD.MM.YYYY HH:mm
+    time_to_delivery: `${dayjs(deliveryDate.value)
+      .tz(zoneData.value.organization?.timezone)
+      .format('DD.MM.YYYY')}${deliveryTime.value === '1' ? '' : ' ' + deliveryTime.value}`, // DD.MM.YYYY HH:mm
     comment:
       process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : comment.value,
   } as IOrderRequestDto
