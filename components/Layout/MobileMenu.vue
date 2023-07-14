@@ -53,9 +53,7 @@
       <nav v-if="app_settings.site_mobile_menu" class="mobile-menu__nav">
         <ul class="nav _secondary">
           <li v-for="link in app_settings.site_mobile_menu" :key="link.id">
-            <UiAtomLinkType class="nav__link" :link="link">
-              {{ link.title }}
-            </UiAtomLinkType>
+            <UiAtomLinkType class="nav__link" :link="link" />
           </li>
         </ul>
       </nav>
