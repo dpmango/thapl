@@ -7,6 +7,8 @@
       variant && `header-${variant}`,
       scrolled && '_scroll',
       ui.mobileMenuActive && '_menuActive',
+      $env.useHeaderMenu && 'xl',
+      !$env.useHeaderMenu && 'md',
     ]"
     :style="{ transform: `translate(0, -${topHeight}px)` }"
   >
@@ -95,11 +97,9 @@
           </div>
 
           <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
-            <div v-for="item in app_settings?.site_header_menu" :key="item.id" class="col">
+            <div v-for="link in app_settings?.site_header_menu" :key="link.id" class="col">
               <div class="action">
-                <a class="action__text" :href="item.target_url">
-                  {{ item.title }}
-                </a>
+                <UiAtomLinkType class="action__text" :link="link" />
               </div>
             </div>
           </template>
@@ -167,7 +167,6 @@ const { $env } = useNuxtApp()
 const route = useRoute()
 const { user, app_settings, isAuthenticated } = storeToRefs(session)
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
-const useHeaderMenu = $env.useHeaderMenu
 
 defineProps({
   variant: {
@@ -221,117 +220,14 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-$bool: v-bind(useHeaderMenu);
-$media: $md;
-
-@if $bool {
-  $media: $xl;
-}
-
-.header {
-  z-index: 9;
-  top: 0;
-  background: var(--header-background);
-  transition: box-shadow 0.25s $ease;
-  will-change: transform;
-  &__top {
-    align-items: center;
-    flex-wrap: nowrap;
-    padding: 40px 0 12px;
-  }
-  &__logo {
-    flex: 0 0 auto;
-    font-size: 0;
-    a {
-      width: var(--logo-space);
-    }
-  }
-  &__tile {
-    flex: 0 1 $col2;
-  }
-  &__actions {
-    margin-left: auto;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  &__bottom {
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-  }
-  &__search {
-    flex: 0 0 auto;
-    padding-right: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: color 0.25s $ease;
-    &:hover {
-      color: var(--color-primary);
-    }
-  }
-  &__nav {
-    flex: 1 1 auto;
-    padding: 0 80px 0 0px;
-  }
-  &__cta {
-    flex: 0 0 auto;
-  }
-  &__cta-counter {
-    position: relative;
-    padding-left: 12px;
-    margin-left: 12px;
-    &::before {
-      display: inline-block;
-      content: ' ';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 1px;
-      height: 20px;
-      transform: translateY(-50%);
-      background: currentColor;
-      opacity: 0.2;
-    }
-  }
-  &__hamburger {
-    display: none;
-  }
-  &._scroll {
-    position: sticky;
-    box-shadow: var(--box-shadow-large);
-  }
-  // &:hover {
-  //   transform: none !important;
-  //   transition: transform 0.25s $ease;
-  // }
-}
-
-@include r($xl) {
-  // .header {
-  //   // &__logo {
-  //   // }
-  // }
-}
-
-@include r($media) {
+@mixin collapsed-menu {
   .header {
-    &__top {
-      padding: 24px 0 12px;
-    }
     &__tile {
       flex: 0 0 auto;
     }
     &__nav {
       padding-right: 20px;
     }
-  }
-}
-
-@include r($media) {
-  .header {
-    transform: none !important;
-    transition: transform 0.25s $ease, box-shadow 0.25s $ease;
     &._scroll {
       transform: translateY(-12px) !important;
     }
@@ -371,6 +267,106 @@ $media: $md;
     }
     &__bottom {
       display: none;
+    }
+  }
+}
+
+.header {
+  z-index: 9;
+  top: 0;
+  background: var(--header-background);
+  transition: box-shadow 0.25s $ease;
+  will-change: transform;
+
+  &__top {
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 40px 0 12px;
+  }
+
+  &__logo {
+    flex: 0 0 auto;
+    font-size: 0;
+    a {
+      width: var(--logo-space);
+    }
+  }
+
+  &__tile {
+    flex: 0 1 $col2;
+  }
+
+  &__actions {
+    margin-left: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__bottom {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+  }
+
+  &__search {
+    flex: 0 0 auto;
+    padding-right: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.25s $ease;
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  &__nav {
+    flex: 1 1 auto;
+    padding: 0 80px 0 0px;
+  }
+
+  &__cta {
+    flex: 0 0 auto;
+  }
+
+  &__cta-counter {
+    position: relative;
+    padding-left: 12px;
+    margin-left: 12px;
+    &::before {
+      display: inline-block;
+      content: ' ';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 20px;
+      transform: translateY(-50%);
+      background: currentColor;
+      opacity: 0.2;
+    }
+  }
+
+  &__hamburger {
+    display: none;
+  }
+
+  &._scroll {
+    position: sticky;
+    box-shadow: var(--box-shadow-large);
+  }
+
+  &.xl {
+    @include r($xl) {
+      transform: none !important;
+      transition: transform 0.25s $ease, box-shadow 0.25s $ease;
+      @include collapsed-menu;
+    }
+  }
+  &.md {
+    @include r($md) {
+      transform: none !important;
+      transition: transform 0.25s $ease, box-shadow 0.25s $ease;
+      @include collapsed-menu;
     }
   }
 }
