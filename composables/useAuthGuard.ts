@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { useSessionStore } from '@/store'
+import { useSessionStore } from '~/store'
 
 export const useAuthGuard = () => {
   const sessionStore = useSessionStore()

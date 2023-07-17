@@ -1,4 +1,4 @@
-import { IProduct } from '~/interface/Product'
+import { IProduct } from '~/interface'
 
 export interface IPopularItemsDto {
   id: number

@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { SwiperSlide } from 'swiper/vue'
-import { IProduct } from '~/interface/Product'
+import { IProduct } from '~/interface'
 
 const props = defineProps<{ list: IProduct[] }>()
 
