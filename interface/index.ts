@@ -1,12 +1,12 @@
 export * from './Cart'
 export * from './Delivery'
-export * from './Geolocation'
 export * from './Loyalty'
 export * from './Order'
 export * from './Product'
 export * from './Promo'
 export * from './Site'
 export * from './Ui'
+export * from './Geolocation'
 export * from './User'
 
 export * from './RequestDto/Order.request'

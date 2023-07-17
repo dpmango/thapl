@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { IRestaurantDto, IRestaurantTag } from '~/interface/Dto/Restaurant.dto'
-import { useDeliveryStore } from '~~/store'
+import { useDeliveryStore } from '~/store'
 
 const { $env } = useNuxtApp()
 const router = useRouter()
