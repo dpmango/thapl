@@ -26,7 +26,7 @@ const attributes = computed(() => {
       target = '_blank'
       break
     case 20:
-      to = `/${props.link.target_slug}`
+      to = `/page/${props.link.target_slug}`
       break
     case 10:
       to = '/promo'
