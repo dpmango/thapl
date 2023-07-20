@@ -97,15 +97,9 @@
           </div>
 
           <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
-            <div v-for="item in app_settings?.site_header_menu" :key="item.id" class="col">
+            <div v-for="link in app_settings?.site_header_menu" :key="link.id" class="col">
               <div class="action">
-                <a
-                  class="action__text"
-                  :href="item.target_url"
-                  @click.prevent="handleClickMenuLink(item)"
-                >
-                  {{ item.title }}
-                </a>
+                <UiAtomLinkType class="action__text" :link="link" />
               </div>
             </div>
           </template>

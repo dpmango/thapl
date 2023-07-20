@@ -22,14 +22,12 @@ const attributes = computed(() => {
   switch (props.link.type) {
     // external links
     case -10:
-      to = props.link.target_url
+      to = props.link.target_url || '#'
       target = '_blank'
       break
-
     case 20:
       to = `/${props.link.target_slug}`
       break
-
     case 10:
       to = '/promo'
       break
@@ -40,9 +38,8 @@ const attributes = computed(() => {
       to = '/news'
       break
     case 50:
-      to = '/catalog'
+      to = `/category/${props.link.target_slug}`
       break
-
     default:
       break
   }
