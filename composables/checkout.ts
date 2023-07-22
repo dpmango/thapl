@@ -24,11 +24,23 @@ export const useCheckout = () => {
       isOpen: isDelivery ? zone.value?.is_open : takeawayOrganization.value?.is_open,
       maxTime: isDelivery ? zone.value?.max_time : '30',
       minDate: isDelivery
-        ? dayjs().add(zone.value?.organization.min_preorder_days, 'day').format()
-        : dayjs().add(takeawayOrganization.value?.min_preorder_days, 'day').format(),
+        ? dayjs()
+            .tz(zone.value?.organization.timezone)
+            .add(zone.value?.organization.min_preorder_days, 'day')
+            .format()
+        : dayjs()
+            .tz(takeawayOrganization.value.timezone)
+            .add(takeawayOrganization.value?.min_preorder_days, 'day')
+            .format(),
       maxDate: isDelivery
-        ? dayjs().add(zone.value?.organization.max_preorder_days, 'day').format()
-        : dayjs().add(takeawayOrganization.value?.max_preorder_days, 'day').format(),
+        ? dayjs()
+            .tz(zone.value?.organization.timezone)
+            .add(zone.value?.organization.max_preorder_days, 'day')
+            .format()
+        : dayjs()
+            .tz(takeawayOrganization.value.timezone)
+            .add(takeawayOrganization.value?.max_preorder_days, 'day')
+            .format(),
       orderType: currentOrderType.value,
       organization: isDelivery ? zone.value?.organization : takeawayOrganization.value,
       timeFrom: isDelivery
