@@ -13,7 +13,7 @@
       :state="!props.error"
       :timezone="props.timeZone"
       no-today
-      @update:model-value="emit('update:modelValue', $event)"
+      @update:model-value="emit('update:modelValue', $event.toString())"
     >
       <template #month-overlay-value="{ value }">
         {{ months[value] }}
