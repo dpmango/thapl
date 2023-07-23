@@ -551,7 +551,7 @@ const deliveryDateOptions = computed(() => {
 
   const dayOptions = [
     {
-      id: day.add(1, 'day').format('YYYY-MM-DD'),
+      id: day.add(1, 'day').format(),
       label: 'В другой день',
     },
   ] as IToggleOption[]
@@ -559,7 +559,7 @@ const deliveryDateOptions = computed(() => {
   // + добавить есть доступные на сегодня слоты
   if (showASAPTime.value) {
     dayOptions.unshift({
-      id: day.format('YYYY-MM-DD'),
+      id: day.format(),
       label: isToday ? 'Сегодня' : 'Завтра',
     })
   }
@@ -602,7 +602,6 @@ const deliveryTimeSlots = computed(() => {
 const deliveryTimeOptions = computed(() => {
   const timeOptions = slotsData.value.hasSlots ? [] : [{ id: '2', label: 'Ко времени' }]
 
-  console.log(isOtherDay.value)
   if (orderDay.value.isToday && showASAPTime.value && deliveryDate.value !== '0') {
     timeOptions.unshift({ id: '1', label: 'Как можно скорее' })
   }
