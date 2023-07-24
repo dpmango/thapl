@@ -19,12 +19,7 @@
     </template>
 
     <ProductCategories
-      v-else-if="$env.catalogType === 'categories'"
-      :categories="productStore.catalogWithStoplistAndFilter"
-    />
-
-    <ProductConceptions
-      v-else-if="$env.catalogType === 'conceptions'"
+      v-else-if="['conceptions', 'categories'].includes($env.catalogType)"
       :categories="productStore.catalogWithStoplistAndFilter"
     />
 
