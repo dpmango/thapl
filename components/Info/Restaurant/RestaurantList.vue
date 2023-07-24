@@ -61,7 +61,7 @@
           v-for="(restaurant, idx) in restaurantsSearched"
           :key="idx"
           modifier="large"
-          :title="restaurant.address"
+          :title="restaurant.title || restaurant.address"
           :description="[restaurant.phone, restaurant.working_hours]"
           @click="selectRestaurant(restaurant)"
         />
@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { IRestaurantDto, IRestaurantTag } from '~/interface/Dto/Restaurant.dto'
-import { useDeliveryStore } from '~~/store'
+import { useDeliveryStore } from '~/store'
 
 const { $env } = useNuxtApp()
 const router = useRouter()

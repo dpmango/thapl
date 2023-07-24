@@ -1,6 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { IOrder } from '~/interface/Order'
-import { IProduct } from '~/interface/Product'
+import { IOrder, IProduct } from '~/interface'
 
 export interface IReviewQuestionnaire {
   additional_questions: IQuestion[]

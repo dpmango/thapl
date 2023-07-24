@@ -174,6 +174,7 @@ const computeChildrenElement = () => {
 const selectVariant = (groupId, v) => {
   selectedVariants.value[groupId] = v
   computeChildrenElement()
+  resetModifiers()
 }
 
 // модификаторы товара
@@ -224,6 +225,7 @@ const changeModifier = (opt, groupID, isRadio) => {
 
   modifierGroups.value = [...modifierGroups.value, { ...opt, groupID }]
 }
+
 const validateModifiers = () => {
   const errors = [] as number[]
   if (displayProduct.value?.modifier_groups) {
@@ -244,6 +246,12 @@ const validateModifiers = () => {
 
   modifierErrors.value = [...errors]
   return errors
+}
+
+const resetModifiers = () => {
+  modifierGroups.value = []
+  modifierErrors.value = []
+  modifierShowErorrs.value = false
 }
 
 const hasUnselectedModifiers = computed(() => {
