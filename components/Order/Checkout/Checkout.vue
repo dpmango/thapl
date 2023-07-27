@@ -552,7 +552,7 @@ const deliveryDateOptions = computed(() => {
   const dayOptions = [
     {
       id: day.add(1, 'day').format(),
-      label: 'В другой день',
+      label: isToday ? 'В другой день' : 'Выберите дату',
     },
   ] as IToggleOption[]
 
