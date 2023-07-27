@@ -82,3 +82,7 @@ export const generateTimeSlots = (start, end, interval, now) => {
   }
   return timeSlots
 }
+
+export const isSameDay = (date1, date2) => {
+  return dayjs.isDayjs(date1) && dayjs.isDayjs(date2) ? date1.isSame(date2, 'day') : false
+}
