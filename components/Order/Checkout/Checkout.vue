@@ -125,9 +125,6 @@
               </div>
             </div>
           </template>
-
-          <pre>{{ dayjs().tz(zoneData.organization.timezone).format() }}</pre>
-
           <!-- Дата и время -->
           <!-- change condition -->
           <template v-if="app_settings.order_to_time && !app_settings.order_to_time_enabled">
@@ -147,7 +144,6 @@
                   v-model="deliveryDate"
                   :min-date="zoneData.minDate"
                   :max-date="zoneData.maxDate"
-                  :time-zone="zoneData.organization.timezone"
                   :offset="orderDay.isToday ? 1 : 2"
                   :error="errors.deliveryDate"
                   class="date-picker"
@@ -557,12 +553,10 @@ const deliveryDateOptions = computed(() => {
   ] as IToggleOption[]
 
   // + добавить есть доступные на сегодня слоты
-  if (showASAPTime.value) {
-    dayOptions.unshift({
-      id: day.format(),
-      label: isToday ? 'Сегодня' : 'Завтра',
-    })
-  }
+  dayOptions.unshift({
+    id: day.format(),
+    label: isToday && showASAPTime.value ? 'Сегодня' : 'Завтра',
+  })
 
   return dayOptions
 })
@@ -602,7 +596,7 @@ const deliveryTimeSlots = computed(() => {
 const deliveryTimeOptions = computed(() => {
   const timeOptions = slotsData.value.hasSlots ? [] : [{ id: '2', label: 'Ко времени' }]
 
-  if (orderDay.value.isToday && showASAPTime.value && deliveryDate.value !== '0') {
+  if (!isOtherDay.value && showASAPTime.value && deliveryDate.value !== '0') {
     timeOptions.unshift({ id: '1', label: 'Как можно скорее' })
   }
 
