@@ -76,6 +76,7 @@ export interface ICategory {
   title: string
   image: string | null
   slug: string
+  image_view_type: number
 }
 
 export interface ICategoryFull extends ICategory {
