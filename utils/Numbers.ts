@@ -1,6 +1,5 @@
 // 1000.00 -> 1 000.00
 export const formatPrice = (num: any, trailingZeros = 0, showFree = true) => {
-  const spacesRegex = /\B(?=(\d{3})+(?!\d))/g
   let value = ''
   if (num === null || num === undefined) {
     return '0.00'
@@ -22,6 +21,8 @@ export const formatPrice = (num: any, trailingZeros = 0, showFree = true) => {
 
   return `${value} ₽`
 }
+
+export const spacesRegex = /\B(?=(\d{3})+(?!\d))/g
 
 export const Plurize = (number, one, two, five) => {
   let n = Math.abs(number)
