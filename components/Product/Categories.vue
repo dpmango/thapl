@@ -3,7 +3,16 @@
     <div class="container">
       <div class="row">
         <div v-for="category in categories" class="col">
-          <NuxtLink :to="`/category/${category.slug}`" class="category" :data-id="category.id">
+          <NuxtLink
+            :to="`/category/${category.slug}`"
+            class="category"
+            :class="{
+              sm: category.image_view_type == 10,
+              lg: category.image_view_type == 20,
+              sq: category.image_view_type == 30,
+            }"
+            :data-id="category.id"
+          >
             <div v-if="category.image" class="category__image">
               <img :src="category.image" :alt="category.title" />
             </div>
@@ -32,50 +41,52 @@ const { $env } = useNuxtApp()
 <style lang="scss" scoped>
 .categories {
   margin: 68px 0 80px;
+
+  @include r($md) {
+    margin: 36px 0 52px;
+  }
+
+  .row {
+    align-items: flex-start;
+  }
+
   .col {
     flex: 0 0 $col3;
+
+    @include r($lg) {
+      flex-basis: $col4;
+    }
+
+    @include r($md) {
+      flex-basis: $col6;
+    }
+
+    @include r($sm) {
+      flex: 0 0 $col12;
+    }
+
     &:first-child {
       flex-basis: $col6;
+
+      @include r($lg) {
+        flex-basis: $col8;
+      }
+
+      @include r($md) {
+        flex-basis: $col12;
+      }
     }
+
     &:nth-child(6) {
       flex-basis: $col6;
-    }
-  }
-}
 
-@include r($lg) {
-  .categories {
-    .col {
-      flex: 0 0 $col4;
-      &:first-child {
+      @include r($lg) {
         flex-basis: $col8;
       }
-      &:nth-child(6) {
-        flex-basis: $col8;
-      }
-    }
-  }
-}
 
-@include r($md) {
-  .categories {
-    margin: 36px 0 52px;
-    .col {
-      flex: 0 0 $col6;
-      &:first-child {
+      @include r($md) {
         flex-basis: $col12;
       }
-      &:nth-child(6) {
-        flex-basis: $col12;
-      }
-    }
-  }
-}
-
-@include r($sm) {
-  .categories {
-    .col {
-      flex: 0 0 $col12;
     }
   }
 }
@@ -87,10 +98,19 @@ const { $env } = useNuxtApp()
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
-  min-height: var(--category-height);
+  max-height: var(--category-height-md);
   background: rgba(var(--color-primary-rgb), 0.12);
   border-radius: var(--card-border-radius);
   overflow: hidden;
+
+  @include r($md) {
+    margin-bottom: 24px;
+  }
+
+  @include r($sm) {
+    margin-bottom: 12px;
+  }
+
   &__image {
     position: absolute;
     z-index: 1;
@@ -100,33 +120,34 @@ const { $env } = useNuxtApp()
     left: 0;
     display: flex;
     flex-direction: column;
+
     img {
       flex: 1 1 auto;
       object-fit: cover;
     }
   }
+
   &__content {
     position: relative;
     z-index: 2;
     margin-top: auto;
     padding: 32px;
   }
+
   &__title {
     color: var(--color-primary);
   }
-}
 
-@include r($md) {
-  .category {
-    min-height: var(--category-height-md);
-    margin-bottom: 24px;
+  &.sm {
+    aspect-ratio: 4/5;
   }
-}
 
-@include r($sm) {
-  .category {
-    min-height: var(--category-height-sm);
-    margin-bottom: 12px;
+  &.lg {
+    aspect-ratio: 17/10;
+  }
+
+  &.sq {
+    aspect-ratio: 1;
   }
 }
 </style>
