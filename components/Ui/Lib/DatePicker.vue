@@ -11,8 +11,6 @@
       :model-value="props.modelValue"
       :enable-time-picker="false"
       :state="!props.error"
-      :timezone="props.timeZone"
-      no-today
       @update:model-value="emit('update:modelValue', $event.toString())"
     >
       <template #month-overlay-value="{ value }">
@@ -43,10 +41,6 @@ const props = defineProps({
   maxDate: {
     type: [String, Date],
     default: null,
-  },
-  timeZone: {
-    type: String,
-    default: '',
   },
   offset: {
     type: Number,
