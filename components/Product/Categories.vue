@@ -61,10 +61,6 @@ const { $env } = useNuxtApp()
       flex-basis: $col6;
     }
 
-    @include r($sm) {
-      flex: 0 0 $col12;
-    }
-
     &:first-child {
       flex-basis: $col6;
 
@@ -98,7 +94,7 @@ const { $env } = useNuxtApp()
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
-  max-height: var(--category-height-md);
+  height: var(--category-height-md);
   background: rgba(var(--color-primary-rgb), 0.12);
   border-radius: var(--card-border-radius);
   overflow: hidden;
