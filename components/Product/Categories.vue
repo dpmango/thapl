@@ -10,6 +10,7 @@
               sm: category.image_view_type == 10,
               lg: category.image_view_type == 20,
               sq: category.image_view_type == 30,
+              'is-shadow': $env.showCategoryName && $env.categoryNameShadow,
             }"
             :data-id="category.id"
           >
@@ -88,6 +89,8 @@ const { $env } = useNuxtApp()
 }
 
 .category {
+  $self: &;
+
   flex: 1 0 auto;
   position: relative;
   z-index: 1;
@@ -144,6 +147,22 @@ const { $env } = useNuxtApp()
 
   &.sq {
     aspect-ratio: 1;
+  }
+
+  &.is-shadow {
+    #{$self}__title {
+      color: #fff;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+    }
   }
 }
 </style>
