@@ -2,14 +2,19 @@
   <section class="categories">
     <div class="container">
       <div class="row">
-        <div v-for="category in categories" class="col">
+        <div
+          v-for="category in categories"
+          class="col"
+          :class="{
+            'sm col-3': category.image_view_type == 10,
+            'lg col-6': category.image_view_type == 20,
+            'sq col-3': category.image_view_type == 30,
+          }"
+        >
           <NuxtLink
             :to="`/category/${category.slug}`"
             class="category"
             :class="{
-              sm: category.image_view_type == 10,
-              lg: category.image_view_type == 20,
-              sq: category.image_view_type == 30,
               'is-shadow': $env.showCategoryName && $env.categoryNameShadow,
             }"
             :data-id="category.id"
@@ -52,37 +57,17 @@ const { $env } = useNuxtApp()
   }
 
   .col {
-    flex: 0 0 $col3;
-
-    @include r($lg) {
-      flex-basis: $col4;
-    }
-
-    @include r($md) {
-      flex-basis: $col6;
-    }
-
-    &:first-child {
-      flex-basis: $col6;
-
-      @include r($lg) {
-        flex-basis: $col8;
-      }
-
+    &.lg {
       @include r($md) {
         flex-basis: $col12;
+        max-width: $col12;
       }
     }
-
-    &:nth-child(6) {
-      flex-basis: $col6;
-
-      @include r($lg) {
-        flex-basis: $col8;
-      }
-
+    &.sm,
+    &.sq {
       @include r($md) {
-        flex-basis: $col12;
+        flex-basis: $col6;
+        max-width: $col6;
       }
     }
   }
@@ -138,15 +123,21 @@ const { $env } = useNuxtApp()
   }
 
   &.sm {
-    aspect-ratio: 4/5;
+    .category {
+      aspect-ratio: 4/5;
+    }
   }
 
   &.lg {
-    aspect-ratio: 17/10;
+    .category {
+      aspect-ratio: 17/10;
+    }
   }
 
   &.sq {
-    aspect-ratio: 1;
+    .category {
+      aspect-ratio: 1;
+    }
   }
 
   &.is-shadow {
