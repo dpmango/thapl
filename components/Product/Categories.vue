@@ -116,7 +116,7 @@ const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
 
   &__content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     margin-top: auto;
     padding: 32px;
   }
@@ -156,6 +156,7 @@ const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
       right: 0;
       height: 50%;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+      z-index: 2;
     }
   }
 }
