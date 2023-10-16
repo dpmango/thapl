@@ -32,7 +32,7 @@ const attributes = computed(() => {
       to = '/promo'
       break
     case 30:
-      to = '/restaurant'
+      to = '/restaurants'
       break
     case 40:
       to = '/news'

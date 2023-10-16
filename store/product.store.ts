@@ -71,6 +71,10 @@ export const useProductStore = defineStore('product', {
         return !isStoplisted
       }
 
+      // console.log('stopcategories', organizationData?.stop_categories)
+      // console.log('stoplist', organizationData?.stop_list)
+      // console.log({ catalog: state.catalog })
+
       const filteredCatalog = state.catalog
         .map((cat) => {
           return {
