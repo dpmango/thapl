@@ -68,6 +68,7 @@ export default defineNuxtConfig({
       // вендоры
       yandexMetrikaID: '',
       yandexMapsKey: '',
+      yandexMapsSuggestKey: '',
       googleID: '',
 
       geocoderSearchedCities: '',
