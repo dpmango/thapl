@@ -84,9 +84,8 @@ export default defineNuxtConfig({
 
   googleFonts: {
     families: {
-      Inter: {
-        wght: [400, 500, 600, 700],
-        ital: [],
+      'IBM+Plex+Sans': {
+        wght: [300, 400, 500, 600, 700],
       },
     },
   },
