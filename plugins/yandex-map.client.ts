@@ -8,9 +8,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
 
   const settings = {
-    apiKey: config.public.yandexMapsKey,
+    apiKey: `${config.public.yandexMapsKey}&suggest_apikey=${config.public.yandexMapsSuggestKey}`,
     lang: 'ru_RU',
-    coordorder: 'latlong',
+    coordorder: 'latlon',
     enterprise: false,
     version: '2.1',
   }
