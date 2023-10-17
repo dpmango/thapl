@@ -33,7 +33,7 @@
         @mouseleave="setFocused(true)"
       >
         <div class="card__price text-l hidden-sm">
-          {{ product.open_item_page_to_add ? 'от ' : '' }}{{ formatPrice(product.price) }}
+          {{ productFullPriceLabel }}
         </div>
 
         <ProductCardAddToCart
@@ -44,7 +44,7 @@
         >
           <span class="hidden-sm">Выбрать</span>
           <span class="visible-sm">
-            {{ product.open_item_page_to_add ? 'от ' : '' }}{{ formatPrice(product.price) }}
+            {{ productFullPriceLabel }}
           </span>
         </ProductCardAddToCart>
       </div>
@@ -70,10 +70,18 @@ const props = defineProps({
   },
 })
 
+const { productPriceLabel } = useProductHelpers({ product: props.product })
+
 const handleProductClick = () => {
   if (props.isGift) return
   ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
 }
+
+const productFullPriceLabel = computed(() => {
+  const prefix = props.product.open_item_page_to_add ? 'от ' : ''
+
+  return prefix + productPriceLabel.value
+})
 
 // focus
 const focused = ref(false)

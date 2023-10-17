@@ -13,9 +13,7 @@
           <span v-if="product.amount > 1" class="c-gray">× {{ product.amount }}</span>
         </span>
         <i class="order__sep"></i>
-        <span class="order__value c-primary">{{
-          formatPrice(product.catalog_item.price * product.amount)
-        }}</span>
+        <span class="order__value c-primary">{{ getPriceLabel(product) }}</span>
       </div>
 
       <div v-if="orders.rest" class="order__row">
@@ -76,7 +74,7 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
-import { IOrder } from '~/interface/Order'
+import { IOrder, IOrderCart } from '~/interface'
 import { formatPrice, dateToTimestamp, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
@@ -96,6 +94,17 @@ const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = us
   orderID: props.order.id,
   cart: props.order.cart,
 })
+
+const getPriceLabel = (product: IOrderCart) => {
+  let price = product.catalog_item.price
+  if (product.catalog_item.sale_by_weight) {
+    const minWeight = product.catalog_item.min_weight || 100
+
+    price = product.catalog_item.price * (minWeight / 1000)
+  }
+
+  return formatPrice(price * product.amount)
+}
 
 const verboseStatus = computed(() => {
   let className = 'c-primary'
@@ -154,7 +163,13 @@ const orders = computed(() => {
     rest = {
       title: `Еще ${products.length} ${Plurize(products.length, 'блюдо', 'блюда', 'блюд')}`,
       price: products.reduce((acc, x) => {
-        acc = acc + x.catalog_item.price * x.cartItem.count
+        let price = x.catalog_item.price
+        if (x.catalog_item.sale_by_weight) {
+          const minWeight = x.catalog_item.min_weight || 100
+          price = price * (minWeight / 1000)
+        }
+
+        acc = acc + price * x.cartItem.count
         return acc
       }, 0),
     }

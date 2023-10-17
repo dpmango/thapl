@@ -13,7 +13,7 @@
         {{ product.description }}
       </div>
       <div class="card__actions">
-        <div class="card__price text-l">{{ formatPrice(product.price) }}</div>
+        <div class="card__price text-l">{{ productPriceLabel }}</div>
       </div>
     </div>
   </div>
@@ -34,6 +34,8 @@ const props = defineProps({
 
 const ui = useUiStore()
 const { $env } = useNuxtApp()
+
+const { productPriceLabel } = useProductHelpers({ product: props.product })
 
 const handleProductClick = () => {
   ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })

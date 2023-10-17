@@ -27,6 +27,11 @@ export const useProduct = ({
   const productPrice = computed(() => {
     let price = renderProduct.value.price
 
+    if (renderProduct.value.sale_by_weight) {
+      const minWeight = renderProduct.value.min_weight || 100
+      price = price * (minWeight / 1000)
+    }
+
     if (cartItem?.modifiers?.length) {
       cartItem?.modifiers?.forEach((x) => {
         price += x.price

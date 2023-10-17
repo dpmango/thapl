@@ -60,13 +60,19 @@ export const useCartStore = defineStore('cart', {
       return state.cart.reduce((acc, c) => {
         const product = state.products.find((x) => x.id === c.id)
         if (product) {
+          let price = product.price
+          if (product.sale_by_weight) {
+            const minWeight = product.min_weight || 100
+            price = price * (minWeight / 1000)
+          }
+
           const modifiersTotal =
             c.modifiers?.reduce((modAcc, mod) => {
               modAcc += mod.price * mod.q
               return modAcc
             }, 0) || 0
 
-          acc += (product.price + modifiersTotal) * c.q
+          acc += (price + modifiersTotal) * c.q
         }
 
         return acc

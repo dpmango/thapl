@@ -151,6 +151,9 @@ onBeforeUnmount(() => {
   text-align: center;
   padding: 20px 10px;
   background: var(--color-bg);
+  & + & {
+    margin-top: 8px;
+  }
   &__icon {
     font-size: 24px;
     margin-bottom: 12px;
@@ -161,6 +164,7 @@ onBeforeUnmount(() => {
   &._primary {
     background: rgba(var(--color-primary-rgb), 0.12);
     color: var(--color-primary);
+    cursor: pointer;
   }
   &._review {
     cursor: pointer;

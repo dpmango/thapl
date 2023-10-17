@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="card__actions">
-      <div class="card__price text-s fw-600">{{ formatPrice(product.price) }}</div>
+      <div class="card__price text-s fw-600">{{ productPriceLabel }}</div>
     </div>
   </a>
 </template>
@@ -55,6 +55,8 @@ const props = defineProps({
     default: false,
   },
 })
+
+const { productPriceLabel } = useProductHelpers({ product: props.product })
 
 const isProductInCart = computed(() => {
   return cartStore.productQuantityInCart(props.product.id)

@@ -122,7 +122,7 @@
               :should-emit="hasUnselectedModifiers"
               @on-before-add="showModifiersToast"
             >
-              В корзину &bull; {{ formatPrice(priceWithModifiers) }}
+              В корзину &bull; {{ productPriceLabel }}
             </ProductCardAddToCart>
           </div>
         </div>
@@ -157,6 +157,8 @@ const displayProduct = computed(() => {
   return productChildrenShown.value || product.value
 })
 
+const { productPriceLabel } = useProductHelpers({ product: displayProduct.value })
+
 // работа с определением представления товара (variants / options)
 const selectedVariants = ref([0, 0, 0])
 
@@ -189,19 +191,6 @@ interface IModifierItemGrouped extends ICartModifier {
 const modifierGroups = ref([]) as Ref<IModifierItemGrouped[]>
 const modifierErrors = ref([]) as Ref<number[]>
 const modifierShowErorrs = ref(false)
-
-const priceWithModifiers = computed(() => {
-  if (!displayProduct.value) return 0
-  let price = displayProduct.value.price
-
-  if (modifierGroups.value.length) {
-    modifierGroups.value.forEach((x) => {
-      price += x.price
-    })
-  }
-
-  return price
-})
 
 const changeModifier = (opt, groupID, isRadio) => {
   const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)

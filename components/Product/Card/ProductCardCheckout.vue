@@ -16,7 +16,7 @@
     </div>
     <div class="scope__value h6-title text-md-s">
       <template v-if="isGift">
-        <s>{{ formatPrice(renderProduct.price) }}</s>
+        <s>{{ productPriceLabel }}</s>
       </template>
 
       <template v-else>{{ formatPrice(productPrice.raw * cartItem.q) }}</template>
@@ -50,6 +50,8 @@ const { renderProduct, productPrice, productModifiersVerbose, productQuantityInC
     cartItem: props.cartItem,
     product: props.product,
   })
+
+const { productPriceLabel } = useProductHelpers({ product: renderProduct.value })
 </script>
 
 <style lang="scss" scoped>

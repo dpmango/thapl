@@ -20,9 +20,9 @@ export interface IProduct {
   energy_amount: string
   only_pre_order: boolean
   preorder_delay: number
-  min_weight: string | null
-  max_weight: string | null
-  weight_step: string | null
+  min_weight: number | null
+  max_weight: number | null
+  weight_step: number | null
   old_price: string | null
   price: number
   description: string
