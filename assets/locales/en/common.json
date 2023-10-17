@@ -1,0 +1,8 @@
+{
+  "header": {
+    "city": "City",
+    "takeawayAddress": "Takeaway address",
+    "deliveryAddress": "Delivery address",
+    "wantAddress": "Specify address"
+  }
+}

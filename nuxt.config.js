@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/i18n',
     'nuxt-proxy',
     '@nuxtjs/google-fonts',
     'nuxt-icons',
@@ -87,6 +88,15 @@ export default defineNuxtConfig({
       'IBM+Plex+Sans': {
         wght: [300, 400, 500, 600, 700],
       },
+    },
+  },
+
+  i18n: {
+    defaultLocale: 'ru',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
     },
   },
 

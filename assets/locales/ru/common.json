@@ -1,0 +1,9 @@
+{
+  "header": {
+    "city": "Город",
+    "takeawayAddress": "Адрес самовывоза",
+    "deliveryAddress": "Адрес доставки",
+    "wantAddress": "Укажите адрес",
+    "workingTime": "Время работы"
+  }
+}

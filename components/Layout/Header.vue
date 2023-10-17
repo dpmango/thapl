@@ -35,7 +35,7 @@
 
         <div v-if="$env.useRegions" class="col header__tile hidden-lg">
           <div class="tile _action" @click="() => ui.setModal({ name: 'region' })">
-            <span class="tile__label tile__overflow">Город</span>
+            <span class="tile__label tile__overflow">{{ $t('header.city') }}</span>
             <div class="tile__value">
               <span class="tile__overflow">{{ currentRegionName }}</span>
               <nuxt-icon name="caret" />
@@ -46,13 +46,15 @@
         <div class="col header__tile hidden-md">
           <div class="tile _action" @click="() => ui.setModal({ name: 'address' })">
             <span class="tile__label tile__overflow">
-              <template v-if="currentAddress?.type === 'takeaway'">Адрес самовывоза</template>
-              <template v-else>Адрес доставки</template>
+              <template v-if="currentAddress?.type === 'takeaway'">{{
+                $t('header.takeawayAddress')
+              }}</template>
+              <template v-else>{{ $t('header.deliveryAddress') }}</template>
             </span>
             <div class="tile__value">
               <span class="tile__overflow">
                 <template v-if="currentAddress">{{ currentAddress.name }}</template>
-                <template v-else>Укажите адрес</template>
+                <template v-else>{{ $t('header.wantAddress') }}</template>
               </span>
               <nuxt-icon name="caret" />
             </div>
@@ -61,7 +63,7 @@
 
         <div v-if="$env.useWorkTimes" class="col header__tile hidden-lg">
           <div class="tile">
-            <span class="tile__label tile__overflow">Время работы</span>
+            <span class="tile__label tile__overflow">{{ $t('header.workingTime') }}</span>
             <div class="tile__value">
               <span>10:00 – 22:00</span>
             </div>
