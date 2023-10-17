@@ -27,7 +27,7 @@ console.log(`APP Version: ${APP_VERSION}`)
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
   if (loaded.value) {
-    scrollPageToTop()
+    // scrollPageToTop()
     ui.closeAllModals()
     ui.setMobileMenu(false)
   }

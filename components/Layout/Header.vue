@@ -80,12 +80,8 @@
         </div>
 
         <div class="col header__actions row">
-          <div class="col">
-            <NuxtLink
-              v-if="!$env.useHeaderMenu && session.app_settings.loyalty?.enabled"
-              to="/ui"
-              class="action"
-            >
+          <div v-if="!$env.useHeaderMenu && session.app_settings.loyalty?.enabled" class="col">
+            <NuxtLink to="/ui" class="action">
               <div class="action__icon">
                 <nuxt-icon name="heart" />
                 <div v-if="isAuthenticated && user.balance" class="action__counter _top">

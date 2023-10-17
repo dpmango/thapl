@@ -94,14 +94,14 @@ onMounted(() => {
   &__slide {
     position: relative;
     z-index: 1;
-    height: var(--promo-height);
+    // height: var(--promo-height);
     border-radius: var(--card-border-radius);
     overflow: hidden;
   }
   &__slide-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
     width: 100%;
     height: 100%;
     background: var(--color-bg);
@@ -142,8 +142,8 @@ onMounted(() => {
       &__slide-bg {
         top: 6px;
         left: 6px;
-        width: calc(100% - 12px);
-        height: calc(100% - 12px);
+        // width: calc(100% - 12px);
+        // height: calc(100% - 12px);
         border-radius: var(--card-border-radius);
         object-position: center center;
       }
@@ -156,9 +156,9 @@ onMounted(() => {
     margin: 16px 0px 36px;
     &._wide,
     &._narrow {
-      .promo__slide {
-        height: var(--promo-height-md);
-      }
+      // .promo__slide {
+      //   height: var(--promo-height-md);
+      // }
     }
     &._narrow {
       .promo__slider {
@@ -180,9 +180,9 @@ onMounted(() => {
 
     &._wide,
     &._narrow {
-      .promo__slide {
-        height: var(--promo-height-sm);
-      }
+      // .promo__slide {
+      //   height: var(--promo-height-sm);
+      // }
     }
     &._narrow {
       .promo {
@@ -199,8 +199,8 @@ onMounted(() => {
         &__slide-bg {
           top: 2px;
           left: 2px;
-          width: calc(100% - 4px);
-          height: calc(100% - 4px);
+          // width: calc(100% - 4px);
+          // height: calc(100% - 4px);
           border-radius: 8px;
         }
       }

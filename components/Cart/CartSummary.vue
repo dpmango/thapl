@@ -45,7 +45,7 @@
           :product="additive.catalog_item"
         />
         <ProductCardCart
-          v-for="(gift, idx) in promoData.gifts"
+          v-for="(gift, idx) in promoData.gifts.filter((x) => x.id === promoGiftId)"
           :key="idx"
           :is-gift="true"
           :product="gift"
@@ -103,7 +103,7 @@ const toast = useToast()
 
 const ui = useUiStore()
 const cartStore = useCartStore()
-const { cart, products, additives, suggestions, promo, productQuantityInCart } =
+const { cart, products, additives, suggestions, promo, promoGiftId, productQuantityInCart } =
   storeToRefs(cartStore)
 const { modal: activeModal } = storeToRefs(ui)
 
@@ -136,6 +136,27 @@ watch(
   (newVal) => {
     if (newVal.includes('cart')) {
       fetchCartData()
+    }
+  }
+)
+
+watch(
+  () => cart.value,
+  (_) => {
+    if (activeModal.value.includes('cart')) {
+      fetchCartData()
+    }
+  }
+)
+
+watch(
+  () => promo.value,
+  (newVal) => {
+    if (!newVal?.gifts) return
+    if (!activeModal.value.includes('cart')) return
+
+    if (newVal.gifts.length > 1 && !promoGiftId.value) {
+      ui.setModal({ name: 'gift', keepPrevious: true })
     }
   }
 )

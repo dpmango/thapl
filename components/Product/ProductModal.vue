@@ -8,7 +8,11 @@
           :style="imageWidth ? { flexBasis: `${imageWidth}px` } : {}"
         >
           <div ref="imageRef" class="product__image">
-            <UiImage :src="displayProduct.image" :alt="displayProduct.title" />
+            <UiImage
+              :src="displayProduct.image"
+              :alt="displayProduct.title"
+              @load="handleImageLoad"
+            />
           </div>
         </div>
         <div
@@ -305,7 +309,7 @@ const fetchProduct = async (id) => {
   if (data) {
     product.value = { ...data }
     setScrollerHeight()
-    router.push({ hash: `#${data.id.toString()}` })
+    // router.push({ hash: `#${data.id.toString()}` })
 
     if (data.variants?.length) {
       selectedVariants.value = data.variants.map((x) => x.variants[0].id)
@@ -340,33 +344,35 @@ const imageWidth = ref<number | null>(null)
 
 const setScrollerHeight = debounce(
   () => {
-    if (imageRef.value) {
-      imageHeight.value = 500
-      imageWidth.value = null
+    imageHeight.value = 500
+    imageWidth.value = null
 
-      nextTick(() => {
-        if (!imageRef.value) return
-        const imgHeight = imageRef.value.offsetHeight
-        const imgElement = imageRef.value.querySelector('img')
+    nextTick(() => {
+      if (!imageRef.value) return
+      const imgHeight = imageRef.value.offsetHeight
+      const imgElement = imageRef.value.querySelector('img')
 
-        imageHeight.value = imgHeight ? imgHeight + 40 + 40 : 0
+      imageHeight.value = imgHeight ? imgHeight + 40 + 40 : 500
 
-        if (imgElement) {
-          const imgW = imgElement.offsetWidth + 40 * 2
-          imageWidth.value = imgW || null
-        }
-      })
-    }
+      if (imgElement) {
+        const imgW = imgElement.offsetWidth + 40 * 2
+        imageWidth.value = imgW || null
+      }
+    })
   },
   100,
   { leading: true }
 )
 
+const handleImageLoad = () => {
+  setScrollerHeight()
+}
+
 onMounted(() => {
-  const hashID = route.hash.slice(1, route.hash.length)
-  if (hashID && isFinite(parseInt(hashID))) {
-    ui.setModal({ name: 'product', params: { id: +hashID, critical: null } })
-  }
+  // const hashID = route.hash.slice(1, route.hash.length)
+  // if (hashID && isFinite(parseInt(hashID))) {
+  //   ui.setModal({ name: 'product', params: { id: +hashID, critical: null } })
+  // }
 
   setScrollerHeight()
   window.addEventListener('resize', setScrollerHeight, true)
@@ -395,11 +401,17 @@ watch(
       setTimeout(() => {
         product.value = null
         productChildrenShown.value = null
-        // const oldScrollPosition =
-        //   window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
-        // router.replace({ hash: '' })
-        // document.documentElement.scrollTop(0, oldScrollPosition)
+        // router.push({ hash: '' })
       }, 250)
+    }
+  }
+)
+
+watch(
+  () => imageRef.value,
+  (newVal) => {
+    if (newVal) {
+      setScrollerHeight()
     }
   }
 )

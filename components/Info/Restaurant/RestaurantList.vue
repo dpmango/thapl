@@ -26,6 +26,7 @@
           :zoom="15"
           :controls="['zoomControl']"
           :scroll-zoom="false"
+          @created="onMapCreated"
         >
           <YandexMarker
             v-for="marker in list"
@@ -34,7 +35,8 @@
             :coordinates="[marker.lat, marker.lng]"
           >
             <template #component>
-              <div class="text-m">{{ marker }}</div>
+              <div v-if="marker.title" class="text-m fw-700">{{ marker.title }}</div>
+              <div v-if="marker.address" class="text-s">{{ marker.address }}</div>
             </template>
           </YandexMarker>
         </YandexMap>
@@ -96,6 +98,20 @@ const allTags = computed(() => {
 
   return tags
 })
+
+let mapInstance = null as any
+
+const onMapCreated = (e) => {
+  mapInstance = e
+  setTimeout(setBounds, 100)
+  setTimeout(setBounds, 300)
+}
+
+const setBounds = () => {
+  if (!mapInstance) return
+  mapInstance.setBounds(mapInstance.geoObjects.getBounds())
+  mapInstance.setZoom(mapInstance.getZoom() - 0.2)
+}
 
 const centerCooridinates = computed(() => {
   function getMiddle(prop, markers) {

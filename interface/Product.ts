@@ -14,6 +14,10 @@ export interface IProduct {
   fat_full_amount: string
   carbohydrate_full_amount: string
   energy_full_amount: string
+  fiber_amount: string
+  fat_amount: string
+  carbohydrate_amount: string
+  energy_amount: string
   only_pre_order: boolean
   preorder_delay: number
   min_weight: string | null

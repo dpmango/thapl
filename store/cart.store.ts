@@ -21,7 +21,7 @@ export const useCartStore = defineStore('cart', {
     }
   },
   persist: {
-    paths: ['cart'],
+    paths: ['cart', 'promoGiftId'],
   },
   getters: {
     // просто считает количство товаров в корзине по id
@@ -248,6 +248,16 @@ export const useCartStore = defineStore('cart', {
           promo_code: code,
         },
       })) as IPromoDto
+
+      // определение какой подарок ставить в сторе
+      if (res.gifts.length === 1) {
+        this.promoGiftId = res.gifts[0].id
+      } else if (this.promoGiftId) {
+        const productExists = res.gifts.some((x) => x.id === this.promoGiftId)
+        this.promoGiftId = productExists ? this.promoGiftId : null
+      } else {
+        this.promoGiftId = null
+      }
 
       this.promo = {
         ...res,
