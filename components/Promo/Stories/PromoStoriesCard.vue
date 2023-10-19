@@ -12,14 +12,14 @@
         :style="storyStyles.buttonXY"
       >
         <UiButton block size="large" :style="storyStyles.button" @click="handleActionClick">
-          {{ story.button_text }} {{ story.button_vertical_alignment }}
+          {{ story.button_text }}
         </UiButton>
       </div>
 
       <div class="story__content-wrapper" :style="storyStyles.contentY">
         <span v-if="story.header" class="story__title" :style="storyStyles.contentX">
           <span class="h2-title" :style="storyStyles.header">
-            {{ story.header }} {{ story.header_vertical_alignment }}
+            {{ story.header }}
           </span>
         </span>
 
@@ -35,7 +35,7 @@
         :style="storyStyles.buttonXY"
       >
         <UiButton block size="large" :style="storyStyles.button" @click="handleActionClick">
-          {{ story.button_text }} {{ story.button_vertical_alignment }}
+          {{ story.button_text }}
         </UiButton>
       </div>
     </div>
