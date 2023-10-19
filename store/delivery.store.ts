@@ -137,7 +137,6 @@ export const useDeliveryStore = defineStore('delivery', {
 
       return data
     },
-    // todo получать данные оргиназации при инициализации
     async setTakeawayOrganization({ id }) {
       const data = (await useApi('organization/get-organization-data', {
         method: 'GET',

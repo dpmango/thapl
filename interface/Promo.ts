@@ -50,18 +50,18 @@ export interface IStoriesDto {
   text: string | null
   text_color: string | null
   text_background_color: string | null
-  text_horisontal_aligment: string | null
-  text_vertical_aligment: string | null
+  text_horizontal_alignment: string | null
+  text_vertical_alignment: string | null
   header: string | null
   header_text_color: string | null
   header_background_color: string | null
-  header_horisontal_aligment: string | null
-  header_vertical_aligment: string | null
+  header_horizontal_alignment: string | null
+  header_vertical_alignment: string | null
   button_text: string | null
   button_background_color: string | null
   button_text_color: string | null
-  button_horisontal_aligment: string | null
-  button_vertical_aligment: string | null
+  button_horizontal_alignment: string | null
+  button_vertical_alignment: string | null
   action:
     | 'open_link'
     | 'open_category'

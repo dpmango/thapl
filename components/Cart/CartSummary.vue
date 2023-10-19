@@ -85,6 +85,7 @@
         to="/order"
         :block="true"
         :disabled="!minOrderData.match || stopListData.cartBlocked"
+        @click="handleCtaClick"
       >
         Оформить заказ &bull; {{ formatPrice(priceData.withDelivery) }}
       </UiButton>
@@ -100,6 +101,7 @@ import { useCartStore, useUiStore } from '~/store'
 import { formatPrice } from '#imports'
 
 const toast = useToast()
+const route = useRoute()
 
 const ui = useUiStore()
 const cartStore = useCartStore()
@@ -117,6 +119,12 @@ const additivesNotInCart = computed(() => {
 const handlePopupMessage = () => {
   if (stopListData.value.cartBlocked) {
     toast.error('В корзине есть недоступные к заказу позиции')
+  }
+}
+
+const handleCtaClick = () => {
+  if (route.path.includes('/order')) {
+    ui.closeAllModals()
   }
 }
 

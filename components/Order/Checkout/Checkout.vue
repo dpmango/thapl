@@ -951,12 +951,16 @@ const buildRequestObject = () => {
     lng: currentAddress.value?.longitude,
     payment_method: payment.value,
     cart: cartStore.cartToApi,
-    time_to_delivery: `${dayjs(deliveryDate.value)
-      .tz(zoneData.value.organization?.timezone)
-      .format('DD.MM.YYYY')}${deliveryTime.value === '1' ? '' : ' ' + deliveryTime.value}`, // DD.MM.YYYY HH:mm
     comment:
       process.env.NODE_ENV === 'development' ? 'ТЕСТОВЫЙ ЗАКАЗ В РЕЖИМЕ РАЗРАБОТКИ' : comment.value,
   } as IOrderRequestDto
+
+  if (deliveryDate.value) {
+    orderObject.time_to_delivery = `${dayjs(deliveryDate.value)
+      .tz(zoneData.value.organization?.timezone)
+      .format('DD.MM.YYYY')}${deliveryTime.value === '1' ? '' : ' ' + deliveryTime.value}`
+    // DD.MM.YYYY HH:mm
+  }
 
   if (zoneData.value.isDelivery) {
     orderObject.entrance = entrance.value

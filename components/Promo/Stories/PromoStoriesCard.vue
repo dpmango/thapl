@@ -5,21 +5,37 @@
     </div>
 
     <div class="story__content">
-      <div v-if="story.header" class="story__title">
-        <div class="h2-title" :style="storyStyles.header">{{ story.header }}</div>
+      <div
+        v-if="story.action && buttonDomPosition === 'before'"
+        v-tooltip="{ content: 'Скопировано', shown: showCopyTooltip, triggers: [] }"
+        class="story__action"
+        :style="storyStyles.buttonXY"
+      >
+        <UiButton block size="large" :style="storyStyles.button" @click="handleActionClick">
+          {{ story.button_text }} {{ story.button_vertical_alignment }}
+        </UiButton>
       </div>
 
-      <div v-if="story.text" class="story__text">
-        <div class="h4-title" :style="storyStyles.text">{{ story.text }}</div>
+      <div class="story__content-wrapper" :style="storyStyles.contentY">
+        <span v-if="story.header" class="story__title" :style="storyStyles.contentX">
+          <span class="h2-title" :style="storyStyles.header">
+            {{ story.header }} {{ story.header_vertical_alignment }}
+          </span>
+        </span>
+
+        <div v-if="story.text" class="story__text">
+          <div class="h4-title" :style="storyStyles.text">{{ story.text }}</div>
+        </div>
       </div>
 
       <div
-        v-if="story.action"
+        v-if="story.action && buttonDomPosition === 'after'"
         v-tooltip="{ content: 'Скопировано', shown: showCopyTooltip, triggers: [] }"
         class="story__action"
+        :style="storyStyles.buttonXY"
       >
-        <UiButton size="large" :style="storyStyles.button" @click="handleActionClick">
-          {{ story.button_text }}
+        <UiButton block size="large" :style="storyStyles.button" @click="handleActionClick">
+          {{ story.button_text }} {{ story.button_vertical_alignment }}
         </UiButton>
       </div>
     </div>
@@ -27,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+import { StyleValue } from 'nuxt/dist/app/compat/capi'
 import { IStoriesDto } from '~/interface/Promo'
 import { copyToClipboard } from '#imports'
 import { useUiStore } from '~/store'
@@ -38,40 +55,116 @@ const props = defineProps<{
 const router = useRouter()
 const ui = useUiStore()
 
+const buttonDomPosition = computed(() => {
+  const { header_vertical_alignment: header, button_vertical_alignment: button } = props.story
+
+  let isBefore = false
+  if (header === 'center' && button === 'top') {
+    isBefore = true
+  } else if (header === 'bottom' && [null, 'center', 'top'].includes(button)) {
+    isBefore = true
+  } else if (button === 'top' && header !== 'top') {
+    isBefore = true
+  }
+
+  return isBefore ? 'before' : 'after'
+})
+
 const storyStyles = computed(() => {
   const {
     header_text_color,
     header_background_color,
-    header_vertical_aligment,
-    header_horisontal_aligment,
+    header_vertical_alignment,
+    header_horizontal_alignment,
     text_color,
     text_background_color,
-    text_vertical_aligment,
-    text_horisontal_aligment,
+    text_vertical_alignment,
+    text_horizontal_alignment,
     button_text_color,
     button_background_color,
-    button_horisontal_aligment,
-    button_vertical_aligment,
+    button_horizontal_alignment,
+    button_vertical_alignment,
   } = props.story
-  return {
+
+  const createAlignStyle = (
+    alignY?: typeof header_vertical_alignment,
+    alignX?: typeof header_horizontal_alignment
+  ) => {
+    const css = {} as any
+    if (alignY === 'bottom') {
+      css.marginTop = 'auto'
+    }
+    if (alignY === 'center') {
+      css.marginTop = 'auto'
+      css.marginBottom = 'auto'
+    }
+
+    if (alignX === 'center') {
+      css.marginLeft = 'auto'
+      css.marginRight = 'auto'
+    } else if (alignX === 'right') {
+      css.marginLeft = 'auto'
+    }
+
+    return css
+  }
+
+  const styles = {
     header: {
       color: header_text_color || '',
       backgroundColor: header_background_color || '',
-      textAlign: header_horisontal_aligment || 'left',
-      // horizontalAlign: header_vertical_aligment || '',
+      textAlign: header_horizontal_alignment || 'left',
     },
     text: {
       color: text_color || '',
       backgroundColor: text_background_color || '',
-      textAlign: text_horisontal_aligment || 'left',
-      // horizontalAlign: text_vertical_aligment || '',
+      textAlign: text_horizontal_alignment || 'left',
     },
     button: {
       color: button_text_color || '',
       backgroundColor: button_background_color || '',
-      textAlign: button_horisontal_aligment || 'left',
-      // horizontalAlign: button_vertical_aligment || '',
     },
+    contentY: {
+      ...createAlignStyle(header_vertical_alignment),
+    },
+    contentX: {
+      ...createAlignStyle(null, header_horizontal_alignment),
+    },
+    buttonXY: {
+      ...createAlignStyle(button_vertical_alignment, button_horizontal_alignment),
+    },
+  } as any
+
+  // фиксы при перекрытии стилей центрирования
+  if (header_vertical_alignment === 'center' && button_vertical_alignment === 'center') {
+    styles.contentY.marginBottom = '0px'
+    styles.buttonXY.marginTop = '0px'
+  }
+
+  if (header_vertical_alignment === 'center' && button_vertical_alignment === 'bottom') {
+    styles.contentY.marginBottom = '0px'
+  }
+
+  if (header_vertical_alignment === 'bottom' && button_vertical_alignment === 'center') {
+    styles.contentY.marginTop = '0px'
+  }
+  if (header_vertical_alignment === 'bottom' && button_vertical_alignment === 'bottom') {
+    styles.buttonXY.marginTop = '0px'
+  }
+
+  // оступы для фона текстов
+  if (styles.header.backgroundColor) {
+    styles.header.paddingLeft = '8px'
+    styles.header.paddingRight = '8px'
+  }
+
+  if (styles.text.backgroundColor) {
+    styles.text.paddingLeft = '8px'
+    styles.text.paddingRight = '8px'
+  }
+
+  return styles as {
+    [key: string]: StyleValue | undefined
   }
 })
 
@@ -151,18 +244,21 @@ const handleCopyClick = async (text: string) => {
     flex-direction: column;
     z-index: 2;
     padding: 40px 36px;
-    .h4-title {
-      margin-top: 1em;
-    }
+  }
+  &__content-wrapper {
+    display: flex;
+    flex-direction: column;
   }
   &__title {
-    margin-top: auto;
+    display: inline-flex;
+    border-radius: var(--button-border-radius);
   }
   &__text {
     margin-top: 1em;
+    border-radius: var(--button-border-radius);
   }
   &__action {
-    margin-top: 24px;
+    padding-top: 24px;
   }
 }
 
@@ -172,7 +268,7 @@ const handleCopyClick = async (text: string) => {
       padding: 32px 24px;
     }
     &__action {
-      margin-top: 16px;
+      padding-top: 16px;
     }
   }
 }
