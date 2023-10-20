@@ -21,7 +21,7 @@
       <template v-if="app_settings.privacy_link">со</template>
       <template v-else>c&nbsp;</template>
       <template v-if="app_settings.privacy_link">
-        <a :href="app_settings.privacy_link" target="_blank">
+        <a :href="buildLink(app_settings.privacy_link)" target="_blank">
           сбором и обработкой персональных данных
         </a>
         и

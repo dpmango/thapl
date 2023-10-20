@@ -17,7 +17,7 @@
 
       <div class="region__list">
         <li v-for="region in filteredList">
-          <a :href="`https://${region.domain}`" @click="(e) => handleRegionSelect(region, e)">
+          <a :href="buildLink(region.domain)" @click="(e) => handleRegionSelect(region, e)">
             {{ region.title }}
           </a>
         </li>
