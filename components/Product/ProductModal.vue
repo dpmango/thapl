@@ -32,7 +32,7 @@
                 </span>
               </div>
               <div
-                v-if="!displayProduct.packing_weights.startsWith('0')"
+                v-if="displayProduct.packing_weights.split(' ')[0][0] !== '0'"
                 class="product__weight text-s c-gray"
               >
                 {{ displayProduct.packing_weights }}

@@ -21,7 +21,7 @@
         {{ mod.label }}<template v-if="mod.value">: {{ mod.value }}</template>
       </span>
       <div
-        v-if="!renderProduct.packing_weights.startsWith('0')"
+        v-if="renderProduct.packing_weights.split(' ')[0][0] !== '0'"
         class="card__description text-s c-gray"
       >
         {{ renderProduct.packing_weights }}
