@@ -1,11 +1,11 @@
 <template>
   <li v-if="app_settings.app_store_link">
-    <a :href="app_settings.app_store_link">
+    <a :href="`https://${app_settings.app_store_link}`">
       <img src="~/assets/img/app-store.svg" alt="app store" />
     </a>
   </li>
   <li v-if="app_settings.play_store_link">
-    <a :href="app_settings.play_store_link">
+    <a :href="`https://${app_settings.play_store_link}`">
       <img src="~/assets/img/google-play.svg" alt="google play" />
     </a>
   </li>
