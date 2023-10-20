@@ -35,7 +35,8 @@ const props = defineProps({
 const ui = useUiStore()
 const { $env } = useNuxtApp()
 
-const { productPriceLabel } = useProductHelpers({ product: props.product })
+const productComputed = computed(() => props.product)
+const { productPriceLabel } = useProductHelpers({ product: productComputed })
 
 const handleProductClick = () => {
   ui.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })

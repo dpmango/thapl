@@ -157,7 +157,7 @@ const displayProduct = computed(() => {
   return productChildrenShown.value || product.value
 })
 
-const { productPriceLabel } = useProductHelpers({ product: displayProduct.value })
+const { productPriceLabel } = useProductHelpers({ product: displayProduct })
 
 // работа с определением представления товара (variants / options)
 const selectedVariants = ref([0, 0, 0])

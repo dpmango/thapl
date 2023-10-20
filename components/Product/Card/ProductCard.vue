@@ -70,7 +70,8 @@ const props = defineProps({
   },
 })
 
-const { productPriceLabel } = useProductHelpers({ product: props.product })
+const productComputed = computed(() => props.product)
+const { productPriceLabel } = useProductHelpers({ product: productComputed })
 
 const handleProductClick = () => {
   if (props.isGift) return

@@ -51,7 +51,7 @@ const { renderProduct, productPrice, productModifiersVerbose, productQuantityInC
     product: props.product,
   })
 
-const { productPriceLabel } = useProductHelpers({ product: renderProduct.value })
+const { productPriceLabel } = useProductHelpers({ product: renderProduct })
 </script>
 
 <style lang="scss" scoped>

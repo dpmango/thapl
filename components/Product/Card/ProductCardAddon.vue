@@ -56,7 +56,8 @@ const props = defineProps({
   },
 })
 
-const { productPriceLabel } = useProductHelpers({ product: props.product })
+const productComputed = computed(() => props.product)
+const { productPriceLabel } = useProductHelpers({ product: productComputed })
 
 const isProductInCart = computed(() => {
   return cartStore.productQuantityInCart(props.product.id)
