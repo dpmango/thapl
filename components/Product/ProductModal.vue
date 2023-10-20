@@ -31,7 +31,10 @@
                   &nbsp;(В корзине уже {{ countWithModifiersInCart }})
                 </span>
               </div>
-              <div class="product__weight text-s c-gray">
+              <div
+                v-if="!displayProduct.packing_weights.startsWith('0')"
+                class="product__weight text-s c-gray"
+              >
                 {{ displayProduct.packing_weights }}
               </div>
 

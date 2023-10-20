@@ -20,7 +20,10 @@
       >
         {{ mod.label }}<template v-if="mod.value">: {{ mod.value }}</template>
       </span>
-      <div v-if="renderProduct.packing_weights" class="card__description text-s c-gray">
+      <div
+        v-if="!renderProduct.packing_weights.startsWith('0')"
+        class="card__description text-s c-gray"
+      >
         {{ renderProduct.packing_weights }}
       </div>
       <div v-if="isPreorder" class="card__preorder text-s c-primary">

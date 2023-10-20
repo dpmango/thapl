@@ -19,7 +19,7 @@
       <div class="card__title text-s fw-500">
         <UiAtomLongWords :text="product.title" />
       </div>
-      <div v-if="product.packing_weights" class="card__description text-s c-gray">
+      <div v-if="!product.packing_weights.startsWith('0')" class="card__description text-s c-gray">
         {{ product.packing_weights }}
       </div>
     </div>
