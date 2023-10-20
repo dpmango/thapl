@@ -82,9 +82,17 @@
         </div>
 
         <div class="col header__actions row">
-          <div v-if="!$env.useHeaderMenu && session.app_settings.loyalty?.enabled" class="col">
-            <NuxtLink to="/ui" class="action">
-              <div class="action__icon">
+          <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
+            <div v-for="link in app_settings?.site_header_menu" :key="link.id" class="col">
+              <div class="action">
+                <UiAtomLinkType class="action__text" :link="link" />
+              </div>
+            </div>
+          </template>
+
+          <div v-if="session.app_settings.loyalty?.enabled" class="col">
+            <NuxtLink to="/loyalty" class="action">
+              <div v-if="!$env.useHeaderMenu" class="action__icon">
                 <nuxt-icon name="heart" />
                 <div v-if="isAuthenticated && user.balance" class="action__counter _top">
                   {{ user.balance }}
@@ -93,14 +101,6 @@
               <div class="action__text">{{ $env.loyaltyTitle }}</div>
             </NuxtLink>
           </div>
-
-          <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
-            <div v-for="link in app_settings?.site_header_menu" :key="link.id" class="col">
-              <div class="action">
-                <UiAtomLinkType class="action__text" :link="link" />
-              </div>
-            </div>
-          </template>
 
           <div v-if="!isAuthenticated" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'auth' })">
