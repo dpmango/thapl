@@ -65,15 +65,11 @@
               <ProductCardEnergyStats :product="displayProduct" class="card__stat" />
 
               <div
-                v-if="displayProduct.modifier_groups?.length"
+                v-if="displayModifiers?.length"
                 ref="productModifiers"
                 class="product__modifiers"
               >
-                <div
-                  v-for="(group, idx) in displayProduct.modifier_groups"
-                  :key="idx"
-                  class="product__modifier"
-                >
+                <div v-for="(group, idx) in displayModifiers" :key="idx" class="product__modifier">
                   <div class="h6-title">{{ group.title }}</div>
 
                   <div
@@ -161,6 +157,7 @@ const displayProduct = computed(() => {
 })
 
 const { productPriceLabel } = useProductHelpers({ product: displayProduct })
+const { zoneData } = useCheckout()
 
 // работа с определением представления товара (variants / options)
 const selectedVariants = ref([0, 0, 0])
@@ -187,6 +184,20 @@ const selectVariant = (groupId, v) => {
 }
 
 // модификаторы товара
+const modifiersWithStopList = computed(() => {
+  const groups = displayProduct.value?.modifier_groups || []
+  if (!zoneData.value.organization?.modifiers_stop_list) return groups
+
+  return groups.map((g) => ({
+    ...g,
+    items: g.items.filter((i) => !zoneData.value.organization?.modifiers_stop_list.includes(i.id)),
+  }))
+})
+
+const displayModifiers = computed(() => {
+  return modifiersWithStopList.value.filter((x) => x.items.length)
+})
+
 interface IModifierItemGrouped extends ICartModifier {
   groupID: number
 }
@@ -224,8 +235,8 @@ const changeModifier = (opt, groupID, isRadio) => {
 
 const validateModifiers = () => {
   const errors = [] as number[]
-  if (displayProduct.value?.modifier_groups) {
-    displayProduct.value?.modifier_groups.forEach((group, idx) => {
+  if (displayModifiers.value.length) {
+    displayModifiers.value.forEach((group, idx) => {
       const itemsInGroup = modifierGroups.value.filter((x) => x.groupID === idx)
 
       if (itemsInGroup.length > group.max_items) {

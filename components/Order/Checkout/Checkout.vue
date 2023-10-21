@@ -581,8 +581,8 @@ const showASAPTime = computed(() => {
 const deliveryTimeSlots = computed(() => {
   const timeSlots = slotsData.value.hasSlots
     ? zoneData.value.isDelivery
-      ? zoneData.value?.organization?.default_delivery_time_slots ?? []
-      : zoneData.value?.organization?.default_takeaway_time_slots ?? []
+      ? zoneData.value.organization?.default_delivery_time_slots ?? []
+      : zoneData.value.organization?.default_takeaway_time_slots ?? []
     : []
 
   return timeSlots.map((item) => {
@@ -945,7 +945,7 @@ const buildRequestObject = () => {
   const orderObject = {
     name: name.value,
     phone: phone.value,
-    order_type: zoneData.value?.orderType || 0,
+    order_type: zoneData.value.orderType || 0,
     address: address.value,
     lat: currentAddress.value?.latitude,
     lng: currentAddress.value?.longitude,
