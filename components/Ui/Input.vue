@@ -235,6 +235,7 @@ const setInputOffsets = () => {
   // if (props.iconPosition === 'left') return
   try {
     if (iconsRef.value && inputRef.value) {
+      console.log(iconsRef.value.offsetWidth)
       const iconsWidth = iconsRef.value.offsetWidth + 15 + 10
       inputRef.value.style[
         `padding${capitalizeFirstLetter(props.iconPosition)}`
@@ -449,6 +450,7 @@ onBeforeUnmount(() => {
   }
 
   &__icon {
+    min-width: 16px;
     color: var(--color-disabled);
     transition: color 0.25s $ease, opacity 0.25s $ease;
     &._error {
