@@ -1,7 +1,7 @@
 <template>
   <div class="modal" :class="modifiers" @click="closeModal">
     <div class="modal__wrapper" @click.prevent.stop>
-      <div v-if="modalParams?.closable" class="modal__close" @click="closeModal">
+      <div v-if="isClosable" class="modal__close" @click="closeModal">
         <nuxt-icon name="close" />
       </div>
       <div class="modal__content">
@@ -63,8 +63,16 @@ const isModalActive = computed(() => {
   return activeModal.value.includes(props.name)
 })
 
+const isClosable = computed(() => {
+  if (modalParams.value?.closable !== undefined) {
+    return modalParams.value?.closable
+  }
+
+  return true
+})
+
 const closeModal = () => {
-  if (modalParams.value?.closable === false) {
+  if (!isClosable.value) {
     return false
   }
 

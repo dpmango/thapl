@@ -61,7 +61,8 @@ const handleCopyClick = async () => {
     flex: 1 1 auto;
     padding-right: 16px;
     min-width: 1px;
-    @include text-overflow;
+    overflow-wrap: break-word;
+    // @include text-overflow;
   }
   &__action {
     margin: 8px 0;

@@ -51,12 +51,13 @@ const searchedProducts = ref<IProduct[]>([])
 const setSearch = (v) => {
   search.value = v
 
-  if ($env.catalogType === 'singlepage') {
-    const searched = findInCatalog(v)
-    searchedProducts.value = searched
-  } else {
-    requestUpdates()
-  }
+  requestUpdates()
+  // if ($env.catalogType === 'singlepage') {
+  //   const searched = findInCatalog(v)
+  //   searchedProducts.value = searched
+  // } else {
+  //   requestUpdates()
+  // }
 }
 
 // backend-based search
