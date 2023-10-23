@@ -421,7 +421,6 @@ watch(
         // Установка критичных параметров из того что было в карточке
         // и запрос на получение полных параметров
         if (params.critical) {
-          $log.log('Opened with params', params)
           product.value = { ...params.critical }
           productChildrenShown.value = null
         }

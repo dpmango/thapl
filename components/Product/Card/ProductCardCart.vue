@@ -43,8 +43,9 @@
           :value="
             isAddProduct
               ? productQuantityInCartWithModifiers || additiveCount
-              : productQuantityInCartWithModifiers
+              : productQuantityInCartWithModifiers || 0
           "
+          :weight="renderProduct.sale_by_weight ? renderProduct.min_weight || 100 : null"
           @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
         <template v-else-if="!isProductHardStopped">

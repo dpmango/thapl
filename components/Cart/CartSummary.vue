@@ -12,12 +12,11 @@
         <div class="cart__delivery-row">
           <UiProgress class="cart__delivery-progress" :width="freeDeliveryData.progress" />
           <div v-if="freeDeliveryData.nextPromo" class="cart__delivery-next">
-            <span :class="[freeDeliveryData.nextPromo.progress >= 15 && '_active']" />
-            <span :class="[freeDeliveryData.nextPromo.progress >= 30 && '_active']" />
-            <span :class="[freeDeliveryData.nextPromo.progress >= 45 && '_active']" />
-            <span :class="[freeDeliveryData.nextPromo.progress >= 60 && '_active']" />
-            <span :class="[freeDeliveryData.nextPromo.progress >= 75 && '_active']" />
-            <span :class="[freeDeliveryData.nextPromo.progress >= 99 && '_active']" />
+            <span
+              v-for="step in [15, 30, 45, 60, 75, 99]"
+              :key="step"
+              :class="[freeDeliveryData.nextPromo.progress >= step && '_active']"
+            />
           </div>
         </div>
 

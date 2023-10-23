@@ -6,6 +6,7 @@
     <UiPlusMinus
       v-else
       size="medium"
+      :weight="product.sale_by_weight ? product.min_weight || 100 : null"
       :value="productQuantityWithModifier"
       @on-change="handleQuantityChange"
     />

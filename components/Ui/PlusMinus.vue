@@ -1,13 +1,21 @@
 <template>
-  <div class="plusminus" :class="[`_${size}`, disabled && '_disabled', asInput && '_asinput']">
+  <div
+    class="plusminus"
+    :class="[`_${size}`, disabled && '_disabled', asInput && '_asinput', weight && ' _weight']"
+  >
     <i class="plusminus__minus" @click="handleMinusClick" />
+
     <input
+      v-if="weight === null"
       class="plusminus__input"
       :value="value"
       inputmode="numeric"
       @keydown="preventInput"
       @input="(e) => handleChange(e.target.value)"
     />
+    <span v-else class="plusminus__input">
+      {{ weightDisplay }}
+    </span>
     <i class="plusminus__plus" @click="handlePlusClick" />
   </div>
 </template>
@@ -15,8 +23,13 @@
 <script setup lang="ts">
 const props = defineProps({
   value: {
-    type: [Number, null],
+    type: Number,
     required: true,
+    default: 1,
+  },
+  weight: {
+    type: Number as PropType<number | null>,
+    default: null,
   },
   disabled: {
     type: Boolean,
@@ -42,6 +55,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['onChange'])
+
+const weightDisplay = computed(() => {
+  const weight = props.weight || (100 as number)
+
+  console.log(weight)
+  return `${weight * props.value} г`
+})
 
 const handlePlusClick = () => {
   handleChange(props.value + 1)
@@ -190,6 +210,16 @@ const handleChange = (value) => {
       }
     }
   }
+
+  &._weight {
+    max-width: 100%;
+    .plusminus {
+      &__input {
+        white-space: nowrap;
+      }
+    }
+  }
+
   &._disabled {
     pointer-events: none;
     .plusminus {

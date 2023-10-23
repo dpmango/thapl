@@ -220,7 +220,7 @@
                 :as-input="true"
                 :min-value="0"
                 :max-value="25"
-                :value="personsCount"
+                :value="+personsCount"
                 @on-change="(v) => setFieldValue('personsCount', v)"
               />
             </div>
