@@ -25,7 +25,7 @@ export const useDeliveryStore = defineStore('delivery', {
     }
   },
   persist: {
-    paths: ['currentAddress', 'takeawayOrganization'],
+    paths: ['currentAddress'],
   },
   getters: {
     currentOrderType(state) {
@@ -153,6 +153,7 @@ export const useDeliveryStore = defineStore('delivery', {
 
     getStoredAddresses() {
       const stored = localStorageGet('userAddress') || []
+
       this.userAddress = [...stored]
     },
     saveAddress(payload: IUserAddress) {

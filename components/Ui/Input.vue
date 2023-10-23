@@ -235,7 +235,6 @@ const setInputOffsets = () => {
   // if (props.iconPosition === 'left') return
   try {
     if (iconsRef.value && inputRef.value) {
-      console.log(iconsRef.value.offsetWidth)
       const iconsWidth = iconsRef.value.offsetWidth + 15 + 10
       inputRef.value.style[
         `padding${capitalizeFirstLetter(props.iconPosition)}`
