@@ -94,11 +94,12 @@
                       v-for="option in group.items"
                       :key="option.id"
                       class="product__modifier-option mod-option text-m"
-                      @click="changeModifier(option, idx, group.min_items > 0)"
+                      @click="changeModifier(option, idx, group.min_items === 0)"
                     >
                       <span class="mod-option__name">{{ option.title }}</span>
                       <span v-if="option.price" class="mod-option__price">
-                        +{{ formatPrice(option.price, 0, false) }}
+                        <template v-if="option.price > 0">+</template
+                        >{{ formatPrice(option.price, 0, false) }}
                       </span>
                       <UiCheckbox
                         class="mod-option__radio"
@@ -163,7 +164,13 @@ const displayProduct = computed(() => {
   return productChildrenShown.value || product.value
 })
 
-const { productPriceLabel } = useProductHelpers({ product: displayProduct })
+interface IModifierItemGrouped extends ICartModifier {
+  groupID: number
+}
+
+const modifierGroups = ref([]) as Ref<IModifierItemGrouped[]>
+
+const { productPriceLabel } = useProductHelpers({ product: displayProduct, modifierGroups })
 const { zoneData } = useCheckout()
 
 // работа с определением представления товара (variants / options)
@@ -223,17 +230,13 @@ const noRequiredModifiersAvailable = computed(() => {
   return condition
 })
 
-interface IModifierItemGrouped extends ICartModifier {
-  groupID: number
-}
-
-const modifierGroups = ref([]) as Ref<IModifierItemGrouped[]>
 const modifierErrors = ref([]) as Ref<number[]>
 const modifierShowErorrs = ref(false)
 
 const changeModifier = (opt, groupID, isRadio) => {
   const hasAdded = modifierGroups.value.some((x) => x.id === opt.id && x.groupID === groupID)
-  const hasGroup = modifierGroups.value.some((x) => x.groupID === groupID)
+  const groupData = modifierGroups.value.find((x) => x.groupID === groupID)
+  const hasGroup = !!groupData
 
   // радиокнопки и группа
   if (isRadio && hasGroup) {

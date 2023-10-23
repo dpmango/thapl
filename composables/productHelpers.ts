@@ -1,8 +1,19 @@
 import { Ref } from 'vue'
 import { IProduct, IModifierItem } from '~/interface/Product'
 import { formatPrice } from '#imports'
+import { ICartModifier } from 'interface'
 
-export const useProductHelpers = ({ product }: { product: Ref<IProduct | null> }) => {
+interface IModifierItemGrouped extends ICartModifier {
+  groupID: number
+}
+
+export const useProductHelpers = ({
+  product,
+  modifierGroups,
+}: {
+  product: Ref<IProduct | null>
+  modifierGroups?: Ref<IModifierItemGrouped[]>
+}) => {
   const productPriceLabel = computed(() => {
     if (!product.value) return formatPrice(0)
 
@@ -13,6 +24,12 @@ export const useProductHelpers = ({ product }: { product: Ref<IProduct | null> }
 
       price = product.value.price * (minWeight / 1000)
       postfix = ` / ${minWeight} г`
+    }
+
+    if (modifierGroups?.value.length) {
+      modifierGroups.value.forEach((x) => {
+        price += x.price
+      })
     }
 
     return formatPrice(price) + postfix
