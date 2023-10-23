@@ -338,11 +338,13 @@ export const useCartStore = defineStore('cart', {
         },
       }).catch((err) => useCatchError(err, '', true))) as ICheckStopListDto | null
 
+      let stoppedProductIds = [] as number[]
+
       if (res?.stopped_items && res.stopped_items.length) {
         // проверка стоплистов
         const stoppedItems = this.cart.filter((x) => res.stopped_items.includes(x.id))
 
-        this.cartStoped = stoppedItems.map((x) => x.id)
+        stoppedProductIds = stoppedItems.map((x) => x.id)
 
         if (stopType === 1) {
           stoppedItems.forEach((x) => {
@@ -360,6 +362,17 @@ export const useCartStore = defineStore('cart', {
           // полный предзаказ
         }
       }
+
+      // стопы по модификаторам
+      if (res?.modifiers_stop_list && res.modifiers_stop_list.length) {
+        const stoppedItems = this.cart.filter((x) =>
+          x.modifiers?.some((y) => res.modifiers_stop_list.includes(y.id))
+        )
+
+        stoppedProductIds = [...stoppedProductIds, ...stoppedItems.map((x) => x.id)]
+      }
+
+      this.cartStoped = [...new Set(stoppedProductIds)]
 
       return res
     },

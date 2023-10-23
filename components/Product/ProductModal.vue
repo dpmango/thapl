@@ -114,7 +114,14 @@
             </div>
           </div>
           <div class="product__cta">
+            <p
+              v-if="noRequiredModifiersAvailable"
+              class="product__cta-disabled text-l fw-500 c-red"
+            >
+              К сожалению эта позиция недоступна
+            </p>
             <ProductCardAddToCart
+              v-else
               :product="displayProduct"
               :modifiers="modifierGroups"
               btn-theme="primary"
@@ -196,6 +203,24 @@ const modifiersWithStopList = computed(() => {
 
 const displayModifiers = computed(() => {
   return modifiersWithStopList.value.filter((x) => x.items.length)
+})
+
+const noRequiredModifiersAvailable = computed(() => {
+  let condition = false
+
+  const modifierGroups = displayProduct.value?.modifier_groups
+  const modifierStops = zoneData.value.organization?.modifiers_stop_list
+
+  if (modifierGroups?.length && modifierStops?.length) {
+    modifierGroups?.forEach((group) => {
+      if (group.min_items !== 0) {
+        const groupItemIds = group.items.map((x) => x.id)
+        condition = groupItemIds.every((id) => modifierStops.includes(id))
+      }
+    })
+  }
+
+  return condition
 })
 
 interface IModifierItemGrouped extends ICartModifier {
@@ -538,6 +563,9 @@ watch(
       width: 100%;
       background: var(--color-bg-darken);
     }
+  }
+  &__cta-disabled {
+    text-align: center;
   }
 }
 
