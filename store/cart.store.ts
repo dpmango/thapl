@@ -62,8 +62,7 @@ export const useCartStore = defineStore('cart', {
         if (product) {
           let price = product.price
           if (product.sale_by_weight) {
-            const minWeight = product.min_weight || 100
-            price = price * (minWeight / 1000)
+            price = price / 1000
           }
 
           const modifiersTotal =
@@ -91,8 +90,6 @@ export const useCartStore = defineStore('cart', {
     },
   },
   actions: {
-    // TODO баг когда q = 0 (вернуть товар) и нажимаем добавить в коризну из продуктов
-    // changeQuantity в коризне vs addToCart в списке
     async addToCart(product: IProduct, quantity = 1, modifiers: ICartModifier[]) {
       const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
       if (modifiers?.length) {

@@ -6,8 +6,10 @@
     <UiPlusMinus
       v-else
       size="medium"
-      :weight="product.sale_by_weight ? product.min_weight || 100 : null"
       :value="productQuantityWithModifier"
+      :min-weight="plusminusParams.min"
+      :max-value="plusminusParams.max"
+      :step="plusminusParams.step"
       @on-change="handleQuantityChange"
     />
   </div>
@@ -46,6 +48,23 @@ const props = defineProps({
   },
 })
 
+const plusminusParams = computed(() => {
+  let min = 0
+  let max = 99
+  let step = 1
+  if (props.product.sale_by_weight) {
+    min = props.product.min_weight || 100
+    max = props.product.max_weight || 100 * 1000
+    step = props.product.weight_step || 100
+  }
+
+  return {
+    min,
+    max,
+    step,
+  }
+})
+
 const productQuantityWithModifier = computed(() => {
   const count = productsCountInCart.value(props.product.id)
   if (count > 1 && !props.modifiers.length) {
@@ -67,7 +86,17 @@ const handleSelect = () => {
     emit('onBeforeAdd')
     return
   }
-  cartStore.addToCart(props.product, 1, props.modifiers)
+
+  // весовые продукты добавляются граммами
+  let quantity = 1
+  if (props.product.sale_by_weight) {
+    quantity = props.product.min_weight || 100
+    // if (props.product.max_weight && props.product.max_weight >= quantity) {
+    //   quantity = props.product.max_weight
+    // }
+  }
+
+  cartStore.addToCart(props.product, quantity, props.modifiers)
 }
 
 const handleQuantityChange = (n: number) => {

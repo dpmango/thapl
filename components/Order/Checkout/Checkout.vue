@@ -586,9 +586,19 @@ const deliveryTimeSlots = computed(() => {
     : []
 
   return timeSlots.map((item) => {
+    let start = item.start.split(':')
+    let end = item.end.split(':')
+
+    if (start.length === 3) {
+      start = start.slice(0, 2).join(':')
+    }
+    if (end.length === 3) {
+      end = end.slice(0, 2).join(':')
+    }
+
     return {
       id: item.start,
-      label: `${item.start} - ${item.end}`,
+      label: `${start} - ${end}`,
     }
   })
 })

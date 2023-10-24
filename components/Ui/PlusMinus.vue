@@ -1,12 +1,12 @@
 <template>
   <div
     class="plusminus"
-    :class="[`_${size}`, disabled && '_disabled', asInput && '_asinput', weight && ' _weight']"
+    :class="[`_${size}`, disabled && '_disabled', asInput && '_asinput', minWeight && ' _weight']"
   >
     <i class="plusminus__minus" @click="handleMinusClick" />
 
     <input
-      v-if="weight === null"
+      v-if="minWeight === 0"
       class="plusminus__input"
       :value="value"
       inputmode="numeric"
@@ -27,9 +27,9 @@ const props = defineProps({
     required: true,
     default: 1,
   },
-  weight: {
-    type: Number as PropType<number | null>,
-    default: null,
+  minWeight: {
+    type: Number,
+    default: 0,
   },
   disabled: {
     type: Boolean,
@@ -42,6 +42,10 @@ const props = defineProps({
   minValue: {
     type: Number,
     default: 0,
+  },
+  step: {
+    type: Number,
+    default: 1,
   },
   size: {
     type: String,
@@ -57,18 +61,15 @@ const props = defineProps({
 const emit = defineEmits(['onChange'])
 
 const weightDisplay = computed(() => {
-  const weight = props.weight || (100 as number)
-
-  console.log(weight)
-  return `${weight * props.value} г`
+  return formatGramm(props.value)
 })
 
 const handlePlusClick = () => {
-  handleChange(props.value + 1)
+  handleChange(props.value + props.step)
 }
 
 const handleMinusClick = () => {
-  handleChange(props.value - 1)
+  handleChange(props.value - props.step)
 }
 
 const preventInput = (e) => {
@@ -86,7 +87,14 @@ const handleChange = (value) => {
   let emitValue = value
 
   if (!value) emitValue = 0
-  if (value <= props.minValue) emitValue = props.minValue
+
+  // исключения минимального веса для весовый товаров
+  if (props.minWeight) {
+    if (value < props.minWeight) emitValue = 0
+  } else if (value <= props.minValue) {
+    emitValue = props.minValue
+  }
+
   if (value > props.maxValue) emitValue = props.maxValue
   if (!Number.isFinite(+value)) emitValue = props.value
 

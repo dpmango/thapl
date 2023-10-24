@@ -45,7 +45,9 @@
               ? productQuantityInCartWithModifiers || additiveCount
               : productQuantityInCartWithModifiers || 0
           "
-          :weight="renderProduct.sale_by_weight ? renderProduct.min_weight || 100 : null"
+          :min-weight="plusminusParams.min"
+          :max-value="plusminusParams.max"
+          :step="plusminusParams.step"
           @on-change="(n) => handleQuantityChange(n, isAddProduct)"
         />
         <template v-else-if="!isProductHardStopped">
@@ -109,6 +111,23 @@ const isAddProduct = computed(() => {
 
 const isPreorder = computed(() => {
   return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
+})
+
+const plusminusParams = computed(() => {
+  let min = 0
+  let max = 99
+  let step = 1
+  if (renderProduct.value.sale_by_weight) {
+    min = renderProduct.value.min_weight || 100
+    max = renderProduct.value.max_weight || 100 * 1000
+    step = renderProduct.value.weight_step || 100
+  }
+
+  return {
+    min,
+    max,
+    step,
+  }
 })
 
 const isProductHardStopped = computed(() => {

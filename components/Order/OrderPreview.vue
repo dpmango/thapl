@@ -10,7 +10,12 @@
       <div v-for="product in orders.first" :key="product.catalog_item.id" class="order__row">
         <span class="order__label">
           {{ product.catalog_item.title }}
-          <span v-if="product.amount > 1" class="c-gray">× {{ product.amount }}</span>
+          <span v-if="product.amount > 1" class="c-gray"
+            >×
+            {{
+              product.catalog_item.sale_by_weight ? formatGramm(product.amount) : product.amount
+            }}</span
+          >
         </span>
         <i class="order__sep"></i>
         <span class="order__value c-primary">{{ getPriceLabel(product) }}</span>
@@ -98,9 +103,7 @@ const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = us
 const getPriceLabel = (product: IOrderCart) => {
   let price = product.catalog_item.price
   if (product.catalog_item.sale_by_weight) {
-    const minWeight = product.catalog_item.min_weight || 100
-
-    price = product.catalog_item.price * (minWeight / 1000)
+    price = product.catalog_item.price / 1000
   }
 
   return formatPrice(price * product.amount)
@@ -165,8 +168,7 @@ const orders = computed(() => {
       price: products.reduce((acc, x) => {
         let price = x.catalog_item.price
         if (x.catalog_item.sale_by_weight) {
-          const minWeight = x.catalog_item.min_weight || 100
-          price = price * (minWeight / 1000)
+          price = price / 1000
         }
 
         acc = acc + price * x.cartItem.count

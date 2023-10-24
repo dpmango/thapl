@@ -22,6 +22,16 @@ export const formatPrice = (num: any, trailingZeros = 0, showFree = true) => {
   return `${value} ₽`
 }
 
+export const formatGramm = (num: number | null) => {
+  if (!num) return '0 г'
+
+  if (num >= 1000) {
+    const kg = num / 1000
+    return `${kg} кг`
+  }
+  return `${num} г`
+}
+
 export const spacesRegex = /\B(?=(\d{3})+(?!\d))/g
 
 export const Plurize = (number, one, two, five) => {

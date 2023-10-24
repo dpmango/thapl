@@ -4,7 +4,12 @@
       {{ renderProduct.title }}
       <span v-if="isGift" class="c-gray">Подарок </span>
       <span v-else-if="productQuantityInCartWithModifiers !== 1" class="c-gray">
-        × {{ productQuantityInCartWithModifiers }}&nbsp;
+        ×
+        {{
+          renderProduct.sale_by_weight
+            ? formatGramm(productQuantityInCartWithModifiers)
+            : productQuantityInCartWithModifiers
+        }}
       </span>
       <div
         v-for="(mod, idx) in productModifiersVerbose"
