@@ -69,11 +69,6 @@
         Повторить заказ
       </UiButton>
     </div>
-
-    <OrderReviewModal
-      v-if="actions && $env.useTestimonials && order.user_can_send_review"
-      :id="order.id"
-    />
   </div>
 </template>
 
@@ -96,8 +91,7 @@ const props = defineProps({
 })
 
 const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = useOrder({
-  orderID: props.order.id,
-  cart: props.order.cart,
+  order: props.order,
 })
 
 const getPriceLabel = (product: IOrderCart) => {

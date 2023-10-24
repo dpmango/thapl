@@ -98,7 +98,7 @@ const fetchQuestions = async () => {
   }))
 
   const quizCombined = [...quizProducts, ...data.additional_questions] as IQuestion[]
-  $log.log({ quizCombined })
+  // $log.log({ quizCombined })
 
   quizQuestions.value = quizCombined
   activeQuizIdx.value = 0
@@ -173,6 +173,10 @@ watch(
   (newid) => {
     if (modal.value.includes('review') && newid) {
       fetchQuestions()
+    } else {
+      quizQuestions.value = []
+      activeQuizIdx.value = 0
+      quizEnded.value = false
     }
   }
 )

@@ -10,7 +10,7 @@
   <InfoContactModal />
   <ProductModal />
   <ProductSearchOverlay />
-  <OrderReviewModal />
+  <OrderReviewModal v-if="$env.useTestimonials" />
 </template>
 
 <script setup lang="ts">

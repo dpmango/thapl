@@ -94,8 +94,7 @@ lastOrder.value = lastOrderData.value
 $log.log('🧙‍♂️ ASYNC LAST ORDER', { lastOrder: lastOrder.value })
 
 const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = useOrder({
-  orderID: lastOrder.value?.id || null,
-  cart: lastOrder.value?.cart || [],
+  order: lastOrder.value,
 })
 
 // Запрос обновлений каждую минуту

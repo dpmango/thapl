@@ -1,10 +1,10 @@
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import { IOrderCart } from '~/interface/Order'
+import { IOrder, IOrderCart } from '~/interface/Order'
 import { IOrderPaymentDataDto } from '~/interface/Dto/Order.dto'
 import { openExternalLink } from '#imports'
 import { useCartStore, useProfileStore, useUiStore } from '~/store'
 
-export const useOrder = ({ orderID, cart }: { orderID: number | null; cart: IOrderCart[] }) => {
+export const useOrder = ({ order }: { order: IOrder }) => {
   const profileStore = useProfileStore()
   const cartStore = useCartStore()
   const ui = useUiStore()
@@ -17,7 +17,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number | null; cart: IOrd
       method: 'POST',
       headers: useHeaders(),
       body: {
-        ids: [orderID],
+        ids: [order.id],
       },
     }).catch((err) => useCatchError(err, 'Ошибка. Обратитесь к администратору'))
 
@@ -30,7 +30,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number | null; cart: IOrd
       method: 'POST',
       headers: useHeaders(),
       params: {
-        id: orderID,
+        id: order.id,
       },
     }).catch((err) =>
       useCatchError(err, 'Ошибка платежного шлюза. Обратитесь к администратору')
@@ -45,7 +45,9 @@ export const useOrder = ({ orderID, cart }: { orderID: number | null; cart: IOrd
 
   // оценить заказ - модальное
   const handleRate = () => {
-    ui.setModal({ name: 'review', params: { id: orderID } })
+    if (order.user_can_send_review) {
+      ui.setModal({ name: 'review', params: { id: order.id } })
+    }
   }
 
   // TODO показать курьера на карте
@@ -58,7 +60,7 @@ export const useOrder = ({ orderID, cart }: { orderID: number | null; cart: IOrd
   const handleRepeat = () => {
     cartStore.resetCart()
 
-    cart.forEach((x) => {
+    order.cart.forEach((x) => {
       cartStore.addToCart(
         x.catalog_item,
         x.cartItem.count,
