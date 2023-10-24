@@ -9,7 +9,6 @@ export const useSessionStore = defineStore('session', {
       user_token: null as string | null,
       user: {} as IUser,
       app_settings: {} as IAppSettings,
-
       phone: '' as string,
     }
   },

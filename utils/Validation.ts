@@ -69,7 +69,7 @@ export const validAdress = (v: string | null) => {
   return value.split(' ').length >= 2 && /\d+/.test(value)
 }
 
-export function validDate(value: string | null, dateNow?: string) {
+export function validDate(value: string | null, dateNow?: string | Date) {
   value = value || ''
   const djsObj = dayjs(value, 'DD/MM/YYYY', true)
 

@@ -24,7 +24,11 @@
         <i v-if="loading" class="input__icon _loading">
           <nuxt-icon name="loading" />
         </i>
-        <i v-if="value.length && clearable" class="input__icon _clear" @click="clearInput">
+        <i
+          v-if="!showError && value.length && clearable"
+          class="input__icon _clear"
+          @click="clearInput"
+        >
           <nuxt-icon name="close" />
         </i>
         <i v-if="showError && clearable" class="input__icon _error" @click="clearInput">

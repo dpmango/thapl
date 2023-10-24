@@ -76,6 +76,7 @@
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useToast } from 'vue-toastification/dist/index.mjs'
+import dayjs from 'dayjs'
 import { useSessionStore } from '~/store'
 import { clearString, validPhone, validEmail, validDate, dateMask } from '#imports'
 
@@ -88,10 +89,10 @@ const router = useRouter()
 const { errors, setErrors, setFieldValue, validate } = useForm({
   initialValues: {
     name: user.value.name || '',
-    surname: user.value.surname || '',
+    // surname: user.value.surname || '',
     phone: user.value.username || '',
     email: user.value.email || '',
-    birthday: user.value.birthday || '',
+    birthday: user.value.birthday ? dayjs(user.value.birthday).format('DD/MM/YYYY') : '',
   },
 })
 
@@ -100,10 +101,10 @@ const { value: name, meta: nameMeta } = useField<string>('name', (v) => {
   return clearString(v).length >= 2 ? true : 'Введите имя'
 })
 
-const { value: surname, meta: surnameMeta } = useField<string>('surname', (v) => {
-  if (!clearString(v)) return true
-  return clearString(v).length >= 2 ? true : 'Введите фамилию'
-})
+// const { value: surname, meta: surnameMeta } = useField<string>('surname', (v) => {
+//   if (!clearString(v)) return true
+//   return clearString(v).length >= 2 ? true : 'Введите фамилию'
+// })
 
 const { value: phone, meta: phoneMeta } = useField<string>('phone', (v) => {
   if (!clearString(v)) return true
@@ -117,7 +118,7 @@ const { value: email, meta: emailMeta } = useField<string>('email', (v) => {
 })
 
 const tDate = new Date()
-tDate.setFullYear(tDate.getFullYear() - 18)
+tDate.setFullYear(tDate.getFullYear() - 13)
 
 const { value: birthday, meta: birthdayMeta } = useField<string>('birthday', (v) => {
   if (!clearString(v)) return true
@@ -138,10 +139,10 @@ const saveProfile = async () => {
 
   const requestObj = {
     name: name.value,
-    surname: surname.value,
+    // surname: surname.value,
     email: email.value,
     phone: phone.value,
-    birthday: birthday.value,
+    birthday: birthday.value ? dayjs(birthday.value, 'DD/MM/YYYY').toDate() : '',
   }
 
   const response = await useApi('profile/set-user-data', {
