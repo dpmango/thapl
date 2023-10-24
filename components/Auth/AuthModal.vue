@@ -8,7 +8,19 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useSessionStore } from '~/store'
 const view = ref('phone')
+
+const session = useSessionStore()
+const { isAuthenticated } = storeToRefs(session)
+
+watch(
+  () => isAuthenticated.value,
+  (newVal) => {
+    if (!newVal) view.value = 'phone'
+  }
+)
 </script>
 
 <style lang="scss" scoped>

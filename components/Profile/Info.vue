@@ -30,6 +30,8 @@
 
       <div class="profile__cta">
         <UiButton theme="primary" to="/profile/edit">Редактировать данные</UiButton>
+
+        <UiButton theme="secondary" @click="handleLogout">Выйти</UiButton>
       </div>
     </div>
   </div>
@@ -41,6 +43,13 @@ import { useSessionStore } from '~/store'
 
 const sessionStore = useSessionStore()
 const { user } = storeToRefs(sessionStore)
+
+const router = useRouter()
+
+const handleLogout = () => {
+  sessionStore.logout()
+  router.replace('/')
+}
 </script>
 
 <style lang="scss" scoped>
@@ -54,7 +63,16 @@ const { user } = storeToRefs(sessionStore)
     margin-top: 36px;
   }
   &__cta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     margin-top: 48px;
+    .button {
+      margin-top: 12px;
+      &:not(:last-child) {
+        margin-right: 12px;
+      }
+    }
   }
 }
 
