@@ -65,7 +65,8 @@ const deliveryOptions = ref([
 ])
 
 const showDeliveryType = computed(() => {
-  return app_settings.value.takeaway_enabled || !$env.takeawayOnly
+  if ($env.takeawayOnly) return false
+  return app_settings.value.takeaway_enabled
 })
 
 const deliveryType = ref(showDeliveryType.value ? 1 : 2)
