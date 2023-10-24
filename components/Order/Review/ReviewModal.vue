@@ -175,6 +175,7 @@ watch(
       fetchQuestions()
     } else {
       quizQuestions.value = []
+      quizAnswers.value = []
       activeQuizIdx.value = 0
       quizEnded.value = false
     }
