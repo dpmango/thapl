@@ -238,7 +238,6 @@ const changeModifier = (opt, groupID, isRadio) => {
   const groupData = modifierGroups.value.find((x) => x.groupID === groupID)
   const hasGroup = !!groupData
 
-  console.log({ isRadio })
   // радиокнопки и группа
   if (isRadio && hasGroup) {
     modifierGroups.value = modifierGroups.value.map((x) => {

@@ -43,7 +43,6 @@ const setHeaderOffset = () => {
     const headerTransform = window.innerWidth <= 767 ? 0 : 12
     const headerPadding = window.innerWidth <= 767 ? 0 : 12
 
-    console.log(headerHeight - headerTransform - headerPadding, headerHeight)
     stickyTop.value = headerHeight - headerTransform - headerPadding
   } catch {}
 }

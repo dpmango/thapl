@@ -37,7 +37,7 @@ export const useCartStore = defineStore('cart', {
         const matchingProducts = state.cart.filter((x) => x.id === id)
         if (matchingProducts.length) {
           // проверка на полное совпадение модификторов
-          if (modifiers?.length) {
+          if (modifiers) {
             const modifierIds = modifiers.map((x) => x.id)
             let productWithModifiersInCart: number | null = null
 
@@ -92,7 +92,7 @@ export const useCartStore = defineStore('cart', {
   actions: {
     async addToCart(product: IProduct, quantity = 1, modifiers: ICartModifier[]) {
       const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
-      if (modifiers?.length) {
+      if (modifiers) {
         cartObj.modifiers = modifiers.map((x: ICartModifier) => ({
           id: x.id,
           price: x.price,
@@ -109,7 +109,7 @@ export const useCartStore = defineStore('cart', {
         body: {
           catolog_item_id: product.id,
           count: quantity || 1,
-          modifiers: modifiers?.length
+          modifiers: modifiers
             ? modifiers.map((x) => ({
                 catolog_item_modifier_id: x.id,
                 count: 1,
@@ -132,7 +132,7 @@ export const useCartStore = defineStore('cart', {
 
         if (x.id === id) {
           // если переданы модификаторы, меняется только по
-          if (modifiers?.length && x.modifiers) {
+          if (modifiers && x.modifiers) {
             const productModifiers = x.modifiers.map((x) => x.id)
             const incomingModifiers = modifiers.map((x) => x.id)
 
@@ -159,10 +159,9 @@ export const useCartStore = defineStore('cart', {
     async removeFromCart(id: number, modifiers?: ICartModifier[]) {
       this.cart = this.cart.filter((x) => {
         // если переданы модификаторы, удаляются только совпадающие товары
-        if (modifiers?.length && x.id === id && x.modifiers) {
+        if (modifiers && x.id === id && x.modifiers) {
           const productModifiers = x.modifiers.map((x) => x.id)
           const incomingModifiers = modifiers.map((x) => x.id)
-          console.log(productModifiers, incomingModifiers)
 
           return !isArraysEqual(productModifiers, incomingModifiers)
         }
@@ -172,7 +171,7 @@ export const useCartStore = defineStore('cart', {
       this.products = this.products.filter((x) => {
         // товары храняться в едином экземпляре
         // удялется только если нет других товаров с модификаторам
-        if (modifiers?.length && x.id === id && x.modifier_groups) {
+        if (modifiers && x.id === id && x.modifier_groups) {
           const productModifiersFlat = x.modifier_groups.reduce((acc, mod) => {
             if (mod.items?.length) {
               mod.items.forEach((x) => {
