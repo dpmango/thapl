@@ -81,7 +81,7 @@
                       {{ Plurize(group.max_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
                     </template>
                     <template v-else-if="group.min_items === group.max_items">
-                      Нужно выбрать минимум {{ group.min_items }}
+                      Нужно выбрать {{ group.min_items }}
                       {{ Plurize(group.min_items, 'ингредиент', 'ингредиента', 'ингредиентов') }}
                     </template>
                     <template v-else>
@@ -94,7 +94,7 @@
                       v-for="option in group.items"
                       :key="option.id"
                       class="product__modifier-option mod-option text-m"
-                      @click="changeModifier(option, idx, group.min_items === 0)"
+                      @click="changeModifier(option, idx, group.max_items === 1)"
                     >
                       <span class="mod-option__name">{{ option.title }}</span>
                       <span v-if="option.price" class="mod-option__price">
@@ -105,7 +105,7 @@
                         class="mod-option__radio"
                         :name="`mod_radio_${idx}`"
                         :error="modifierErrors.includes(idx)"
-                        :type="group.min_items > 0 ? 'radio' : 'checkbox'"
+                        :type="group.max_items === 1 ? 'checkbox' : 'radio'"
                         :checked="modifierGroups.some((x) => x.id === option.id)"
                       />
                     </div>
@@ -238,6 +238,7 @@ const changeModifier = (opt, groupID, isRadio) => {
   const groupData = modifierGroups.value.find((x) => x.groupID === groupID)
   const hasGroup = !!groupData
 
+  console.log({ isRadio })
   // радиокнопки и группа
   if (isRadio && hasGroup) {
     modifierGroups.value = modifierGroups.value.map((x) => {
