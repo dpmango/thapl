@@ -89,10 +89,7 @@ await useAsyncData('startup', async () => {
     })
   }
 
-  let useDelivery = initData?.app_settings.takeaway_enabled
-  if (!$env.takeawayOnly) useDelivery = false
-
-  if (useDelivery) {
+  if (initData?.app_settings.takeaway_enabled) {
     promisesToBeFetched.push({
       id: 'restaurants',
       resolver: deliveryStore.getRestaurants(),
