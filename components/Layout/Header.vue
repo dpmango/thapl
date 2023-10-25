@@ -268,7 +268,7 @@ onBeforeUnmount(() => {
       margin-left: auto;
       margin-right: auto;
       a {
-        width: var(--logo-space-md);
+        width: 100%;
       }
     }
     &__hamburger {
@@ -312,8 +312,11 @@ onBeforeUnmount(() => {
   &__logo {
     flex: 0 0 auto;
     font-size: 0;
-    a {
-      width: var(--logo-space);
+    // a {
+    //   width: var(--logo-space);
+    // }
+    img {
+      max-height: 70px;
     }
   }
 
@@ -392,6 +395,16 @@ onBeforeUnmount(() => {
       transform: none !important;
       transition: transform 0.25s $ease, box-shadow 0.25s $ease;
       @include collapsed-menu;
+    }
+  }
+}
+
+@include r($md) {
+  .header {
+    &__logo {
+      img {
+        max-height: 52px;
+      }
     }
   }
 }

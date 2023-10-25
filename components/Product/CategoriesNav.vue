@@ -40,9 +40,10 @@ const stickyTop = ref(80)
 const setHeaderOffset = () => {
   try {
     const headerHeight = document.querySelector('.header').offsetHeight
-    const headerTransform = 12
-    const headerPadding = 12
+    const headerTransform = window.innerWidth <= 767 ? 0 : 12
+    const headerPadding = window.innerWidth <= 767 ? 0 : 12
 
+    console.log(headerHeight - headerTransform - headerPadding, headerHeight)
     stickyTop.value = headerHeight - headerTransform - headerPadding
   } catch {}
 }

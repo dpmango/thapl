@@ -16,7 +16,7 @@
     <span v-else class="plusminus__input">
       {{ weightDisplay }}
     </span>
-    <i class="plusminus__plus" @click="handlePlusClick" />
+    <i :class="['plusminus__plus', value === maxValue && '_hidden']" @click="handlePlusClick" />
   </div>
 </template>
 
@@ -114,6 +114,7 @@ const handleChange = (value) => {
     position: relative;
     z-index: 2;
     cursor: pointer;
+    transition: opacity 0.2s $ease;
     &::before,
     &::after {
       display: inline-block;
@@ -135,6 +136,10 @@ const handleChange = (value) => {
       &::after {
         background: var(--color-primary);
       }
+    }
+    &._hidden {
+      opacity: 0;
+      pointer-events: none;
     }
   }
 
