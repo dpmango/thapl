@@ -81,7 +81,6 @@
         До минимального заказа {{ formatPrice(minOrderData.remained) }}
       </p>
       <UiButton
-        to="/order"
         :block="true"
         :disabled="!minOrderData.match || stopListData.cartBlocked"
         @click="handleCtaClick"
@@ -96,17 +95,21 @@
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { storeToRefs } from 'pinia'
 import debounce from 'lodash/debounce'
-import { useCartStore, useUiStore } from '~/store'
+import { useCartStore, useSessionStore, useUiStore } from '~/store'
 import { formatPrice } from '#imports'
 
 const toast = useToast()
+const router = useRouter()
 const route = useRoute()
+const { $env, $log } = useNuxtApp()
 
 const ui = useUiStore()
 const cartStore = useCartStore()
+const sessionStore = useSessionStore()
 const { cart, products, additives, suggestions, promo, promoGiftId, productQuantityInCart } =
   storeToRefs(cartStore)
 const { modal: activeModal } = storeToRefs(ui)
+const { isAuthenticated } = storeToRefs(sessionStore)
 
 const { priceData, zoneData, minOrderData, freeDeliveryData, promoData, stopListData } =
   useCheckout()
@@ -122,8 +125,15 @@ const handlePopupMessage = () => {
 }
 
 const handleCtaClick = () => {
+  if ($env.orderAskAuth && !isAuthenticated.value) {
+    ui.setModal({ name: 'auth' })
+    return
+  }
+
   if (route.path.includes('/order')) {
     ui.closeAllModals()
+  } else {
+    router.push('/order')
   }
 }
 
