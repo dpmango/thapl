@@ -59,7 +59,7 @@
     </div>
     <div class="card__meta">
       <div class="card__price h5-title">
-        <template v-if="!isGift"> {{ formatPrice(productPrice.raw * cartItem?.q || 1) }}</template>
+        <template v-if="!isGift"> {{ formatPrice(productPrice.raw * cartItem?.q || 0) }}</template>
         <template v-else>Бесплатно</template>
       </div>
     </div>

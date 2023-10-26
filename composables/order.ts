@@ -4,7 +4,13 @@ import { IOrderPaymentDataDto } from '~/interface/Dto/Order.dto'
 import { openExternalLink } from '#imports'
 import { useCartStore, useProfileStore, useUiStore } from '~/store'
 
-export const useOrder = ({ order }: { order: IOrder }) => {
+export const useOrder = ({
+  order,
+  isLastOrder = false,
+}: {
+  order: IOrder
+  isLastOrder?: boolean
+}) => {
   const profileStore = useProfileStore()
   const cartStore = useCartStore()
   const ui = useUiStore()
@@ -21,7 +27,7 @@ export const useOrder = ({ order }: { order: IOrder }) => {
       },
     }).catch((err) => useCatchError(err, 'Ошибка. Обратитесь к администратору'))
 
-    await profileStore.getOrders()
+    if (!isLastOrder) profileStore.getOrders()
   }
 
   // оплатить заказ
@@ -41,6 +47,8 @@ export const useOrder = ({ order }: { order: IOrder }) => {
     } else if (paymentData.success) {
       toast.success('Заказ Оплачен')
     }
+
+    if (!isLastOrder) profileStore.getOrders()
   }
 
   // оценить заказ - модальное

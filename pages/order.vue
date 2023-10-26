@@ -14,15 +14,15 @@ const { $env, $log } = useNuxtApp()
 const cartStore = useCartStore()
 const sessionStore = useSessionStore()
 const ui = useUiStore()
-const { userNameVerbose } = storeToRefs(sessionStore)
+const { isAuthenticated } = storeToRefs(sessionStore)
 
 useHead({
   title: `Оформление заказа - ${$env.projectName}`,
 })
 
 onMounted(() => {
-  if ($env.orderAskAuth && !userNameVerbose.value) {
-    // ui.setModal({ name: 'auth', params: { closable: false } })
+  if ($env.orderAskAuth && !isAuthenticated.value) {
+    ui.setModal({ name: 'auth', params: { closable: false } })
   }
 })
 </script>

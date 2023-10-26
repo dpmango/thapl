@@ -8,12 +8,19 @@
         </div>
 
         <!-- primary actions -->
-        <div class="col col-2 col-lg-6 col-sm-12">
+        <div
+          v-if="
+            lastOrder.can_be_payed ||
+            lastOrder.time_to_delivery ||
+            ($env.useTestimonials && lastOrder.user_can_send_review)
+          "
+          class="col col-2 col-lg-6 col-sm-12"
+        >
           <!-- pay -->
           <div
             v-if="lastOrder.can_be_payed"
             class="last__action action _primary"
-            @click="handlePay"
+            @click="handlePayClick"
           >
             <div class="action__icon hidden-sm">
               <nuxt-icon name="credit-card" />
@@ -49,7 +56,7 @@
           <div
             v-if="lastOrder.can_be_canceled"
             class="last__action action _review"
-            @click="handleCancel"
+            @click="handleCancelClick"
           >
             <div class="action__icon hidden-sm">
               <nuxt-icon name="close" />
@@ -95,17 +102,32 @@ $log.log('🧙‍♂️ ASYNC LAST ORDER', { lastOrder: lastOrder.value })
 
 const { handleDelivery, handleCancel, handlePay, handleRate, handleRepeat } = useOrder({
   order: lastOrder.value,
+  isLastOrder: true,
 })
+
+const requestLastOrder = async () => {
+  const data = (await useApi('profile/get-last-order', {
+    headers: useHeaders(),
+  })) as IOrder
+
+  lastOrder.value = data
+}
+
+const handleCancelClick = async () => {
+  await handleCancel()
+  await requestLastOrder()
+}
+
+const handlePayClick = async () => {
+  await handlePay()
+  await requestLastOrder()
+}
 
 // Запрос обновлений каждую минуту
 const timerUpdate = ref<NodeJS.Timeout | null>(null)
 
 onMounted(() => {
-  timerUpdate.value = setInterval(async () => {
-    lastOrder.value = (await useApi('profile/get-last-order', {
-      headers: useHeaders(),
-    })) as IOrder
-  }, 1 * 60 * 1000)
+  timerUpdate.value = setInterval(requestLastOrder, 1 * 60 * 1000)
 })
 
 onBeforeUnmount(() => {
