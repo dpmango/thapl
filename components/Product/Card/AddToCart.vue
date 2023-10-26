@@ -7,7 +7,8 @@
       v-else
       size="medium"
       :value="productQuantityWithModifier"
-      :min-weight="plusminusParams.min"
+      :min-weight="plusminusParams.minWeight"
+      :min-value="plusminusParams.min"
       :max-value="plusminusParams.max"
       :step="plusminusParams.step"
       @on-change="handleQuantityChange"
@@ -49,16 +50,19 @@ const props = defineProps({
 })
 
 const plusminusParams = computed(() => {
-  let min = 0
+  let minWeight = 0
+  const min = props.product.min_items || 0
   let max = 99
   let step = 1
+
   if (props.product.sale_by_weight) {
-    min = props.product.min_weight || 100
+    minWeight = props.product.min_weight || 100
     max = props.product.max_weight || 100 * 1000
     step = props.product.weight_step || 100
   }
 
   return {
+    minWeight,
     min,
     max,
     step,
@@ -94,6 +98,9 @@ const handleSelect = () => {
     // if (props.product.max_weight && props.product.max_weight >= quantity) {
     //   quantity = props.product.max_weight
     // }
+  }
+  if (props.product.min_items) {
+    quantity = quantity * props.product.min_items
   }
 
   cartStore.addToCart(props.product, quantity, props.modifiers)

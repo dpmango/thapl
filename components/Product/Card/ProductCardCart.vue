@@ -45,7 +45,8 @@
               ? productQuantityInCartWithModifiers || additiveCount
               : productQuantityInCartWithModifiers || 0
           "
-          :min-weight="plusminusParams.min"
+          :min-weight="plusminusParams.minWeight"
+          :min-value="plusminusParams.min"
           :max-value="plusminusParams.max"
           :step="plusminusParams.step"
           @on-change="(n) => handleQuantityChange(n, isAddProduct)"
@@ -114,16 +115,19 @@ const isPreorder = computed(() => {
 })
 
 const plusminusParams = computed(() => {
-  let min = 0
+  let minWeight = 0
+  const min = renderProduct.value.min_items || 0
   let max = 99
   let step = 1
+
   if (renderProduct.value.sale_by_weight) {
-    min = renderProduct.value.min_weight || 100
+    minWeight = renderProduct.value.min_weight || 100
     max = renderProduct.value.max_weight || 100 * 1000
     step = renderProduct.value.weight_step || 100
   }
 
   return {
+    minWeight,
     min,
     max,
     step,

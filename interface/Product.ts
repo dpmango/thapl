@@ -35,6 +35,7 @@ export interface IProduct {
   open_item_page_to_add: boolean
   modifier_groups: IModifierGroup[] | null
   image: string | null
+  min_items: number | null
 }
 
 export interface IProductFullDto extends IProduct {

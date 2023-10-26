@@ -91,8 +91,8 @@ const handleChange = (value) => {
   // исключения минимального веса для весовый товаров
   if (props.minWeight) {
     if (value < props.minWeight) emitValue = 0
-  } else if (value <= props.minValue) {
-    emitValue = props.minValue
+  } else if (value < props.minValue) {
+    emitValue = 0
   }
 
   if (value > props.maxValue) emitValue = props.maxValue
