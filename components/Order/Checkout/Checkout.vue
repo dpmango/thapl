@@ -415,7 +415,7 @@ const deliveryStore = useDeliveryStore()
 const cartStore = useCartStore()
 const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
-const { app_settings, user } = storeToRefs(sessionStore)
+const { app_settings, isAuthenticated, user } = storeToRefs(sessionStore)
 const { promo, promoGiftId } = storeToRefs(cartStore)
 
 const { $env, $log } = useNuxtApp()
@@ -1076,6 +1076,10 @@ const highlightError = (errors) => {
 }
 
 const requestCheckout = async () => {
+  if ($env.orderAskAuth && !isAuthenticated.value) {
+    ui.setModal({ name: 'auth', params: { closable: false } })
+  }
+
   const { valid, errors } = await validate()
 
   if (!valid || !edgeFieldsValid.value) {
