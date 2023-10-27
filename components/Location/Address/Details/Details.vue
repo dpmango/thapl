@@ -8,7 +8,16 @@
           :controls="['zoomControl']"
           :scroll-zoom="false"
         >
-          <YandexMarker :marker-id="1" :coordinates="coordinates">
+          <YandexMarker
+            :marker-id="1"
+            :options="{
+              iconLayout: 'default#image',
+              iconImageHref: 'img/mapMarker.svg',
+              iconImageSize: [28, 28],
+              iconImageOffset: [-14, -14],
+            }"
+            :coordinates="coordinates"
+          >
             <template #component>
               <div class="text-m">{{ marker }}</div>
             </template>

@@ -91,6 +91,8 @@ export const useDeliveryStore = defineStore('delivery', {
         this.currentAddress = { ...payload }
       } else {
         this.currentAddress = null
+        this.zone = {} as IZone
+        this.takeawayOrganization = {} as IOrganizationTakeaway
       }
     },
     async checkZone({

@@ -31,7 +31,13 @@
           <YandexMarker
             v-for="marker in list"
             :key="marker.id"
-            :marker-id="1"
+            :marker-id="marker.id"
+            :options="{
+              iconLayout: 'default#image',
+              iconImageHref: 'img/mapMarker.svg',
+              iconImageSize: [28, 28],
+              iconImageOffset: [-14, -14],
+            }"
             :coordinates="[marker.lat, marker.lng]"
           >
             <template #component>

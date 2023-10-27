@@ -41,7 +41,16 @@
           :scroll-zoom="false"
           @created="onMapCreated"
         >
-          <YandexMarker :marker-id="data.id" :coordinates="[data.lat, data.lng]">
+          <YandexMarker
+            :marker-id="data.id"
+            :options="{
+              iconLayout: 'default#image',
+              iconImageHref: 'img/mapMarker.svg',
+              iconImageSize: [28, 28],
+              iconImageOffset: [-14, -14],
+            }"
+            :coordinates="[data.lat, data.lng]"
+          >
             <template #component>
               <div class="text-m">{{ data.address }}</div>
             </template>
