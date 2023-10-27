@@ -54,7 +54,7 @@
         <div class="col col-2 col-lg-6 col-sm-12">
           <!-- cancel -->
           <div
-            v-if="lastOrder.can_be_canceled"
+            v-if="lastOrder.can_be_canceled && isAuthenticated"
             class="last__action action _review"
             @click="handleCancelClick"
           >

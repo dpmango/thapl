@@ -41,7 +41,7 @@
         <span class="order__label">Итого</span>
         <i class="order__sep"></i>
         <span class="order__value">
-          {{ formatPrice(order.order_sum) }}
+          {{ formatPrice(order.payment_sum) }}
           <span v-if="order.discount_sum">(-{{ formatPrice(order.discount_sum) }})</span>
         </span>
       </div>
@@ -52,7 +52,9 @@
       <UiButton v-if="order.can_show_courier_location" theme="secondary" @click="handleDelivery">
         Подробно о доставке
       </UiButton>
-      <UiButton v-if="order.can_be_canceled" @click="handleCancel"> Отменить заказ </UiButton>
+      <UiButton v-if="order.can_be_canceled && isAuthenticated" @click="handleCancel">
+        Отменить заказ
+      </UiButton>
       <UiButton
         v-if="$env.useTestimonials && order.user_can_send_review"
         theme="secondary"
@@ -69,10 +71,15 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSessionStore } from '~/store'
 import { IOrder, IOrderCart } from '~/interface'
 import { formatPrice, dateToTimestamp, Plurize } from '#imports'
 
 const { $env, $log } = useNuxtApp()
+
+const session = useSessionStore()
+const { isAuthenticated } = storeToRefs(session)
 
 const props = defineProps({
   order: {

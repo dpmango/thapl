@@ -1,5 +1,4 @@
 <template>
-  <AuthModal />
   <CartModal />
   <CartStopList />
   <CartSelectGift />
@@ -11,6 +10,7 @@
   <ProductModal />
   <ProductSearchOverlay />
   <OrderReviewModal v-if="$env.useTestimonials" />
+  <AuthModal />
 </template>
 
 <script setup lang="ts">
