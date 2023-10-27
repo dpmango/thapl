@@ -102,8 +102,10 @@ const handleSearchChange = (v) => {
 
 // Подсказки яндекс
 const searchRef = ref(null)
+const suggestionsDisabled = computed(() => deliveryType.value === 2)
 const { ymapsInstance, geocoderSuggestionObj } = useGeocoder({
   searchRef,
+  disabled: suggestionsDisabled,
   setFieldValue,
   setErrors,
 })

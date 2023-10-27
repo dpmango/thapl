@@ -49,7 +49,7 @@ const setHeaderOffset = () => {
 
 const navScrollOffset = computed(() => {
   try {
-    return Math.ceil(stickyTop.value + navRef.value.offsetHeight)
+    return Math.ceil(stickyTop.value + navRef.value?.offsetHeight)
   } catch {
     return 0
   }

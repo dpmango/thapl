@@ -1,13 +1,25 @@
 import { loadYmap } from 'vue-yandex-maps'
 import { useCatchError } from '#imports'
 
-export const useGeocoder = ({ searchRef, setFieldValue, setErrors, onMounted: onMountedCb }) => {
+export const useGeocoder = ({
+  searchRef,
+  setFieldValue,
+  setErrors,
+  disabled,
+  onMounted: onMountedCb,
+}: {
+  searchRef: any
+  setFieldValue: any
+  setErrors: any
+  disabled?: Ref<boolean>
+  onMounted?: any
+}) => {
   const { $env, $ymConfig } = useNuxtApp()
 
   // Подсказки яндекс
-  const ymapsInstance = ref(null)
-  const suggestView = ref(null)
-  const geocoderSuggestionObj = ref(null)
+  const ymapsInstance = ref<any>(null)
+  const suggestView = ref<any>(null)
+  const geocoderSuggestionObj = ref<any>(null)
 
   const initSuggestions = (ym) => {
     ymapsInstance.value = ym
@@ -107,10 +119,24 @@ export const useGeocoder = ({ searchRef, setFieldValue, setErrors, onMounted: on
   }
 
   onMounted(async () => {
-    await loadYmap($ymConfig)
-    initSuggestions(window.ymaps)
+    await loadYmap($ymConfig as any)
+    if (!disabled || !disabled.value) {
+      initSuggestions(window.ymaps)
+    }
     onMountedCb && onMountedCb(window.ymaps)
   })
+
+  watch(
+    () => disabled?.value,
+    (isDisabled) => {
+      if (isDisabled) {
+        suggestView.value?.destroy()
+        suggestView.value = null
+      } else {
+        initSuggestions(window.ymaps)
+      }
+    }
+  )
 
   return {
     ymapsInstance,

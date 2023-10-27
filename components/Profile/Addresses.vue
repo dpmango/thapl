@@ -17,8 +17,8 @@
         <UiAtomErrorMessage icon="cart-outline" title="Адресов пока нет">
           <template #content>
             Зайдите в меню, выберите блюда, которые хотите съесть
-            <template v-if="minOrderPrice">
-              &nbsp;, а мы оперативно доставим ваш заказ от {{ formatPrice(minOrderPrice) }}.
+            <template v-if="minOrderPrice"
+              >, а мы оперативно доставим ваш заказ от {{ formatPrice(minOrderPrice) }}.
             </template>
           </template>
           <template #action>
