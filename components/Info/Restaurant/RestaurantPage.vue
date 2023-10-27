@@ -185,8 +185,8 @@ const { geolocationLoading, getUserLocation, geolocationFailure } = useGeolocati
       height: 100%;
     }
     :deep(.yandex-balloon) {
-      width: 140px;
-      height: 80px;
+      width: 160px;
+      height: 84px;
     }
   }
 }

@@ -39,9 +39,9 @@ const navRef = ref(null)
 const stickyTop = ref(80)
 const setHeaderOffset = () => {
   try {
-    const headerHeight = document.querySelector('.header').offsetHeight
-    const headerTransform = window.innerWidth <= 767 ? 0 : 12
-    const headerPadding = window.innerWidth <= 767 ? 0 : 12
+    const headerHeight = document.querySelector('.header')?.offsetHeight || 0
+    const headerTransform = window.innerWidth <= 767 ? 12 : 12
+    const headerPadding = window.innerWidth <= 767 ? 1 : 12
 
     stickyTop.value = headerHeight - headerTransform - headerPadding
   } catch {}

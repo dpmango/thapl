@@ -65,8 +65,8 @@ const { zone } = storeToRefs(deliveryStore)
       height: 100%;
     }
     :deep(.yandex-balloon) {
-      width: 140px;
-      height: 80px;
+      width: 160px;
+      height: 84px;
     }
   }
   &__info {

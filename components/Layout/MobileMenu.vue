@@ -1,13 +1,5 @@
 <template>
-  <div
-    class="mobile-menu"
-    :style="style"
-    :class="[
-      ui.mobileMenuActive && '_active',
-      $env.useHeaderMenu && 'xl',
-      !$env.useHeaderMenu && 'md',
-    ]"
-  >
+  <div class="mobile-menu" :style="style" :class="[ui.mobileMenuActive && '_active']">
     <div class="mobile-menu__bg" @click="closeMobile"></div>
     <div class="mobile-menu__box">
       <div class="mobile-menu__actions">
@@ -73,7 +65,6 @@ import { useUiStore, useSessionStore, useProductStore } from '~/store'
 import { lockBody, unlockBody } from '#imports'
 
 const { $env } = useNuxtApp()
-const useHeaderMenu = $env.useHeaderMenu
 
 const ui = useUiStore()
 const session = useSessionStore()
@@ -121,31 +112,15 @@ watch(
   pointer-events: none;
 
   &._active {
-    &.xl {
-      @include r($xl) {
-        pointer-events: all;
-        border-top: 1px solid var(--color-border);
-        .mobile-menu {
-          &__bg {
-            opacity: 1;
-          }
-          &__box {
-            transform: translateX(0);
-          }
+    @include r($md) {
+      pointer-events: all;
+      border-top: 1px solid var(--color-border);
+      .mobile-menu {
+        &__bg {
+          opacity: 1;
         }
-      }
-    }
-    &.md {
-      @include r($md) {
-        pointer-events: all;
-        border-top: 1px solid var(--color-border);
-        .mobile-menu {
-          &__bg {
-            opacity: 1;
-          }
-          &__box {
-            transform: translateX(0);
-          }
+        &__box {
+          transform: translateX(0);
         }
       }
     }

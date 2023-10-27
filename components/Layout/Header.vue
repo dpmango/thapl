@@ -7,11 +7,27 @@
       variant && `header-${variant}`,
       scrolled && '_scroll',
       ui.mobileMenuActive && '_menuActive',
-      $env.useHeaderMenu && 'xl',
-      !$env.useHeaderMenu && 'md',
+      $env.useHeaderMenu && '_headerMenu',
+      !$env.useHeaderMenu && '_noHeaderMenu',
     ]"
     :style="{ transform: `translate(0, -${topHeight}px)` }"
   >
+    <div
+      v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length"
+      ref="naviRef"
+      class="header__navi hidden-md"
+    >
+      <div class="container">
+        <div class="header__navi-wrapper row">
+          <div v-for="link in app_settings?.site_header_menu" :key="link.id" class="col">
+            <div class="header__navi-link">
+              <UiAtomLinkType :link="link" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <!-- topbar -->
       <div ref="topRef" class="header__top row">
@@ -82,17 +98,9 @@
         </div>
 
         <div class="col header__actions row">
-          <template v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length">
-            <div v-for="link in app_settings?.site_header_menu" :key="link.id" class="col">
-              <div class="action">
-                <UiAtomLinkType class="action__text" :link="link" />
-              </div>
-            </div>
-          </template>
-
           <div v-if="session.app_settings.loyalty?.enabled" class="col">
             <NuxtLink to="/loyalty" class="action">
-              <div v-if="!$env.useHeaderMenu" class="action__icon">
+              <div class="action__icon">
                 <nuxt-icon name="heart" />
                 <div v-if="isAuthenticated && user.balance" class="action__counter _top">
                   {{ user.balance }}
@@ -104,7 +112,7 @@
 
           <div v-if="!isAuthenticated" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'auth' })">
-              <div v-if="!$env.useHeaderMenu" class="action__icon">
+              <div class="action__icon">
                 <nuxt-icon name="login" />
               </div>
               <div class="action__text">Войти</div>
@@ -113,7 +121,7 @@
 
           <div v-else class="col">
             <NuxtLink to="/profile" class="action">
-              <div v-if="!$env.useHeaderMenu" class="action__icon">
+              <div class="action__icon">
                 <nuxt-icon name="login" />
               </div>
               <div class="action__text">{{ session.userNameVerbose }}</div>
@@ -121,7 +129,7 @@
           </div>
           <div v-if="$env.useContacts" class="col">
             <div class="action" @click="() => ui.setModal({ name: 'contacts' })">
-              <div v-if="!$env.useHeaderMenu" class="action__icon">
+              <div class="action__icon">
                 <nuxt-icon name="dialog" />
               </div>
               <div class="action__text">Контакты</div>
@@ -181,6 +189,7 @@ const scrolled = ref(false)
 const topHeight = ref(0)
 const headerRef = ref<HTMLElement | null>(null)
 const topRef = ref<HTMLElement | null>(null)
+const naviRef = ref<HTMLElement | null>(null)
 
 const toggleMobile = () => {
   const headerHeight = headerRef.value?.offsetHeight
@@ -229,9 +238,10 @@ const handleClickMenuLink = (item: ISiteMenu) => {
 // this.scrollSticky = _.throttle(this.handleSticky, 50)
 const scrollSticky = () => {
   if (!topRef.value) return
+  const naviRefWidth = naviRef.value ? naviRef.value.offsetHeight : 0
 
   const scrollTop = window.scrollY
-  const triggerHeight = window.innerWidth <= 767 ? 0 : topRef.value.offsetHeight
+  const triggerHeight = window.innerWidth <= 767 ? 0 : topRef.value.offsetHeight + naviRefWidth
 
   scrolled.value = scrollTop > triggerHeight
   topHeight.value = scrollTop > triggerHeight ? triggerHeight : 0
@@ -246,63 +256,27 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-@mixin collapsed-menu {
-  .header {
-    &__tile {
-      flex: 0 0 auto;
-    }
-    &__nav {
-      padding-right: 20px;
-    }
-    &._scroll {
-      transform: translateY(-12px) !important;
-    }
-    &._menuActive {
-      transform: none !important;
-    }
-    &__top {
-      margin-left: 0;
-      margin-right: 0;
-      padding: 24px 0 12px;
-    }
-    &__logo {
-      margin-left: auto;
-      margin-right: auto;
-      a {
-        width: 100%;
-      }
-    }
-    &__hamburger {
-      display: block;
-      padding: 10px;
-      margin-left: -10px;
-      &:hover {
-        .hamburger span {
-          color: var(--color-primary);
-        }
-      }
-    }
-    &__actions-mobile {
-      margin-right: -10px;
-      .action {
-        padding: 10px;
-      }
-    }
-    &__actions {
-      display: none;
-    }
-    &__bottom {
-      display: none;
-    }
-  }
-}
-
 .header {
   z-index: 9;
   top: 0;
   background: var(--header-background);
   transition: box-shadow 0.25s $ease;
   will-change: transform;
+
+  &__navi {
+    border-bottom: 1px solid var(--color-border);
+    padding: 12px 0;
+  }
+  &__navi-link {
+    font-size: 14px;
+    font-weight: 500;
+    a {
+      transition: color 0.25s $ease;
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
 
   &__top {
     align-items: center;
@@ -322,7 +296,7 @@ onBeforeUnmount(() => {
   }
 
   &__tile {
-    flex: 0 1 $col2;
+    flex: 0 1 $col3;
   }
 
   &__actions {
@@ -384,27 +358,76 @@ onBeforeUnmount(() => {
     box-shadow: var(--box-shadow-large);
   }
 
-  &.xl {
-    @include r($xl) {
-      transform: none !important;
-      transition: transform 0.25s $ease, box-shadow 0.25s $ease;
-      @include collapsed-menu;
+  &._headerMenu {
+    transition: box-shadow 0.25s $ease;
+    .header__top {
+      padding-top: 32px;
     }
   }
-  &.md {
-    @include r($md) {
-      transform: none !important;
-      transition: transform 0.25s $ease, box-shadow 0.25s $ease;
-      @include collapsed-menu;
-    }
-  }
+  // &._noHeaderMenu {
+  //   // @include r($md) {
+  //   //   transform: none !important;
+  //   //   transition: transform 0.25s $ease, box-shadow 0.25s $ease;
+  //   //   @include collapsed-menu;
+  //   // }
+  // }
 }
 
 @include r($md) {
   .header {
+    &__tile {
+      flex: 0 0 auto;
+    }
+    &__nav {
+      padding-right: 20px;
+    }
+    &._scroll {
+      transform: translateY(-12px) !important;
+      transition: transform 0.25s $ease, box-shadow 0.25s $ease;
+    }
+    &._menuActive {
+      transform: none !important;
+    }
+    &__top {
+      margin-left: 0;
+      margin-right: 0;
+      padding: 24px 0 12px;
+    }
     &__logo {
+      margin-left: auto;
+      margin-right: auto;
+      a {
+        width: 100%;
+      }
       img {
         max-height: 52px;
+      }
+    }
+    &__hamburger {
+      display: block;
+      padding: 10px;
+      margin-left: -10px;
+      &:hover {
+        .hamburger span {
+          color: var(--color-primary);
+        }
+      }
+    }
+    &__actions-mobile {
+      margin-right: -10px;
+      .action {
+        padding: 10px;
+      }
+    }
+    &__actions {
+      display: none;
+    }
+    &__bottom {
+      display: none;
+    }
+    &._headerMenu {
+      .header__top {
+        padding-top: 24px;
       }
     }
   }
