@@ -41,13 +41,8 @@
         <span class="order__label">Итого</span>
         <i class="order__sep"></i>
         <span class="order__value">
-          <template v-if="order.order_sum !== order.payment_sum">
-            <span class="order__value-old">{{ formatPrice(order.order_sum) }}</span>
-            {{ formatPrice(order.payment_sum) }} (-{{
-              formatPrice(order.order_sum - order.payment_sum)
-            }})
-          </template>
-          <template v-else>{{ formatPrice(order.order_sum) }}</template>
+          {{ formatPrice(order.order_sum) }}
+          <span v-if="order.discount_sum">(-{{ formatPrice(order.discount_sum) }})</span>
         </span>
       </div>
     </div>
@@ -174,21 +169,21 @@ const orders = computed(() => {
   if (props.order.delivery_sum) {
     stats.push({
       title: 'Доставка',
-      value: formatPrice(props.order.delivery_sum) + ' ₽',
+      value: formatPrice(props.order.delivery_sum),
     })
   }
 
   if (props.order.packing_sum) {
     stats.push({
       title: 'Упаковка',
-      value: formatPrice(props.order.packing_sum) + ' ₽',
+      value: formatPrice(props.order.packing_sum),
     })
   }
 
   if (props.order.discount_sum) {
     stats.push({
       title: 'Скидка',
-      value: formatPrice(props.order.discount_sum) + ' ₽',
+      value: formatPrice(props.order.discount_sum),
     })
   }
 
