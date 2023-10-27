@@ -11,7 +11,7 @@
       :value="value"
       inputmode="numeric"
       @keydown="preventInput"
-      @input="(e) => handleChange(e.target.value)"
+      @input="(e: any) => handleChange(e.target.value)"
     />
     <span v-else class="plusminus__input">
       {{ weightDisplay }}
@@ -46,6 +46,10 @@ const props = defineProps({
   step: {
     type: Number,
     default: 1,
+  },
+  isDeletable: {
+    type: Boolean,
+    default: true,
   },
   size: {
     type: String,
@@ -88,7 +92,7 @@ const handleChange = (value) => {
 
   if (!value) emitValue = 0
 
-  // исключения минимального веса для весовый товаров
+  // исключения минимального веса для весовых товаров
   if (props.minWeight) {
     if (value < props.minWeight) emitValue = 0
   } else if (value < props.minValue) {

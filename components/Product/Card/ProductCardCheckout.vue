@@ -48,12 +48,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isAdditive: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { renderProduct, productPrice, productModifiersVerbose, productQuantityInCartWithModifiers } =
   useProduct({
     cartItem: props.cartItem,
     product: props.product,
+    isAdditive: props.isAdditive,
   })
 
 const { productPriceLabel } = useProductHelpers({ product: renderProduct })

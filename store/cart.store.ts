@@ -15,16 +15,24 @@ export const useCartStore = defineStore('cart', {
       cartStoped: [] as number[],
       products: [] as IProduct[],
       additives: [] as IAdditive[],
+      additivesCart: [] as ICartInner[],
       suggestions: [] as IProduct[],
       promo: null as IPromoDto | null,
       promoGiftId: null as number | null,
     }
   },
   persist: {
-    paths: ['cart', 'promoGiftId'],
+    paths: ['cart', 'promoGiftId', 'additivesCart'],
   },
   getters: {
-    // просто считает количство товаров в корзине по id
+    // общее количество уникальных товаров с учетом добавок
+    totalCartLength: (state) => {
+      const cartItems = state.cart.length
+      const additivesItems = state.additivesCart.length
+
+      return cartItems + additivesItems
+    },
+    // количство товаров в основной корзине по id
     productsCountInCart: (state) => (id: number) => {
       const matchingProducts = state.cart.filter((x) => x.id === id)
 
@@ -57,28 +65,46 @@ export const useCartStore = defineStore('cart', {
         return null
       },
     cartPrice: (state): number => {
-      return state.cart.reduce((acc, c) => {
+      const priceCalcFunc = (product: IProduct, c: ICartInner) => {
+        let price = product.price || 0
+        if (product.sale_by_weight) {
+          price = price / 1000
+        }
+
+        const modifiersTotal =
+          c.modifiers?.reduce((modAcc, mod) => {
+            modAcc += mod.price * mod.q
+            return modAcc
+          }, 0) || 0
+
+        return (price + modifiersTotal) * c.q
+      }
+
+      const catalogPrice = state.cart.reduce((acc, c) => {
         const product = state.products.find((x) => x.id === c.id)
         if (product) {
-          let price = product.price
-          if (product.sale_by_weight) {
-            price = price / 1000
-          }
-
-          const modifiersTotal =
-            c.modifiers?.reduce((modAcc, mod) => {
-              modAcc += mod.price * mod.q
-              return modAcc
-            }, 0) || 0
-
-          acc += (price + modifiersTotal) * c.q
+          const price = priceCalcFunc(product, c)
+          acc += price
         }
 
         return acc
       }, 0)
+
+      const additivesPrice = state.additivesCart.reduce((acc, c) => {
+        const product =
+          state.additives.find((x) => x.catalog_item.id === c.id)?.catalog_item || null
+        if (product) {
+          const price = priceCalcFunc(product, c)
+          acc += price
+        }
+
+        return acc
+      }, 0)
+
+      return catalogPrice + additivesPrice
     },
     cartToApi: (state) => {
-      return state.cart.map((x) => ({
+      const cartMapper = (x: ICartInner) => ({
         catalog_item_id: x.id,
         count: x.q,
         modifiers:
@@ -86,7 +112,12 @@ export const useCartStore = defineStore('cart', {
             catolog_item_modifier_id: mod.id,
             count: 1,
           })) || [],
-      }))
+      })
+
+      const cartItems = state.cart.map(cartMapper)
+      const additivesItems = state.additivesCart.map(cartMapper)
+
+      return [...cartItems, ...additivesItems]
     },
   },
   actions: {
@@ -202,9 +233,11 @@ export const useCartStore = defineStore('cart', {
       this.cart = []
       this.products = []
       this.additives = []
+      this.additivesCart = []
       this.suggestions = []
       this.promo = null
     },
+    // дополнительные продукты
     async getaAdditives() {
       const deliveryStore = useDeliveryStore()
 
@@ -219,6 +252,39 @@ export const useCartStore = defineStore('cart', {
 
       this.additives = res
     },
+    addAdditiveToCart(product: IProduct, quantity = 1, modifiers: ICartModifier[]) {
+      const cartObj: ICartInner = { id: product.id, q: quantity || 1 }
+      if (modifiers) {
+        cartObj.modifiers = modifiers.map((x: ICartModifier) => ({
+          id: x.id,
+          price: x.price,
+          q: 1,
+        }))
+      }
+
+      this.additivesCart.push(cartObj)
+    },
+    changeAdditiveQuantity({
+      id,
+      quantity,
+      modifiers,
+    }: {
+      id: number
+      quantity: number
+      modifiers: ICartModifier[]
+    }) {
+      this.additivesCart = this.additivesCart.map((x) => {
+        const acceptQuantity = x.id === id
+
+        return acceptQuantity ? { ...x, q: quantity } : x
+      })
+    },
+    removeAdditiveFromCart(id: number, modifiers?: ICartModifier[]) {
+      this.additivesCart = this.additivesCart.filter((x) => {
+        return x.id !== id
+      })
+    },
+    // предложения
     async getSuggestions() {
       if (!this.cart.length) return null
 

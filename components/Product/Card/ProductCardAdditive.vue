@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="card"
-    :class="[focused && '_focused']"
-    @click="handleProductClick"
-    @mouseenter="setFocused(true)"
-    @mouseleave="setFocused(false)"
-  >
+  <div class="card">
     <div class="card__media">
       <div class="card__image">
         <UiImage :src="renderProduct.image" :alt="renderProduct.title" />
@@ -30,34 +24,25 @@
         <template v-if="+$env.stopListType === 1">Эта позиция не доступна</template>
         <template v-else> Этот товар доступен только по предзаказу</template>
       </div>
-      <div
-        v-if="!isGift"
-        class="card__action"
-        @click.stop
-        @mouseenter="setFocused(false)"
-        @mouseleave="setFocused(true)"
-      >
+      <div class="card__action">
         <UiPlusMinus
-          v-if="!isProductHardStopped && productQuantityInCartWithModifiers !== 0"
+          v-if="!isProductHardStopped"
           size="small"
-          :value="productQuantityInCartWithModifiers || 0"
+          :value="additiveCounter.total"
           :min-weight="plusminusParams.minWeight"
           :min-value="plusminusParams.min"
           :max-value="plusminusParams.max"
           :step="plusminusParams.step"
+          :is-deletable="false"
           @on-change="(n) => handleQuantityChange(n)"
         />
-        <template v-else-if="!isProductHardStopped">
-          <UiButton theme="secondary" @click="handleReturn"> Вернуть </UiButton>
-          <UiButton theme="secondary" @click="handleRemove"> Удалить </UiButton>
-        </template>
-        <UiButton v-if="isPreorder" theme="secondary" @click="handleRemove"> Удалить </UiButton>
       </div>
     </div>
     <div class="card__meta">
       <div class="card__price h5-title">
-        <template v-if="!isGift"> {{ formatPrice(productPrice.raw * cartItem?.q || 0) }}</template>
-        <template v-else>Бесплатно</template>
+        <template v-if="additiveCounter.payable">{{
+          formatPrice(productPrice.raw * additiveCounter.payable)
+        }}</template>
       </div>
     </div>
   </div>
@@ -73,7 +58,7 @@ import { useProduct } from '#imports'
 
 const { $env } = useNuxtApp()
 const cartStore = useCartStore()
-const { cartStoped } = storeToRefs(cartStore)
+const { additivesCart, cartStoped } = storeToRefs(cartStore)
 const ui = useUiStore()
 
 const props = defineProps({
@@ -81,21 +66,39 @@ const props = defineProps({
     type: Object as PropType<IProduct>,
     default: () => ({}),
   },
-  cartItem: {
-    type: Object as PropType<ICartInner>,
-    default: null,
-  },
-  isGift: {
-    type: Boolean,
-    default: false,
+  // бесплатное количество
+  additiveCount: {
+    type: Number,
+    required: true,
+    default: 0,
   },
 })
 
-const { renderProduct, productPrice, productModifiersVerbose, productQuantityInCartWithModifiers } =
-  useProduct({
-    cartItem: props.cartItem,
-    product: props.product,
-  })
+const additiveCartItem = computed(() => {
+  return additivesCart.value.find((x) => x.id === props.product.id) || null
+})
+
+const { renderProduct, productPrice, productModifiersVerbose } = useProduct({
+  cartItem: additiveCartItem.value,
+  product: props.product,
+  isAdditive: true,
+})
+
+// подсчет общего количества и платных
+const additiveCounter = computed(() => {
+  let total = props.additiveCount
+  let payable = 0
+
+  if (additiveCartItem.value) {
+    total = total + additiveCartItem.value.q
+    payable = additiveCartItem.value.q
+  }
+
+  return {
+    total,
+    payable,
+  }
+})
 
 const isPreorder = computed(() => {
   return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
@@ -103,7 +106,7 @@ const isPreorder = computed(() => {
 
 const plusminusParams = computed(() => {
   let minWeight = 0
-  const min = renderProduct.value.min_items || 0
+  const min = props.additiveCount
   let max = 99
   let step = 1
 
@@ -128,43 +131,28 @@ const isProductHardStopped = computed(() => {
   return false
 })
 
-const handleReturn = () => {
-  cartStore.changeQuantity({
-    id: renderProduct.value.id,
-    quantity: 1,
-    modifiers: props.cartItem?.modifiers || [],
-  })
-}
-
-const handleRemove = () => {
-  cartStore.removeFromCart(renderProduct.value.id, props.cartItem?.modifiers)
-}
-
+// В коризне храниться только дополнительное количество (поверх бесплатного)
+// Селектор не позволяет проставить значения меньше бесплатного (отказаться от бесплатного)
+// TODO модификаторы не учитываются
 const handleQuantityChange = (n: number) => {
-  // disables return/remove functionality
-  if (n === 0) {
-    handleRemove()
+  // входящее количество платных позиций
+  const difference = n - props.additiveCount
+  const modifiers = additiveCartItem.value?.modifiers || []
+
+  //  добавить в корзину
+  if (additiveCartItem.value === null && difference > 0) {
+    cartStore.addAdditiveToCart(renderProduct.value, difference, modifiers)
+  } else if (difference <= 0) {
+    // если входящее количество платных 0, удалять из корзины
+    cartStore.removeAdditiveFromCart(renderProduct.value.id, additiveCartItem.value?.modifiers)
   } else {
-    cartStore.changeQuantity({
+    // изменить количество
+    cartStore.changeAdditiveQuantity({
       id: renderProduct.value.id,
-      quantity: n,
-      modifiers: props.cartItem?.modifiers || [],
+      quantity: difference,
+      modifiers,
     })
   }
-}
-
-const handleProductClick = () => {
-  ui.setModal({
-    name: 'product',
-    keepPrevious: true,
-    params: { id: renderProduct.value.id, critical: renderProduct.value },
-  })
-}
-
-// focus
-const focused = ref(false)
-const setFocused = (v) => {
-  focused.value = v
 }
 </script>
 
@@ -174,7 +162,6 @@ const setFocused = (v) => {
   display: flex;
   align-items: flex-start;
   padding: 24px 0;
-  cursor: pointer;
   &__media {
     flex: 0 0 64px;
   }
@@ -227,7 +214,6 @@ const setFocused = (v) => {
     display: flex;
     align-items: center;
     margin-top: 12px;
-    cursor: default;
     .plusminus {
       margin-right: 12px;
     }
@@ -237,11 +223,6 @@ const setFocused = (v) => {
   }
   &__price {
     color: var(--color-primary);
-  }
-  &._focused {
-    .card__image img {
-      transform: scale(1.1);
-    }
   }
 }
 </style>

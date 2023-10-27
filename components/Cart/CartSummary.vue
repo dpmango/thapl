@@ -37,8 +37,8 @@
           :key="`${cartItem.id}_${cartItem.modifiers?.map((x) => x.id).join(',')}`"
           :cart-item="cartItem"
         />
-        <ProductCardCart
-          v-for="additive in additivesNotInCart"
+        <ProductCardAdditive
+          v-for="additive in additives"
           :key="additive.catalog_item.id"
           :additive-count="additive.count"
           :product="additive.catalog_item"
@@ -114,10 +114,6 @@ const { isAuthenticated } = storeToRefs(sessionStore)
 const { priceData, zoneData, minOrderData, freeDeliveryData, promoData, stopListData } =
   useCheckout()
 
-const additivesNotInCart = computed(() => {
-  return additives.value.filter((x) => productQuantityInCart.value(x.catalog_item.id) === null)
-})
-
 const handlePopupMessage = () => {
   if (stopListData.value.cartBlocked) {
     toast.error('В корзине есть недоступные к заказу позиции')
@@ -126,7 +122,7 @@ const handlePopupMessage = () => {
 
 const handleCtaClick = () => {
   if ($env.orderAskAuth && !isAuthenticated.value) {
-    ui.setModal({ name: 'auth' })
+    ui.setModal({ name: 'auth', keepPrevious: true })
     return
   }
 

@@ -8,17 +8,21 @@ import { formatPrice } from '#imports'
 export const useProduct = ({
   cartItem,
   product,
+  isAdditive = false,
 }: {
   cartItem: ICartInner | null
   product: IProduct
+  isAdditive?: boolean
 }) => {
   const cartStore = useCartStore()
-  const { productQuantityInCart, products } = storeToRefs(cartStore)
+  const { productQuantityInCart, products, additives, additivesCart } = storeToRefs(cartStore)
 
   // если передан cartItem, отображается гидирированный продукт
   const renderProduct = computed(() => {
-    if (cartItem) {
+    if (cartItem && !isAdditive) {
       return products.value.find((x) => x.id === cartItem.id) || {}
+    } else if (isAdditive && !Object.keys(product).length) {
+      return additives.value.find((x) => x.catalog_item.id === cartItem?.id)?.catalog_item || {}
     }
     return product
   }) as ComputedRef<IProduct>
@@ -46,10 +50,13 @@ export const useProduct = ({
 
   // количество товара в корзине
   const productQuantityInCartWithModifiers = computed(() => {
+    if (isAdditive) {
+      return additivesCart.value.find((x) => x.id === renderProduct.value.id)?.q
+    }
     return productQuantityInCart.value(renderProduct.value.id, cartItem?.modifiers)
   })
 
-  // список модификаторов по совпадю id корзины
+  // список модификаторов по совпадению id корзины
   const productModifiersVerbose = computed(() => {
     if (cartItem?.modifiers?.length) {
       const modifiers = renderProduct.value.modifier_groups

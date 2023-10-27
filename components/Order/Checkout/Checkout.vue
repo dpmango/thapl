@@ -1167,6 +1167,7 @@ const requestCheckout = async () => {
 onMounted(() => {
   fetchPackingOptions()
   fetchPromo()
+  cartStore.getaAdditives()
 })
 </script>
 

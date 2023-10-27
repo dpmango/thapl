@@ -141,8 +141,8 @@
         <div class="header__cta" @click="handleCartOpen">
           <UiButton>
             Корзина
-            <div v-if="cartStore.cart.length" class="header__cta-counter">
-              {{ cartStore.cart.length }}
+            <div v-if="totalCartLength" class="header__cta-counter">
+              {{ totalCartLength }}
             </div>
           </UiButton>
         </div>
@@ -167,6 +167,7 @@ const route = useRoute()
 const router = useRouter()
 const { user, app_settings, isAuthenticated } = storeToRefs(session)
 const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
+const { totalCartLength } = storeToRefs(cartStore)
 
 defineProps({
   variant: {

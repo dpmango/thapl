@@ -16,6 +16,8 @@ export const useCheckout = () => {
   const zoneData = computed(() => {
     const isDelivery = currentAddressType?.value === 'delivery'
     const isTakeaway = currentAddressType?.value === 'takeaway'
+    const targetOrganization = isDelivery ? zone.value?.organization : takeawayOrganization.value
+    const djsTimezoned = dayjs().tz(targetOrganization.timezone)
 
     return {
       isDelivery,
@@ -23,32 +25,12 @@ export const useCheckout = () => {
       hasZone: !!Object.keys(zone.value).length,
       isOpen: isDelivery ? zone.value?.is_open : takeawayOrganization.value?.is_open,
       maxTime: isDelivery ? zone.value?.max_time : '30',
-      minDate: isDelivery
-        ? dayjs()
-            .tz(zone.value?.organization.timezone)
-            .add(zone.value?.organization.min_preorder_days, 'day')
-            .format()
-        : dayjs()
-            .tz(takeawayOrganization.value.timezone)
-            .add(takeawayOrganization.value?.min_preorder_days, 'day')
-            .format(),
-      maxDate: isDelivery
-        ? dayjs()
-            .tz(zone.value?.organization.timezone)
-            .add(zone.value?.organization.max_preorder_days, 'day')
-            .format()
-        : dayjs()
-            .tz(takeawayOrganization.value.timezone)
-            .add(takeawayOrganization.value?.max_preorder_days, 'day')
-            .format(),
+      minDate: djsTimezoned.add(targetOrganization.min_preorder_days, 'day').format(),
+      maxDate: djsTimezoned.add(targetOrganization.max_preorder_days, 'day').format(),
       orderType: currentOrderType.value,
-      organization: isDelivery ? zone.value?.organization : takeawayOrganization.value,
-      timeFrom: isDelivery
-        ? timestampToMinutes(zone.value?.time_from)
-        : timestampToMinutes(takeawayOrganization.value?.time_from),
-      timeTo: isDelivery
-        ? timestampToMinutes(zone.value?.time_to)
-        : timestampToMinutes(takeawayOrganization.value?.time_to),
+      organization: targetOrganization,
+      timeFrom: timestampToMinutes(targetOrganization?.time_from),
+      timeTo: timestampToMinutes(targetOrganization?.time_to),
     }
   })
 
