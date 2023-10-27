@@ -82,9 +82,14 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useSessionStore } from '~/store'
 import { IOrder } from '~/interface/Order'
 
 const { $env, $log } = useNuxtApp()
+
+const session = useSessionStore()
+const { isAuthenticated } = storeToRefs(session)
 
 const lastOrder = ref<IOrder | null>(null)
 
@@ -133,6 +138,15 @@ onMounted(() => {
 onBeforeUnmount(() => {
   timerUpdate.value && clearTimeout(timerUpdate.value)
 })
+
+watch(
+  () => isAuthenticated.value,
+  (newVal) => {
+    if (newVal) {
+      requestLastOrder()
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>
