@@ -772,9 +772,15 @@ const { value: not_heat, meta: heatMeta } = useField<boolean>('not_heat', (v) =>
 })
 
 // Дополнительные поля (кино)
-const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => true)
-const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => true)
-const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => true)
+const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => {
+  return clearString(v).length >= 1 ? true : 'Введите зал'
+})
+const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => {
+  return clearString(v).length >= 1 ? true : 'Введите ряд'
+})
+const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => {
+  return clearString(v).length >= 1 ? true : 'Введите место'
+})
 
 // Оплата
 const { value: payment } = useField<number>(
