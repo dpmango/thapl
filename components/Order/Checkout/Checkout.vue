@@ -125,6 +125,41 @@
               </div>
             </div>
           </template>
+
+          <!-- Временные поля -->
+          <div data-name="section_address" class="checkout__row row">
+            <div class="col col-4">
+              <UiInput
+                name="kinoHall"
+                label="Зал"
+                placeholder=""
+                :value="kinoHall"
+                :error="errors.kinoHall"
+                @on-change="(v) => setFieldValue('kinoHall', v)"
+              />
+            </div>
+            <div class="col col-4">
+              <UiInput
+                name="kinoRow"
+                label="Ряд"
+                placeholder=""
+                :value="kinoRow"
+                :error="errors.kinoRow"
+                @on-change="(v) => setFieldValue('kinoRow', v)"
+              />
+            </div>
+            <div class="col col-4">
+              <UiInput
+                name="kinoPlace"
+                label="Место"
+                placeholder=""
+                :value="kinoPlace"
+                :error="errors.kinoPlace"
+                @on-change="(v) => setFieldValue('kinoPlace', v)"
+              />
+            </div>
+          </div>
+
           <!-- Дата и время -->
           <!-- change condition -->
           <template v-if="app_settings.order_to_time && !app_settings.order_to_time_enabled">
@@ -451,6 +486,9 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     promocode: '',
     points: '',
     comment: '',
+    kinoHall: '',
+    kinoRow: '',
+    kinoPlace: '',
   },
 })
 
@@ -732,6 +770,11 @@ const { value: not_call, meta: contactMeta } = useField<boolean>('not_call', (v)
 const { value: not_heat, meta: heatMeta } = useField<boolean>('not_heat', (v) => true, {
   type: 'checkbox',
 })
+
+// Дополнительные поля (кино)
+const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => true)
+const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => true)
+const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => true)
 
 // Оплата
 const { value: payment } = useField<number>(
@@ -1016,6 +1059,10 @@ const buildRequestObject = () => {
   if (promoGiftId.value) {
     orderObject.gift_id = promoGiftId.value
   }
+
+  orderObject.comment =
+    orderObject.comment +
+    ` | Зал: ${kinoHall.value} | Ряд: ${kinoRow.value} | Место: ${kinoPlace.value}`
 
   return orderObject
 }
