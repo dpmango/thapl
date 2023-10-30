@@ -1078,6 +1078,7 @@ const highlightError = (errors) => {
 const requestCheckout = async () => {
   if ($env.orderAskAuth && !isAuthenticated.value) {
     ui.setModal({ name: 'auth', params: { closable: false } })
+    return
   }
 
   const { valid, errors } = await validate()
