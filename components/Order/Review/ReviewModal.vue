@@ -116,9 +116,6 @@ const postReview = async (lastAnswer: ISendReviewAnswerUpload) => {
     answers: quizAnswers.value,
   } as ISendReviewDto
 
-  const formData = new FormData()
-  let useFormData = false
-
   $log.log({ postData: reviewPostBody })
 
   // переключатель на formData если исползуются изображения
@@ -137,26 +134,25 @@ const postReview = async (lastAnswer: ISendReviewAnswerUpload) => {
 
     processFiles.forEach((upload, idx) => {
       if (upload.file) {
-        formData.append(`common_photo_${idx + 1}`, upload.file)
+        reviewPostBody[`common_photo_${idx + 1}`] = upload.binary?.toString()
+        // formData.append(`common_photo_${idx + 1}`, upload.file)
       }
     })
 
-    Object.keys(reviewPostBody).forEach((key) => {
-      let data = JSON.stringify(reviewPostBody[key])
-      if (key === 'answers') {
-        data = JSON.stringify(reviewPostBody[key].map((x) => ({ ...x, uploads: null })))
-      }
+    // Object.keys(reviewPostBody).forEach((key) => {
+    //   let data = JSON.stringify(reviewPostBody[key])
+    //   if (key === 'answers') {
+    //     data = JSON.stringify(reviewPostBody[key].map((x) => ({ ...x, uploads: null })))
+    //   }
 
-      formData.append(key, data)
-    })
-
-    useFormData = true
+    //   formData.append(key, data)
+    // })
   }
 
   const data = (await useApi('order/send-questionnaire', {
     method: 'POST',
     headers: useHeaders(),
-    body: useFormData ? formData : reviewPostBody,
+    body: reviewPostBody,
   }).catch((err) => useCatchError(err, 'Ошибка, обратитесь к администратору'))) as any
 
   quizLoading.value = false

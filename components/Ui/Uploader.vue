@@ -103,6 +103,14 @@ const handleFileSelect = async (e: any) => {
     })
   })
 
+  const awaitsReaderBinary = Array.from(files).map((file) => blobToBinary(file))
+
+  await Promise.all(awaitsReaderBinary).then((res) => {
+    res.forEach((readerData, idx) => {
+      newFiles[idx].binary = readerData as string
+    })
+  })
+
   uploads.value = newFiles
 }
 

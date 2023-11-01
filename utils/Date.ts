@@ -21,6 +21,9 @@ export const pad = (v, size = 2) => {
   return s
 }
 
+export const djs = dayjs
+export const djs_locale = locale_ru
+
 export const dateToTimestamp = (v: Date | string) => {
   return dayjs(v, 'YYYY-MM-DD HH:mm:ss', true).format('DD MMMM YYYY, HH:mm')
 }

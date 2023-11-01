@@ -122,7 +122,7 @@
               К сожалению эта позиция недоступна
             </p>
             <ProductCardAddToCart
-              v-else
+              v-else-if="isCardEnabled"
               :product="displayProduct"
               :modifiers="modifierGroups"
               btn-theme="primary"
@@ -154,7 +154,7 @@ const route = useRoute()
 const ui = useUiStore()
 const cartStore = useCartStore()
 const { cart, productsCountInCart } = storeToRefs(cartStore)
-const { modal } = storeToRefs(ui)
+const { modal, modalParams } = storeToRefs(ui)
 
 const product = ref(null) as Ref<IProductFullDto | null>
 const productChildrenShown = ref(null) as Ref<IProduct | null>
@@ -162,6 +162,10 @@ const loading = ref(false)
 
 const displayProduct = computed(() => {
   return productChildrenShown.value || product.value
+})
+
+const isCardEnabled = computed(() => {
+  return !modalParams.value?.isGift
 })
 
 interface IModifierItemGrouped extends ICartModifier {

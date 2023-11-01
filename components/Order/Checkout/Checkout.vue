@@ -419,7 +419,6 @@
 <script setup lang="ts">
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { ref, onMounted } from 'vue'
-import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useDeliveryStore, useCartStore, useSessionStore, useUiStore } from '~/store'
@@ -557,7 +556,7 @@ const { value: deliveryDate } = useField<string>(
 
 // текущее время пользователя либо следующий день (логика только для выбора опций)
 const orderDay = computed(() => {
-  let userDate = dayjs().tz(zoneData.value.organization?.timezone)
+  let userDate = djs().tz(zoneData.value.organization?.timezone)
   let isToday = true
 
   const zoneHour = zoneData.value.timeTo / 60
@@ -574,8 +573,8 @@ const orderDay = computed(() => {
 })
 
 const isOtherDay = computed(() => {
-  const d1 = dayjs(deliveryDate.value).tz(zoneData.value.organization?.timezone)
-  const d2 = dayjs(orderDay.value.day).tz(zoneData.value.organization?.timezone)
+  const d1 = djs(deliveryDate.value).tz(zoneData.value.organization?.timezone)
+  const d2 = djs(orderDay.value.day).tz(zoneData.value.organization?.timezone)
   return deliveryDate.value && !isSameDay(d1, d2)
 })
 
@@ -665,7 +664,7 @@ const { value: deliveryRange } = useField<string>('deliveryRange', (v) => {
 })
 
 const deliveryRangeOptions = computed(() => {
-  const dayjsNow = dayjs().tz(zoneData.value.organization?.timezone)
+  const dayjsNow = djs().tz(zoneData.value.organization?.timezone)
   const minutes = dayjsNow.hour() * 60 + dayjsNow.minute()
 
   const {
@@ -680,7 +679,7 @@ const deliveryRangeOptions = computed(() => {
   const max = isDelivery ? timeTo + +maxTime : timeTo - +maxTime
   const isToday =
     deliveryDate.value !== '0' &&
-    isSameDay(dayjs(deliveryDate.value).tz(zoneData.value.organization?.timezone), dayjsNow)
+    isSameDay(djs(deliveryDate.value).tz(zoneData.value.organization?.timezone), dayjsNow)
 
   return {
     min: isToday ? (isDelivery ? timeFrom + +maxTime : minutes + +min_takeaway_gap) : min,
@@ -894,8 +893,10 @@ const handlePromocodeClick = async () => {
   if (promocodeApplied.value) {
     promocodeApplied.value = false
     setFieldValue('promocode', '')
+    cartStore.setCheckedPromocode(null)
   } else {
     promocodeApplied.value = true
+    cartStore.setCheckedPromocode(promocode.value)
   }
 
   await fetchPromo()
@@ -1015,7 +1016,7 @@ const buildRequestObject = () => {
   } as IOrderRequestDto
 
   if (deliveryDate.value) {
-    orderObject.time_to_delivery = `${dayjs(deliveryDate.value)
+    orderObject.time_to_delivery = `${djs(deliveryDate.value)
       .tz(zoneData.value.organization?.timezone)
       .format('DD.MM.YYYY')}${deliveryTime.value === '1' ? '' : ' ' + deliveryTime.value}`
     // DD.MM.YYYY HH:mm

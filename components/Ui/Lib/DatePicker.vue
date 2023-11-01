@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import '@/assets/css/elements/_date-picker.scss'
@@ -71,7 +70,7 @@ const months: string[] = [
 ]
 
 const minDate = computed(() => {
-  return dayjs(props.minDate).tz(props.timeZone).add(props.offset, 'day').format()
+  return djs(props.minDate).tz(props.timeZone).add(props.offset, 'day').format()
 })
 </script>
 

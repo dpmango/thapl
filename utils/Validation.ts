@@ -1,8 +1,4 @@
 /* eslint-disable no-useless-escape */
-import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-// eslint-disable-next-line import/no-named-as-default-member
-dayjs.extend(customParseFormat)
 
 export const clearString = (v: any, removeSpaces?: boolean) => {
   let value = ''
@@ -71,11 +67,11 @@ export const validAdress = (v: string | null) => {
 
 export function validDate(value: string | null, dateNow?: string | Date) {
   value = value || ''
-  const djsObj = dayjs(value, 'DD/MM/YYYY', true)
+  const djsObj = djs(value, 'DD/MM/YYYY', true)
 
   if (!djsObj.isValid()) return false
   if (djsObj.year() < 1920) return false
-  if (djsObj.isAfter(dayjs(dateNow))) return false
+  if (djsObj.isAfter(djs(dateNow))) return false
 
   return true
 }

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useCartStore, useDeliveryStore } from '~/store'
 import { timestampToMinutes, Plurize } from '#imports'
@@ -17,7 +16,7 @@ export const useCheckout = () => {
     const isDelivery = currentAddressType?.value === 'delivery'
     const isTakeaway = currentAddressType?.value === 'takeaway'
     const targetOrganization = isDelivery ? zone.value?.organization : takeawayOrganization.value
-    const djsTimezoned = dayjs().tz(targetOrganization.timezone)
+    const djsTimezoned = djs().tz(targetOrganization.timezone)
 
     return {
       isDelivery,

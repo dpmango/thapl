@@ -12,6 +12,7 @@ export interface IToggleOption {
 export interface IUpload {
   id?: string
   file: File | null
+  binary?: string | null
   encodedImage: string | null
   name: string | null
   error: string | null

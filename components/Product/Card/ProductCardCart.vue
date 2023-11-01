@@ -157,7 +157,7 @@ const handleProductClick = () => {
   ui.setModal({
     name: 'product',
     keepPrevious: true,
-    params: { id: renderProduct.value.id, critical: renderProduct.value },
+    params: { id: renderProduct.value.id, critical: renderProduct.value, isGift: props.isGift },
   })
 }
 

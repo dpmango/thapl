@@ -106,7 +106,7 @@ const { $env, $log } = useNuxtApp()
 const ui = useUiStore()
 const cartStore = useCartStore()
 const sessionStore = useSessionStore()
-const { cart, products, additives, suggestions, promo, promoGiftId, productQuantityInCart } =
+const { cart, products, additives, suggestions, promo, promoGiftId, checkedPromocode } =
   storeToRefs(cartStore)
 const { modal: activeModal } = storeToRefs(ui)
 const { isAuthenticated } = storeToRefs(sessionStore)
@@ -138,7 +138,7 @@ const fetchCartData = debounce(
     cartStore.checkStopList()
     cartStore.getaAdditives()
     cartStore.getSuggestions()
-    cartStore.getPromo({})
+    cartStore.getPromo({ code: checkedPromocode.value || '' })
   },
   500,
   { leading: true }

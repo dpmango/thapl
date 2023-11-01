@@ -23,7 +23,7 @@
           <div class="profile__info-col col col-6 col-sm-12">
             <span class="text-s c-gray">Дата рождения</span>
             <div v-if="user.birthday" class="h5-title">
-              {{ dayjs(user.birthday).format('DD/MM/YYYY') }}
+              {{ djs(user.birthday).format('DD/MM/YYYY') }}
             </div>
             <div v-else class="h5-title c-gray">—</div>
           </div>
@@ -41,7 +41,6 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import dayjs from 'dayjs'
 import { useSessionStore } from '~/store'
 
 const sessionStore = useSessionStore()

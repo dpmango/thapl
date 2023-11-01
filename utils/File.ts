@@ -6,6 +6,14 @@ export const blobToData = (blob: Blob): Promise<string | ArrayBuffer | null> => 
   })
 }
 
+export const blobToBinary = (blob: Blob): Promise<string | ArrayBuffer | null> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result)
+    reader.readAsBinaryString(blob)
+  })
+}
+
 export const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return '0 Bytes'
 

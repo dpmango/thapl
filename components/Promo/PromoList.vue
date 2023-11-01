@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
-import djs from 'dayjs'
 
 import { IPromoListDto } from '~/interface/Promo'
 

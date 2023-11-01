@@ -95,6 +95,18 @@ export const useProductStore = defineStore('product', {
         })
         .filter((x) => !organizationData?.stop_categories?.includes(x.id))
 
+      // console.log({ filteredCatalog })
+
+      // const nonEmptyCategories = filteredCatalog.filter((x) => {
+      //   if (x.sub_categories.length) {
+      //     if (x.sub_categories.some((subcat) => subcat.catalog_items.length)) return false
+      //   }
+      //   if (!x.catalog_items.length) return false
+
+      //   return true
+      // })
+
+      // console.log({ nonEmptyCategories })
       return filteredCatalog
     },
 

@@ -76,7 +76,6 @@
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import { useToast } from 'vue-toastification/dist/index.mjs'
-import dayjs from 'dayjs'
 import { useSessionStore } from '~/store'
 import { clearString, validPhone, validEmail, validDate, dateMask } from '#imports'
 
@@ -92,7 +91,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     // surname: user.value.surname || '',
     phone: user.value.username || '',
     email: user.value.email || '',
-    birthday: user.value.birthday ? dayjs(user.value.birthday).format('DD/MM/YYYY') : '',
+    birthday: user.value.birthday ? djs(user.value.birthday).format('DD/MM/YYYY') : '',
   },
 })
 
@@ -142,7 +141,7 @@ const saveProfile = async () => {
     // surname: surname.value,
     email: email.value,
     phone: phone.value,
-    birthday: birthday.value ? dayjs(birthday.value, 'DD/MM/YYYY').toDate() : '',
+    birthday: birthday.value ? djs(birthday.value, 'DD/MM/YYYY').toDate() : '',
   }
 
   const response = await useApi('profile/set-user-data', {

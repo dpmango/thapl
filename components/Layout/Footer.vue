@@ -12,7 +12,7 @@
             <NuxtIcon name="caret" />
           </div>
           <ul class="footer__section-list">
-            <li v-for="link in productStore.navCategories" :key="link.id">
+            <li v-for="link in navCategoriesMapper" :key="link.id">
               <NuxtLink :to="link.slug">{{ link.title }}</NuxtLink>
             </li>
           </ul>
@@ -61,6 +61,7 @@ import { useProductStore, useSessionStore } from '~/store'
 const productStore = useProductStore()
 const sessionStore = useSessionStore()
 const { app_settings, hasMarketingSection } = storeToRefs(sessionStore)
+const { navCategories } = storeToRefs(productStore)
 
 const { $env } = useNuxtApp()
 
@@ -70,6 +71,17 @@ const showMenuSection = computed(() => {
   }
 
   return true
+})
+
+const navCategoriesMapper = computed(() => {
+  if ($env.catalog === 'singlepage') {
+    return navCategories.value
+  } else {
+    return navCategories.value.map((link) => ({
+      ...link,
+      slug: `/category/${link.slug}`,
+    }))
+  }
 })
 
 // mobile accardeon

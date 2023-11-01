@@ -19,6 +19,7 @@ export const useCartStore = defineStore('cart', {
       suggestions: [] as IProduct[],
       promo: null as IPromoDto | null,
       promoGiftId: null as number | null,
+      checkedPromocode: null as string | null,
     }
   },
   persist: {
@@ -228,6 +229,9 @@ export const useCartStore = defineStore('cart', {
           catolog_item_id: id,
         },
       })
+    },
+    setCheckedPromocode(promocode: string | null) {
+      this.checkedPromocode = promocode
     },
     resetCart() {
       this.cart = []
