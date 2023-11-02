@@ -127,7 +127,7 @@
           </template>
 
           <!-- Временные поля -->
-          <div data-name="section_address" class="checkout__row row">
+          <!-- <div data-name="section_address" class="checkout__row row">
             <div class="col col-4">
               <UiInput
                 name="kinoHall"
@@ -158,7 +158,7 @@
                 @on-change="(v) => setFieldValue('kinoPlace', v)"
               />
             </div>
-          </div>
+          </div> -->
 
           <!-- Дата и время -->
           <!-- change condition -->
@@ -485,9 +485,9 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     promocode: '',
     points: '',
     comment: '',
-    kinoHall: '',
-    kinoRow: '',
-    kinoPlace: '',
+    // kinoHall: '',
+    // kinoRow: '',
+    // kinoPlace: '',
   },
 })
 
@@ -771,15 +771,15 @@ const { value: not_heat, meta: heatMeta } = useField<boolean>('not_heat', (v) =>
 })
 
 // Дополнительные поля (кино)
-const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => {
-  return clearString(v).length >= 1 ? true : 'Введите зал'
-})
-const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => {
-  return clearString(v).length >= 1 ? true : 'Введите ряд'
-})
-const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => {
-  return clearString(v).length >= 1 ? true : 'Введите место'
-})
+// const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => {
+//   return clearString(v).length >= 1 ? true : 'Введите зал'
+// })
+// const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => {
+//   return clearString(v).length >= 1 ? true : 'Введите ряд'
+// })
+// const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => {
+//   return clearString(v).length >= 1 ? true : 'Введите место'
+// })
 
 // Оплата
 const { value: payment } = useField<number>(
@@ -1067,9 +1067,9 @@ const buildRequestObject = () => {
     orderObject.gift_id = promoGiftId.value
   }
 
-  orderObject.comment =
-    orderObject.comment +
-    ` | Зал: ${kinoHall.value} | Ряд: ${kinoRow.value} | Место: ${kinoPlace.value}`
+  // orderObject.comment =
+  //   orderObject.comment +
+  //   ` | Зал: ${kinoHall.value} | Ряд: ${kinoRow.value} | Место: ${kinoPlace.value}`
 
   return orderObject
 }
