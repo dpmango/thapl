@@ -34,6 +34,10 @@
       >
         <div class="card__price text-l hidden-sm">
           {{ productFullPriceLabel }}
+          <template v-if="product.old_price">
+            &nbsp;
+            <span className="card__price-old">{{ formatPrice(product.old_price) }}</span>
+          </template>
         </div>
 
         <ProductCardAddToCart
@@ -159,6 +163,10 @@ const setFocused = (v: boolean) => {
   }
   &__add {
     font-size: 0;
+  }
+  &__price-old {
+    text-decoration: line-through;
+    opacity: 0.5;
   }
   &._focused:not(._gift) {
     .card__image img {

@@ -130,6 +130,10 @@
               @on-before-add="showModifiersToast"
             >
               В корзину &bull; {{ productPriceLabel }}
+              <template v-if="product.old_price">
+                &bull;&nbsp;
+                <span className="product__old-price">{{ formatPrice(product.old_price) }}</span>
+              </template>
             </ProductCardAddToCart>
           </div>
         </div>
@@ -523,7 +527,10 @@ watch(
   &__description {
     margin-top: 8px;
   }
-
+  &__old-price {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
   &__options {
     margin-top: 12px;
     background: var(--color-bg-darken);
