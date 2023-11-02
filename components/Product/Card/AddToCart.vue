@@ -70,13 +70,6 @@ const plusminusParams = computed(() => {
 })
 
 const productQuantityWithModifier = computed(() => {
-  const count = productsCountInCart.value(props.product.id)
-  if (count > 1 && !props.modifiers.length) {
-    // несколько товаров с модификаторами, отображать как новый товар
-    // пока не получены новые модификаторы (тогда считается как отдельный товар)
-    return 0
-  }
-
   return productQuantityInCart.value(props.product.id, props.modifiers)
 })
 
