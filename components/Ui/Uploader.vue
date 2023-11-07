@@ -2,7 +2,7 @@
   <div class="uploader">
     <div v-if="uploads.length > 0" class="uploader__list">
       <div v-for="(upload, idx) in uploads" :key="idx" class="preview">
-        <div v-if="upload.error" className="preview__error">{{ upload.error }}</div>
+        <div v-if="upload.error" class="preview__error">{{ upload.error }}</div>
 
         <div class="preview__remove" @click="removeAttachment(upload.id)">
           <nuxt-icon name="close"></nuxt-icon>

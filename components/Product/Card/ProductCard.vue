@@ -36,7 +36,7 @@
           {{ productFullPriceLabel }}
           <template v-if="product.old_price">
             &nbsp;
-            <span className="card__price-old">{{ formatPrice(product.old_price) }}</span>
+            <span class="card__price-old">{{ formatPrice(product.old_price) }}</span>
           </template>
         </div>
 
@@ -49,6 +49,10 @@
           <span class="hidden-sm">Выбрать</span>
           <span class="visible-sm">
             {{ productFullPriceLabel }}
+            <template v-if="product.old_price">
+              &nbsp;
+              <span class="card__price-old">{{ formatPrice(product.old_price) }}</span>
+            </template>
           </span>
         </ProductCardAddToCart>
       </div>

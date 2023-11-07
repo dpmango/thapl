@@ -132,7 +132,7 @@
               В корзину &bull; {{ productPriceLabel }}
               <template v-if="product.old_price">
                 &bull;&nbsp;
-                <span className="product__old-price">{{ formatPrice(product.old_price) }}</span>
+                <span class="product__old-price">{{ formatPrice(product.old_price) }}</span>
               </template>
             </ProductCardAddToCart>
           </div>
