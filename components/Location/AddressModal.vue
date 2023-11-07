@@ -41,6 +41,7 @@
         v-if="deliveryType === 2"
         class="address__delivery"
         :search="search"
+        @set-search="(v) => setFieldValue('search', v)"
       />
     </div>
   </UiModal>

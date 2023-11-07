@@ -33,11 +33,13 @@ const props = defineProps({
   search: String,
 })
 
+const emit = defineEmits(['setSearch'])
+
 // поиск ресторнов
 const restaurantsSearched = computed(() => {
-  const searchStr = props.search.trim().toLowerCase()
+  const searchStr = props.search?.trim().toLowerCase()
 
-  if (searchStr.length >= 2) {
+  if (searchStr && searchStr.length >= 2) {
     return restaurants.value.filter((x) => {
       return x.title.toLowerCase().includes(searchStr)
     })
@@ -56,6 +58,8 @@ const selectRestaurant = async (restaurant) => {
     restaurantSelected.value = { ...restaurant }
 
     $log.log(organization, restaurant)
+
+    emit('setSearch', restaurant.title)
 
     deliveryStore.setCurrentAddress({
       type: 'takeaway',
