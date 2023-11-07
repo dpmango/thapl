@@ -356,6 +356,7 @@
                 label="Промокод"
                 :value="promocode"
                 :error="errors.promocode"
+                :clearable="false"
                 :changable="promocodeApplied ? 'Изменить' : 'Применить'"
                 @on-change="(v) => setFieldValue('promocode', v)"
                 @on-changable="handlePromocodeClick"
@@ -943,7 +944,7 @@ const fetchPromo = async () => {
   }
 
   if (res.gifts?.length > 1 && !promoGiftId.value) {
-    ui.setModal({ name: 'gift' })
+    ui.setModal({ name: 'gift', params: { closable: false } })
   }
 
   return res
