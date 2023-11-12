@@ -2,6 +2,7 @@ import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const isDev = process.env.NODE_ENV === 'development'
+  // const isDev = false
   const isConsoleMode = () => {
     try {
       return ['console', 'debug', 'dev'].some((x) => window.location.search.includes(x))

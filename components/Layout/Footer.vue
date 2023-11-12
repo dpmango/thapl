@@ -19,7 +19,7 @@
         </div>
 
         <div
-          v-if="app_settings.site_footer_menu"
+          v-if="app_settings.site_footer_menu?.length"
           class="footer__section _nav"
           :class="[activeSection === 2 && '_active']"
         >

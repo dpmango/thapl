@@ -1,7 +1,7 @@
 {
   "name": "thapl",
   "private": true,
-  "version": "2.1.6",
+  "version": "2.1.7",
   "engines": {
     "node": ">=16.15.0"
   },
@@ -27,7 +27,7 @@
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --cache",
     "*.{css,scss,sass,html,vue}": "stylelint",
-    "*.**": "prettier --check --ignore-unknown"
+    "*.{vue,js,ts}": "prettier --check --ignore-unknown"
   },
   "dependencies": {
     "@nuxt/image-edge": "^1.0.0-rc.1-28143901.afe4120",

@@ -19,11 +19,11 @@ export const useCartStore = defineStore('cart', {
       suggestions: [] as IProduct[],
       promo: null as IPromoDto | null,
       promoGiftId: null as number | null,
-      checkedPromocode: null as string | null,
+      savedPromocode: null as string | null,
     }
   },
   persist: {
-    paths: ['cart', 'promoGiftId', 'additivesCart'],
+    paths: ['cart', 'promoGiftId', 'additivesCart', 'savedPromocode'],
   },
   getters: {
     // общее количество уникальных товаров с учетом добавок
@@ -230,9 +230,6 @@ export const useCartStore = defineStore('cart', {
         },
       })
     },
-    setCheckedPromocode(promocode: string | null) {
-      this.checkedPromocode = promocode
-    },
     resetCart() {
       this.cart = []
       this.products = []
@@ -322,13 +319,19 @@ export const useCartStore = defineStore('cart', {
       })) as IPromoDto
 
       // определение какой подарок ставить в сторе
-      if (res.gifts.length === 1) {
-        this.promoGiftId = res.gifts[0].id
-      } else if (this.promoGiftId) {
-        const productExists = res.gifts.some((x) => x.id === this.promoGiftId)
+      if (this.promoGiftId) {
+        const productExists = res.gifts?.some((x) => x.id === this.promoGiftId)
         this.promoGiftId = productExists ? this.promoGiftId : null
+      } else if (res.gifts?.length) {
+        this.promoGiftId = res.gifts[0].id
       } else {
         this.promoGiftId = null
+      }
+
+      if (code && !res.error_type) {
+        this.savedPromocode = code
+      } else {
+        this.savedPromocode = null
       }
 
       this.promo = {

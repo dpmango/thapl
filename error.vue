@@ -20,7 +20,7 @@ $log.warn(props.error)
 
 useHead({
   title: `Ошибка ${props.error?.statusCode}`,
-  bodyAttrs: {
+  htmlAttrs: {
     class: `theme-${$env.theme}`,
   },
 })

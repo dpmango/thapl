@@ -22,7 +22,7 @@ export const formatPrice = (num: any, trailingZeros = 0, showFree = true) => {
   return `${value} ₽`
 }
 
-export const formatGramm = (num: number | null) => {
+export const formatGramm = (num?: number | null) => {
   if (!num) return '0 г'
 
   if (num >= 1000) {

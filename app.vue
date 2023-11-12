@@ -57,11 +57,11 @@ const initData = await useInit()
 
 // установка куки в клиент от init (баг useCookieState)
 // не работает когда useCookieState работает в SSR контексте
-const apiCookieClient = useCookie('x-thapl-apitoken')
+const apiCookieClient = useCookie('x-thapl-apitoken', { maxAge: 60 * 60 * 24 * 30 * 6 })
 apiCookieClient.value = initData?.api_token || null
 
 useHead({
-  bodyAttrs: {
+  htmlAttrs: {
     class: `theme-${$env.theme}`,
   },
   ...createSeoTags({

@@ -37,17 +37,17 @@
           :key="`${cartItem.id}_${cartItem.modifiers?.map((x) => x.id).join(',')}`"
           :cart-item="cartItem"
         />
+        <ProductCardCart
+          v-for="gift in promoData.gifts.filter((x) => x.id === promoGiftId)"
+          :key="gift.id"
+          :is-gift="true"
+          :product="gift"
+        />
         <ProductCardAdditive
           v-for="additive in additives"
           :key="additive.catalog_item.id"
           :additive-count="additive.count"
           :product="additive.catalog_item"
-        />
-        <ProductCardCart
-          v-for="(gift, idx) in promoData.gifts.filter((x) => x.id === promoGiftId)"
-          :key="idx"
-          :is-gift="true"
-          :product="gift"
         />
       </div>
 
@@ -106,7 +106,7 @@ const { $env, $log } = useNuxtApp()
 const ui = useUiStore()
 const cartStore = useCartStore()
 const sessionStore = useSessionStore()
-const { cart, products, additives, suggestions, promo, promoGiftId, checkedPromocode } =
+const { cart, products, additives, suggestions, promo, promoGiftId, savedPromocode } =
   storeToRefs(cartStore)
 const { modal: activeModal } = storeToRefs(ui)
 const { isAuthenticated } = storeToRefs(sessionStore)
@@ -138,7 +138,7 @@ const fetchCartData = debounce(
     cartStore.checkStopList()
     cartStore.getaAdditives()
     cartStore.getSuggestions()
-    cartStore.getPromo({ code: checkedPromocode.value || '' })
+    cartStore.getPromo({ code: savedPromocode.value || '' })
   },
   500,
   { leading: true }
@@ -158,18 +158,6 @@ watch(
   (_) => {
     if (activeModal.value.includes('cart')) {
       fetchCartData()
-    }
-  }
-)
-
-watch(
-  () => promo.value,
-  (newVal) => {
-    if (!newVal?.gifts) return
-    if (!activeModal.value.includes('cart')) return
-
-    if (newVal.gifts.length > 1 && !promoGiftId.value) {
-      ui.setModal({ name: 'gift', keepPrevious: true })
     }
   }
 )

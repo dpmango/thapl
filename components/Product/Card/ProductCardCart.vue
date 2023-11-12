@@ -51,7 +51,20 @@
           <UiButton theme="secondary" @click="handleReturn"> Вернуть </UiButton>
           <UiButton theme="secondary" @click="handleRemove"> Удалить </UiButton>
         </template>
+
         <UiButton v-if="isPreorder" theme="secondary" @click="handleRemove"> Удалить </UiButton>
+      </div>
+
+      <div
+        v-if="showGiftChange"
+        class="card__action"
+        @click.stop
+        @mouseenter="setFocused(false)"
+        @mouseleave="setFocused(true)"
+      >
+        <UiButton size="small" @click="() => ui.setModal({ name: 'gift', keepPrevious: true })">
+          Изменить подарок
+        </UiButton>
       </div>
     </div>
     <div class="card__meta">
@@ -73,7 +86,7 @@ import { useProduct } from '#imports'
 
 const { $env } = useNuxtApp()
 const cartStore = useCartStore()
-const { cartStoped } = storeToRefs(cartStore)
+const { cartStoped, promo } = storeToRefs(cartStore)
 const ui = useUiStore()
 
 const props = defineProps({
@@ -99,6 +112,12 @@ const { renderProduct, productPrice, productModifiersVerbose, productQuantityInC
 
 const isPreorder = computed(() => {
   return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
+})
+
+const showGiftChange = computed(() => {
+  if (!props.isGift) return
+
+  return (promo.value?.gifts.length || 0) > 1
 })
 
 const plusminusParams = computed(() => {

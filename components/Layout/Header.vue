@@ -268,8 +268,8 @@ onBeforeUnmount(() => {
     padding: 12px 0;
   }
   &__navi-link {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     a {
       transition: color 0.25s $ease;
       &:hover {

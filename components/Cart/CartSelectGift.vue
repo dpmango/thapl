@@ -32,7 +32,7 @@ const ui = useUiStore()
 
 const { cart, promo, promoGiftId } = storeToRefs(cartStore)
 
-const selectedId = ref<number | null>(null)
+const selectedId = ref<number | null>(promoGiftId.value)
 
 const handleSelect = () => {
   if (selectedId.value) {

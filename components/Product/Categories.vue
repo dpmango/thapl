@@ -6,9 +6,9 @@
           v-for="category in categories"
           class="col"
           :class="{
-            'sm col-3': category.image_view_type == 10,
-            'lg col-6': category.image_view_type == 20,
-            'sq col-3': category.image_view_type == 30,
+            'sm col-3 col-md-6': category.image_view_type == 10,
+            'lg col-6 col-md-12': category.image_view_type == 20,
+            'sq col-3 col-md-6': category.image_view_type == 30,
           }"
         >
           <NuxtLink
@@ -58,45 +58,37 @@ const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
   .row {
     align-items: flex-start;
   }
+}
 
-  .col {
-    &.lg {
-      @include r($md) {
-        flex-basis: $col12;
-        max-width: $col12;
-      }
-    }
-    &.sm,
-    &.sq {
-      @include r($md) {
-        flex-basis: $col6;
-        max-width: $col6;
-      }
-    }
+.sm {
+  .category {
+    aspect-ratio: 144/182;
+  }
+}
+
+.lg {
+  .category {
+    aspect-ratio: 312/182;
+  }
+}
+
+.sq {
+  .category {
+    aspect-ratio: 1;
   }
 }
 
 .category {
-  $self: &;
-
   flex: 1 0 auto;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
-  height: var(--category-height-md);
+  // height: var(--category-height-md);
   background: rgba(var(--color-primary-rgb), 0.12);
   border-radius: var(--card-border-radius);
   overflow: hidden;
-
-  @include r($md) {
-    margin-bottom: 24px;
-  }
-
-  @include r($sm) {
-    margin-bottom: 12px;
-  }
 
   &__image {
     position: absolute;
@@ -125,26 +117,8 @@ const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
     color: var(--color-primary);
   }
 
-  &.sm {
-    .category {
-      aspect-ratio: 4/5;
-    }
-  }
-
-  &.lg {
-    .category {
-      aspect-ratio: 17/10;
-    }
-  }
-
-  &.sq {
-    .category {
-      aspect-ratio: 1;
-    }
-  }
-
   &.is-shadow {
-    #{$self}__title {
+    .category__title {
       color: #fff;
     }
 
@@ -157,6 +131,35 @@ const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
       height: 50%;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
       z-index: 2;
+    }
+  }
+}
+
+@include r($lg) {
+  .category {
+    &__title {
+      font-size: 24px;
+    }
+    &__content {
+      padding: 24px 24px;
+    }
+  }
+}
+
+@include r($md) {
+  .category {
+    margin-bottom: 24px;
+    &__title {
+      font-size: 18px;
+    }
+  }
+}
+
+@include r($sm) {
+  .category {
+    margin-bottom: 12px;
+    &__content {
+      padding: 24px 16px;
     }
   }
 }

@@ -114,9 +114,8 @@ onMounted(() => {
         :deep(.swiper-slide) {
           flex-basis: 100%;
           width: 100%;
-          margin-right: 32px;
-          &:last-child {
-            margin-right: 0;
+          &:not(:last-child) {
+            margin-right: 32px;
           }
         }
       }
@@ -129,7 +128,9 @@ onMounted(() => {
         :deep(.swiper-slide) {
           flex-basis: 268px;
           width: 268px;
-          margin-right: 32px;
+          &:not(:last-child) {
+            margin-right: 32px;
+          }
         }
       }
       &__slide {
@@ -165,7 +166,9 @@ onMounted(() => {
         :deep(.swiper-slide) {
           flex-basis: 198px;
           width: 198px;
-          margin-right: 24px;
+          &:not(:last-child) {
+            margin-right: 24px;
+          }
         }
       }
     }
@@ -190,7 +193,9 @@ onMounted(() => {
           :deep(.swiper-slide) {
             flex-basis: 108px;
             width: 108px;
-            margin-right: 12px;
+            &:not(:last-child) {
+              margin-right: 12px;
+            }
           }
         }
         &__slide {

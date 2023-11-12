@@ -156,38 +156,30 @@ watch(
 
   // themes
   &.primary {
-    background: var(--color-primary);
-    color: var(--color-font-invert);
+    background: var(--button-primary-bg);
+    color: var(--button-primary-color);
     &:focus {
-      outline: 4px solid rgba(var(--color-primary-rgb), 0.3);
+      outline: 4px solid var(--button-primary-focus);
     }
     &:hover {
-      box-shadow: 0px 15px 40px rgba(var(--color-primary-rgb), 0.34);
-    }
-    &:active {
-      background: darken(#ec5c2a, 10%);
-      box-shadow: none;
-      outline: none;
+      box-shadow: 0px 15px 40px var(--button-primary-hover);
     }
 
     &[disabled='true'] {
-      background: #e3e9ef;
+      background: var(--button-disabled-bg);
       color: var(--color-disabled);
       pointer-events: none;
     }
   }
 
   &.secondary {
-    background: rgba(var(--color-primary-rgb), 0.12);
-    color: var(--color-primary);
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
     &:focus {
-      outline: 4px solid rgba(var(--color-primary-rgb), 0.3);
+      outline: 4px solid var(--button-primary-focus);
     }
     &:hover {
       border-color: var(--color-primary);
-    }
-    &:active {
-      color: darken(#ec5c2a, 10%);
     }
   }
 
@@ -199,9 +191,6 @@ watch(
     }
     &:hover {
       box-shadow: 0px 13px 30px -10px #e6e6e6;
-    }
-    &:active {
-      background: #0fbf6b;
     }
   }
 
@@ -215,9 +204,6 @@ watch(
       color: var(--color-primary);
       box-shadow: 0px 13px 30px -10px #e6e6e6;
     }
-    &:active {
-      color: darken(#ec5c2a, 10%);
-    }
   }
 
   &.link {
@@ -229,16 +215,14 @@ watch(
     &:hover {
       color: var(--color-primary);
     }
-    &:active {
-      color: #005192;
-    }
+
     .button__content {
       padding: 4px 0 !important;
     }
   }
 
   &._disabled {
-    background: #e3e9ef;
+    background: var(--button-disabled-bg);
     color: var(--color-disabled);
     pointer-events: none;
   }

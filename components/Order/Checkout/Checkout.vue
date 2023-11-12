@@ -357,10 +357,19 @@
                 :value="promocode"
                 :error="errors.promocode"
                 :clearable="false"
+                :disabled="promocodeApplied"
                 :changable="promocodeApplied ? 'Изменить' : 'Применить'"
                 @on-change="(v) => setFieldValue('promocode', v)"
                 @on-changable="handlePromocodeClick"
               />
+              <div class="checkout__gift-btn">
+                <UiButton
+                  v-if="(promo?.gifts.length || 0) > 1"
+                  @click="() => ui.setModal({ name: 'gift' })"
+                >
+                  Изменить подарок
+                </UiButton>
+              </div>
             </div>
             <div v-if="showBonus.points" class="col col-6 col-sm-12">
               <UiInput
@@ -451,7 +460,7 @@ const cartStore = useCartStore()
 const ui = useUiStore()
 const { currentAddress } = storeToRefs(deliveryStore)
 const { app_settings, isAuthenticated, user } = storeToRefs(sessionStore)
-const { promo, promoGiftId } = storeToRefs(cartStore)
+const { promo, promoGiftId, savedPromocode } = storeToRefs(cartStore)
 
 const { $env, $log } = useNuxtApp()
 const toast = useToast()
@@ -483,7 +492,7 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     change: '',
     email: user.value.email || '',
     bonusType: 1,
-    promocode: '',
+    promocode: savedPromocode.value || '',
     points: '',
     comment: '',
     // kinoHall: '',
@@ -888,16 +897,16 @@ const { value: promocode, meta: promocodeMeta } = useField<string>('promocode', 
   return true
 })
 
-const promocodeApplied = ref(false)
+const promocodeApplied = ref(!!promocode.value)
 
 const handlePromocodeClick = async () => {
+  if (!promocode.value.trim().length) return
+
   if (promocodeApplied.value) {
     promocodeApplied.value = false
     setFieldValue('promocode', '')
-    cartStore.setCheckedPromocode(null)
   } else {
     promocodeApplied.value = true
-    cartStore.setCheckedPromocode(promocode.value)
   }
 
   await fetchPromo()
@@ -943,8 +952,8 @@ const fetchPromo = async () => {
     toast.error(res.error_text)
   }
 
-  if (res.gifts?.length > 1 && !promoGiftId.value) {
-    ui.setModal({ name: 'gift', params: { closable: false } })
+  if (res.gifts.length > 1) {
+    ui.setModal({ name: 'gift' })
   }
 
   return res
@@ -1280,6 +1289,9 @@ onMounted(() => {
       margin-bottom: 12px;
       margin-right: 12px;
     }
+  }
+  &__gift-btn {
+    margin-top: 8px;
   }
 }
 

@@ -16,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   // установка дефольных значений
   // кейс с пустыми ключами в .env (не используются из nuxt.config файла)
   Object.keys(env).forEach((key) => {
-    if (env[key]) return
+    if (env[key] !== '') return
 
     switch (key) {
       case 'projectName':
