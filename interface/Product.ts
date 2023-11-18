@@ -36,6 +36,7 @@ export interface IProduct {
   modifier_groups: IModifierGroup[] | null
   image: string | null
   min_items: number | null
+  show_price_from: boolean
 }
 
 export interface IProductFullDto extends IProduct {

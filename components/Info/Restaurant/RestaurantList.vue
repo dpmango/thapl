@@ -34,7 +34,7 @@
             :marker-id="marker.id"
             :options="{
               iconLayout: 'default#image',
-              iconImageHref: 'img/mapMarker.svg',
+              iconImageHref: '/img/mapMarker.svg',
               iconImageSize: [28, 28],
               iconImageOffset: [-14, -14],
             }"

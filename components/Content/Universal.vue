@@ -1,6 +1,6 @@
 <template>
   <div class="content wysiwyg">
-    <div v-for="block in blocks" :key="block.id" class="content__section">
+    <div v-for="block in blocks" :key="block.id" :data-type="block.type" class="content__section">
       <template v-if="block.type === 'header'">
         <h1 v-if="block.data.level === 1" v-html="block.data.text" />
         <h2 v-if="block.data.level === 2" v-html="block.data.text" />
@@ -73,6 +73,9 @@ const props = withDefaults(defineProps<{ blocks: IContentBlockDto[] }>(), {
 .content {
   &__section {
     margin: 36px 0;
+    &[data-type='paragraph'] {
+      margin: 6px 0;
+    }
     &:first-child {
       margin-top: 0;
     }

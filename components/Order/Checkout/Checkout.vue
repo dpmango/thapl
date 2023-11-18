@@ -807,22 +807,22 @@ const paymentOptions = computed(() => {
   const optionsList = [] as { id: number; label: string }[]
 
   if (
-    zoneData.value.organization?.payment_data ||
-    zoneData.value.organization?.disable_online_payment
+    zoneData.value.organization?.payment_data &&
+    !zoneData.value.organization?.disable_online_payment
   ) {
     optionsList.push({ id: 1030, label: 'Картой онлайн' })
   }
 
   if (
-    !app_settings.value?.order_disable_cache ||
-    zoneData.value.organization?.disable_cash_payment
+    !app_settings.value?.order_disable_cache &&
+    !zoneData.value.organization?.disable_cash_payment
   ) {
     optionsList.push({ id: 1, label: 'Наличными' })
   }
 
   if (
-    app_settings.value?.order_cart_to_courier ||
-    zoneData.value.organization?.disable_courier_card_payment
+    app_settings.value?.order_cart_to_courier &&
+    !zoneData.value.organization?.disable_courier_card_payment
   ) {
     optionsList.push({
       id: 3,
@@ -949,6 +949,8 @@ const fetchPromo = async () => {
     setFieldValue('promocode', '')
   } else if (res.error_type) {
     // 3 or any
+    promocodeApplied.value = false
+    setFieldValue('promocode', '')
     toast.error(res.error_text)
   }
 
@@ -1001,6 +1003,17 @@ watch(
     fetchPromo()
   },
   { deep: true }
+)
+
+// проверка при изминении позиций в корзине, очищает выбранные
+watch(
+  () => savedPromocode.value,
+  (newSaved) => {
+    if (!newSaved && promocodeApplied.value) {
+      promocodeApplied.value = false
+      setFieldValue('promocode', '')
+    }
+  }
 )
 
 // Комментарий

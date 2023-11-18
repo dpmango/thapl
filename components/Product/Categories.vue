@@ -9,6 +9,7 @@
             'sm col-3 col-md-6': category.image_view_type == 10,
             'lg col-6 col-md-12': category.image_view_type == 20,
             'sq col-3 col-md-6': category.image_view_type == 30,
+            'xl col-6 col-md-12': category.image_view_type == 40,
           }"
         >
           <NuxtLink
@@ -62,19 +63,25 @@ const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
 
 .sm {
   .category {
-    aspect-ratio: 144/182;
+    aspect-ratio: 268/336;
   }
 }
 
 .lg {
   .category {
-    aspect-ratio: 312/182;
+    aspect-ratio: 568/336;
   }
 }
 
 .sq {
   .category {
     aspect-ratio: 1;
+  }
+}
+
+.xl {
+  .category {
+    aspect-ratio: 568/260;
   }
 }
 

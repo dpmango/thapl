@@ -139,12 +139,13 @@
       </div>
 
       <!-- bottom -->
-      <div class="header__bottom">
+      <div :class="['header__bottom', $env.catalogType !== 'singlepage' && '_display-md-nav']">
         <div v-if="$env.useSearch" class="header__search" @click="ui.setSearchActive(true)">
           <NuxtIcon name="search" />
         </div>
 
         <LayoutNavScroller class="header__nav" />
+        <ProductCategoriesNav v-if="$env.catalogType !== 'singlepage'" />
 
         <div class="header__cta" @click="handleCartOpen">
           <UiButton>
@@ -424,6 +425,50 @@ onBeforeUnmount(() => {
     }
     &__bottom {
       display: none;
+      &._display-md-nav {
+        display: block;
+        position: relative;
+        padding-bottom: 0;
+        > * {
+          display: none;
+        }
+        .js-nav-cat {
+          display: block;
+          min-width: 1px;
+          margin-left: -24px;
+          margin-right: -24px;
+          visibility: visible !important;
+        }
+        :deep .nav__scroller {
+          padding-bottom: 10px;
+        }
+        &::before,
+        &::after {
+          display: inline-block;
+          content: ' ';
+          position: absolute;
+          left: calc((((var(--vw, 1vw) * 100) - 1248px) / 2 + 40px) * -1);
+          width: calc(var(--vw, 1vw) * 100);
+          height: 1px;
+          background: var(--color-border);
+          pointer-events: none;
+          @include r(1248) {
+            left: -40px;
+          }
+          @include r($lg) {
+            left: -32px;
+          }
+          @include r($md) {
+            left: -24px;
+          }
+        }
+        &::before {
+          top: 0;
+        }
+        &::after {
+          bottom: 0px;
+        }
+      }
     }
     &._headerMenu {
       .header__top {
