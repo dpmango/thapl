@@ -211,31 +211,6 @@ const handleLogoClick = () => {
   }
 }
 
-const handleClickMenuLink = (item: ISiteMenu) => {
-  switch (item.action_type) {
-    case -10:
-      window.open(item.target_url)
-      break
-    case 10:
-      router.push('/promo')
-      break
-    case 20:
-      router.push(`${item.target_slug}`)
-      break
-    case 30:
-      router.push('/restaurants')
-      break
-    case 40:
-      // TODO
-      break
-    case 50:
-      router.push(`/category/${item.target_slug}`)
-      break
-    default:
-      break
-  }
-}
-
 // this.scrollSticky = _.throttle(this.handleSticky, 50)
 const scrollSticky = () => {
   if (!topRef.value) return

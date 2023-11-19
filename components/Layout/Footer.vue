@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="container">
-      <div class="footer__wrapper">
+      <div class="footer__wrapper" :style="{ paddingBottom: calculatedPaddingBottom }">
         <div
           v-if="showMenuSection"
           class="footer__section _nav"
@@ -89,6 +89,24 @@ const activeSection = ref(null)
 const handleAccordeon = (id) => {
   activeSection.value = activeSection.value === id ? null : id
 }
+
+const calculatedPaddingBottom = ref('60px')
+
+const calcBottomPadding = () => {
+  const filterEl = document.querySelector('.filter')
+  const defaultPadding = window.innerWidth < 574 ? 24 : 40
+
+  calculatedPaddingBottom.value = `${defaultPadding + (filterEl?.clientHeight || 0)}px`
+}
+
+onMounted(() => {
+  calcBottomPadding()
+  window.addEventListener('resize', calcBottomPadding, false)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', calcBottomPadding, false)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -166,8 +184,7 @@ const handleAccordeon = (id) => {
   .footer {
     &__wrapper {
       padding-top: 0;
-      // todo - only if quickFilter
-      padding-bottom: 60px;
+      padding-bottom: 24px;
     }
     &__section {
       margin-top: 24px;

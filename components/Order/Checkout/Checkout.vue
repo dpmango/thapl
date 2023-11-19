@@ -702,8 +702,6 @@ onMounted(() => {
   setFieldValue('deliveryRange', deliveryRangeOptions.value.min)
 })
 
-// TODO если нет доступных слотов, ставить следующий день
-
 // упаковка
 const { value: pack, meta: packMeta } = useField<string>(
   'pack',

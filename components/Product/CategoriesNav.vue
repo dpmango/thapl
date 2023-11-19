@@ -60,7 +60,6 @@ const activeAnchor = ref(null)
 const scrollerRef = ref(null)
 
 const handleLinksScroll = () => {
-  // TODO - refactor to refs
   const scrollTop = window.scrollY
   const smoothLinks = document.querySelectorAll('.js-nav-cat .nav__link')
   const { sections, links } = createScrollableAnchors(smoothLinks)

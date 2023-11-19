@@ -59,9 +59,7 @@ export const useOrder = ({
   }
 
   // TODO показать курьера на карте
-  const handleDelivery = () => {
-    // console.log('TODO')
-  }
+  const handleDelivery = () => {}
 
   // повтор заказа - добавить к корзину
   // TODO - проверить проверку на существующие товары и стоплисты

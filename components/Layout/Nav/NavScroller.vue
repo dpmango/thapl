@@ -69,7 +69,6 @@ const hiddenStartsFromIdx = () => {
 const activeAnchor = ref<number | null>(null)
 
 const handleLinksScroll = () => {
-  // TODO - refactor to refs
   const scrollTop = window.scrollY
   const smoothLinks = document.querySelectorAll('.js-nav .nav__link')
   const { sections, links } = createScrollableAnchors(smoothLinks)

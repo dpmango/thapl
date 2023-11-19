@@ -71,7 +71,6 @@ export interface PaymentData {
 }
 
 // list of organizations (i.e. for takeaway list)
-// TODO проверить что приходит в запросе по id орагнизиации и общему списку
 export interface IOrganizationTakeaway extends IOrganizationBase, IOrganizationShared {
   title: string
   lat: number

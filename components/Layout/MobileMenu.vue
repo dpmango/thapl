@@ -3,11 +3,11 @@
     <div class="mobile-menu__bg" @click="closeMobile"></div>
     <div class="mobile-menu__box">
       <div class="mobile-menu__actions">
-        <NuxtLink v-if="app_settings.loyalty?.enabled" to="/ui" class="action">
+        <NuxtLink v-if="app_settings.loyalty?.enabled" to="/loyalty" class="action">
           <div class="action__icon">
             <nuxt-icon name="heart" />
           </div>
-          <div class="action__text">Бонусная программа</div>
+          <div class="action__text">{{ $env.loyaltyTitle }}</div>
         </NuxtLink>
 
         <div v-if="!isAuthenticated" class="action" @click="() => ui.setModal({ name: 'auth' })">
@@ -24,7 +24,11 @@
           <div class="action__text">{{ session.userNameVerbose }}</div>
         </NuxtLink>
 
-        <div class="action" @click="() => ui.setModal({ name: 'contacts' })">
+        <div
+          v-if="$env.useContacts"
+          class="action"
+          @click="() => ui.setModal({ name: 'contacts' })"
+        >
           <div class="action__icon"><nuxt-icon name="dialog" /></div>
           <div class="action__text">Контакты</div>
         </div>

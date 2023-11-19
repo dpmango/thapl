@@ -4,7 +4,7 @@
       <ul class="filter__categories">
         <li v-for="category in quickFilter">
           <div
-            class="filter__link text-m"
+            class="filter__link text-m text-sm-s"
             :class="[activeFilterKey === category.product_key && '_active']"
             @click="setFilter(category.product_key)"
           >
@@ -23,8 +23,6 @@ import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store'
 import { ICategoryFull, IProduct } from '~/interface/Product'
 import { quickFilterKeys } from '~/store/product/helpers'
-
-const { $env } = useNuxtApp()
 
 const props = defineProps<{ categoryData?: ICategoryFull | null }>()
 const productStore = useProductStore()
@@ -87,8 +85,11 @@ const quickFilter = computed(() => {
   }
   &__categories {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
     margin-right: 20px;
+    padding: 4px 0;
     background: var(--component-background);
     box-shadow: var(--box-shadow-large);
     border-radius: 50px;
@@ -104,7 +105,7 @@ const quickFilter = computed(() => {
   &__link {
     position: relative;
     font-weight: 500;
-    padding: 10px 24px;
+    padding: 6px 24px;
     color: var(--color-gray);
     cursor: pointer;
     transition: color 0.25s $ease;
@@ -144,41 +145,14 @@ const quickFilter = computed(() => {
     }
     &__categories {
       justify-content: center;
+
       margin-right: 0px;
       border-radius: 0px;
-      li {
-        flex: 0 0 auto;
-        &:last-child {
-          .filter__link::after {
-            display: none;
-          }
-        }
-      }
     }
     &__link {
-      position: relative;
-      font-weight: 500;
-      padding: 10px 24px;
-      color: var(--color-gray);
-      cursor: pointer;
-      transition: color 0.25s $ease;
+      padding: 6px 16px;
       &::after {
-        display: inline-block;
-        content: ' ';
-        position: absolute;
-        right: 0;
-        top: 50%;
         height: 20px;
-        width: 1px;
-        transform: translateY(-50%);
-        background: var(--color-separator);
-      }
-
-      &._active {
-        color: var(--color-font);
-      }
-      &:hover {
-        color: var(--color-primary);
       }
     }
   }
