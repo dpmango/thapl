@@ -50,7 +50,9 @@ export const useDeliveryStore = defineStore('delivery', {
       return null
     },
     minOrderPrice(state) {
-      return state.zone?.min_order || null
+      const source = state.zone
+
+      return source?.min_order || null
     },
     workingTime:
       (state) =>

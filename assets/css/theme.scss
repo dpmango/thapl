@@ -37,6 +37,10 @@
   --color-border: #dddddd;
   --color-separator: #e5e5e5;
 
+  // brand colors
+  --color-green: #75da52;
+  --color-red: #ea3e3e;
+
   // components
   --header-background: #fff;
   --product-background: #fff;
@@ -85,18 +89,13 @@
   // brand colors
   --color-primary: #ec5c2a;
   --color-primary-rgb: #{HexToRGB(#ec5c2a)};
-  --color-green: #75da52;
-  --color-red: #ea3e3e;
-  --color-yellow: #f2c94c;
+
 }
 
 .theme-pink {
   // brand colors
   --color-primary: #ec008c;
   --color-primary-rgb: #{HexToRGB(#ec008c)};
-  --color-green: #75da52;
-  --color-red: #ea3e3e;
-  --color-yellow: #f2c94c;
 }
 
 .theme-yellow {
@@ -108,9 +107,6 @@
   // --color-primary-rgb: #{HexToRGB(#ffcc01)};
   --color-primary: #F0e037;
   --color-primary-rgb: #{HexToRGB(#F0e037)};
-  --color-green: #75da52;
-  --color-red: #ea3e3e;
-  --color-yellow: #f2c94c;
 
   --button-secondary-bg: rgba(var(--color-primary-rgb), 0.3);
   --button-secondary-color: #000;
@@ -120,9 +116,11 @@
   // brand colors
   --color-primary: #6cad46;
   --color-primary-rgb: #{HexToRGB(#6cad46)};
-  --color-green: #75da52;
-  --color-red: #ea3e3e;
-  --color-yellow: #f2c94c;
+}
+
+.theme-turquoise{
+  --color-primary: #75b9bd;
+  --color-primary-rgb: #{HexToRGB(#75b9bd)};
 }
 
 .theme-dark {

@@ -6,7 +6,7 @@
       </div>
 
       <!-- Контакты -->
-      <div class="contact__list" :class="[data?.restaurants_count && '_has-restaurants']">
+      <div class="contact__list" :class="[contacts?.restaurants_count && '_has-restaurants']">
         <li v-for="contact in list">
           <span class="text-m text-sm-s fw-500 c-gray">{{ contact.label }}</span>
           <a
@@ -22,22 +22,22 @@
 
       <!-- Рестораны -->
       <div
-        v-if="data?.restaurants_count && restarauntList?.length"
+        v-if="contacts?.restaurants_count && restaurantList?.length"
         class="contact__restaurants restaurants"
       >
         <div v-if="$env.useRegions" class="restaurants__more">
           <UiButton theme="secondary" to="/restaurants">Все рестораны на карте</UiButton>
         </div>
-        <div v-else-if="data.restaurants_count === 1" class="restaurants__single">
+        <div v-else-if="contacts.restaurants_count === 1" class="restaurants__single">
           <span class="text-m text-sm-s fw-500 c-gray">Адрес</span>
-          <NuxtLink :to="`/restaurants/${restarauntList[0].id}`" class="h2-title h6-title-sm">
-            {{ restarauntList[0].address }}
+          <NuxtLink :to="`/restaurants/${restaurantList[0].id}`" class="h2-title h6-title-sm">
+            {{ restaurantList[0].address }}
           </NuxtLink>
         </div>
         <div v-else class="restaurants__all">
           <span class="text-m text-sm-s fw-500 c-gray">Рестораны</span>
           <ul class="restaurants__list">
-            <li v-for="restaurant in restarauntList">
+            <li v-for="restaurant in restaurantList">
               <NuxtLink :to="`/restaurants/${restaurant.id}`" class="restaurants__box">
                 <span class="text-m text-sm-s fw-500">{{
                   restaurant.title || restaurant.address
@@ -60,35 +60,18 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { clearSocialLink, buildLink } from '#imports'
-import { IPageContactsDto } from '~/interface/Dto/Page.dto'
-import { IRestaurantDto } from '~/interface/Dto/Restaurant.dto'
+import { useContactStore } from '~/store'
 
 const { $env, $log } = useNuxtApp()
 
-const { data, error } = await useAsyncData(
-  'page/get-contacts-data',
-  () =>
-    useApi('page/get-contacts-data', {
-      method: 'GET',
-      headers: useHeaders(),
-    }) as Promise<IPageContactsDto>
-)
-
-const { data: restarauntList } = await useAsyncData(
-  'organization/get-list/contact',
-  () =>
-    useApi('organization/get-list', {
-      method: 'GET',
-      headers: useHeaders(),
-    }) as Promise<IRestaurantDto[]>
-)
-
-$log.log('🧙‍♂️ ASYNC CONTACTS', { data: data.value })
+const contactStore = useContactStore()
+const { contacts, restaurantList } = storeToRefs(contactStore)
 
 const list = computed(() => {
-  if (data.value) {
-    const { phone, telegram, facebook, instagram, vk, email, wu } = data.value
+  if (contacts.value) {
+    const { phone, telegram, facebook, instagram, vk, email, wu } = contacts.value
 
     const all = [
       { label: 'Телефон', value: `tel:${(phone || '').replace(/\s/g, '')}`, text: phone },

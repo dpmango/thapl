@@ -8,7 +8,7 @@
           <div class="lvls__total c-primary">{{ data.user_balance_data?.balance }}</div>
           <span class="text-l text-md-s">бонусных рублей на вашем счету</span>
         </div>
-        <div v-if="data.loyalty_groups" class="lvls__grid">
+        <div v-if="data.loyalty_groups?.length" class="lvls__grid">
           <div v-for="(group, idx) in data.loyalty_groups" :key="idx" class="lvls__group">
             <div
               :class="[
@@ -51,7 +51,7 @@
 
       <PromoLoyaltyTransactions v-if="data.transactions" :transactions="data.transactions" />
 
-      <div v-if="data.user_code" class="page__copy">
+      <div v-if="data.ref_program_enabled && data.user_code" class="page__copy">
         <UiCopy :text="data.user_code" :action-text="'скопировать промокод'">
           <div class="h2-title c-primary">
             {{ data.user_code }}
@@ -69,14 +69,14 @@
         </div>
       </template> -->
 
-      <template v-if="data.referral_conditions">
+      <template v-if="data.ref_program_enabled && data.referral_conditions">
         <ContentUniversal
           v-if="data.referral_conditions"
           :blocks="data.referral_conditions.blocks"
         />
       </template>
 
-      <template v-if="data.ref_program_text">
+      <template v-if="data.ref_program_enabled && data.ref_program_text">
         <p class="text-l" data-source="data.ref_program_text" v-html="data.ref_program_text" />
       </template>
     </div>

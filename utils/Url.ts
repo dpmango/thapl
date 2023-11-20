@@ -27,10 +27,23 @@ export const clearSocialLink = (v: string | null) => {
 }
 
 export const openExternalLink = (url: string) => {
-  if (window.opener == null) {
-    window.location.href = url
+  const changeLocation = () => {
+    try {
+      window.location.href = url
+    } catch {
+      // @ts-expect-error
+      window.location = url
+    }
+  }
+
+  if (window.opener === null) {
+    changeLocation()
   } else {
-    window.open(url)
+    try {
+      window.open(url)
+    } catch {
+      changeLocation()
+    }
   }
 }
 

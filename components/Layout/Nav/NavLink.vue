@@ -5,7 +5,7 @@
     :to="navLinkProps"
     @click="handleNavClick"
   >
-    {{ link.title }}
+    {{ link?.title }}
   </NuxtLink>
 </template>
 
@@ -30,16 +30,16 @@ const emit = defineEmits(['onClick'])
 
 const navLinkProps = computed(() => {
   if ($env.catalogType === 'singlepage') {
-    return `/#${props.link.slug}`
+    return `/#${props.link?.slug}`
   } else {
-    return `/category/${props.link.slug}`
+    return `/category/${props.link?.slug}`
   }
 })
 
 const handleNavClick = (e) => {
   if ($env.catalogType === 'singlepage') {
     // e.preventDefault()
-    scrollToElement(props.link.slug, props.navScrollOffset)
+    scrollToElement(props.link?.slug, props.navScrollOffset)
   }
 
   emit('onClick')

@@ -1,7 +1,7 @@
 <template>
   <nav class="nav js-nav" :class="[`nav-${$env.catalogType}`]">
     <div class="nav__wrapper">
-      <ul ref="navlist" class="nav__list">
+      <ul ref="navlist" class="nav__list" :style="{ opacity: !loaded ? '0' : '1' }">
         <li v-for="(link, idx) in menuVisible" :key="link.id">
           <LayoutNavLink :link="link" :active="activeAnchor === idx" />
         </li>
@@ -12,10 +12,14 @@
           <nuxt-icon name="caret" />
         </div>
 
-        <template #popper>
+        <template #popper="{ hide }">
           <ul class="nav__dropdown">
             <li v-for="(link, idx) in menuHidden" :key="link.id">
-              <LayoutNavLink :link="link" :active="activeAnchor === idx + menuVisible.length - 1" />
+              <LayoutNavLink
+                :link="link"
+                :active="activeAnchor === idx + menuVisible.length - 1"
+                @click="hide()"
+              />
             </li>
           </ul>
         </template>
@@ -31,6 +35,7 @@ import { createScrollableAnchors } from '~~/utils/Elements'
 
 const navlist = ref<HTMLElement | null>(null)
 const hideFromIdx = ref(99)
+const loaded = ref(false)
 
 const { $env } = useNuxtApp()
 
@@ -95,6 +100,10 @@ onMounted(() => {
   hiddenStartsFromIdx()
   window.addEventListener('resize', debouncedResize, false)
   window.addEventListener('scroll', throttledScroll, false)
+
+  nextTick(() => {
+    loaded.value = true
+  })
 })
 
 onBeforeUnmount(() => {
@@ -121,6 +130,10 @@ onBeforeUnmount(() => {
     margin: 0;
     padding: 0;
     overflow-y: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     li {
       display: inline-block;
       flex: 0 0 auto;

@@ -15,8 +15,9 @@ import {
   useDeliveryStore,
   useUiStore,
   useCartStore,
+  useContactStore,
 } from '~/store'
-import { scrollPageToTop, createSeoTags, APP_VERSION } from '#imports'
+import { createSeoTags, APP_VERSION } from '#imports'
 
 const nuxtApp = useNuxtApp()
 const { $env, $log } = nuxtApp
@@ -51,6 +52,7 @@ const productStore = useProductStore()
 const deliveryStore = useDeliveryStore()
 const cartStore = useCartStore()
 const sessionStore = useSessionStore()
+const contactStore = useContactStore()
 const { region } = storeToRefs(deliveryStore)
 
 const initData = await useInit()
@@ -79,6 +81,14 @@ await useAsyncData('startup', async () => {
     {
       id: 'zone',
       resolver: deliveryStore.hydrateZone(),
+    },
+    {
+      id: 'contacts',
+      resolver: contactStore.getContacts(),
+    },
+    {
+      id: 'restaurantsForContacts',
+      resolver: contactStore.getContactRestaurants(),
     },
   ] as { id: string; resolver: Promise<any> }[]
 

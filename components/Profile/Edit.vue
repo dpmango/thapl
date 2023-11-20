@@ -53,7 +53,7 @@
               label="Дата рождения"
               placeholder="ДД/ММ/ГГГГ"
               :value="birthday"
-              :mask="dateMask"
+              mask="##/##/####"
               inputmode="numeric"
               :error="errors.birthday"
               @on-change="(v) => setFieldValue('birthday', v)"

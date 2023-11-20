@@ -56,18 +56,11 @@ export const useCheckout = () => {
 
   // логика минимальный заказ
   const minOrderData = computed(() => {
-    if (zoneData.value.isDelivery) {
-      const leftToMinOrder = (minOrderPrice.value || 0) - cartPrice.value
-
-      return {
-        remained: leftToMinOrder,
-        match: leftToMinOrder <= 0,
-      }
-    }
+    const leftToMinOrder = (minOrderPrice.value || 0) - cartPrice.value
 
     return {
-      remained: 0,
-      match: true,
+      remained: leftToMinOrder,
+      match: leftToMinOrder <= 0,
     }
   })
 

@@ -87,8 +87,8 @@ const handleProductClick = () => {
 }
 
 const productFullPriceLabel = computed(() => {
-  let prefix = props.product.open_item_page_to_add ? 'от ' : ''
-  if (props.product.show_price_from) prefix = 'от '
+  // let prefix = props.product.open_item_page_to_add ? 'от ' : ''
+  const prefix = props.product.show_price_from ? 'от ' : ''
 
   return prefix + productPriceLabel.value
 })

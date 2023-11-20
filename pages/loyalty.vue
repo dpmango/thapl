@@ -10,36 +10,52 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { ILoyaltyPageDto } from '~/interface'
+import { useSessionStore } from '~/store'
+
 const { $env, $log } = useNuxtApp()
 
 const route = useRoute()
+const sessionStore = useSessionStore()
+const { user } = storeToRefs(sessionStore)
 
-useApi('loyalty/get-conditions', {
-  method: 'GET',
-  headers: useHeaders(),
-  params: {
-    list_type: 3,
-  },
-}) as Promise<ILoyaltyPageDto>
+const data = ref<ILoyaltyPageDto | null>(null)
 
-const { data, error } = await useAsyncData(
-  'loyalty/get-conditions',
-  () =>
-    useApi('loyalty/get-conditions', {
-      method: 'GET',
-      headers: useHeaders(),
-      params: {
-        list_type: 3,
-      },
-    }) as Promise<ILoyaltyPageDto>
-)
+const fetchLoyalty = async () => {
+  const res = (await useApi('loyalty/get-conditions', {
+    method: 'GET',
+    headers: useHeaders(),
+    params: {
+      list_type: 3,
+    },
+  })) as ILoyaltyPageDto
+
+  if (res) {
+    data.value = res
+  }
+
+  return res
+}
+const { data: asyncData, error } = await useAsyncData('loyalty/get-conditions', fetchLoyalty)
+if (asyncData.value) {
+  data.value = asyncData.value
+}
 
 $log.log('🧙‍♂️ ASYNC LOYALTY', { data: data.value })
 
 useHead({
   title: () => `${data.value?.title} - ${$env.projectName}`,
 })
+
+watch(
+  () => user.value,
+  (newVal) => {
+    if (newVal) {
+      fetchLoyalty()
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>

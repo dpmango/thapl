@@ -35,9 +35,7 @@
         добавим в будущем в зону доставки.
       </template>
       <template #action>
-        <UiButton v-if="tg" :href="`https://t.me/${tg}`" target="_blank">
-          Написать в Телеграм
-        </UiButton>
+        <UiButton v-if="tg" :href="buildLink(tg)" target="_blank"> Написать в Телеграм </UiButton>
       </template>
     </UiAtomErrorMessage>
   </div>
@@ -48,6 +46,7 @@ import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { IGeoCoords, IGeoDataRef, YandexGeocoderResponce } from '~/interface/Geolocation'
 import { useDeliveryStore, useSessionStore } from '~/store'
+import { buildLink } from '#imports'
 
 const toast = useToast()
 const { $env } = useNuxtApp()

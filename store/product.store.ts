@@ -32,8 +32,13 @@ export const useProductStore = defineStore('product', {
         return this.catalogWithStoplistAndFilter.map(categoryProps)
       }
 
-      return this.catalogWithStoplistAndFilter.reduce((acc, category) => {
-        acc.push(categoryProps(category))
+      return this.catalogWithStoplistAndFilter.reduce((acc, category: ICategoryFull) => {
+        const haveProducts = category.catalog_items?.length
+        const haveSubcatProducts = category.sub_categories?.some((s) => s.catalog_items?.length)
+
+        if (haveProducts || haveSubcatProducts) {
+          acc.push(categoryProps(category))
+        }
 
         // if (category.sub_categories) {
         //   category.sub_categories.forEach((sub_category) => {

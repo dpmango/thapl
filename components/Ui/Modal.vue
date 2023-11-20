@@ -1,6 +1,6 @@
 <template>
   <div class="modal" :class="modifiers" @click="closeModal">
-    <div class="modal__wrapper" @click.prevent.stop>
+    <div class="modal__wrapper" @click.stop>
       <div v-if="isClosable" class="modal__close" @click="closeModal">
         <nuxt-icon name="close" />
       </div>
