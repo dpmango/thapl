@@ -70,6 +70,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       case 'orderAskAuth':
         env.orderAskAuth = true
         break
+      case 'orderUseKino':
+        env.orderUseKino = false
+        break
       case 'orderUsePacking':
         env.orderUsePacking = true
         break

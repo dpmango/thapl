@@ -52,10 +52,11 @@
               name="birthday"
               label="Дата рождения"
               placeholder="ДД/ММ/ГГГГ"
-              :value="birthday"
               mask="##/##/####"
               inputmode="numeric"
+              :value="birthday"
               :error="errors.birthday"
+              :disabled="Boolean(user.birthday)"
               @on-change="(v) => setFieldValue('birthday', v)"
             />
           </div>

@@ -83,7 +83,7 @@ const { zone } = storeToRefs(deliveryStore)
   }
   &__cta,
   :deep(.location__cta) {
-    margin-top: 66px;
+    margin-top: 24px;
     margin-bottom: -12px;
     display: flex;
     flex-wrap: wrap;
@@ -125,6 +125,17 @@ const { zone } = storeToRefs(deliveryStore)
       button {
         width: 100%;
       }
+    }
+  }
+}
+
+@include rh(720) {
+  .location {
+    &__map {
+      height: 160px;
+    }
+    &__info {
+      margin-top: 0px;
     }
   }
 }

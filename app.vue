@@ -145,7 +145,7 @@ await useAsyncData('startup', async () => {
 })
 
 onMounted(() => {
-  deliveryStore.clientInit()
+  deliveryStore.getStoredAddresses()
   cartStore.fetchCartProducts()
 })
 </script>

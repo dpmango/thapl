@@ -37,5 +37,3 @@ const handleUpdate = async () => {
 
 $log.log('🧙‍♂️ ASYNC ADDRESSES', { addresses: addresses.value })
 </script>
-
-<style lang="scss" scoped></style>

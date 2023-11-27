@@ -3,6 +3,32 @@
     <div class="mobile-menu__bg" @click="closeMobile"></div>
     <div class="mobile-menu__box">
       <div class="mobile-menu__actions">
+        <div v-if="$env.useRegions" class="selector" @click="() => ui.setModal({ name: 'region' })">
+          <div class="selector__title text-s c-gray">
+            <span>{{ $t('header.city') }}</span>
+          </div>
+          <div class="selector__value text-m c-primary">
+            <span class="selector__overflow">{{ currentRegionName }}</span>
+            <nuxt-icon name="caret" />
+          </div>
+        </div>
+
+        <div class="selector" @click="() => ui.setModal({ name: 'address' })">
+          <div class="selector__title text-s c-gray">
+            <span v-if="currentAddress?.type === 'takeaway'">{{
+              $t('header.takeawayAddress')
+            }}</span>
+            <span v-else>{{ $t('header.deliveryAddress') }}</span>
+          </div>
+          <div class="selector__value text-m c-primary">
+            <span class="selector__overflow">
+              <template v-if="currentAddress">{{ currentAddress.name }}</template>
+              <template v-else>{{ $t('header.wantAddress') }}</template>
+            </span>
+            <nuxt-icon name="caret" />
+          </div>
+        </div>
+
         <NuxtLink v-if="app_settings.loyalty?.enabled" to="/loyalty" class="action">
           <div class="action__icon">
             <nuxt-icon name="heart" />
@@ -65,7 +91,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useUiStore, useSessionStore, useProductStore } from '~/store'
+import { useUiStore, useSessionStore, useProductStore, useDeliveryStore } from '~/store'
 import { lockBody, unlockBody } from '#imports'
 
 const { $env } = useNuxtApp()
@@ -73,8 +99,10 @@ const { $env } = useNuxtApp()
 const ui = useUiStore()
 const session = useSessionStore()
 const productStore = useProductStore()
+const deliveryStore = useDeliveryStore()
 const { mobileMenuOffest } = storeToRefs(ui)
 const { app_settings, hasMarketingSection, isAuthenticated } = storeToRefs(session)
+const { currentRegionName, currentAddress } = storeToRefs(deliveryStore)
 
 const closeMobile = () => {
   ui.setMobileMenu(false)
@@ -148,7 +176,7 @@ watch(
     width: 85%;
     max-width: 414px;
     height: 100%;
-    background: #fff;
+    background: var(--header-background);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -184,7 +212,7 @@ watch(
   align-items: center;
   padding: 16px 0;
   line-height: 1.62;
-  border-bottom: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
   transition: color 0.25s $ease;
   cursor: pointer;
 
@@ -197,9 +225,6 @@ watch(
   }
   &:hover {
     color: var(--color-primary);
-  }
-  &:last-child {
-    border-bottom: 0;
   }
 }
 
@@ -241,6 +266,53 @@ watch(
   :deep(li) {
     flex: 0 0 168px;
     padding: 0 12px;
+  }
+}
+
+.selector {
+  margin: 0 -24px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  &:first-child {
+    margin-top: 12px;
+  }
+  &__title {
+    position: relative;
+
+    span {
+      position: relative;
+      z-index: 2;
+      background: var(--header-background);
+      padding-left: 8px;
+      padding-right: 8px;
+      margin-left: 16px;
+    }
+    &::before {
+      display: inline-block;
+      content: ' ';
+      position: absolute;
+      top: 50%;
+      height: 1px;
+      transform: translateY(-50%);
+      left: 0;
+      right: 0;
+      background: var(--color-border);
+    }
+  }
+  &__value {
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
+    padding: 0 24px;
+  }
+  &__overflow {
+    font-weight: 500;
+    @include text-overflow();
+    padding-right: 16px;
+  }
+  .nuxt-icon {
+    margin-left: auto;
+    font-size: 12px;
   }
 }
 </style>

@@ -10,6 +10,13 @@
   }
 }
 
+@mixin rh($height) {
+  @media only screen and (max-height: $height+ 'px') {
+    @content;
+  }
+}
+
+
 @mixin text-overflow() {
   overflow: hidden;
   text-overflow: ellipsis;

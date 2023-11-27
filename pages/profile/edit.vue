@@ -15,5 +15,3 @@ useHead({
   title: `Редактировать профиль - ${$env.projectName}`,
 })
 </script>
-
-<style lang="scss" scoped></style>

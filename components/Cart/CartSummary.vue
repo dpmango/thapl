@@ -54,7 +54,7 @@
       <div v-if="zoneData.isDelivery" class="cart__meta">
         <div class="text-m">Доставка</div>
         <div class="cart__meta-value">
-          <template v-if="priceData.delivery">{{ priceData.delivery }}</template>
+          <template v-if="priceData.delivery">{{ formatPrice(priceData.delivery) }}</template>
           <template v-else>Бесплатно</template>
         </div>
       </div>

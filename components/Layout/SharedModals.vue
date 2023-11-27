@@ -10,6 +10,7 @@
   <ProductModal />
   <ProductSearchOverlay />
   <OrderReviewModal v-if="$env.useTestimonials" />
+  <InfoMarketingModal />
   <AuthModal />
 </template>
 

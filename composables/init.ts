@@ -11,6 +11,7 @@ export const useInit = async () => {
   const apiCookie = useCookieState('x-thapl-apitoken')
   const userCookie = useCookieState('x-thapl-authorization')
   const regionCookie = useCookieState('x-thapl-region-id')
+  const marketingCookie = useCookieState('marketing-seen', 60 * 60 * 24 * 7)
 
   // Начальные заголовки для init запроса
   const headers = {}
@@ -67,6 +68,12 @@ export const useInit = async () => {
     // сообщение Закрытого заказа
     if (app_settings.disable_order) {
       ui.setModal({ name: 'closed' })
+    }
+
+    // Ссылки на приложения
+    const hasMarketing = app_settings.app_store_link || app_settings.play_store_link
+    if (hasMarketing && !marketingCookie) {
+      ui.setModal({ name: 'marketing' })
     }
 
     // возвращаемые нереактивные данные в app.vue

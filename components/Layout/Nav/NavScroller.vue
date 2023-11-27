@@ -64,7 +64,10 @@ const hiddenStartsFromIdx = () => {
 
       if (lastWidth >= containerWidth) {
         hideFromIdx.value = i
+        loaded.value = true
         return
+      } else {
+        loaded.value = true
       }
     }
   })
@@ -100,10 +103,6 @@ onMounted(() => {
   hiddenStartsFromIdx()
   window.addEventListener('resize', debouncedResize, false)
   window.addEventListener('scroll', throttledScroll, false)
-
-  nextTick(() => {
-    loaded.value = true
-  })
 })
 
 onBeforeUnmount(() => {

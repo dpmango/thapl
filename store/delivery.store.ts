@@ -83,11 +83,6 @@ export const useDeliveryStore = defineStore('delivery', {
       },
   },
   actions: {
-    clientInit() {
-      this.getStoredAddresses()
-      // this.hydrateZone()
-    },
-    serverInit() {},
     setCurrentAddress(payload) {
       if (payload) {
         this.currentAddress = { ...payload }

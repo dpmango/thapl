@@ -15,5 +15,3 @@ useHead({
   title: `Личный кабинет - ${$env.projectName}`,
 })
 </script>
-
-<style lang="scss" scoped></style>

@@ -43,6 +43,7 @@
                   placeholder="Введите адрес"
                   :disabled="true"
                   :changable="true"
+                  :clearable="false"
                   :value="address"
                   :error="errors.address"
                   @on-change="(v) => setFieldValue('address', v)"
@@ -127,7 +128,7 @@
           </template>
 
           <!-- Временные поля -->
-          <!-- <div data-name="section_address" class="checkout__row row">
+          <div v-if="$env.orderUseKino" data-name="section_address" class="checkout__row row">
             <div class="col col-4">
               <UiInput
                 name="kinoHall"
@@ -158,10 +159,9 @@
                 @on-change="(v) => setFieldValue('kinoPlace', v)"
               />
             </div>
-          </div> -->
+          </div>
 
           <!-- Дата и время -->
-          <!-- change condition -->
           <template v-if="app_settings.order_to_time && !app_settings.order_to_time_enabled">
             <div class="checkout__row" data-name="section_datetime">
               <div class="ui-label">Дата доставки</div>
@@ -173,7 +173,6 @@
                   :error="errors.deliveryDate"
                   @on-change="setDeliveryFieldsValue"
                 />
-                <!-- offset 1 - дизейблим сегодня, offset 2 - дизайблим завтра -->
                 <UiLibDatePicker
                   v-if="isOtherDay"
                   v-model="deliveryDate"
@@ -394,7 +393,8 @@
                 name="comment"
                 label="Комментарий"
                 :value="comment"
-                :error="errors.comment"
+                :error="!!errors.comment"
+                :max-count="400"
                 @on-change="(v) => setFieldValue('comment', v)"
               />
             </div>
@@ -495,9 +495,9 @@ const { errors, setErrors, setFieldValue, validate } = useForm({
     promocode: savedPromocode.value || '',
     points: '',
     comment: '',
-    // kinoHall: '',
-    // kinoRow: '',
-    // kinoPlace: '',
+    kinoHall: '',
+    kinoRow: '',
+    kinoPlace: '',
   },
 })
 
@@ -537,19 +537,19 @@ const { value: address, meta: addressMeta } = useField<string>('address', (v) =>
 
 const { value: entrance, meta: entranceMeta } = useField<string>('entrance', (v) => {
   if (zoneData.value.isTakeaway) return true
-  return true
+  return clearString(v).length > 10 ? 'Максимум 10 символов' : true
 })
 const { value: floor, meta: floorMeta } = useField<string>('floor', (v) => {
   if (zoneData.value.isTakeaway) return true
-  return true
+  return clearString(v).length > 10 ? 'Максимум 10 символов' : true
 })
 const { value: apt, meta: aptMeta } = useField<string>('apt', (v) => {
   if (zoneData.value.isTakeaway) return true
-  return true
+  return clearString(v).length > 10 ? 'Максимум 10 символов' : true
 })
 const { value: intercom, meta: intercomMeta } = useField<string>('intercom', (v) => {
   if (zoneData.value.isTakeaway) return true
-  return true
+  return clearString(v).length > 10 ? 'Максимум 10 символов' : true
 })
 
 const { value: deliveryDate } = useField<string>(
@@ -669,7 +669,7 @@ watch(
 )
 
 // ползунок время доставки
-const { value: deliveryRange } = useField<string>('deliveryRange', (v) => {
+const { value: deliveryRange } = useField<number>('deliveryRange', (v) => {
   return true
 })
 
@@ -698,9 +698,10 @@ const deliveryRangeOptions = computed(() => {
   }
 })
 
-onMounted(() => {
+const setDeliveryFieldsValue = (v) => {
+  setFieldValue('deliveryDate', v)
   setFieldValue('deliveryRange', deliveryRangeOptions.value.min)
-})
+}
 
 // упаковка
 const { value: pack, meta: packMeta } = useField<string>(
@@ -739,11 +740,6 @@ const packingOptions = computed(() => {
   return options
 })
 
-const setDeliveryFieldsValue = (v) => {
-  setFieldValue('deliveryDate', v)
-  setFieldValue('deliveryRange', deliveryRangeOptions.value.min)
-}
-
 const fetchPackingOptions = async () => {
   if (!$env.orderUsePacking) return null
 
@@ -779,15 +775,18 @@ const { value: not_heat, meta: heatMeta } = useField<boolean>('not_heat', (v) =>
 })
 
 // Дополнительные поля (кино)
-// const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => {
-//   return clearString(v).length >= 1 ? true : 'Введите зал'
-// })
-// const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => {
-//   return clearString(v).length >= 1 ? true : 'Введите ряд'
-// })
-// const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => {
-//   return clearString(v).length >= 1 ? true : 'Введите место'
-// })
+const { value: kinoHall, meta: kinoHallMeta } = useField<string>('kinoHall', (v) => {
+  if (!$env.orderUseKino) return true
+  return clearString(v).length >= 1 ? true : 'Введите зал'
+})
+const { value: kinoRow, meta: kinoRowMeta } = useField<string>('kinoRow', (v) => {
+  if (!$env.orderUseKino) return true
+  return clearString(v).length >= 1 ? true : 'Введите ряд'
+})
+const { value: kinoPlace, meta: kinoPlaceMeta } = useField<string>('kinoPlace', (v) => {
+  if (!$env.orderUseKino) return true
+  return clearString(v).length >= 1 ? true : 'Введите место'
+})
 
 // Оплата
 const { value: payment } = useField<number>(
@@ -803,6 +802,8 @@ const { value: payment } = useField<number>(
 // 1050 - картой через SDK, 1040 - pay сервисами через SDK
 const paymentOptions = computed(() => {
   const optionsList = [] as { id: number; label: string }[]
+
+  $log.log('zoneDataDebug', zoneData.value)
 
   if (
     zoneData.value.organization?.payment_data &&
@@ -1016,7 +1017,9 @@ watch(
 
 // Комментарий
 const { value: comment } = useField<string>('comment', (v) => {
-  return true
+  const length = clearString(v).length
+
+  return length > 400 ? 'Комментарий не более 400 символов' : true
 })
 
 // Запрос на создание и хелпер методы
@@ -1037,10 +1040,21 @@ const buildRequestObject = () => {
   } as IOrderRequestDto
 
   if (deliveryDate.value) {
-    orderObject.time_to_delivery = `${djs(deliveryDate.value)
+    const date = djs(deliveryDate.value)
       .tz(zoneData.value.organization?.timezone)
-      .format('DD.MM.YYYY')}${deliveryTime.value === '1' ? '' : ' ' + deliveryTime.value}`
-    // DD.MM.YYYY HH:mm
+      .format('DD.MM.YYYY')
+
+    let time = ''
+    // доставка ко времени
+    if (deliveryTime.value !== '1') {
+      if (slotsData.value.hasSlots) {
+        time = ' ' + minutesToTimestamp(deliveryRange.value)
+      } else {
+        time = ' ' + deliveryTime.value
+      }
+    }
+
+    orderObject.time_to_delivery = `${date}${time}`
   }
 
   if (zoneData.value.isDelivery) {
@@ -1088,9 +1102,11 @@ const buildRequestObject = () => {
     orderObject.gift_id = promoGiftId.value
   }
 
-  // orderObject.comment =
-  //   orderObject.comment +
-  //   ` | Зал: ${kinoHall.value} | Ряд: ${kinoRow.value} | Место: ${kinoPlace.value}`
+  if ($env.orderUseKino) {
+    orderObject.comment =
+      orderObject.comment +
+      ` | Зал: ${kinoHall.value} | Ряд: ${kinoRow.value} | Место: ${kinoPlace.value}`
+  }
 
   return orderObject
 }
@@ -1245,6 +1261,8 @@ const requestCheckout = async () => {
 }
 
 onMounted(() => {
+  setFieldValue('deliveryRange', deliveryRangeOptions.value.min)
+
   fetchPackingOptions()
   fetchPromo()
   cartStore.getaAdditives()

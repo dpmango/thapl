@@ -56,7 +56,7 @@ const { $env, $log, $ymConfig } = useNuxtApp()
 
 const session = useSessionStore()
 const deliveryStore = useDeliveryStore()
-
+const { currentAddress } = storeToRefs(deliveryStore)
 const { app_settings } = storeToRefs(session)
 
 // тип доставки
@@ -110,6 +110,16 @@ const { ymapsInstance, geocoderSuggestionObj } = useGeocoder({
   setFieldValue,
   setErrors,
 })
+
+// обнуление поиска
+watch(
+  () => currentAddress.value,
+  (newCurAddr) => {
+    if (!newCurAddr) {
+      search.value = ''
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>

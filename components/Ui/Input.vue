@@ -57,6 +57,14 @@
     </div>
 
     <div v-if="helper" class="input__helper text-s c-gray">{{ helper }}</div>
+    <div
+      v-if="maxCount"
+      class="input__helper text-s c-gray"
+      :class="[value.length > maxCount && 'c-red']"
+    >
+      {{ value.length }}/{{ maxCount }}
+    </div>
+
     <div v-if="showErrorText" class="input__error">{{ error }}</div>
   </div>
 </template>
@@ -145,6 +153,10 @@ const props = defineProps({
   closeOnSelect: {
     type: Boolean,
     default: true,
+  },
+  maxCount: {
+    type: Number,
+    required: false,
   },
   // https://github.com/beholdr/maska
   mask: {

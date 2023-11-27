@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   piniaPersistedstate: {
     cookieOptions: {
       maxAge: 60 * 60 * 24 * 30 * 6,
-      sameSite: 'strict',
+      sameSite: false,
     },
     storage: 'cookies',
   },
@@ -64,6 +64,7 @@ export default defineNuxtConfig({
       orderNotCall: 'Не звонить',
       orderUseNotHeat: false,
       orderPaymentOptions: '1030,3,1',
+      orderUseKino: false,
       // product
       isDisplayProductDesc: false,
       // вендоры
