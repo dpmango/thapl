@@ -1047,7 +1047,7 @@ const buildRequestObject = () => {
     let time = ''
     // доставка ко времени
     if (deliveryTime.value !== '1') {
-      if (slotsData.value.hasSlots) {
+      if (!slotsData.value.hasSlots) {
         time = ' ' + minutesToTimestamp(deliveryRange.value)
       } else {
         time = ' ' + deliveryTime.value

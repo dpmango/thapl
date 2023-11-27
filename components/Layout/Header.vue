@@ -268,7 +268,6 @@ onBeforeUnmount(() => {
     // }
     img {
       max-height: 70px;
-      width: 100%;
     }
   }
 

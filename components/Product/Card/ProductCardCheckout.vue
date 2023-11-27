@@ -21,7 +21,7 @@
     </div>
     <div class="scope__value h6-title text-md-s">
       <template v-if="isGift">
-        <s>{{ productPriceLabel }}</s>
+        {{ productPriceLabel }}
       </template>
 
       <template v-else>{{ formatPrice(productPrice.raw * cartItem.q) }}</template>

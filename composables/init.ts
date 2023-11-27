@@ -72,7 +72,7 @@ export const useInit = async () => {
 
     // Ссылки на приложения
     const hasMarketing = app_settings.app_store_link || app_settings.play_store_link
-    if (hasMarketing && !marketingCookie) {
+    if (hasMarketing && !marketingCookie.value) {
       ui.setModal({ name: 'marketing' })
     }
 

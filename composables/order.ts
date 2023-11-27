@@ -1,4 +1,6 @@
+import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
+import { useDeliveryStore } from './../store/delivery.store'
 import { IOrder, IOrderCart } from '~/interface/Order'
 import { IOrderPaymentDataDto } from '~/interface/Dto/Order.dto'
 import { openExternalLink } from '#imports'
@@ -13,9 +15,11 @@ export const useOrder = ({
 }) => {
   const profileStore = useProfileStore()
   const cartStore = useCartStore()
+  const deliveryStore = useDeliveryStore()
   const ui = useUiStore()
   const router = useRouter()
   const toast = useToast()
+  const { currentAddress } = storeToRefs(deliveryStore)
 
   // отменить заказ
   const handleCancel = async () => {
@@ -62,8 +66,12 @@ export const useOrder = ({
   const handleDelivery = () => {}
 
   // повтор заказа - добавить к корзину
-  // TODO - проверить проверку на существующие товары и стоплисты
   const handleRepeat = () => {
+    if (!currentAddress.value) {
+      ui.setModal({ name: 'address' })
+      return
+    }
+
     cartStore.resetCart()
 
     order.cart.forEach((x) => {

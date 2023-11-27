@@ -12,6 +12,9 @@ export const useSessionStore = defineStore('session', {
       phone: '' as string,
     }
   },
+  persist: {
+    paths: ['user'],
+  },
 
   getters: {
     isAuthenticated(state) {

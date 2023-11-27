@@ -142,7 +142,7 @@ const saveProfile = async () => {
     // surname: surname.value,
     email: email.value,
     phone: phone.value,
-    birthday: birthday.value ? djs(birthday.value, 'DD/MM/YYYY').toDate() : '',
+    birth: birthday.value ? djs(birthday.value, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
   }
 
   const response = await useApi('profile/set-user-data', {
@@ -153,7 +153,10 @@ const saveProfile = async () => {
 
   if (response) {
     toast.success('Профиль обновлен')
-    sessionStore.updateUser(requestObj)
+    sessionStore.updateUser({
+      ...requestObj,
+      birthday: djs(birthday.value, 'DD/MM/YYYY').toDate(),
+    })
     router.push('/profile')
   }
 
