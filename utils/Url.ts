@@ -36,15 +36,17 @@ export const openExternalLink = (url: string) => {
     }
   }
 
-  if (window.opener === null) {
-    changeLocation()
-  } else {
-    try {
-      window.open(url)
-    } catch {
-      changeLocation()
-    }
-  }
+  changeLocation()
+
+  // if (window.opener === null) {
+  //   changeLocation()
+  // } else {
+  //   try {
+  //     window.open(url)
+  //   } catch {
+  //     changeLocation()
+  //   }
+  // }
 }
 
 export const buildLink = (v: string | null) => {
