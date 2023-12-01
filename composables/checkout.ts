@@ -159,7 +159,8 @@ export const useCheckout = () => {
     const restrictions = organization[restrictionsKey] || []
 
     return {
-      hasSlots: !!organization[slotKey].length,
+      // hasSlots: !!organization[slotKey].length,
+      hasSlots: false, // dev
       slots,
       restrictions,
     }

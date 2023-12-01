@@ -110,6 +110,7 @@
                   :changable="true"
                   :value="address"
                   :error="errors.address"
+                  :clearable="false"
                   @on-change="(v) => setFieldValue('address', v)"
                   @on-changable="ui.setModal({ name: 'address' })"
                 />
@@ -626,11 +627,7 @@ const showASAPTime = computed(() => {
 })
 
 const deliveryTimeSlots = computed(() => {
-  const timeSlots = slotsData.value.hasSlots
-    ? zoneData.value.isDelivery
-      ? zoneData.value.organization?.default_delivery_time_slots ?? []
-      : zoneData.value.organization?.default_takeaway_time_slots ?? []
-    : []
+  const timeSlots = slotsData.value.hasSlots ? slotsData.value.slots : []
 
   return timeSlots.map((item) => {
     let start = item.start.split(':')
@@ -682,20 +679,28 @@ const deliveryRangeOptions = computed(() => {
     timeTo,
     maxTime,
     isDelivery,
-    organization: { min_takeaway_gap },
+    organization: { takeaway_time },
   } = zoneData.value
 
-  const min = isDelivery ? timeFrom + +maxTime : timeFrom + +min_takeaway_gap
-  const max = isDelivery ? timeTo + +maxTime : timeTo - +maxTime
   const isToday =
     deliveryDate.value !== '0' &&
     isSameDay(djs(deliveryDate.value).tz(zoneData.value.organization?.timezone), dayjsNow)
 
-  return {
-    min: isToday ? (isDelivery ? timeFrom + +maxTime : minutes + +min_takeaway_gap) : min,
-    max,
+  let returnable = {
+    min: timeFrom + +maxTime,
+    max: timeTo + +maxTime,
     step: 15,
   }
+
+  if (!isDelivery) {
+    returnable = {
+      min: (isToday ? minutes : timeFrom) + +(takeaway_time || 0),
+      max: timeTo - +maxTime,
+      step: 15,
+    }
+  }
+
+  return returnable
 })
 
 const setDeliveryFieldsValue = (v) => {

@@ -4,10 +4,10 @@ import { defineNuxtPlugin } from '#app'
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
 
-  if (config.public.googleID) {
+  if (config.public.googleId) {
     nuxtApp.vueApp.use(VueGtag, {
       property: {
-        id: config.public.googleID,
+        id: config.public.googleId,
       },
     })
   }

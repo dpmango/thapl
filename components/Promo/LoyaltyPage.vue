@@ -3,7 +3,7 @@
     <h1 class="h2-title">{{ data.title }}</h1>
 
     <div class="page__content">
-      <div class="lvls">
+      <div v-if="data.user_balance_data || data.loyalty_groups?.length" class="lvls">
         <div v-if="data.user_balance_data" class="lvls__description">
           <div class="lvls__total c-primary">{{ data.user_balance_data?.balance }}</div>
           <span class="text-l text-md-s">бонусных рублей на вашем счету</span>

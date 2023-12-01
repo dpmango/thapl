@@ -22,7 +22,7 @@
       </div>
       <div v-if="isPreorder" class="card__preorder text-s c-primary">
         <template v-if="+$env.stopListType === 1">Эта позиция не доступна</template>
-        <template v-else> Этот товар доступен только по предзаказу</template>
+        <template v-else> На сегодня нет в наличии</template>
       </div>
       <div class="card__action">
         <UiPlusMinus

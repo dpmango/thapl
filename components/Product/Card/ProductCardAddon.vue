@@ -36,9 +36,10 @@
 import { PropType } from 'vue'
 import { IProduct } from '~/interface/Product'
 import { formatPrice } from '#imports'
-import { useCartStore } from '~/store'
+import { useCartStore, useUiStore } from '~/store'
 
 const cartStore = useCartStore()
+const uiStore = useUiStore()
 
 const props = defineProps({
   product: {
@@ -57,6 +58,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isDisplayMode: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const productComputed = computed(() => props.product)
@@ -67,6 +72,11 @@ const isProductInCart = computed(() => {
 })
 
 const handleProductClick = () => {
+  if (props.isDisplayMode) {
+    uiStore.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
+    return
+  }
+
   if (props.gift) return
   if (!isProductInCart.value) {
     cartStore.addToCart(props.product, 1, [])

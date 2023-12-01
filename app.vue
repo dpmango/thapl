@@ -9,6 +9,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useFavicon } from '@vueuse/core'
 import {
   useSessionStore,
   useProductStore,
@@ -24,6 +25,7 @@ const { $env, $log } = nuxtApp
 const ui = useUiStore()
 
 console.log(`APP Version: ${APP_VERSION}`)
+$log.log({ $env })
 
 const loaded = ref(false)
 nuxtApp.hook('page:finish', () => {
@@ -71,6 +73,8 @@ useHead({
     description: initData?.site_settings?.page?.seo_description,
   }),
 })
+
+useFavicon(initData?.site_settings.fav_icon)
 
 await useAsyncData('startup', async () => {
   const promisesToBeFetched = [

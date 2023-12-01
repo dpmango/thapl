@@ -44,6 +44,7 @@ export interface IProductFullDto extends IProduct {
   variants: IProductVariant[] | null
   options: IProductOption[] | null
   tech_data: null
+  suggest?: IProduct[] | null
 }
 
 export interface IProductOption {

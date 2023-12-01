@@ -172,6 +172,14 @@ watch(
       display: block;
       .toggle {
         margin-top: 28px;
+        // autosize
+        display: flex;
+        :deep .toggle__item {
+          flex: 1 1 auto;
+          padding-left: 8px;
+          padding-right: 8px;
+          text-align: center;
+        }
       }
     }
     &__search {

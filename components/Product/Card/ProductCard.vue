@@ -19,7 +19,8 @@
     </div>
     <div class="card__body">
       <div class="card__title h4-title h6-title-sm">
-        <UiAtomLongWords :text="product.title" />
+        <UiAtomLongWords :text="product.title" />&nbsp;
+        <UiAtomProductIcon :product="product" />
       </div>
 
       <div class="card__description text-s c-gray">

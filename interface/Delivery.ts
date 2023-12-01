@@ -48,6 +48,7 @@ export interface IOrganizationShared {
   stop_categories: any[]
   modifiers_stop_list: any[]
   stop_list: any[]
+  takeaway_time?: number
 
   time_slot_lag: number
   max_preorder_days: number
@@ -78,6 +79,7 @@ export interface IOrganizationTakeaway extends IOrganizationBase, IOrganizationS
   phone: string
   address: string
   working_hours: string
+  min_order: number
 }
 
 export interface IOrganization extends IOrganizationBase, IOrganizationShared {}

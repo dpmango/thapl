@@ -68,10 +68,10 @@ export default defineNuxtConfig({
       // product
       isDisplayProductDesc: false,
       // вендоры
-      yandexMetrikaID: '',
+      yandexMetrikaId: '',
       yandexMapsKey: '',
       yandexMapsSuggestKey: '',
-      googleID: '',
+      googleId: '',
 
       geocoderSearchedCities: '',
       geocoderBoundedBy: '',
@@ -86,7 +86,10 @@ export default defineNuxtConfig({
 
   googleFonts: {
     families: {
-      'IBM+Plex+Sans': {
+      // 'IBM+Plex+Sans': {
+      //   wght: [300, 400, 500, 600, 700],
+      // },
+      Inter: {
         wght: [300, 400, 500, 600, 700],
       },
     },

@@ -32,6 +32,7 @@
               placeholder="+7"
               mask="+7 (###) ###-##-##"
               :disabled="true"
+              :clearable="false"
               :value="phone"
               :error="errors.phone"
               @on-change="(v) => setFieldValue('phone', v)"
@@ -57,6 +58,7 @@
               :value="birthday"
               :error="errors.birthday"
               :disabled="Boolean(user.birthday)"
+              :clearable="!user.birthday"
               @on-change="(v) => setFieldValue('birthday', v)"
             />
           </div>

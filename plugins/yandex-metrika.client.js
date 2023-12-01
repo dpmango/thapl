@@ -31,7 +31,7 @@ export default defineNuxtPlugin(() => {
           a.parentNode.insertBefore(k, a)
       })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym')
 
-      ym(config.public.yandexMetrikaID, 'init', {
+      ym(config.public.yandexMetrikaId, 'init', {
         clickmap: true,
         trackLinks: true,
         accurateTrackBounce: true,
@@ -42,14 +42,14 @@ export default defineNuxtPlugin(() => {
     }
 
     useRouter().afterEach((to, from) => {
-      ym(config.public.yandexMetrikaID, 'hit', to.fullPath, {
+      ym(config.public.yandexMetrikaId, 'hit', to.fullPath, {
         referer: from.fullPath,
         title: to.meta.title,
       })
     })
   }
 
-  if (window.ym === undefined && config.public.yandexMetrikaID) {
+  if (window.ym === undefined && config.public.yandexMetrikaId) {
     create()
   }
 })

@@ -20,11 +20,12 @@ export interface ISiteMenu {
 }
 
 export interface ISiteSettings {
-  main_logo: string
-  // additional_logo: string | null
+  main_logo: string | null
+  additional_logo?: string | null
   region_id: number
   default_work_time: string
   page: IPageUniversalDto
+  fav_icon?: string
 }
 
 export interface IAppSettings {

@@ -7,10 +7,10 @@
         <template v-else><strong>Завтра</strong></template>
       </h5>
     </div>
-    <div class="info__col col col-md-4 col-sm-6">
+    <div v-if="organization.takeaway_time" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Время готовки</p>
       <h5 class="info__value h5-title h6-title-md">
-        {{ formatMinutes(organization.min_takeaway_gap.toString()) }}
+        {{ formatMinutes(organization.takeaway_time.toString()) }}
       </h5>
     </div>
     <div v-if="workingTime('takeawayOrganization')" class="info__col col col-md-4 col-sm-6">
@@ -19,10 +19,10 @@
         {{ workingTime('takeawayOrganization') }}
       </h5>
     </div>
-    <!-- <div class="info__col col col-md-4 col-sm-6">
+    <div v-if="organization.min_order" class="info__col col col-md-4 col-sm-6">
       <p class="text-s c-gray">Заказ от</p>
-      <h5 class="info__value h5-title h6-title-md">TODO</h5>
-    </div> -->
+      <h5 class="info__value h5-title h6-title-md">{{ formatPrice(organization.min_order) }}</h5>
+    </div>
   </div>
 
   <div class="location__cta" @click="handleToOrderClick">

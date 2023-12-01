@@ -2,7 +2,10 @@
   <UiModal name="product" size="x-large" :padding="false">
     <div class="product">
       <UiLoader v-if="true" position="overlay" :loading="loading" />
-      <div v-if="product && displayProduct" class="product__wrapper">
+      <div
+        v-if="product && displayProduct"
+        :class="['product__wrapper', product.suggest?.length && '_withSuggest']"
+      >
         <div
           class="product__media hidden-md"
           :style="imageWidth ? { flexBasis: `${imageWidth}px` } : {}"
@@ -26,7 +29,7 @@
             <div class="product__scrolling">
               <div class="product__title h4-title">
                 <UiAtomLongWords :text="displayProduct.title" />&nbsp;
-                <span v-if="displayProduct.is_hot">🌶</span>
+                <UiAtomProductIcon :product="displayProduct" />
                 <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
                   &nbsp;(В корзине уже {{ countWithModifiersInCart }})
                 </span>
@@ -112,6 +115,16 @@
                   </div>
                 </div>
               </div>
+
+              <div v-if="product && product.suggest?.length" class="product__suggest _md">
+                <div class="product__suggest-title h6-title">Рекомендуем попробовать</div>
+
+                <UiLibSwiper class="product__suggest-list" :params="swiperParams">
+                  <SwiperSlide v-for="(card, idx) in product.suggest" :key="idx">
+                    <ProductCardAddon :product="card" :is-display-mode="true" />
+                  </SwiperSlide>
+                </UiLibSwiper>
+              </div>
             </div>
           </div>
           <div class="product__cta">
@@ -138,6 +151,16 @@
           </div>
         </div>
       </div>
+
+      <div v-if="product && product.suggest?.length" class="product__suggest">
+        <div class="product__suggest-title h6-title">Рекомендуем попробовать</div>
+
+        <UiLibSwiper class="product__suggest-list" :params="swiperParams">
+          <SwiperSlide v-for="(card, idx) in product.suggest" :key="idx">
+            <ProductCardAddon :product="card" :is-display-mode="true" />
+          </SwiperSlide>
+        </UiLibSwiper>
+      </div>
     </div>
   </UiModal>
 </template>
@@ -146,6 +169,7 @@
 import debounce from 'lodash/debounce'
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
+import { SwiperSlide } from 'swiper/vue'
 import { useCartStore, useUiStore } from '~/store'
 import { IProduct, ICartModifier, IProductFullDto } from '~/interface'
 import { formatPrice, Plurize } from '#imports'
@@ -163,6 +187,23 @@ const { modal, modalParams } = storeToRefs(ui)
 const product = ref(null) as Ref<IProductFullDto | null>
 const productChildrenShown = ref(null) as Ref<IProduct | null>
 const loading = ref(false)
+
+const swiperParams = {
+  slidesPerView: 'auto',
+  spaceBetween: 16,
+  threshold: 3,
+  preventClicks: true,
+  touchEventsTarget: 'container',
+  freeMode: {
+    enabled: true,
+    sticky: false,
+  },
+  mousewheel: {
+    forceToAxis: true,
+    releaseOnEdges: true,
+    sensitivity: 0.7,
+  },
+}
 
 const displayProduct = computed(() => {
   return productChildrenShown.value || product.value
@@ -468,6 +509,9 @@ watch(
     display: flex;
     min-height: 1px;
     max-height: calc(100vh - 120px - 40px);
+    &._withSuggest {
+      max-height: calc(100vh - 164px - 40px);
+    }
   }
   &__media {
     flex: 0 0 62.5%;
@@ -580,6 +624,26 @@ watch(
   &__cta-disabled {
     text-align: center;
   }
+
+  &__suggest {
+    padding: 20px 24px 24px;
+    background: var(--color-bg);
+    &._md {
+      display: none;
+    }
+  }
+  &__suggest-title {
+  }
+  &__suggest-list {
+    overflow: visible;
+    margin-top: 16px;
+    .swiper-wrapper {
+      overflow: visible;
+    }
+    .swiper-slide {
+      width: 260px;
+    }
+  }
 }
 
 .mod-option {
@@ -629,12 +693,16 @@ watch(
     position: static;
     &__wrapper {
       max-height: 100%;
+      &._withSuggest {
+        max-height: 100%;
+      }
     }
     &__image {
       max-height: 100%;
     }
     &__scrolling {
       padding: 24px 24px 124px;
+      overflow: hidden;
     }
     &__media {
       margin: 20px auto;
@@ -660,6 +728,24 @@ watch(
       will-change: transform;
       backface-visibility: hidden;
       transform: translate3d(0, 0, 0.001);
+    }
+    &__suggest {
+      display: none;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding: 16px;
+      &._md {
+        display: block;
+      }
+    }
+    &__suggest-title {
+      font-size: 14px;
+    }
+    &__suggest-list {
+      margin-top: 12px;
+      .swiper-slide {
+        width: 220px;
+      }
     }
   }
 }
