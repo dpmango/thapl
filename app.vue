@@ -71,6 +71,7 @@ useHead({
   ...createSeoTags({
     title: initData?.site_settings?.page?.seo_title || $env.projectName,
     description: initData?.site_settings?.page?.seo_description,
+    meta_tags: initData?.site_settings?.meta_tags,
   }),
 })
 

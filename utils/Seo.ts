@@ -4,9 +4,17 @@ interface ICreateSeoTags {
   keywords?: any
   ogImage?: any
   ogUrl?: any
+  meta_tags?: { name: string; content: string }[]
 }
 
-export const createSeoTags = ({ title, description, keywords, ogImage, ogUrl }: ICreateSeoTags) => {
+export const createSeoTags = ({
+  title,
+  description,
+  keywords,
+  ogImage,
+  ogUrl,
+  meta_tags,
+}: ICreateSeoTags) => {
   const returnable = {
     title: '',
     meta: [] as any[],
@@ -34,6 +42,12 @@ export const createSeoTags = ({ title, description, keywords, ogImage, ogUrl }: 
   }
   if (ogUrl) {
     metaArr.push({ property: 'og:url', content: `https://thapl.com${ogUrl}` })
+  }
+
+  if (meta_tags) {
+    meta_tags.forEach((tag) => {
+      metaArr.push({ name: tag.name, content: tag.content })
+    })
   }
 
   returnable.meta = metaArr

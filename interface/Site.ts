@@ -26,6 +26,7 @@ export interface ISiteSettings {
   default_work_time: string
   page: IPageUniversalDto
   fav_icon?: string
+  meta_tags?: { name: string; content: string }[]
 }
 
 export interface IAppSettings {
