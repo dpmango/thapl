@@ -383,6 +383,7 @@ onBeforeUnmount(() => {
       display: block;
       padding: 10px;
       margin-left: -10px;
+      transform: scale(0.8);
       &:hover {
         .hamburger span {
           color: var(--color-primary);

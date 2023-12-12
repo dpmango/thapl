@@ -46,7 +46,7 @@ const swiperParams = {
   slidesPerView: 'auto',
   // spaceBetween: 32,
   centeredSlides: true,
-  autoplay: { delay: 10000, pauseOnMouseEnter: true },
+  autoplay: { delay: 5000, pauseOnMouseEnter: true },
   pagination: {
     clickable: true,
   },

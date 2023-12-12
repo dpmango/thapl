@@ -1,6 +1,6 @@
 const lastTime = new Date().getTime()
 
-export const APP_VERSION = '2.1.12'
+export const APP_VERSION = '2.1.13'
 
 export const PerformanceLog = (DEV_perf: number, name: string, fromStart?) => {
   const DEV_perf_end = performance.now()

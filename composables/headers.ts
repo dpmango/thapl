@@ -29,6 +29,8 @@ export const useHeaders = () => {
     targetOrganization = orgTakeawayID
   }
 
+  console.log(deliveryStore.currentAddressType, { targetOrganization })
+
   if (targetOrganization) {
     headers['x-thapl-organization-id'] = targetOrganization
   }

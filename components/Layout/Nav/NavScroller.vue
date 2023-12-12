@@ -78,7 +78,7 @@ const activeAnchor = ref<number | null>(null)
 
 const handleLinksScroll = () => {
   const scrollTop = window.scrollY
-  const smoothLinks = document.querySelectorAll('.js-nav .nav__link')
+  const smoothLinks = document.querySelectorAll('.js-nav .nav__link') // '.nav__dropdown .nav__link' not available
   const { sections, links } = createScrollableAnchors(smoothLinks)
 
   const header = document.querySelector('.header__bottom') as HTMLElement
@@ -87,7 +87,11 @@ const handleLinksScroll = () => {
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i]
 
-    if (scrollTop >= section.offsetTop - headerOffset) {
+    const isSectionTopVisible = scrollTop + 1 >= section.offsetTop - headerOffset
+    const isSectionBottomVisible =
+      scrollTop - 1 <= section.offsetTop - headerOffset + section.clientHeight
+
+    if (isSectionTopVisible && isSectionBottomVisible) {
       activeAnchor.value = links.findIndex((x) => x.name === section.id)
       return
     } else {
@@ -185,6 +189,9 @@ onBeforeUnmount(() => {
     &._active {
       color: var(--color-primary);
     }
+  }
+  :deep(a._active) {
+    color: var(--color-primary);
   }
 }
 .nav-catalog {

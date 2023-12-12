@@ -78,8 +78,21 @@ const handleProductClick = () => {
   }
 
   if (props.gift) return
+  if (props.product.open_item_page_to_add) {
+    uiStore.setModal({ name: 'product', params: { id: props.product.id, critical: props.product } })
+    return
+  }
   if (!isProductInCart.value) {
-    cartStore.addToCart(props.product, 1, [])
+    // весовые продукты добавляются граммами
+    let quantity = 1
+    if (props.product.sale_by_weight) {
+      quantity = props.product.min_weight || 100
+    }
+    if (props.product.min_items) {
+      quantity = quantity * props.product.min_items
+    }
+
+    cartStore.addToCart(props.product, quantity, [])
   }
 }
 </script>

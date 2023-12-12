@@ -1,4 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
+import { useProductStore } from './product.store'
 import {
   IZone,
   IOrganization,

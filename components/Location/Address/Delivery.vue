@@ -45,12 +45,13 @@
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification/dist/index.mjs'
 import { IGeoCoords, IGeoDataRef, YandexGeocoderResponce } from '~/interface/Geolocation'
-import { useDeliveryStore, useSessionStore } from '~/store'
+import { useDeliveryStore, useProductStore, useSessionStore } from '~/store'
 import { buildLink } from '#imports'
 
 const toast = useToast()
 const { $env } = useNuxtApp()
 
+const productStore = useProductStore()
 const deliveryStore = useDeliveryStore()
 const sessionStore = useSessionStore()
 const {
@@ -125,6 +126,10 @@ const setAddress = async (
     longitude,
     org_id: zone.organization.id,
   })
+
+  if (zone.organization.has_spec_prices) {
+    productStore.getCatalog()
+  }
 
   // display component
   geoData.value = {

@@ -22,11 +22,12 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useDeliveryStore } from '~/store'
+import { useDeliveryStore, useProductStore } from '~/store'
 
 const { $log } = useNuxtApp()
 
 const deliveryStore = useDeliveryStore()
+const productStore = useProductStore()
 const { restaurants, takeawayOrganization, currentAddress } = storeToRefs(deliveryStore)
 
 const props = defineProps({
@@ -66,6 +67,10 @@ const selectRestaurant = async (restaurant) => {
       name: restaurant.title,
       org_id: restaurant.id,
     })
+
+    if (organization.has_spec_prices) {
+      productStore.getCatalog()
+    }
   }
 }
 

@@ -8,7 +8,7 @@
       </h5>
     </div>
     <div v-if="organization.takeaway_time" class="info__col col col-md-4 col-sm-6">
-      <p class="text-s c-gray">Время готовки</p>
+      <p class="text-s c-gray">Время приготовления</p>
       <h5 class="info__value h5-title h6-title-md">
         {{ formatMinutes(organization.takeaway_time.toString()) }}
       </h5>

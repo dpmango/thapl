@@ -628,6 +628,7 @@ watch(
   &__suggest {
     padding: 20px 24px 24px;
     background: var(--color-bg);
+    overflow: hidden;
     &._md {
       display: none;
     }

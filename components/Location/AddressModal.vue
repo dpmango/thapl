@@ -8,7 +8,7 @@
         </div>
 
         <UiToggle
-          v-if="showDeliveryType"
+          v-if="showTakeaway"
           class="address__toggle"
           :list="deliveryOptions"
           :value="deliveryType"
@@ -65,12 +65,12 @@ const deliveryOptions = ref([
   { id: 2, label: 'Самовывоз' },
 ])
 
-const showDeliveryType = computed(() => {
+const showTakeaway = computed(() => {
   if ($env.takeawayOnly) return false
   return app_settings.value.takeaway_enabled
 })
 
-const deliveryType = ref(showDeliveryType.value ? 1 : 2)
+const deliveryType = ref($env.takeawayOnly ? 2 : 1)
 
 const handleDeliveryTypeChange = (v) => {
   deliveryType.value = v

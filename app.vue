@@ -77,16 +77,18 @@ useHead({
 
 useFavicon(initData?.site_settings.fav_icon)
 
+await useAsyncData('zone-init', () => deliveryStore.hydrateZone())
+
 await useAsyncData('startup', async () => {
   const promisesToBeFetched = [
     {
       id: 'catalog',
       resolver: productStore.getCatalog(),
     },
-    {
-      id: 'zone',
-      resolver: deliveryStore.hydrateZone(),
-    },
+    // {
+    //   id: 'zone',
+    //   resolver: deliveryStore.hydrateZone(),
+    // },
     {
       id: 'contacts',
       resolver: contactStore.getContacts(),

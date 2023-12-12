@@ -42,6 +42,8 @@ export interface IOrganizationBase {
   disable_online_payment: boolean
   disable_cash_payment: boolean
   disable_courier_card_payment: boolean
+
+  has_spec_prices: boolean
 }
 
 export interface IOrganizationShared {
