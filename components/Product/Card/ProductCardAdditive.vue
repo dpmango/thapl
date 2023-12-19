@@ -22,7 +22,10 @@
       </div>
       <div v-if="isPreorder" class="card__preorder text-s c-primary">
         <template v-if="+$env.stopListType === 1">Эта позиция не доступна</template>
-        <template v-else> На сегодня нет в наличии</template>
+        <template v-else-if="!matchStockCount && stockCount">
+          На сегодня в наличии {{ stockCount }}
+        </template>
+        <template v-else-if="!matchStockCount">На сегодня нет в наличии</template>
       </div>
       <div class="card__action">
         <UiPlusMinus
@@ -78,7 +81,14 @@ const additiveCartItem = computed(() => {
   return additivesCart.value.find((x) => x.id === props.product.id) || null
 })
 
-const { renderProduct, productPrice, productModifiersVerbose } = useProduct({
+const {
+  renderProduct,
+  productPrice,
+  isPreorder,
+  productModifiersVerbose,
+  matchStockCount,
+  stockCount,
+} = useProduct({
   cartItem: additiveCartItem.value,
   product: props.product,
   isAdditive: true,
@@ -98,10 +108,6 @@ const additiveCounter = computed(() => {
     total,
     payable,
   }
-})
-
-const isPreorder = computed(() => {
-  return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
 })
 
 const plusminusParams = computed(() => {

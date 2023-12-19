@@ -44,6 +44,7 @@ export interface IOrganizationBase {
   disable_courier_card_payment: boolean
 
   has_spec_prices: boolean
+  stock_list?: { balance: number; id: number }[]
 }
 
 export interface IOrganizationShared {

@@ -1,6 +1,6 @@
 import { ComputedRef } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCartStore, useUiStore } from '~/store'
+import { useCartStore, useDeliveryStore, useUiStore } from '~/store'
 import { IProduct, IModifierItem } from '~/interface/Product'
 import { ICartInner } from '~/interface/Cart'
 import { formatPrice } from '#imports'
@@ -15,7 +15,12 @@ export const useProduct = ({
   isAdditive?: boolean
 }) => {
   const cartStore = useCartStore()
-  const { productQuantityInCart, products, additives, additivesCart } = storeToRefs(cartStore)
+  const deliveryStore = useDeliveryStore()
+  const { cartStoped, productQuantityInCart, products, additives, additivesCart } =
+    storeToRefs(cartStore)
+  const { currentAddressType, zone, takeawayOrganization } = storeToRefs(deliveryStore)
+
+  const { $env } = useNuxtApp()
 
   // если передан cartItem, отображается гидирированный продукт
   const renderProduct = computed(() => {
@@ -83,10 +88,39 @@ export const useProduct = ({
     return []
   })
 
+  const isPreorder = computed(() => {
+    return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
+  })
+
+  // stock_list
+  const stockCount = computed(() => {
+    if (!isPreorder.value) return null
+    if (+$env.stopListType === 1) return null
+
+    const isDelivery = currentAddressType?.value === 'delivery'
+    const targetOrganization = isDelivery ? zone.value?.organization : takeawayOrganization.value
+    const stock_list = targetOrganization?.stock_list
+    if (!stock_list) return null
+
+    const inStock = stock_list.find((x) => x.id === renderProduct.value.id)
+    if (!inStock) return null
+
+    return inStock.balance
+  })
+
+  const matchStockCount = computed(() => {
+    if (!stockCount.value) return false
+
+    return (productQuantityInCartWithModifiers.value || 0) <= stockCount.value
+  })
+
   return {
     renderProduct,
     productPrice,
     productModifiersVerbose,
     productQuantityInCartWithModifiers,
+    isPreorder,
+    stockCount,
+    matchStockCount,
   }
 }

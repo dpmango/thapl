@@ -30,9 +30,9 @@
               <div class="product__title h4-title">
                 <UiAtomLongWords :text="displayProduct.title" />&nbsp;
                 <UiAtomProductIcon :product="displayProduct" />
-                <span v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
+                <div v-if="countWithModifiersInCart" class="text-s fw-500 c-gray">
                   &nbsp;(В корзине уже {{ countWithModifiersInCart }})
-                </span>
+                </div>
               </div>
               <div
                 v-if="displayProduct.packing_weights.split(' ')[0][0] !== '0'"
@@ -181,7 +181,7 @@ const route = useRoute()
 
 const ui = useUiStore()
 const cartStore = useCartStore()
-const { cart, productsCountInCart } = storeToRefs(cartStore)
+const { cart, productsCountInCartTotal } = storeToRefs(cartStore)
 const { modal, modalParams } = storeToRefs(ui)
 
 const product = ref(null) as Ref<IProductFullDto | null>
@@ -367,7 +367,7 @@ const showModifiersToast = () => {
 const countWithModifiersInCart = computed(() => {
   if (!displayProduct.value?.id) return 0
 
-  return productsCountInCart.value(displayProduct.value?.id)
+  return productsCountInCartTotal.value(displayProduct.value?.id)
 })
 
 const fetchProduct = async (id) => {

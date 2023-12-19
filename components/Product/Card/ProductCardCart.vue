@@ -28,7 +28,10 @@
       </div>
       <div v-if="isPreorder" class="card__preorder text-s c-primary">
         <template v-if="+$env.stopListType === 1">Эта позиция не доступна</template>
-        <template v-else>На сегодня нет в наличии</template>
+        <template v-else-if="!matchStockCount && stockCount">
+          На сегодня в наличии {{ stockCount }}
+        </template>
+        <template v-else-if="!matchStockCount">На сегодня нет в наличии</template>
       </div>
       <div
         v-if="!isGift"
@@ -104,14 +107,17 @@ const props = defineProps({
   },
 })
 
-const { renderProduct, productPrice, productModifiersVerbose, productQuantityInCartWithModifiers } =
-  useProduct({
-    cartItem: props.cartItem,
-    product: props.product,
-  })
-
-const isPreorder = computed(() => {
-  return cartStoped.value.includes(renderProduct.value.id) || renderProduct.value.only_pre_order
+const {
+  renderProduct,
+  productPrice,
+  productModifiersVerbose,
+  productQuantityInCartWithModifiers,
+  isPreorder,
+  stockCount,
+  matchStockCount,
+} = useProduct({
+  cartItem: props.cartItem,
+  product: props.product,
 })
 
 const showGiftChange = computed(() => {

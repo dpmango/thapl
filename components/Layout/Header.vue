@@ -13,7 +13,7 @@
     :style="{ transform: `translate(0, -${topHeight}px)` }"
   >
     <div
-      v-if="$env.useHeaderMenu && app_settings?.site_header_menu.length"
+      v-if="$env.useHeaderMenu && app_settings?.site_header_menu?.length"
       ref="naviRef"
       class="header__navi hidden-md"
     >

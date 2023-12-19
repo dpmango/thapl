@@ -39,6 +39,14 @@ export const useCartStore = defineStore('cart', {
 
       return matchingProducts.length
     },
+    productsCountInCartTotal: (state) => (id: number) => {
+      const matchingProducts = state.cart.filter((x) => x.id === id)
+
+      return matchingProducts.reduce((acc, x) => {
+        acc += x.q
+        return acc
+      }, 0)
+    },
     // считает с учетом выбранных модификаторов товара
     productQuantityInCart:
       (state) =>
