@@ -99,6 +99,13 @@
 
 }
 
+.theme-393{
+  // brand colors
+  --color-primary: #30454f;
+  --color-primary-rgb: #{HexToRGB(#30454f)};
+
+}
+
 .theme-456{
   // brand colors
   --color-primary: #FF6900;
@@ -180,4 +187,64 @@
   --breadcrumbs-separator-color: #151515;
   --plusminus-control-color: #151515;
   --progress-background-color: #151515;
+}
+
+.theme-dark2 {
+  --color-primary: #DA3332;
+  --color-primary-rgb: #{HexToRGB(#DA3332)};
+
+  // default scheme
+  --color-background: #000;
+  --color-font: #fff;
+  --color-font-rgb: #{HexToRGB(#fff)};
+  --color-font-invert: #fff;
+  --color-gray: #909090;
+  --color-disabled: #8996a4;
+  --color-bg: #151515;
+  --color-bg-darken: #151515;
+  --color-border: #303030;
+  --color-separator: #303030;
+
+  // brand colors
+  --color-green: #75da52;
+  --color-red: #ea3e3e;
+
+  // components
+  --header-background: #000;
+  --product-background: #151515;
+  --component-background: #151515;
+  --modal-background: rgba(255, 255, 255, 0.2);
+  --modal-body-background: #000;
+  --loader-overlay-background: rgba(0, 0, 0, 0.5);
+  --search-background: #fff;
+
+  // ui
+  --input-background-color: #151515;
+  --swiper-bullet-color: #f0f0f0;
+  --swiper-nav-color: #f0f0f0;
+  --breadcrumbs-separator-color: #dddddd;
+  --plusminus-control-color: #a0a0a0;
+  --progress-background-color: #e0e0e0;
+  --stories-bg: rgba(0, 0, 0, 0.55);
+
+  // badges
+  --badge-green-color: #439530;
+  --badge-green-background: #cffec4;
+  --badge-blue-color: #1888ac;
+  --badge-blue-background: #c9f0fc;
+
+  // buttons
+  --button-primary-bg: var(--color-primary);
+  --button-primary-color: var(--color-font-invert);
+  --button-primary-focus: rgba(var(--color-primary-rgb), 0.3);
+  --button-primary-hover: rgba(var(--color-primary-rgb), 0.34);
+  --button-disabled-bg: #e3e9ef;
+
+  --button-secondary-bg: rgba(var(--color-primary-rgb), 0.24);
+  --button-secondary-color: var(--color-primary);
+
+  // date picker
+  --dp-border-radius: var(--button-border-radius) !important;
+  --dp-action-button-height: 32px !important;
+  --dp-action-buttons-padding: 1px 16px !important;
 }
