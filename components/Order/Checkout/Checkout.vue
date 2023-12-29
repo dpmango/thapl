@@ -337,7 +337,7 @@
             class="checkout__row"
             data-name="section_promo"
           >
-            <div class="ui-label">Бонусная программа</div>
+            <div class="ui-label">Скидки</div>
             <div class="checkout__toggle-grid">
               <UiToggle
                 theme="spaced"
@@ -379,7 +379,7 @@
                 inputmode="numeric"
                 :value="points"
                 :error="errors.points"
-                :helper="`Максимально можно списать ${formatPrice(promo?.available_points)}`"
+                :helper="`Максимально можно списать ${promo?.available_points}`"
                 @on-change="(v) => setFieldValue('points', v)"
               />
             </div>
@@ -886,7 +886,7 @@ const showBonus = computed(() => {
   if (!combinedPromo.value) {
     return {
       promocode: bonusType.value === 1,
-      points: bonusType.value === 2 && (promo.value?.available_points || 0) > 0,
+      points: bonusType.value === 2 && (promo.value?.available_points || 0) >= 0,
     }
   }
 

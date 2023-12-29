@@ -1,7 +1,7 @@
 {
   "name": "thapl",
   "private": true,
-  "version": "2.1.14",
+  "version": "2.1.15",
   "engines": {
     "node": ">=16.15.0"
   },

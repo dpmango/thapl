@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-if="data.image" class="page__image">
-      <img :src="data.image" :alt="data.title" />
+      <!--<img :src="data.image" :alt="data.title" />-->
     </div>
   </div>
 
