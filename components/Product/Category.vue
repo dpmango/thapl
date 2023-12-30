@@ -1,7 +1,12 @@
 <template>
   <section :id="category.slug" class="category" :data-id="category.id">
     <div class="container">
-      <template v-if="category.catalog_items.length">
+      <template
+        v-if="
+          category.catalog_items.length ||
+          category.sub_categories.find((subCategory) => subCategory.catalog_items.length)
+        "
+      >
         <h2 v-if="showTitle" class="category__title h2-title">{{ category.title }}</h2>
 
         <ProductCategoryList :list="category.catalog_items" />
