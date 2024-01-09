@@ -8,7 +8,7 @@
     <input
       v-if="minWeight === 0"
       class="plusminus__input"
-      :value="value"
+      :value="value + productpricepm"
       inputmode="numeric"
       @keydown="preventInput"
       @input="(e: any) => handleChange(e.target.value)"
@@ -54,11 +54,15 @@ const props = defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: (v: string) => ['medium', 'small'].includes(v),
+    validator: (v: string) => ['medium', 'mediummodal', 'small'].includes(v),
   },
   asInput: {
     type: Boolean,
     default: false,
+  },
+  productpricepm: {
+    type: String,
+    default: '',
   },
 })
 
@@ -168,6 +172,25 @@ const handleChange = (value) => {
 
   &._medium {
     max-width: 127px;
+    .plusminus {
+      &__plus,
+      &__minus {
+        width: calc(14px + 16px + 16px);
+        padding: 22px 16px;
+        &::before,
+        &::after {
+          width: 14px;
+          height: 2px;
+        }
+      }
+      &__input {
+        padding: 9px 0px;
+        font-size: 16px;
+      }
+    }
+  }
+
+  &._mediummodal {
     .plusminus {
       &__plus,
       &__minus {

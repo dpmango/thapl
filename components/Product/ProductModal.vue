@@ -140,6 +140,8 @@
               :modifiers="modifierGroups"
               btn-theme="primary"
               :should-emit="hasUnselectedModifiers"
+              size="mediummodal"
+              :productpricepm="' х ' + productPriceLabel"
               @on-before-add="showModifiersToast"
             >
               В корзину &bull; {{ productPriceLabel }}

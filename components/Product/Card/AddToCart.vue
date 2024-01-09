@@ -1,16 +1,22 @@
 <template>
   <div class="add-to-cart">
-    <UiButton v-if="!productQuantityWithModifier" :theme="btnTheme" @click="handleSelect">
+    <UiButton
+      v-if="!productQuantityWithModifier"
+      :theme="btnTheme"
+      :size="size"
+      @click="handleSelect"
+    >
       <slot />
     </UiButton>
     <UiPlusMinus
       v-else
-      size="medium"
+      :size="size"
       :value="productQuantityWithModifier"
       :min-weight="plusminusParams.minWeight"
       :min-value="plusminusParams.min"
       :max-value="plusminusParams.max"
       :step="plusminusParams.step"
+      :productpricepm="productpricepm"
       @on-change="handleQuantityChange"
     />
   </div>
@@ -46,6 +52,14 @@ const props = defineProps({
   shouldEmit: {
     type: Boolean,
     default: true,
+  },
+  size: {
+    type: String,
+    default: 'medium',
+  },
+  productpricepm: {
+    type: String,
+    default: '',
   },
 })
 

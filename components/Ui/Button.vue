@@ -41,7 +41,7 @@ const props = defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: (v: string) => ['large', 'medium', 'small'].includes(v),
+    validator: (v: string) => ['large', 'medium', 'mediummodal', 'small'].includes(v),
   },
   href: String,
   iconRight: String,
@@ -237,6 +237,14 @@ watch(
   }
 
   &.medium {
+    .button__content {
+      padding: 8px 27px;
+      font-size: 16px;
+      line-height: calc(26 / 16);
+    }
+  }
+
+  &.mediummodal {
     .button__content {
       padding: 8px 27px;
       font-size: 16px;
