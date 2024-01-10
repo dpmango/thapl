@@ -44,8 +44,8 @@ const props = defineProps({
 })
 const { $env } = useNuxtApp()
 
-const isShowCategoyName = $env.showCategoryName ? $env.showCategoryName : true
-const isShowShadow = $env.categoryNameShadow ? $env.categoryNameShadow : true
+const isShowCategoyName = $env.showCategoryName !== undefined ? $env.showCategoryName : true
+const isShowShadow = $env.categoryNameShadow !== undefined ? $env.categoryNameShadow : true
 </script>
 
 <style lang="scss" scoped>
